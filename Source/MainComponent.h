@@ -35,6 +35,8 @@ private:
         Stopped,
         Starting,
         Playing,
+        Pausing,
+        Paused,
         Stopping
     };
 
