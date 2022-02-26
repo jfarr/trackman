@@ -155,11 +155,17 @@ void TransportControl::timerCallback()
     auto seconds = ((int)position.inSeconds()) % 60;
     auto millis = ((int)position.inMilliseconds()) % 1000;
 
+    auto length = transportSource->getLengthInSeconds();
+    auto lmins = ((int)length / 60) % 60;
+    auto lsecs = ((int)length) % 60;
+    auto lmillis = (int)(length * 1000.0) % 1000;
+
     auto stateLabel = getStateLabel();
     auto stateText = stateLabel.isNotEmpty() ? (juce::String(" [") + stateLabel + juce::String("]")) : juce::String("");
-    auto positionString = juce::String::formatted("%02d:%02d:%03d", minutes, seconds, millis) + stateText;
+    auto positionString = juce::String::formatted("%02d:%02d:%03d", minutes, seconds, millis);
+    auto lengthString = juce::String::formatted("%02d:%02d:%03d", lmins, lsecs, lmillis);
 
-    currentPositionLabel.setText(positionString, juce::dontSendNotification);
+    currentPositionLabel.setText(positionString + juce::String(" / ") + lengthString + stateText, juce::dontSendNotification);
 }
 
 void TransportControl::playButtonClicked()

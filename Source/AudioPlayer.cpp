@@ -18,7 +18,7 @@ AudioPlayer::AudioPlayer(juce::AudioFormatManager* formatManager) : thumbnailCom
     transportControl.get()->AddListener(this);
     addAndMakeVisible(transportControl.get());
 
-    setSize(400, 225);
+    setSize(500, 250);
 }
 
 AudioPlayer::~AudioPlayer()

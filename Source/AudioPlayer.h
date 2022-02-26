@@ -45,7 +45,7 @@ private:
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
     ThumbnailComponent thumbnailComponent;
     PositionOverlay positionOverlay;
-
+ 
     //==============================================================================
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPlayer)
