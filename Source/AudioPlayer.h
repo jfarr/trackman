@@ -4,6 +4,7 @@
 
 #include "FileChooserControl.h"
 #include "TransportControl.h"
+#include "ThumbnailComponent.h"
 
 //==============================================================================
 /*
@@ -42,6 +43,8 @@ private:
     std::unique_ptr<TransportControl> transportControl;
     std::unique_ptr<FileChooserControl> fileChooserControl;
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
+    ThumbnailComponent thumbnailComponent;
+    PositionOverlay positionOverlay;
 
     //==============================================================================
 

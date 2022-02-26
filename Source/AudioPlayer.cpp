@@ -2,7 +2,7 @@
 #include "ChildWindow.h"
 
 //==============================================================================
-AudioPlayer::AudioPlayer(juce::AudioFormatManager* formatManager)
+AudioPlayer::AudioPlayer(juce::AudioFormatManager* formatManager) : thumbnailComponent(*formatManager), positionOverlay(transportSource)
 {
     this->formatManager = formatManager;
     setAudioChannels(2, 2);
@@ -10,6 +10,9 @@ AudioPlayer::AudioPlayer(juce::AudioFormatManager* formatManager)
     fileChooserControl.reset(new FileChooserControl());
     fileChooserControl.get()->AddListener(this);
     addAndMakeVisible(fileChooserControl.get());
+
+    addAndMakeVisible(&thumbnailComponent);
+    addAndMakeVisible(&positionOverlay);
 
     transportControl.reset(new TransportControl(&transportSource, false));
     transportControl.get()->AddListener(this);
@@ -60,10 +63,13 @@ void AudioPlayer::paint (juce::Graphics& g)
 
 void AudioPlayer::resized()
 {
+    auto area = getLocalBounds();
     auto buttonHeight = 25;
     auto margin = 2;
-    fileChooserControl.get()->setBounds(0, 0, getWidth() - margin, buttonHeight);
-    transportControl.get()->setBounds(0, getHeight() - buttonHeight, getWidth() - margin, buttonHeight);
+    fileChooserControl.get()->setBounds(area.removeFromTop(buttonHeight));
+    transportControl.get()->setBounds(area.removeFromBottom(buttonHeight));
+    thumbnailComponent.setBounds(area.reduced(margin));
+    positionOverlay.setBounds(area.reduced(margin));
 }
 
 void AudioPlayer::fileChosen(juce::File file)
@@ -75,6 +81,7 @@ void AudioPlayer::fileChosen(juce::File file)
         auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
         transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
         readerSource.reset(newSource.release());
+        thumbnailComponent.setSource(file);
         transportControl.get()->setEnabled(true);
     }
 }
