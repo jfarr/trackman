@@ -1,10 +1,7 @@
 #include "DesktopComponent.h"
-#include "MainComponent.h"
 
 DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow)
 {
-    menuBar.reset(new juce::MenuBarComponent(this));
-    addAndMakeVisible(menuBar.get());
     setApplicationCommandManagerToWatch(&commandManager);
     commandManager.registerAllCommandsForTarget(this);
 
@@ -14,37 +11,30 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow)
 
     // this lets the command manager use keypresses that arrive in our window to send out commands
     addKeyListener(commandManager.getKeyMappings());
-
-    addChildComponent(menuHeader);
-    addAndMakeVisible(outerCommandTarget);
-    addAndMakeVisible(sidePanel);
- 
     setWantsKeyboardFocus(true);
-    parentWindow->setMenuBarComponent(menuBar.get());
 
-    setSize(450, 300);
+    parentWindow->setMenuBar(this);
+    addAndMakeVisible(menuBar);
 
-    auto* window = new ChildWindow("child", new MainComponent());
-    windows.add(window);
-
-    juce::Rectangle<int> area(0, 0, 300, 200);
-
-    window->setBounds(area);
-    window->setResizable(true, false);
-    window->setUsingNativeTitleBar(false);
-
-    addAndMakeVisible(window);
+    setSize(800, 600);
 }
 
 DesktopComponent::~DesktopComponent()
 {
     closeAllWindows();
-    menuBar.release();
+    //menuBar.release();
 
 #if JUCE_MAC
     juce::MenuBarModel::setMacMainMenu(nullptr);
 #endif
     commandManager.setFirstCommandTarget(nullptr);
+}
+
+void DesktopComponent::createChildWindow(const juce::String& name, juce::Component* component)
+{
+    auto* window = new ChildWindow(name, component);
+    windows.add(window);
+    addAndMakeVisible(window);
 }
 
 void DesktopComponent::closeAllWindows()

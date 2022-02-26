@@ -1,8 +1,8 @@
-#include "MainComponent.h"
+#include "AudioPlayer.h"
 #include "ChildWindow.h"
 
 //==============================================================================
-MainComponent::MainComponent()
+AudioPlayer::AudioPlayer()
     : state(Stopped)
 {
     addAndMakeVisible(&openButton);
@@ -37,7 +37,7 @@ MainComponent::MainComponent()
     startTimer(20);
 }
 
-MainComponent::~MainComponent()
+AudioPlayer::~AudioPlayer()
 {
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
@@ -45,12 +45,12 @@ MainComponent::~MainComponent()
 }
 
 //==============================================================================
-void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+void AudioPlayer::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
     transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
-void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
+void AudioPlayer::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
 {
     if (readerSource.get() == nullptr)
     {
@@ -61,12 +61,12 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     transportSource.getNextAudioBlock(bufferToFill);
 }
 
-void MainComponent::releaseResources()
+void AudioPlayer::releaseResources()
 {
     transportSource.releaseResources();
 }
 
-void MainComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
+void AudioPlayer::changeListenerCallback(juce::ChangeBroadcaster* source)
 {
     if (source == &transportSource)
     {
@@ -79,7 +79,7 @@ void MainComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
     }
 }
 
-void MainComponent::timerCallback()
+void AudioPlayer::timerCallback()
 {
     if (transportSource.isPlaying())
     {
@@ -101,12 +101,12 @@ void MainComponent::timerCallback()
 
 
 //==============================================================================
-void MainComponent::paint (juce::Graphics& g)
+void AudioPlayer::paint (juce::Graphics& g)
 {
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 }
 
-void MainComponent::resized()
+void AudioPlayer::resized()
 {
     openButton.setBounds(10, 10, getWidth() - 20, 20);
     playButton.setBounds(10, 40, getWidth() - 20, 20);
@@ -115,7 +115,7 @@ void MainComponent::resized()
     currentPositionLabel.setBounds(10, 130, getWidth() - 20, 20);
 }
 
-void MainComponent::changeState(TransportState newState)
+void AudioPlayer::changeState(TransportState newState)
 {
     if (state != newState)
     {
@@ -156,7 +156,7 @@ void MainComponent::changeState(TransportState newState)
     }
 }
 
-void MainComponent::openButtonClicked()
+void AudioPlayer::openButtonClicked()
 {
     chooser = std::make_unique<juce::FileChooser>("Select a Wave file to play...", juce::File{}, "*.wav");
     auto chooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
@@ -180,7 +180,7 @@ void MainComponent::openButtonClicked()
         });
 }
 
-void MainComponent::playButtonClicked()
+void AudioPlayer::playButtonClicked()
 {
     updateLoopState(loopingToggle.getToggleState());
     if ((state == Stopped) || (state == Paused))
@@ -189,7 +189,7 @@ void MainComponent::playButtonClicked()
         changeState(Pausing);
 }
 
-void MainComponent::stopButtonClicked()
+void AudioPlayer::stopButtonClicked()
 {
     if (state == Paused)
         changeState(Stopped);
@@ -197,12 +197,12 @@ void MainComponent::stopButtonClicked()
         changeState(Stopping);
 }
 
-void MainComponent::loopButtonChanged()
+void AudioPlayer::loopButtonChanged()
 {
     updateLoopState(loopingToggle.getToggleState());
 }
 
-void MainComponent::updateLoopState(bool shouldLoop)
+void AudioPlayer::updateLoopState(bool shouldLoop)
 {
     if (readerSource.get() != nullptr)
         readerSource->setLooping(shouldLoop);

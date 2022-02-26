@@ -135,7 +135,7 @@
     <ClCompile Include="..\..\Source\ChildWindow.cpp" />
     <ClCompile Include="..\..\Source\DesktopComponent.cpp" />
     <ClCompile Include="..\..\Source\Main.cpp" />
-    <ClCompile Include="..\..\Source\MainComponent.cpp" />
+    <ClCompile Include="..\..\Source\AudioPlayer.cpp" />
     <ClCompile Include="..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2203,7 +2203,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\ChildWindow.h" />
     <ClInclude Include="..\..\Source\DesktopComponent.h" />
-    <ClInclude Include="..\..\Source\MainComponent.h" />
+    <ClInclude Include="..\..\Source\AudioPlayer.h" />
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h" />
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.h" />
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h" />

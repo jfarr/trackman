@@ -7,12 +7,12 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent : public juce::AudioAppComponent, public juce::ChangeListener, public juce::Timer
+class AudioPlayer : public juce::AudioAppComponent, public juce::ChangeListener, public juce::Timer
 {
 public:
     //==============================================================================
-    MainComponent();
-    ~MainComponent() override;
+    AudioPlayer();
+    ~AudioPlayer() override;
 
     //==============================================================================
     // AudioAppComponent
@@ -31,7 +31,7 @@ public:
 
     //==============================================================================
     // Timer
-    void MainComponent::timerCallback() override;
+    void AudioPlayer::timerCallback() override;
 
 private:
     enum TransportState
@@ -68,5 +68,5 @@ private:
     juce::ToggleButton loopingToggle;
     juce::Label currentPositionLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPlayer)
 };
