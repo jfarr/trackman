@@ -2,17 +2,32 @@
 
 #include <JuceHeader.h>
 
-class TransportControl : public juce::Component, public juce::Timer
+class TransportControlListener
+{
+public:
+    virtual void updateLoopState(bool shouldLoop) = 0;
+};
+
+
+class TransportControl : public juce::Component, public juce::ChangeListener, public juce::Timer
 {
 public:
     //==============================================================================
-    TransportControl(juce::AudioTransportSource *transportSource);
+    TransportControl(juce::AudioTransportSource *transportSource, bool enabled = true);
     ~TransportControl() override;
+
+    void setEnabled(bool enabled);
+    void AddListener(TransportControlListener* listener);
+    void RemoveListener(TransportControlListener* listener);
 
     //==============================================================================
     // Component
     void paint(juce::Graphics& g) override;
     void resized() override;
+
+    //==============================================================================
+    // ChangeListener
+    void changeListenerCallback(juce::ChangeBroadcaster* source) override;
 
     //==============================================================================
     // Timer
@@ -30,6 +45,8 @@ private:
     };
     TransportState state = TransportState::Stopped;
     juce::AudioTransportSource *transportSource;
+    bool enabled;
+    std::list<TransportControlListener*> listeners;
 
     void createControls();
     void changeState(TransportState newState);
@@ -39,10 +56,14 @@ private:
 
     void playButtonClicked();
     void stopButtonClicked();
+    void pauseButtonClicked();
+    void rewindButtonClicked();
     void loopButtonChanged();
 
     juce::TextButton playButton;
     juce::TextButton stopButton;
+    juce::TextButton pauseButton;
+    juce::TextButton rewindButton;
     juce::ToggleButton loopingToggle;
     juce::Label currentPositionLabel;
 };

@@ -1,9 +1,12 @@
 #include "TransportControl.h"
+#include "listutil.h"
 
 //==============================================================================
-TransportControl::TransportControl(juce::AudioTransportSource *transportSource)
+TransportControl::TransportControl(juce::AudioTransportSource *transportSource, bool enabled)
 {
     this->transportSource = transportSource;
+    this->enabled = enabled;
+    transportSource->addChangeListener(this);
 
     createControls();
     setSize(300, 225);
@@ -17,23 +20,46 @@ TransportControl::~TransportControl()
 void TransportControl::createControls()
 {
     addAndMakeVisible(&playButton);
-    playButton.setButtonText("Play");
+    playButton.setButtonText("play");
     playButton.onClick = [this] { playButtonClicked(); };
     playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::green);
-    playButton.setEnabled(false);
+    playButton.setEnabled(enabled);
 
     addAndMakeVisible(&stopButton);
-    stopButton.setButtonText("Stop");
+    stopButton.setButtonText("stop");
     stopButton.onClick = [this] { stopButtonClicked(); };
     stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::red);
     stopButton.setEnabled(false);
 
+    addAndMakeVisible(&pauseButton);
+    pauseButton.setButtonText("pause");
+    pauseButton.onClick = [this] { pauseButtonClicked(); };
+    pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::red);
+    pauseButton.setEnabled(false);
+
+    addAndMakeVisible(&rewindButton);
+    rewindButton.setButtonText("rewind");
+    rewindButton.onClick = [this] { rewindButtonClicked(); };
+    rewindButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+    rewindButton.setEnabled(enabled);
+
     addAndMakeVisible(&loopingToggle);
-    loopingToggle.setButtonText("Loop");
+    loopingToggle.setButtonText("loop");
     loopingToggle.onClick = [this] { loopButtonChanged(); };
+    loopingToggle.setEnabled(enabled);
 
     addAndMakeVisible(&currentPositionLabel);
-    currentPositionLabel.setText("Stopped", juce::dontSendNotification);
+    currentPositionLabel.setEnabled(enabled);
+}
+
+void TransportControl::setEnabled(bool enabled)
+{
+    this->enabled = enabled;
+    rewindButton.setEnabled(enabled);
+    playButton.setEnabled(enabled && state == TransportState::Stopped);
+    pauseButton.setEnabled(enabled);
+    loopingToggle.setEnabled(enabled);
+    currentPositionLabel.setEnabled(enabled);
 }
 
 void TransportControl::paint(juce::Graphics& g)
@@ -48,9 +74,11 @@ void TransportControl::resized()
     auto buttonWidth = 50;
     auto buttonMargin = 2;
     auto loopToggleWidth = 65;
+    rewindButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
     playButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
     stopButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
-    loopingToggle.setBounds(area.removeFromLeft(loopToggleWidth).reduced(buttonMargin));
+    pauseButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
+    loopingToggle.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
     currentPositionLabel.setBounds(area.reduced(buttonMargin));
 }
 
@@ -63,8 +91,7 @@ void TransportControl::changeState(TransportState newState)
         switch (state)
         {
         case TransportState::Stopped:
-            playButton.setButtonText("Play");
-            stopButton.setButtonText("Stop");
+            pauseButton.setButtonText("pause");
             stopButton.setEnabled(false);
             transportSource->setPosition(0.0);
             break;
@@ -74,8 +101,7 @@ void TransportControl::changeState(TransportState newState)
             break;
 
         case TransportState::Playing:
-            playButton.setButtonText("Pause");
-            stopButton.setButtonText("Stop");
+            pauseButton.setButtonText("pause");
             stopButton.setEnabled(true);
             break;
 
@@ -84,14 +110,26 @@ void TransportControl::changeState(TransportState newState)
             break;
 
         case TransportState::Paused:
-            playButton.setButtonText("Resume");
-            stopButton.setButtonText("Return to Zero");
+            pauseButton.setButtonText("resume");
             break;
 
         case TransportState::Stopping:
             transportSource->stop();
             break;
         }
+    }
+}
+
+void TransportControl::changeListenerCallback(juce::ChangeBroadcaster* source)
+{
+    if (source == transportSource)
+    {
+        if (transportSource->isPlaying())
+            changeState(TransportState::Playing);
+        else if (TransportState::Pausing == state)
+            changeState(TransportState::Paused);
+        else if ((state == TransportState::Stopping) || (state == TransportState::Playing))
+            changeState(TransportState::Stopped);
     }
 }
 
@@ -103,7 +141,8 @@ void TransportControl::timerCallback()
     auto seconds = ((int)position.inSeconds()) % 60;
     auto millis = ((int)position.inMilliseconds()) % 1000;
 
-    auto positionString = juce::String::formatted("%02d:%02d:%03d", minutes, seconds, millis) + juce::String(transportSource->isPlaying() ? "" : " [Stopped]");
+    auto stateText = juce::String((state == TransportState::Stopped) ? " [Stopped]" : (state == TransportState::Paused) ? " [Paused]" : "");
+    auto positionString = juce::String::formatted("%02d:%02d:%03d", minutes, seconds, millis) + stateText;
 
     currentPositionLabel.setText(positionString, juce::dontSendNotification);
 }
@@ -114,7 +153,7 @@ void TransportControl::playButtonClicked()
     if ((state == TransportState::Stopped) || (state == TransportState::Paused))
         changeState(TransportState::Starting);
     else if (state == TransportState::Playing)
-        changeState(TransportState::Pausing);
+        transportSource->setPosition(0.0);
 }
 
 void TransportControl::stopButtonClicked()
@@ -125,6 +164,21 @@ void TransportControl::stopButtonClicked()
         changeState(TransportState::Stopping);
 }
 
+void TransportControl::pauseButtonClicked()
+{
+    if (state == TransportState::Paused)
+        changeState(TransportState::Starting);
+    else if (state == TransportState::Stopped)
+        changeState(TransportState::Paused);
+    else
+        changeState(TransportState::Pausing);
+}
+
+void TransportControl::rewindButtonClicked()
+{
+    transportSource->setPosition(0.0);
+}
+
 void TransportControl::loopButtonChanged()
 {
     updateLoopState(loopingToggle.getToggleState());
@@ -132,5 +186,20 @@ void TransportControl::loopButtonChanged()
 
 void TransportControl::updateLoopState(bool shouldLoop)
 {
-    // TODO: notify
+    for (std::list<TransportControlListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
+    {
+        TransportControlListener& listener = **i;
+        listener.updateLoopState(shouldLoop);
+    }
+}
+
+void TransportControl::AddListener(TransportControlListener* listener)
+{
+    if (!listContains(listener, listeners))
+        listeners.push_front(listener);
+}
+
+void TransportControl::RemoveListener(TransportControlListener* listener)
+{
+    listeners.remove(listener);
 }

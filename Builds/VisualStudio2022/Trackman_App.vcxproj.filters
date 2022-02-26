@@ -5111,6 +5111,9 @@
     <ClInclude Include="..\..\Source\TransportControl.h">
       <Filter>Trackman\Source</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\listutil.h">
+      <Filter>Trackman\Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt">

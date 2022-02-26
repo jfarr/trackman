@@ -3,41 +3,20 @@
 
 //==============================================================================
 AudioPlayer::AudioPlayer()
-    : state(Stopped)
 {
-    transportControl.reset(new TransportControl(&transportSource));
+    transportControl.reset(new TransportControl(&transportSource, false));
+    transportControl.get()->AddListener(this);
     addAndMakeVisible(transportControl.get());
 
     addAndMakeVisible(&openButton);
     openButton.setButtonText("Open...");
     openButton.onClick = [this] { openButtonClicked(); };
 
-    addAndMakeVisible(&playButton);
-    playButton.setButtonText("Play");
-    playButton.onClick = [this] { playButtonClicked(); };
-    playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::green);
-    playButton.setEnabled(false);
-
-    addAndMakeVisible(&stopButton);
-    stopButton.setButtonText("Stop");
-    stopButton.onClick = [this] { stopButtonClicked(); };
-    stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::red);
-    stopButton.setEnabled(false);
-
-    addAndMakeVisible(&loopingToggle);
-    loopingToggle.setButtonText("Loop");
-    loopingToggle.onClick = [this] { loopButtonChanged(); };
-
-    addAndMakeVisible(&currentPositionLabel);
-    currentPositionLabel.setText("Stopped", juce::dontSendNotification);
-
-    setSize(300, 225);
+    setSize(400, 225);
 
     formatManager.registerBasicFormats();
-    transportSource.addChangeListener(this);
 
     setAudioChannels(2, 2);
-    startTimer(20);
 }
 
 AudioPlayer::~AudioPlayer()
@@ -45,6 +24,8 @@ AudioPlayer::~AudioPlayer()
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
     transportSource.setSource(nullptr);
+    if (transportControl.get() != nullptr)
+        transportControl.get()->RemoveListener(this);
 }
 
 //==============================================================================
@@ -69,39 +50,6 @@ void AudioPlayer::releaseResources()
     transportSource.releaseResources();
 }
 
-void AudioPlayer::changeListenerCallback(juce::ChangeBroadcaster* source)
-{
-    if (source == &transportSource)
-    {
-        if (transportSource.isPlaying())
-            changeState(Playing);
-        else if ((state == Stopping) || (state == Playing))
-            changeState(Stopped);
-        else if (Pausing == state)
-            changeState(Paused);
-    }
-}
-
-void AudioPlayer::timerCallback()
-{
-    if (transportSource.isPlaying())
-    {
-        juce::RelativeTime position(transportSource.getCurrentPosition());
-
-        auto minutes = ((int)position.inMinutes()) % 60;
-        auto seconds = ((int)position.inSeconds()) % 60;
-        auto millis = ((int)position.inMilliseconds()) % 1000;
-
-        auto positionString = juce::String::formatted("%02d:%02d:%03d", minutes, seconds, millis);
-
-        currentPositionLabel.setText(positionString, juce::dontSendNotification);
-    }
-    else
-    {
-        currentPositionLabel.setText("Stopped", juce::dontSendNotification);
-    }
-}
-
 
 //==============================================================================
 void AudioPlayer::paint (juce::Graphics& g)
@@ -112,53 +60,8 @@ void AudioPlayer::paint (juce::Graphics& g)
 void AudioPlayer::resized()
 {
     openButton.setBounds(10, 10, getWidth() - 20, 20);
-    playButton.setBounds(10, 40, getWidth() - 20, 20);
-    stopButton.setBounds(10, 70, getWidth() - 20, 20);
-    loopingToggle.setBounds(10, 100, getWidth() - 20, 20);
-    currentPositionLabel.setBounds(10, 130, getWidth() - 20, 20);
     auto transportHeight = 25;
     transportControl.get()->setBounds(0, getHeight() - transportHeight, getWidth() - 20, transportHeight);
-}
-
-void AudioPlayer::changeState(TransportState newState)
-{
-    if (state != newState)
-    {
-        state = newState;
-
-        switch (state)
-        {
-        case Stopped:
-            playButton.setButtonText("Play");
-            stopButton.setButtonText("Stop");
-            stopButton.setEnabled(false);
-            transportSource.setPosition(0.0);
-            break;
-
-        case Starting:
-            transportSource.start();
-            break;
-
-        case Playing:
-            playButton.setButtonText("Pause");
-            stopButton.setButtonText("Stop");
-            stopButton.setEnabled(true);
-            break;
-
-        case Pausing:
-            transportSource.stop();
-            break;
-
-        case Paused:
-            playButton.setButtonText("Resume");
-            stopButton.setButtonText("Return to Zero");
-            break;
-
-        case Stopping:
-            transportSource.stop();
-            break;
-        }
-    }
 }
 
 void AudioPlayer::openButtonClicked()
@@ -178,33 +81,11 @@ void AudioPlayer::openButtonClicked()
                 {
                     auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
                     transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
-                    playButton.setEnabled(true);
                     readerSource.reset(newSource.release());
+                    transportControl.get()->setEnabled(true);
                 }
             }
         });
-}
-
-void AudioPlayer::playButtonClicked()
-{
-    updateLoopState(loopingToggle.getToggleState());
-    if ((state == Stopped) || (state == Paused))
-        changeState(Starting);
-    else if (state == Playing)
-        changeState(Pausing);
-}
-
-void AudioPlayer::stopButtonClicked()
-{
-    if (state == Paused)
-        changeState(Stopped);
-    else
-        changeState(Stopping);
-}
-
-void AudioPlayer::loopButtonChanged()
-{
-    updateLoopState(loopingToggle.getToggleState());
 }
 
 void AudioPlayer::updateLoopState(bool shouldLoop)
