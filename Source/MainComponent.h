@@ -7,7 +7,7 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent  : public juce::AudioAppComponent, public juce::ChangeListener
+class MainComponent  : public juce::AudioAppComponent, public juce::ChangeListener, public juce::Timer
 {
 public:
     //==============================================================================
@@ -29,6 +29,10 @@ public:
     // ChangeListener
     void changeListenerCallback(juce::ChangeBroadcaster* source) override;
 
+    //==============================================================================
+   // Timer
+    void MainComponent::timerCallback() override;
+
 private:
     enum TransportState
     {
@@ -47,16 +51,20 @@ private:
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
 
     void changeState(TransportState newState);
+    void updateLoopState(bool shouldLoop);
 
     void openButtonClicked();
     void playButtonClicked();
     void stopButtonClicked();
+    void loopButtonChanged();
 
     std::unique_ptr<juce::FileChooser> chooser;
 
     juce::TextButton openButton;
     juce::TextButton playButton;
     juce::TextButton stopButton;
+    juce::ToggleButton loopingToggle;
+    juce::Label currentPositionLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
