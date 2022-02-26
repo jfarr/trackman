@@ -40,12 +40,12 @@ public:
 private:
     juce::AudioFormatManager& formatManager;
     juce::AudioTransportSource transportSource;
-    std::unique_ptr<TransportControl> transportControl;
-    std::unique_ptr<FileChooserControl> fileChooserControl;
-    std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
+    TransportControl transportControl;
+    FileChooserControl fileChooserControl;
     ThumbnailComponent thumbnailComponent;
     PositionOverlay positionOverlay;
- 
+    std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
+
     //==============================================================================
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPlayer)

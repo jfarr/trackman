@@ -2,20 +2,21 @@
 #include "ChildWindow.h"
 
 //==============================================================================
-AudioPlayer::AudioPlayer(juce::AudioFormatManager& formatManager) : formatManager(formatManager), thumbnailComponent(formatManager), positionOverlay(transportSource)
+AudioPlayer::AudioPlayer(juce::AudioFormatManager& formatManager)
+    : formatManager(formatManager)
+    , transportControl(transportSource, false)
+    , thumbnailComponent(formatManager)
+    , positionOverlay(transportSource)
 {
     setAudioChannels(0, 2);
 
-    fileChooserControl.reset(new FileChooserControl());
-    fileChooserControl.get()->AddListener(this);
-    addAndMakeVisible(fileChooserControl.get());
+    addAndMakeVisible(fileChooserControl);
+    addAndMakeVisible(thumbnailComponent);
+    addAndMakeVisible(positionOverlay);
+    addAndMakeVisible(transportControl);
 
-    addAndMakeVisible(&thumbnailComponent);
-    addAndMakeVisible(&positionOverlay);
-
-    transportControl.reset(new TransportControl(transportSource, false));
-    transportControl.get()->AddListener(this);
-    addAndMakeVisible(transportControl.get());
+    fileChooserControl.AddListener(this);
+    transportControl.AddListener(this);
 
     setSize(500, 250);
 }
@@ -24,11 +25,9 @@ AudioPlayer::~AudioPlayer()
 {
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
+    fileChooserControl.RemoveListener(this);
+    transportControl.RemoveListener(this);
     transportSource.setSource(nullptr);
-    if (fileChooserControl.get() != nullptr)
-        fileChooserControl.get()->RemoveListener(this);
-    if (transportControl.get() != nullptr)
-        transportControl.get()->RemoveListener(this);
 }
 
 //==============================================================================
@@ -65,8 +64,8 @@ void AudioPlayer::resized()
     auto area = getLocalBounds();
     auto buttonHeight = 25;
     auto margin = 2;
-    fileChooserControl.get()->setBounds(area.removeFromTop(buttonHeight));
-    transportControl.get()->setBounds(area.removeFromBottom(buttonHeight));
+    fileChooserControl.setBounds(area.removeFromTop(buttonHeight));
+    transportControl.setBounds(area.removeFromBottom(buttonHeight));
     thumbnailComponent.setBounds(area.reduced(margin));
     positionOverlay.setBounds(area.reduced(margin));
 }
@@ -81,7 +80,7 @@ void AudioPlayer::fileChosen(juce::File file)
         transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
         readerSource.reset(newSource.release());
         thumbnailComponent.setSource(file);
-        transportControl.get()->setEnabled(true);
+        transportControl.setEnabled(true);
     }
 }
 

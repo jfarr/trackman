@@ -132,6 +132,7 @@
     <Lib />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\MixerComponent.cpp" />
     <ClCompile Include="..\..\Source\ThumbnailComponent.cpp" />
     <ClCompile Include="..\..\Source\ChildWindow.cpp" />
     <ClCompile Include="..\..\Source\DesktopComponent.cpp" />
@@ -3051,6 +3052,7 @@
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\Source\FileChooserControl.h" />
+    <ClInclude Include="..\..\Source\MixerComponent.h" />
     <ClInclude Include="..\..\Source\ThumbnailComponent.h" />
     <ClInclude Include="..\..\Source\listutil.h" />
     <ClInclude Include="..\..\Source\TransportControl.h" />

@@ -2568,6 +2568,9 @@
     <ClCompile Include="..\..\Source\ThumbnailComponent.cpp">
       <Filter>Trackman\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\MixerComponent.cpp">
+      <Filter>Trackman\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\AudioPlayer.h">
@@ -5118,6 +5121,9 @@
       <Filter>Trackman\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\ThumbnailComponent.h">
+      <Filter>Trackman\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\MixerComponent.h">
       <Filter>Trackman\Source</Filter>
     </ClInclude>
   </ItemGroup>
