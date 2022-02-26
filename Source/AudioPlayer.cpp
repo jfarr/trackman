@@ -9,15 +9,7 @@ AudioPlayer::AudioPlayer(juce::AudioFormatManager& formatManager)
     , positionOverlay(transportSource)
 {
     setAudioChannels(0, 2);
-
-    addAndMakeVisible(fileChooserControl);
-    addAndMakeVisible(thumbnailComponent);
-    addAndMakeVisible(positionOverlay);
-    addAndMakeVisible(transportControl);
-
-    fileChooserControl.AddListener(this);
-    transportControl.AddListener(this);
-
+    createControls();
     setSize(500, 250);
 }
 
@@ -28,6 +20,17 @@ AudioPlayer::~AudioPlayer()
     fileChooserControl.RemoveListener(this);
     transportControl.RemoveListener(this);
     transportSource.setSource(nullptr);
+}
+
+void AudioPlayer::createControls()
+{
+    addAndMakeVisible(fileChooserControl);
+    addAndMakeVisible(thumbnailComponent);
+    addAndMakeVisible(positionOverlay);
+    addAndMakeVisible(transportControl);
+
+    fileChooserControl.AddListener(this);
+    transportControl.AddListener(this);
 }
 
 //==============================================================================

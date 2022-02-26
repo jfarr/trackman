@@ -2,8 +2,9 @@
 
 #include <JuceHeader.h>
 
-#include "ChildWindow.h"
 #include "AudioPlayer.h"
+#include "ChildWindow.h"
+#include "MixerComponent.h"
 
 
 //==============================================================================
@@ -96,6 +97,7 @@ private:
 
     juce::ApplicationCommandManager commandManager;
     juce::MenuBarComponent menuBar;
+    MixerComponent mixerComponent;
  
     // Because the windows delete themselves, we'll use the
     // Component::SafePointer class to point to them, which automatically becomes

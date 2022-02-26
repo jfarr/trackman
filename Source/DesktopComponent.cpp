@@ -2,6 +2,8 @@
 
 DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow)
 {
+    addAndMakeVisible(mixerComponent);
+
     setApplicationCommandManagerToWatch(&commandManager);
     commandManager.registerAllCommandsForTarget(this);
 
@@ -24,7 +26,6 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow)
 DesktopComponent::~DesktopComponent()
 {
     closeAllWindows();
-    //menuBar.release();
 
 #if JUCE_MAC
     juce::MenuBarModel::setMacMainMenu(nullptr);
@@ -53,4 +54,6 @@ void DesktopComponent::paint(juce::Graphics& g)
 
 void DesktopComponent::resized()
 {
+    auto area = getLocalBounds();
+    mixerComponent.setBounds(area.removeFromBottom(mixerComponent.getHeight()));
 }

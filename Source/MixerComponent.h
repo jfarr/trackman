@@ -16,5 +16,8 @@ public:
     void resized() override;
 
 private:
-    //TransportControl transportControl;
+    juce::AudioTransportSource transportSource;
+    TransportControl transportControl;
+
+    void createControls();
 };
