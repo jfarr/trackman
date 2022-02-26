@@ -3051,7 +3051,6 @@
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\Source\FileChooserControl.h" />
-    <ClInclude Include="..\..\Source\FileListener.h" />
     <ClInclude Include="..\..\Source\listutil.h" />
     <ClInclude Include="..\..\Source\TransportControl.h" />
   </ItemGroup>

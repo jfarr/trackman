@@ -83,7 +83,7 @@ public:
         switch (info.commandID)
         {
         case CommandIDs::newAudioPlayer:
-            createChildWindow("audioplayer", new AudioPlayer());
+            createChildWindow("audioplayer", new AudioPlayer(&formatManager));
             break;
         default:
             return false;
@@ -104,6 +104,8 @@ private:
 
     void createChildWindow(const juce::String& name, juce::Component* component);
     void closeAllWindows();
+
+    juce::AudioFormatManager formatManager;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DesktopComponent)
 };

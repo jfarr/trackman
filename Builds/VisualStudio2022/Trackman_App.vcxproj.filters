@@ -5108,9 +5108,6 @@
     <ClInclude Include="..\..\Source\DesktopComponent.h">
       <Filter>Trackman\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\FileListener.h">
-      <Filter>Trackman\Source</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\TransportControl.h">
       <Filter>Trackman\Source</Filter>
     </ClInclude>

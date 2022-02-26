@@ -16,6 +16,8 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow)
     parentWindow->setMenuBar(this);
     addAndMakeVisible(menuBar);
 
+    formatManager.registerBasicFormats();
+
     setSize(800, 600);
 }
 

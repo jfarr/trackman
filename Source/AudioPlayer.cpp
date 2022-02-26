@@ -2,8 +2,11 @@
 #include "ChildWindow.h"
 
 //==============================================================================
-AudioPlayer::AudioPlayer()
+AudioPlayer::AudioPlayer(juce::AudioFormatManager* formatManager)
 {
+    this->formatManager = formatManager;
+    setAudioChannels(2, 2);
+
     fileChooserControl.reset(new FileChooserControl());
     fileChooserControl.get()->AddListener(this);
     addAndMakeVisible(fileChooserControl.get());
@@ -13,10 +16,6 @@ AudioPlayer::AudioPlayer()
     addAndMakeVisible(transportControl.get());
 
     setSize(400, 225);
-
-    formatManager.registerBasicFormats();
-
-    setAudioChannels(2, 2);
 }
 
 AudioPlayer::~AudioPlayer()
@@ -24,6 +23,8 @@ AudioPlayer::~AudioPlayer()
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
     transportSource.setSource(nullptr);
+    if (fileChooserControl.get() != nullptr)
+        fileChooserControl.get()->RemoveListener(this);
     if (transportControl.get() != nullptr)
         transportControl.get()->RemoveListener(this);
 }
@@ -59,7 +60,6 @@ void AudioPlayer::paint (juce::Graphics& g)
 
 void AudioPlayer::resized()
 {
-    //openButton.setBounds(10, 10, getWidth() - 20, 20);
     auto buttonHeight = 25;
     auto margin = 2;
     fileChooserControl.get()->setBounds(0, 0, getWidth() - margin, buttonHeight);
@@ -68,7 +68,7 @@ void AudioPlayer::resized()
 
 void AudioPlayer::fileChosen(juce::File file)
 {
-    auto* reader = formatManager.createReaderFor(file);
+    auto* reader = formatManager->createReaderFor(file);
 
     if (reader != nullptr)
     {
