@@ -2199,6 +2199,7 @@
       <AdditionalOptions> /bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp" />
+    <ClCompile Include="..\..\Source\FileChooserControl.cpp" />
     <ClCompile Include="..\..\Source\TransportControl.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -3049,6 +3050,7 @@
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_gui_extra\native\juce_mac_CarbonViewWrapperComponent.h" />
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
+    <ClInclude Include="..\..\Source\FileChooserControl.h" />
     <ClInclude Include="..\..\Source\FileListener.h" />
     <ClInclude Include="..\..\Source\listutil.h" />
     <ClInclude Include="..\..\Source\TransportControl.h" />

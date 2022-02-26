@@ -9,7 +9,6 @@ TransportControl::TransportControl(juce::AudioTransportSource *transportSource, 
     transportSource->addChangeListener(this);
 
     createControls();
-    setSize(300, 225);
     startTimer(20);
 }
 
@@ -74,7 +73,6 @@ void TransportControl::resized()
 
     auto buttonWidth = 50;
     auto buttonMargin = 2;
-    auto loopToggleWidth = 65;
     startButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
     playButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
     stopButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));

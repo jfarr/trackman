@@ -4,13 +4,13 @@
 //==============================================================================
 AudioPlayer::AudioPlayer()
 {
+    fileChooserControl.reset(new FileChooserControl());
+    fileChooserControl.get()->AddListener(this);
+    addAndMakeVisible(fileChooserControl.get());
+
     transportControl.reset(new TransportControl(&transportSource, false));
     transportControl.get()->AddListener(this);
     addAndMakeVisible(transportControl.get());
-
-    addAndMakeVisible(&openButton);
-    openButton.setButtonText("Open...");
-    openButton.onClick = [this] { openButtonClicked(); };
 
     setSize(400, 225);
 
@@ -54,38 +54,29 @@ void AudioPlayer::releaseResources()
 //==============================================================================
 void AudioPlayer::paint (juce::Graphics& g)
 {
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll(getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 }
 
 void AudioPlayer::resized()
 {
-    openButton.setBounds(10, 10, getWidth() - 20, 20);
-    auto transportHeight = 25;
-    transportControl.get()->setBounds(0, getHeight() - transportHeight, getWidth() - 20, transportHeight);
+    //openButton.setBounds(10, 10, getWidth() - 20, 20);
+    auto buttonHeight = 25;
+    auto margin = 2;
+    fileChooserControl.get()->setBounds(0, 0, getWidth() - margin, buttonHeight);
+    transportControl.get()->setBounds(0, getHeight() - buttonHeight, getWidth() - margin, buttonHeight);
 }
 
-void AudioPlayer::openButtonClicked()
+void AudioPlayer::fileChosen(juce::File file)
 {
-    chooser = std::make_unique<juce::FileChooser>("Select a Wave file to play...", juce::File{}, "*.wav");
-    auto chooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
+    auto* reader = formatManager.createReaderFor(file);
 
-    chooser->launchAsync(chooserFlags, [this](const juce::FileChooser& fc)
-        {
-            auto file = fc.getResult();
-
-            if (file != juce::File{})
-            {
-                auto* reader = formatManager.createReaderFor(file);
-
-                if (reader != nullptr)
-                {
-                    auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
-                    transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
-                    readerSource.reset(newSource.release());
-                    transportControl.get()->setEnabled(true);
-                }
-            }
-        });
+    if (reader != nullptr)
+    {
+        auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
+        transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
+        readerSource.reset(newSource.release());
+        transportControl.get()->setEnabled(true);
+    }
 }
 
 void AudioPlayer::updateLoopState(bool shouldLoop)

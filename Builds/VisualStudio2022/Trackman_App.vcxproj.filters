@@ -2565,6 +2565,9 @@
     <ClCompile Include="..\..\Source\TransportControl.cpp">
       <Filter>Trackman\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\FileChooserControl.cpp">
+      <Filter>Trackman\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\AudioPlayer.h">
@@ -5112,6 +5115,9 @@
       <Filter>Trackman\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\listutil.h">
+      <Filter>Trackman\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FileChooserControl.h">
       <Filter>Trackman\Source</Filter>
     </ClInclude>
   </ItemGroup>
