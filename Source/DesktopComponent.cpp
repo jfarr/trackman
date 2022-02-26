@@ -30,7 +30,7 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow)
     juce::Rectangle<int> area(0, 0, 300, 200);
 
     window->setBounds(area);
-    //window->setResizable(true, false);
+    window->setResizable(true, false);
     window->setUsingNativeTitleBar(false);
 
     addAndMakeVisible(window);
