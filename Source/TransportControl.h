@@ -50,6 +50,7 @@ private:
 
     void createControls();
     void changeState(TransportState newState);
+    juce::String getStateLabel();
     void updateLoopState(bool shouldLoop);
 
     //==============================================================================
@@ -57,13 +58,13 @@ private:
     void playButtonClicked();
     void stopButtonClicked();
     void pauseButtonClicked();
-    void rewindButtonClicked();
+    void startButtonClicked();
     void loopButtonChanged();
 
     juce::TextButton playButton;
     juce::TextButton stopButton;
     juce::TextButton pauseButton;
-    juce::TextButton rewindButton;
+    juce::TextButton startButton;
     juce::ToggleButton loopingToggle;
     juce::Label currentPositionLabel;
 };

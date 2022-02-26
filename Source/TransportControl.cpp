@@ -20,28 +20,28 @@ TransportControl::~TransportControl()
 void TransportControl::createControls()
 {
     addAndMakeVisible(&playButton);
-    playButton.setButtonText("play");
+    playButton.setButtonText(">");
     playButton.onClick = [this] { playButtonClicked(); };
-    playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::green);
+    playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
     playButton.setEnabled(enabled);
 
     addAndMakeVisible(&stopButton);
-    stopButton.setButtonText("stop");
+    stopButton.setButtonText("[]");
     stopButton.onClick = [this] { stopButtonClicked(); };
-    stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::red);
+    stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
     stopButton.setEnabled(false);
 
     addAndMakeVisible(&pauseButton);
-    pauseButton.setButtonText("pause");
+    pauseButton.setButtonText("||");
     pauseButton.onClick = [this] { pauseButtonClicked(); };
-    pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::red);
+    pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
     pauseButton.setEnabled(false);
 
-    addAndMakeVisible(&rewindButton);
-    rewindButton.setButtonText("rewind");
-    rewindButton.onClick = [this] { rewindButtonClicked(); };
-    rewindButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
-    rewindButton.setEnabled(enabled);
+    addAndMakeVisible(&startButton);
+    startButton.setButtonText("|<");
+    startButton.onClick = [this] { startButtonClicked(); };
+    startButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+    startButton.setEnabled(enabled);
 
     addAndMakeVisible(&loopingToggle);
     loopingToggle.setButtonText("loop");
@@ -55,8 +55,9 @@ void TransportControl::createControls()
 void TransportControl::setEnabled(bool enabled)
 {
     this->enabled = enabled;
-    rewindButton.setEnabled(enabled);
-    playButton.setEnabled(enabled && state == TransportState::Stopped);
+    startButton.setEnabled(enabled);
+    playButton.setEnabled(enabled);
+    stopButton.setEnabled(enabled);
     pauseButton.setEnabled(enabled);
     loopingToggle.setEnabled(enabled);
     currentPositionLabel.setEnabled(enabled);
@@ -74,7 +75,7 @@ void TransportControl::resized()
     auto buttonWidth = 50;
     auto buttonMargin = 2;
     auto loopToggleWidth = 65;
-    rewindButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
+    startButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
     playButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
     stopButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
     pauseButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
@@ -91,8 +92,8 @@ void TransportControl::changeState(TransportState newState)
         switch (state)
         {
         case TransportState::Stopped:
-            pauseButton.setButtonText("pause");
-            stopButton.setEnabled(false);
+            playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
             transportSource->setPosition(0.0);
             break;
 
@@ -101,8 +102,8 @@ void TransportControl::changeState(TransportState newState)
             break;
 
         case TransportState::Playing:
-            pauseButton.setButtonText("pause");
-            stopButton.setEnabled(true);
+            playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::lightgreen);
+            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
             break;
 
         case TransportState::Pausing:
@@ -110,13 +111,28 @@ void TransportControl::changeState(TransportState newState)
             break;
 
         case TransportState::Paused:
-            pauseButton.setButtonText("resume");
+            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::lightgreen);
             break;
 
         case TransportState::Stopping:
             transportSource->stop();
             break;
         }
+    }
+}
+
+juce::String TransportControl::getStateLabel()
+{
+    switch (state)
+    {
+    case TransportState::Stopped:
+        return juce::String("Stopped");
+    case TransportState::Playing:
+        return juce::String("Playing");
+    case TransportState::Paused:
+        return juce::String("Paused");
+    default:
+        return juce::String("");
     }
 }
 
@@ -141,7 +157,8 @@ void TransportControl::timerCallback()
     auto seconds = ((int)position.inSeconds()) % 60;
     auto millis = ((int)position.inMilliseconds()) % 1000;
 
-    auto stateText = juce::String((state == TransportState::Stopped) ? " [Stopped]" : (state == TransportState::Paused) ? " [Paused]" : "");
+    auto stateLabel = getStateLabel();
+    auto stateText = stateLabel.isNotEmpty() ? (juce::String(" [") + stateLabel + juce::String("]")) : juce::String("");
     auto positionString = juce::String::formatted("%02d:%02d:%03d", minutes, seconds, millis) + stateText;
 
     currentPositionLabel.setText(positionString, juce::dontSendNotification);
@@ -160,7 +177,7 @@ void TransportControl::stopButtonClicked()
 {
     if (state == TransportState::Paused)
         changeState(TransportState::Stopped);
-    else
+    else if (state != TransportState::Stopped)
         changeState(TransportState::Stopping);
 }
 
@@ -174,7 +191,7 @@ void TransportControl::pauseButtonClicked()
         changeState(TransportState::Pausing);
 }
 
-void TransportControl::rewindButtonClicked()
+void TransportControl::startButtonClicked()
 {
     transportSource->setPosition(0.0);
 }
