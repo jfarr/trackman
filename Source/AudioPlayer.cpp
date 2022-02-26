@@ -2,10 +2,9 @@
 #include "ChildWindow.h"
 
 //==============================================================================
-AudioPlayer::AudioPlayer(juce::AudioFormatManager* formatManager) : thumbnailComponent(*formatManager), positionOverlay(transportSource)
+AudioPlayer::AudioPlayer(juce::AudioFormatManager& formatManager) : formatManager(formatManager), thumbnailComponent(formatManager), positionOverlay(transportSource)
 {
-    this->formatManager = formatManager;
-    setAudioChannels(2, 2);
+    setAudioChannels(0, 2);
 
     fileChooserControl.reset(new FileChooserControl());
     fileChooserControl.get()->AddListener(this);
@@ -14,7 +13,7 @@ AudioPlayer::AudioPlayer(juce::AudioFormatManager* formatManager) : thumbnailCom
     addAndMakeVisible(&thumbnailComponent);
     addAndMakeVisible(&positionOverlay);
 
-    transportControl.reset(new TransportControl(&transportSource, false));
+    transportControl.reset(new TransportControl(transportSource, false));
     transportControl.get()->AddListener(this);
     addAndMakeVisible(transportControl.get());
 
@@ -74,7 +73,7 @@ void AudioPlayer::resized()
 
 void AudioPlayer::fileChosen(juce::File file)
 {
-    auto* reader = formatManager->createReaderFor(file);
+    auto* reader = formatManager.createReaderFor(file);
 
     if (reader != nullptr)
     {

@@ -83,7 +83,7 @@ public:
         switch (info.commandID)
         {
         case CommandIDs::newAudioPlayer:
-            createChildWindow("audioplayer", new AudioPlayer(&formatManager));
+            createChildWindow("audioplayer", new AudioPlayer(formatManager));
             break;
         default:
             return false;

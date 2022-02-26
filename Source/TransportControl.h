@@ -14,7 +14,7 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
 {
 public:
     //==============================================================================
-    TransportControl(juce::AudioTransportSource *transportSource, bool enabled = true);
+    TransportControl(juce::AudioTransportSource& transportSource, bool enabled = true);
     ~TransportControl() override;
 
     void setEnabled(bool enabled);
@@ -45,7 +45,7 @@ private:
         Stopping
     };
     TransportState state = TransportState::Stopped;
-    juce::AudioTransportSource *transportSource;
+    juce::AudioTransportSource& transportSource;
     bool enabled;
     std::list<TransportControlListener*> listeners;
 

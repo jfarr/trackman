@@ -2,12 +2,10 @@
 #include "listutil.h"
 
 //==============================================================================
-TransportControl::TransportControl(juce::AudioTransportSource *transportSource, bool enabled)
+TransportControl::TransportControl(juce::AudioTransportSource& transportSource, bool enabled)
+    : transportSource(transportSource), enabled(enabled)
 {
-    this->transportSource = transportSource;
-    this->enabled = enabled;
-    transportSource->addChangeListener(this);
-
+    transportSource.addChangeListener(this);
     createControls();
     startTimer(20);
 }
@@ -92,11 +90,11 @@ void TransportControl::changeState(TransportState newState)
         case TransportState::Stopped:
             playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
             pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
-            transportSource->setPosition(0.0);
+            transportSource.setPosition(0.0);
             break;
 
         case TransportState::Starting:
-            transportSource->start();
+            transportSource.start();
             break;
 
         case TransportState::Playing:
@@ -105,7 +103,7 @@ void TransportControl::changeState(TransportState newState)
             break;
 
         case TransportState::Pausing:
-            transportSource->stop();
+            transportSource.stop();
             break;
 
         case TransportState::Paused:
@@ -113,7 +111,7 @@ void TransportControl::changeState(TransportState newState)
             break;
 
         case TransportState::Stopping:
-            transportSource->stop();
+            transportSource.stop();
             break;
         }
     }
@@ -136,9 +134,9 @@ juce::String TransportControl::getStateLabel()
 
 void TransportControl::changeListenerCallback(juce::ChangeBroadcaster* source)
 {
-    if (source == transportSource)
+    if (source == &transportSource)
     {
-        if (transportSource->isPlaying())
+        if (transportSource.isPlaying())
             changeState(TransportState::Playing);
         else if (TransportState::Pausing == state)
             changeState(TransportState::Paused);
@@ -149,13 +147,13 @@ void TransportControl::changeListenerCallback(juce::ChangeBroadcaster* source)
 
 void TransportControl::timerCallback()
 {
-    juce::RelativeTime position(transportSource->getCurrentPosition());
+    juce::RelativeTime position(transportSource.getCurrentPosition());
 
     auto minutes = ((int)position.inMinutes()) % 60;
     auto seconds = ((int)position.inSeconds()) % 60;
     auto millis = ((int)position.inMilliseconds()) % 1000;
 
-    auto length = transportSource->getLengthInSeconds();
+    auto length = transportSource.getLengthInSeconds();
     auto lmins = ((int)length / 60) % 60;
     auto lsecs = ((int)length) % 60;
     auto lmillis = (int)(length * 1000.0) % 1000;
@@ -174,7 +172,7 @@ void TransportControl::playButtonClicked()
     if ((state == TransportState::Stopped) || (state == TransportState::Paused))
         changeState(TransportState::Starting);
     else if (state == TransportState::Playing)
-        transportSource->setPosition(0.0);
+        transportSource.setPosition(0.0);
 }
 
 void TransportControl::stopButtonClicked()
@@ -197,7 +195,7 @@ void TransportControl::pauseButtonClicked()
 
 void TransportControl::startButtonClicked()
 {
-    transportSource->setPosition(0.0);
+    transportSource.setPosition(0.0);
 }
 
 void TransportControl::loopButtonChanged()

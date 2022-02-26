@@ -15,7 +15,7 @@ class AudioPlayer : public juce::AudioAppComponent, public FileListener, public 
 {
 public:
     //==============================================================================
-    AudioPlayer(juce::AudioFormatManager *formatManager);
+    AudioPlayer(juce::AudioFormatManager& formatManager);
     ~AudioPlayer() override;
 
     //==============================================================================
@@ -38,7 +38,7 @@ public:
     void fileChosen(juce::File file);
 
 private:
-    juce::AudioFormatManager* formatManager;
+    juce::AudioFormatManager& formatManager;
     juce::AudioTransportSource transportSource;
     std::unique_ptr<TransportControl> transportControl;
     std::unique_ptr<FileChooserControl> fileChooserControl;
