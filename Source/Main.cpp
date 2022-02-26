@@ -7,7 +7,7 @@
 */
 
 #include <JuceHeader.h>
-#include "MainComponent.h"
+#include "DesktopComponent.h"
 
 //==============================================================================
 class TrackmanApplication  : public juce::JUCEApplication
@@ -61,11 +61,11 @@ public:
         MainWindow (juce::String name)
             : DocumentWindow (name,
                               juce::Desktop::getInstance().getDefaultLookAndFeel()
-                                                          .findColour (juce::ResizableWindow::backgroundColourId),
+                                                          .findColour(juce::ResizableWindow::backgroundColourId),
                               DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
-            setContentOwned (new MainComponent(), true);
+            setContentOwned (new DesktopComponent(this), true);
 
            #if JUCE_IOS || JUCE_ANDROID
             setFullScreen (true);

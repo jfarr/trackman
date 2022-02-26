@@ -1,27 +1,10 @@
 #include "MainComponent.h"
+#include "ChildWindow.h"
 
 //==============================================================================
 MainComponent::MainComponent()
     : state(Stopped)
 {
-    menuBar.reset(new juce::MenuBarComponent(this));
-    addAndMakeVisible(menuBar.get());
-    setApplicationCommandManagerToWatch(&commandManager);
-    commandManager.registerAllCommandsForTarget(this);
-
-    // this ensures that commands invoked on the DemoRunner application are correctly
-    // forwarded to this component
-    commandManager.setFirstCommandTarget(this);
-
-    // this lets the command manager use keypresses that arrive in our window to send out commands
-    addKeyListener(commandManager.getKeyMappings());
-
-    addChildComponent(menuHeader);
-    addAndMakeVisible(outerCommandTarget);
-    addAndMakeVisible(sidePanel);
-
-    setWantsKeyboardFocus(true);
-
     addAndMakeVisible(&openButton);
     openButton.setButtonText("Open...");
     openButton.onClick = [this] { openButtonClicked(); };
@@ -50,23 +33,6 @@ MainComponent::MainComponent()
     formatManager.registerBasicFormats();
     transportSource.addChangeListener(this);
 
-//    setSize(800, 600);
-
-    // Some platforms require permissions to open input channels so request that here
-    /*
-    if (juce::RuntimePermissions::isRequired (juce::RuntimePermissions::recordAudio)
-        && ! juce::RuntimePermissions::isGranted (juce::RuntimePermissions::recordAudio))
-    {
-        juce::RuntimePermissions::request (juce::RuntimePermissions::recordAudio,
-                                           [&] (bool granted) { setAudioChannels (granted ? 2 : 0, 2); });
-    }
-    else
-    {
-        // Specify the number of input and output channels that we want to open
-        setAudioChannels (2, 2);
-    }
-    */
-
     setAudioChannels(2, 2);
     startTimer(20);
 }
@@ -76,12 +42,6 @@ MainComponent::~MainComponent()
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
     transportSource.setSource(nullptr);
-
-#if JUCE_MAC
-    MenuBarModel::setMacMainMenu(nullptr);
-#endif
-
-    commandManager.setFirstCommandTarget(nullptr);
 }
 
 //==============================================================================
@@ -148,27 +108,11 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    auto b = getLocalBounds();
-
-    int h = 0;
-    if (menuBarPosition == MenuBarPosition::window)
-    {
-        h = juce::LookAndFeel::getDefaultLookAndFeel().getDefaultMenuBarHeight();
-        menuBar->setBounds(b.removeFromTop(h));
-    }
-    else if (menuBarPosition == MenuBarPosition::burger)
-    {
-        h = 40;
-        menuHeader.setBounds(b.removeFromTop(h));
-    }
-
-    outerCommandTarget.setBounds(b);
-
-    openButton.setBounds(10, 10 + h, getWidth() - 20, 20);
-    playButton.setBounds(10, 40 + h, getWidth() - 20, 20);
-    stopButton.setBounds(10, 70 + h, getWidth() - 20, 20);
-    loopingToggle.setBounds(10, 100 + h, getWidth() - 20, 20);
-    currentPositionLabel.setBounds(10, 130 + h, getWidth() - 20, 20);
+    openButton.setBounds(10, 10, getWidth() - 20, 20);
+    playButton.setBounds(10, 40, getWidth() - 20, 20);
+    stopButton.setBounds(10, 70, getWidth() - 20, 20);
+    loopingToggle.setBounds(10, 100, getWidth() - 20, 20);
+    currentPositionLabel.setBounds(10, 130, getWidth() - 20, 20);
 }
 
 void MainComponent::changeState(TransportState newState)

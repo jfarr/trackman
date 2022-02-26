@@ -2553,6 +2553,12 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\ChildWindow.cpp">
+      <Filter>Trackman\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\DesktopComponent.cpp">
+      <Filter>Trackman\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\MainComponent.h">
@@ -5086,6 +5092,12 @@
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">
       <Filter>JUCE Library Code</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\ChildWindow.h">
+      <Filter>Trackman\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\DesktopComponent.h">
+      <Filter>Trackman\Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
