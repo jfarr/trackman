@@ -2559,6 +2559,9 @@
     <ClCompile Include="..\..\Source\DesktopComponent.cpp">
       <Filter>Trackman\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\FileListener.cpp">
+      <Filter>Trackman\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\AudioPlayer.h">
@@ -5097,6 +5100,9 @@
       <Filter>Trackman\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\DesktopComponent.h">
+      <Filter>Trackman\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\FileListener.h">
       <Filter>Trackman\Source</Filter>
     </ClInclude>
   </ItemGroup>

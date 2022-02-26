@@ -2204,6 +2204,7 @@
     <ClInclude Include="..\..\Source\ChildWindow.h" />
     <ClInclude Include="..\..\Source\DesktopComponent.h" />
     <ClInclude Include="..\..\Source\AudioPlayer.h" />
+    <ClCompile Include="..\..\Source\FileListener.cpp" />
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h" />
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.h" />
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h" />
@@ -3047,6 +3048,7 @@
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_gui_extra\native\juce_mac_CarbonViewWrapperComponent.h" />
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
+    <ClInclude Include="..\..\Source\FileListener.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt" />
