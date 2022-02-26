@@ -2199,6 +2199,7 @@
       <AdditionalOptions> /bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp" />
+    <ClCompile Include="..\..\Source\TransportControl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\ChildWindow.h" />
@@ -3049,6 +3050,7 @@
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\Source\FileListener.h" />
+    <ClInclude Include="..\..\Source\TransportControl.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt" />

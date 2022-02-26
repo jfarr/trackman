@@ -5,6 +5,9 @@
 AudioPlayer::AudioPlayer()
     : state(Stopped)
 {
+    transportControl.reset(new TransportControl(&transportSource));
+    addAndMakeVisible(transportControl.get());
+
     addAndMakeVisible(&openButton);
     openButton.setButtonText("Open...");
     openButton.onClick = [this] { openButtonClicked(); };
@@ -113,6 +116,8 @@ void AudioPlayer::resized()
     stopButton.setBounds(10, 70, getWidth() - 20, 20);
     loopingToggle.setBounds(10, 100, getWidth() - 20, 20);
     currentPositionLabel.setBounds(10, 130, getWidth() - 20, 20);
+    auto transportHeight = 25;
+    transportControl.get()->setBounds(0, getHeight() - transportHeight, getWidth() - 20, transportHeight);
 }
 
 void AudioPlayer::changeState(TransportState newState)

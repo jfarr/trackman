@@ -2,6 +2,8 @@
 
 #include <JuceHeader.h>
 
+#include "TransportControl.h"
+
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
@@ -46,6 +48,7 @@ private:
 
     TransportState state;
     juce::AudioTransportSource transportSource;
+    std::unique_ptr<TransportControl> transportControl;
 
     juce::AudioFormatManager formatManager;
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
