@@ -2207,7 +2207,6 @@
     <ClInclude Include="..\..\Source\ChildWindow.h" />
     <ClInclude Include="..\..\Source\DesktopComponent.h" />
     <ClInclude Include="..\..\Source\AudioPlayer.h" />
-    <ClCompile Include="..\..\Source\FileListener.cpp" />
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h" />
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.h" />
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h" />

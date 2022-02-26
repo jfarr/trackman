@@ -51,15 +51,15 @@ void TransportControl::createControls()
     currentPositionLabel.setEnabled(enabled);
 }
 
-void TransportControl::setEnabled(bool enabled)
+void TransportControl::setEnabled(bool isEnabled)
 {
-    this->enabled = enabled;
-    startButton.setEnabled(enabled);
-    playButton.setEnabled(enabled);
-    stopButton.setEnabled(enabled);
-    pauseButton.setEnabled(enabled);
-    loopingToggle.setEnabled(enabled);
-    currentPositionLabel.setEnabled(enabled);
+    enabled = isEnabled;
+    startButton.setEnabled(isEnabled);
+    playButton.setEnabled(isEnabled);
+    stopButton.setEnabled(isEnabled);
+    pauseButton.setEnabled(isEnabled);
+    loopingToggle.setEnabled(isEnabled);
+    currentPositionLabel.setEnabled(isEnabled);
 }
 
 void TransportControl::paint(juce::Graphics& g)
