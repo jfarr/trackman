@@ -53,7 +53,6 @@ void MixerComponent::fileChosen(juce::File file)
         auto newSource = new juce::AudioFormatReaderSource(reader, true);
         sources.push_back(newSource);
         mixerSource.addInputSource(newSource, false, reader->sampleRate);
-        transportSource.setSource(&mixerSource);
     }
 }
 
