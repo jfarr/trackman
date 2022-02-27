@@ -1,4 +1,5 @@
 #include "MasterTrackControl.h"
+#include "listutil.h"
 
 
 MasterTrackControl::MasterTrackControl()
@@ -17,7 +18,7 @@ void MasterTrackControl::createControls()
     decibelSlider.setSliderStyle(juce::Slider::LinearVertical);
     decibelSlider.setRange(-100, 12);
     decibelSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, false, 65, 14);
-    decibelSlider.onValueChange = [this] { level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue()); };
+    decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
     decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
 
     muteButton.setButtonText("M");
@@ -55,8 +56,44 @@ void MasterTrackControl::resized()
     muteButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
 }
 
+void MasterTrackControl::decibelSliderChanged()
+{
+    level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
+    notifyLevelChanged();
+}
+
 void MasterTrackControl::muteButtonClicked()
 {
     muted = !muted;
     muteButton.setColour(juce::TextButton::buttonColourId, muted ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    notifyMuteChanged();
+}
+
+void MasterTrackControl::addListener(MasterTrackListener* listener)
+{
+    if (!listContains(listener, listeners))
+        listeners.push_front(listener);
+}
+
+void MasterTrackControl::removeListener(MasterTrackListener* listener)
+{
+    listeners.remove(listener);
+}
+
+void MasterTrackControl::notifyLevelChanged()
+{
+    for (std::list<MasterTrackListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
+    {
+        MasterTrackListener& listener = **i;
+        listener.levelChanged(level);
+    }
+}
+
+void MasterTrackControl::notifyMuteChanged()
+{
+    for (std::list<MasterTrackListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
+    {
+        MasterTrackListener& listener = **i;
+        listener.muteChanged(muted);
+    }
 }

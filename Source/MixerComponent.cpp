@@ -7,6 +7,7 @@ MixerComponent::MixerComponent(juce::AudioFormatManager& formatManager)
     setAudioChannels(0, 2);
     transportSource.setSource(&mixerSource);
     transportControl.addListener(this);
+    masterTrackControl.addListener(this);
     createControls();
     setSize(800, 250);
 }
@@ -14,6 +15,7 @@ MixerComponent::MixerComponent(juce::AudioFormatManager& formatManager)
 MixerComponent::~MixerComponent()
 {
     shutdownAudio();
+    masterTrackControl.removeListener(this);
     transportControl.removeListener(this);
     transportSource.setSource(nullptr);
     mixerSource.removeAllInputs();
@@ -58,6 +60,16 @@ void MixerComponent::fileChosen(juce::File file)
 void MixerComponent::updateLoopState(bool shouldLoop)
 {
     mixerSource.setLooping(shouldLoop);
+}
+
+void MixerComponent::levelChanged(float level)
+{
+    transportSource.setGain(level);
+}
+
+void MixerComponent::muteChanged(bool muted)
+{
+
 }
 
 //==============================================================================

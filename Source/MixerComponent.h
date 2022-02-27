@@ -9,15 +9,30 @@
 #include "TransportControl.h"
 
 
-class MixerComponent : public juce::AudioAppComponent, public FileListener, public TransportControlListener
+class MixerComponent
+    : public juce::AudioAppComponent
+    , public FileListener
+    , public TransportControlListener
+    , public MasterTrackListener
 {
 public:
     MixerComponent(juce::AudioFormatManager& formatManager);
     ~MixerComponent();
 
     void addTrack(Track& track);
+
+    //==============================================================================
+    // FileListener
     void fileChosen(juce::File file) override;
-    void updateLoopState(bool shouldLoop);
+
+    //==============================================================================
+    // TransportControlListener
+    void updateLoopState(bool shouldLoop) override;
+
+    //==============================================================================
+    // MasterTrackListener
+    void levelChanged(float level) override;
+    void muteChanged(bool muted) override;
 
     //==============================================================================
     // AudioAppComponent
