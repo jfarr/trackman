@@ -19,25 +19,25 @@ void TransportControl::createControls()
     addAndMakeVisible(&playButton);
     playButton.setButtonText(">");
     playButton.onClick = [this] { playButtonClicked(); };
-    playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+    playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     playButton.setEnabled(enabled);
 
     addAndMakeVisible(&stopButton);
     stopButton.setButtonText("[]");
     stopButton.onClick = [this] { stopButtonClicked(); };
-    stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+    stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     stopButton.setEnabled(false);
 
     addAndMakeVisible(&pauseButton);
     pauseButton.setButtonText("||");
     pauseButton.onClick = [this] { pauseButtonClicked(); };
-    pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+    pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     pauseButton.setEnabled(false);
 
     addAndMakeVisible(&startButton);
     startButton.setButtonText("|<");
     startButton.onClick = [this] { startButtonClicked(); };
-    startButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+    startButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     startButton.setEnabled(enabled);
 
     addAndMakeVisible(&loopingToggle);
@@ -88,8 +88,8 @@ void TransportControl::changeState(TransportState newState)
         switch (state)
         {
         case TransportState::Stopped:
-            playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
-            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+            playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
+            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
             transportSource.setPosition(0.0);
             break;
 
@@ -99,7 +99,7 @@ void TransportControl::changeState(TransportState newState)
 
         case TransportState::Playing:
             playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::lightgreen);
-            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
             break;
 
         case TransportState::Pausing:
