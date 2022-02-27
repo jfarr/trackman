@@ -2586,6 +2586,9 @@
     <ClCompile Include="..\..\Source\PositionableMixingAudioSource.cpp">
       <Filter>Trackman\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\PositionableResamplingAudioSource.cpp">
+      <Filter>Trackman\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\AudioPlayer.h">
@@ -5157,6 +5160,9 @@
       <Filter>Trackman\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\PositionableMixingAudioSource.h">
+      <Filter>Trackman\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\PositionableResamplingAudioSource.h">
       <Filter>Trackman\Source</Filter>
     </ClInclude>
   </ItemGroup>

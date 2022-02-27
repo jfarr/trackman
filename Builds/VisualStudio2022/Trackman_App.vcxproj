@@ -135,6 +135,7 @@
     <ClCompile Include="..\..\Source\MasterTrackControl.cpp" />
     <ClCompile Include="..\..\Source\MixerComponent.cpp" />
     <ClCompile Include="..\..\Source\PositionableMixingAudioSource.cpp" />
+    <ClCompile Include="..\..\Source\PositionableResamplingAudioSource.cpp" />
     <ClCompile Include="..\..\Source\ThumbnailComponent.cpp" />
     <ClCompile Include="..\..\Source\ChildWindow.cpp" />
     <ClCompile Include="..\..\Source\DesktopComponent.cpp" />
@@ -3061,6 +3062,7 @@
     <ClInclude Include="..\..\Source\MasterTrackControl.h" />
     <ClInclude Include="..\..\Source\MixerComponent.h" />
     <ClInclude Include="..\..\Source\PositionableMixingAudioSource.h" />
+    <ClInclude Include="..\..\Source\PositionableResamplingAudioSource.h" />
     <ClInclude Include="..\..\Source\ThumbnailComponent.h" />
     <ClInclude Include="..\..\Source\listutil.h" />
     <ClInclude Include="..\..\Source\Track.h" />

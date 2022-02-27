@@ -1,4 +1,5 @@
 #include "PositionableMixingAudioSource.h"
+#include "PositionableResamplingAudioSource.h"
 
 
 PositionableMixingAudioSource::PositionableMixingAudioSource()
@@ -12,10 +13,18 @@ PositionableMixingAudioSource::~PositionableMixingAudioSource()
 	removeAllInputs();
 }
 
-void PositionableMixingAudioSource::addInputSource(PositionableAudioSource* input, bool deleteWhenRemoved)
+void PositionableMixingAudioSource::addInputSource(PositionableAudioSource* input, bool deleteWhenRemoved, double sourceSampleRateToCorrectFor, int maxNumChannels)
 {
+	if (sourceSampleRateToCorrectFor > 0)
+	{
+		input = new PositionableResamplingAudioSource(input, deleteWhenRemoved, sourceSampleRateToCorrectFor, maxNumChannels);
+		mixer.addInputSource(input, true);
+	}
+	else
+	{
+		mixer.addInputSource(input, deleteWhenRemoved);
+	}
 	inputs.add(input);
-	mixer.addInputSource(input, deleteWhenRemoved);
 	updateLength();
 }
 

@@ -3,15 +3,11 @@
 #include <JuceHeader.h>
 
 
-class PositionableMixingAudioSource : public juce::PositionableAudioSource
+class PositionableResamplingAudioSource : public juce::PositionableAudioSource
 {
 public:
-    PositionableMixingAudioSource();
-    ~PositionableMixingAudioSource();
-
-    void addInputSource(PositionableAudioSource* newInput, bool deleteWhenRemoved, double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2);
-    void removeInputSource(PositionableAudioSource* input);
-    void removeAllInputs();
+	PositionableResamplingAudioSource(juce::PositionableAudioSource* source, const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor, int maxNumChannels = 2);
+	~PositionableResamplingAudioSource();
 
     //==============================================================================
     // AudioSource
@@ -28,10 +24,12 @@ public:
     void setLooping(bool shouldLoop) override;
 
 private:
-    juce::MixerAudioSource mixer;
-    juce::Array<PositionableAudioSource*> inputs;
-    juce::int64 length;
-    bool looping;
+	juce::PositionableAudioSource* source;
+    juce::ResamplingAudioSource resamplerSource;
+    //juce::CriticalSection callbackLock;
+    double sampleRate = 44100.0, sourceSampleRate;
+    int blockSize = 128;
+    const bool deleteWhenRemoved;
 
-    void updateLength();
+    double getSampleRatio() const { return (sampleRate > 0 && sourceSampleRate > 0) ? sampleRate / sourceSampleRate : 1.0; }
 };
