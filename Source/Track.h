@@ -4,10 +4,11 @@
 #include "TrackLaneControl.h"
 
 
+
 class Track
 {
 public:
-	Track(juce::String name);
+	Track(juce::String name, juce::AudioFormatManager& formatManager);
 	~Track();
 
 	TrackControl& getTrackControl() { return trackControl; }

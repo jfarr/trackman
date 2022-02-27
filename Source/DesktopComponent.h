@@ -107,9 +107,12 @@ public:
 
 private:
 
+    juce::AudioFormatManager formatManager;
+    juce::Array<Track*> tracks;
+
+    MixerComponent mixerComponent;
     juce::ApplicationCommandManager commandManager;
     juce::MenuBarComponent menuBar;
-    MixerComponent mixerComponent;
  
     // Because the windows delete themselves, we'll use the
     // Component::SafePointer class to point to them, which automatically becomes
@@ -119,9 +122,6 @@ private:
     void addNewTrack();
     void createChildWindow(const juce::String& name, juce::Component* component);
     void closeAllWindows();
-
-    juce::AudioFormatManager formatManager;
-    juce::Array<Track*> tracks;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DesktopComponent)
 };

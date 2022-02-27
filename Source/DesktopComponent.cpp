@@ -1,6 +1,7 @@
 #include "DesktopComponent.h"
 
 DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow)
+    : mixerComponent(formatManager)
 {
     addAndMakeVisible(mixerComponent);
 
@@ -39,7 +40,8 @@ DesktopComponent::~DesktopComponent()
 
 void DesktopComponent::addNewTrack()
 {
-    Track* newTrack = new Track(juce::String("Track ") + juce::String::formatted(juce::String("%d"), tracks.size() + 1));
+    juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), tracks.size() + 1);
+    Track* newTrack = new Track(name, formatManager);
     tracks.add(newTrack);
     mixerComponent.addTrack(*newTrack);
     addAndMakeVisible(newTrack->getTrackLaneControl());

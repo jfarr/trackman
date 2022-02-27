@@ -26,13 +26,13 @@ void TransportControl::createControls()
     stopButton.setButtonText("[]");
     stopButton.onClick = [this] { stopButtonClicked(); };
     stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
-    stopButton.setEnabled(false);
+    stopButton.setEnabled(enabled);
 
     addAndMakeVisible(&pauseButton);
     pauseButton.setButtonText("||");
     pauseButton.onClick = [this] { pauseButtonClicked(); };
     pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
-    pauseButton.setEnabled(false);
+    pauseButton.setEnabled(enabled);
 
     addAndMakeVisible(&startButton);
     startButton.setButtonText("|<");

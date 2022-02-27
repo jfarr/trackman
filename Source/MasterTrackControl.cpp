@@ -1,7 +1,8 @@
 #include "MasterTrackControl.h"
 
 
-MasterTrackControl::MasterTrackControl() : level(juce::Decibels::decibelsToGain<float>(0.0)), muted(false)
+MasterTrackControl::MasterTrackControl()
+    : level(juce::Decibels::decibelsToGain<float>(0.0)), muted(false)
 {
     createControls();
     setSize(100, 100);

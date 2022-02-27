@@ -1,14 +1,23 @@
 #include "MixerComponent.h"
 
-MixerComponent::MixerComponent()
-    : transportControl(transportSource)
+MixerComponent::MixerComponent(juce::AudioFormatManager& formatManager)
+    : formatManager(formatManager)
+    , transportControl(transportSource)
 {
+    setAudioChannels(0, 2);
+    transportSource.setSource(&mixerSource);
     createControls();
     setSize(800, 250);
 }
 
 MixerComponent::~MixerComponent()
 {
+    shutdownAudio();
+    transportSource.setSource(nullptr);
+    mixerSource.removeAllInputs();
+    for (auto& source : sources)
+        delete source;
+    sources.clear();
 }
 
 void MixerComponent::addTrack(Track& track)
@@ -20,8 +29,23 @@ void MixerComponent::addTrack(Track& track)
     {
         Track& t = **i;
         addAndMakeVisible(t.getTrackControl());
+        t.getTrackControl().setListener(this);
     }
     resized();
+}
+
+void MixerComponent::fileChosen(juce::File file)
+{
+    auto* reader = formatManager.createReaderFor(file);
+
+    if (reader != nullptr)
+    {
+        auto newSource = new juce::AudioFormatReaderSource(reader, true);
+        sources.push_back(newSource);
+        mixerSource.addInputSource(newSource, false);
+        newSource->setLooping(true);
+        transportSource.setSource(&mixerSource);
+    }
 }
 
 void MixerComponent::createControls()
@@ -30,6 +54,23 @@ void MixerComponent::createControls()
     addAndMakeVisible(masterTrackControl);
 }
 
+//==============================================================================
+void MixerComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
+{
+    transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+}
+
+void MixerComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
+{
+    mixerSource.getNextAudioBlock(bufferToFill);
+}
+
+void MixerComponent::releaseResources()
+{
+    transportSource.releaseResources();
+}
+
+//==============================================================================
 void MixerComponent::paint(juce::Graphics& g)
 {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));

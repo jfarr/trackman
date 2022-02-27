@@ -1,7 +1,10 @@
 #include "TrackControl.h"
+#include "listutil.h"
 
 
-TrackControl::TrackControl(juce::String trackName) : trackName(trackName), level(juce::Decibels::decibelsToGain<float>(0.0)), muted(false)
+TrackControl::TrackControl(juce::String trackName)
+    : trackName(trackName)
+    , level(juce::Decibels::decibelsToGain<float>(0.0)), muted(false)
 {
     createControls();
     setSize(100, 100);
@@ -27,18 +30,22 @@ void TrackControl::createControls()
     channelLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
     channelLabel.setColour(juce::Label::backgroundColourId, juce::Colours::grey);
 
+    openButton.setButtonText("...");
+    openButton.onClick = [this] { openButtonClicked(); };
+
     addAndMakeVisible(decibelSlider);
     addAndMakeVisible(muteButton);
     addAndMakeVisible(channelLabel);
+    addAndMakeVisible(openButton);
 }
 
 void TrackControl::paint(juce::Graphics& g)
 {
-    g.fillAll(juce::Colour{ 0xff282828 });
+    auto bgColor = juce::Colour{ 0xff282828 };
+    g.fillAll(bgColor);
     g.setColour(juce::Colours::black);
     g.fillRect(getWidth() - 1, 0, 1, getHeight());
-    //g.setColour(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    g.setColour(juce::Colour{ 0xff282828 });
+    g.setColour(bgColor);
     g.fillRect(getWidth() - 1, 0, 0, getHeight());
 }
 
@@ -53,10 +60,27 @@ void TrackControl::resized()
     decibelSlider.setBounds(area.removeFromLeft(sliderWidth).reduced(margin));
     auto buttonArea = area.removeFromLeft(buttonSize);
     muteButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
+    openButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
 }
 
 void TrackControl::muteButtonClicked()
 {
     muted = !muted;
     muteButton.setColour(juce::TextButton::buttonColourId, muted ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+}
+
+void TrackControl::openButtonClicked()
+{
+    chooser = std::make_unique<juce::FileChooser>("Select a file to play...", juce::File{}, "*.wav");
+    auto chooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
+
+    chooser->launchAsync(chooserFlags, [this](const juce::FileChooser& fc)
+        {
+            auto file = fc.getResult();
+
+            if (file != juce::File{})
+            {
+                listener->fileChosen(file);
+            }
+        });
 }
