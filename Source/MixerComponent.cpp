@@ -62,7 +62,7 @@ void MixerComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRat
 
 void MixerComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
-    mixerSource.getNextAudioBlock(bufferToFill);
+    transportSource.getNextAudioBlock(bufferToFill);
 }
 
 void MixerComponent::releaseResources()
