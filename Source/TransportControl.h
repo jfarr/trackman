@@ -18,8 +18,8 @@ public:
     ~TransportControl() override;
 
     void setEnabled(bool enabled);
-    void AddListener(TransportControlListener* listener);
-    void RemoveListener(TransportControlListener* listener);
+    void addListener(TransportControlListener* listener);
+    void removeListener(TransportControlListener* listener);
 
     //==============================================================================
     // Component

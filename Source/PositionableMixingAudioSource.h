@@ -30,7 +30,6 @@ public:
 private:
     juce::MixerAudioSource mixer;
     juce::Array<PositionableAudioSource*> inputs;
-    juce::int64 position;
     juce::int64 length;
     bool looping;
 

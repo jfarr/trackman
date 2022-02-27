@@ -212,13 +212,13 @@ void TransportControl::updateLoopState(bool shouldLoop)
     }
 }
 
-void TransportControl::AddListener(TransportControlListener* listener)
+void TransportControl::addListener(TransportControlListener* listener)
 {
     if (!listContains(listener, listeners))
         listeners.push_front(listener);
 }
 
-void TransportControl::RemoveListener(TransportControlListener* listener)
+void TransportControl::removeListener(TransportControlListener* listener)
 {
     listeners.remove(listener);
 }

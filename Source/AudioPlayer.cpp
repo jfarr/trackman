@@ -18,7 +18,7 @@ AudioPlayer::~AudioPlayer()
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
     fileChooserControl.RemoveListener(this);
-    transportControl.RemoveListener(this);
+    transportControl.removeListener(this);
     transportSource.setSource(nullptr);
 }
 
@@ -30,7 +30,7 @@ void AudioPlayer::createControls()
     addAndMakeVisible(transportControl);
 
     fileChooserControl.AddListener(this);
-    transportControl.AddListener(this);
+    transportControl.addListener(this);
 }
 
 //==============================================================================

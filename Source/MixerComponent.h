@@ -9,7 +9,7 @@
 #include "TransportControl.h"
 
 
-class MixerComponent : public juce::AudioAppComponent, public FileListener
+class MixerComponent : public juce::AudioAppComponent, public FileListener, public TransportControlListener
 {
 public:
     MixerComponent(juce::AudioFormatManager& formatManager);
@@ -17,6 +17,7 @@ public:
 
     void addTrack(Track& track);
     void fileChosen(juce::File file) override;
+    void updateLoopState(bool shouldLoop);
 
     //==============================================================================
     // AudioAppComponent

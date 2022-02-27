@@ -41,7 +41,7 @@ DesktopComponent::~DesktopComponent()
 void DesktopComponent::addNewTrack()
 {
     juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), tracks.size() + 1);
-    Track* newTrack = new Track(name, formatManager);
+    Track* newTrack = new Track(name);
     tracks.add(newTrack);
     mixerComponent.addTrack(*newTrack);
     addAndMakeVisible(newTrack->getTrackLaneControl());

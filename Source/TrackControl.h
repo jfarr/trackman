@@ -17,7 +17,7 @@ public:
     TrackControl(juce::String trackName);
     ~TrackControl();
 
-    void setListener(class FileListener* listener) { this->listener = listener;  }
+    void setListener(class FileListener* newListener) { listener = newListener;  }
 
     //==============================================================================
     // Component

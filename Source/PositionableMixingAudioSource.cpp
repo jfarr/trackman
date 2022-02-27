@@ -2,8 +2,7 @@
 
 
 PositionableMixingAudioSource::PositionableMixingAudioSource()
-	: position(0)
-	, length(0)
+	: length(0)
 	, looping(false)
 {
 }
@@ -49,19 +48,32 @@ void PositionableMixingAudioSource::releaseResources()
 
 void PositionableMixingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo& info)
 {
+	juce::int64 currentPos = getNextReadPosition();
+	if (currentPos > length)
+	{
+		setNextReadPosition(currentPos);
+	}
 	mixer.getNextAudioBlock(info);
 }
 
 void PositionableMixingAudioSource::setNextReadPosition(juce::int64 newPosition)
 {
+	newPosition = looping ? newPosition % length : newPosition;
 	for (int i = inputs.size(); --i >= 0;)
+	{
 		inputs.getUnchecked(i)->setNextReadPosition(newPosition);
-	position = newPosition;
+	}
 }
 
 juce::int64 PositionableMixingAudioSource::getNextReadPosition() const
 {
-	return position;
+	juce::int64 nextPos = 0;
+	for (int i = inputs.size(); --i >= 0;)
+	{
+		auto pos = inputs.getUnchecked(i)->getNextReadPosition();
+		nextPos = juce::jmax(nextPos, pos);
+	}
+	return nextPos;
 }
 
 juce::int64 PositionableMixingAudioSource::getTotalLength() const
@@ -86,6 +98,4 @@ bool PositionableMixingAudioSource::isLooping() const
 void PositionableMixingAudioSource::setLooping(bool shouldLoop)
 {
 	looping = shouldLoop;
-	for (int i = inputs.size(); --i >= 0;)
-		inputs.getUnchecked(i)->setLooping(shouldLoop);
 }

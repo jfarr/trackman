@@ -8,7 +8,7 @@
 class Track
 {
 public:
-	Track(juce::String name, juce::AudioFormatManager& formatManager);
+	Track(juce::String name);
 	~Track();
 
 	TrackControl& getTrackControl() { return trackControl; }
