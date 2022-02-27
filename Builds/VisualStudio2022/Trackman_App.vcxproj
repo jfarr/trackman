@@ -132,6 +132,7 @@
     <Lib />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\MasterChannelControl.cpp" />
     <ClCompile Include="..\..\Source\MixerComponent.cpp" />
     <ClCompile Include="..\..\Source\ThumbnailComponent.cpp" />
     <ClCompile Include="..\..\Source\ChildWindow.cpp" />
@@ -2206,6 +2207,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\ChildWindow.h" />
+    <ClInclude Include="..\..\Source\DecibelSlider.h" />
     <ClInclude Include="..\..\Source\DesktopComponent.h" />
     <ClInclude Include="..\..\Source\AudioPlayer.h" />
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h" />
@@ -3052,6 +3054,7 @@
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\Source\FileChooserControl.h" />
+    <ClInclude Include="..\..\Source\MasterChannelControl.h" />
     <ClInclude Include="..\..\Source\MixerComponent.h" />
     <ClInclude Include="..\..\Source\ThumbnailComponent.h" />
     <ClInclude Include="..\..\Source\listutil.h" />
