@@ -2571,7 +2571,7 @@
     <ClCompile Include="..\..\Source\MixerComponent.cpp">
       <Filter>Trackman\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\MasterChannelControl.cpp">
+    <ClCompile Include="..\..\Source\MasterTrackControl.cpp">
       <Filter>Trackman\Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5129,7 +5129,7 @@
     <ClInclude Include="..\..\Source\MixerComponent.h">
       <Filter>Trackman\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\MasterChannelControl.h">
+    <ClInclude Include="..\..\Source\MasterTrackControl.h">
       <Filter>Trackman\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\DecibelSlider.h">

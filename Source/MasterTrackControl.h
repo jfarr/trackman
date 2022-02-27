@@ -3,11 +3,11 @@
 #include <JuceHeader.h>
 #include "DecibelSlider.h"
 
-class MasterChannelControl : public juce::Component
+class MasterTrackControl : public juce::Component
 {
 public:
-    MasterChannelControl();
-    ~MasterChannelControl();
+    MasterTrackControl();
+    ~MasterTrackControl();
 
     //==============================================================================
     // Component

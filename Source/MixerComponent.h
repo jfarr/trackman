@@ -2,7 +2,7 @@
 
 #include <JuceHeader.h>
 #include "TransportControl.h"
-#include "MasterChannelControl.h"
+#include "MasterTrackControl.h"
 
 
 class MixerComponent : public juce::Component
@@ -19,7 +19,7 @@ public:
 private:
     juce::AudioTransportSource transportSource;
     TransportControl transportControl;
-    MasterChannelControl masterChannelControl;
+    MasterTrackControl masterTrackControl;
 
     void createControls();
 };

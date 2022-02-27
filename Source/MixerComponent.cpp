@@ -13,7 +13,7 @@ MixerComponent::~MixerComponent()
 void MixerComponent::createControls()
 {
     addAndMakeVisible(transportControl);
-    addAndMakeVisible(masterChannelControl);
+    addAndMakeVisible(masterTrackControl);
 }
 
 void MixerComponent::paint(juce::Graphics& g)
@@ -27,5 +27,5 @@ void MixerComponent::resized()
     auto buttonHeight = 35;
     auto transportMargin = 5;
     transportControl.setBounds(area.removeFromTop(buttonHeight).reduced(transportMargin));
-    masterChannelControl.setBounds(area.removeFromLeft(masterChannelControl.getWidth()));
+    masterTrackControl.setBounds(area.removeFromLeft(masterTrackControl.getWidth()));
 }
