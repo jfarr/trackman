@@ -6,7 +6,12 @@
 class DecibelSlider : public juce::Slider
 {
 public:
-    DecibelSlider() {}
+    DecibelSlider() {
+        setSliderStyle(juce::Slider::LinearVertical);
+        setRange(-100, 12);
+        setTextBoxStyle(juce::Slider::TextBoxAbove, false, 65, 14);
+        setSkewFactorFromMidPoint(-10.0);
+    }
 
     double getValueFromText(const juce::String& text) override
     {

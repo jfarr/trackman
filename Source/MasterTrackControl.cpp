@@ -15,9 +15,6 @@ MasterTrackControl::~MasterTrackControl()
 
 void MasterTrackControl::createControls()
 {
-    decibelSlider.setSliderStyle(juce::Slider::LinearVertical);
-    decibelSlider.setRange(-100, 12);
-    decibelSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, false, 65, 14);
     decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
     decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
 

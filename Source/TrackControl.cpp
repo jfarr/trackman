@@ -16,9 +16,6 @@ TrackControl::~TrackControl()
 
 void TrackControl::createControls()
 {
-    decibelSlider.setSliderStyle(juce::Slider::LinearVertical);
-    decibelSlider.setRange(-100, 12);
-    decibelSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, false, 65, 14);
     decibelSlider.onValueChange = [this] { level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue()); };
     decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
 
