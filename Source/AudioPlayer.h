@@ -35,7 +35,7 @@ public:
 
     //==============================================================================
     // FileListener
-    void fileChosen(juce::File file);
+    void fileChosen(juce::File file) override;
 
 private:
     juce::AudioFormatManager& formatManager;

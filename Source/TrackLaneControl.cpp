@@ -20,7 +20,7 @@ void TrackLaneControl::paint(juce::Graphics& g)
 {
     g.fillAll(juce::Colours::darkslategrey);
     g.setColour(juce::Colours::slategrey);
-    g.fillRect(0, getHeight() - 1, getWidth(), 0);
+    g.fillRect(0, getHeight() - 1, getWidth(), 1);
 }
 
 void TrackLaneControl::resized()

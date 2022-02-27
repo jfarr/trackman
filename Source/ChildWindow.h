@@ -8,7 +8,7 @@ public:
 	ChildWindow(const juce::String& name, juce::Component *component);
 	~ChildWindow() override;
 
-	void closeButtonPressed();
+	void closeButtonPressed() override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChildWindow)
 };

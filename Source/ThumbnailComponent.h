@@ -9,7 +9,7 @@ public:
     ThumbnailComponent(juce::AudioFormatManager& formatManager);
     ~ThumbnailComponent();
 
-    void ThumbnailComponent::setSource(const juce::File& file);
+    void setSource(const juce::File& file);
 
     //==============================================================================
     // Component
