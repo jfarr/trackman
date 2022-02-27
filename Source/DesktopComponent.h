@@ -19,7 +19,8 @@ public:
     /** A list of the commands that this menu responds to. */
     enum CommandIDs
     {
-        newAudioPlayer = 1
+        newTrack = 1,
+        newAudioPlayer
     };
 
     //==============================================================================
@@ -44,6 +45,7 @@ public:
 
         if (menuIndex == 0)
         {
+            menu.addCommandItem(&commandManager, CommandIDs::newTrack);
             menu.addCommandItem(&commandManager, CommandIDs::newAudioPlayer);
         }
 
@@ -63,7 +65,10 @@ public:
 
     void getAllCommands(juce::Array<juce::CommandID>& c) override
     {
-        juce::Array<juce::CommandID> commands{ CommandIDs::newAudioPlayer };
+        juce::Array<juce::CommandID> commands{
+            CommandIDs::newTrack,
+            CommandIDs::newAudioPlayer
+        };
         c.addArray(commands);
     }
 
@@ -71,6 +76,10 @@ public:
     {
         switch (commandID)
         {
+        case CommandIDs::newTrack:
+            result.setInfo("track", "Create a new track", "Menu", 0);
+            result.addDefaultKeypress('t', juce::ModifierKeys::shiftModifier);
+            break;
         case CommandIDs::newAudioPlayer:
             result.setInfo("audioplayer", "Create a new audioplayer component", "Menu", 0);
             result.addDefaultKeypress('p', juce::ModifierKeys::shiftModifier);
@@ -83,6 +92,9 @@ public:
     {
         switch (info.commandID)
         {
+        case CommandIDs::newTrack:
+            addNewTrack();
+            break;
         case CommandIDs::newAudioPlayer:
             createChildWindow("audioplayer", new AudioPlayer(formatManager));
             break;
@@ -104,10 +116,12 @@ private:
     // null when the component that it points to is deleted.
     juce::Array<Component::SafePointer<Component>> windows;
 
+    void addNewTrack();
     void createChildWindow(const juce::String& name, juce::Component* component);
     void closeAllWindows();
 
     juce::AudioFormatManager formatManager;
+    juce::Array<Track*> tracks;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DesktopComponent)
 };

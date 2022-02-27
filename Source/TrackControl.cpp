@@ -1,17 +1,17 @@
-#include "MasterTrackControl.h"
+#include "TrackControl.h"
 
 
-MasterTrackControl::MasterTrackControl() : level(juce::Decibels::decibelsToGain<float>(0.0)), muted(false)
+TrackControl::TrackControl(juce::String trackName) : trackName(trackName), level(juce::Decibels::decibelsToGain<float>(0.0)), muted(false)
 {
     createControls();
     setSize(125, 100);
 }
 
-MasterTrackControl::~MasterTrackControl()
+TrackControl::~TrackControl()
 {
 }
 
-void MasterTrackControl::createControls()
+void TrackControl::createControls()
 {
     decibelSlider.setSliderStyle(juce::Slider::LinearVertical);
     decibelSlider.setRange(-100, 12);
@@ -23,7 +23,7 @@ void MasterTrackControl::createControls()
     muteButton.setTooltip("mute");
     muteButton.onClick = [this] { muteButtonClicked(); };
 
-    channelLabel.setText("MASTER", juce::dontSendNotification);
+    channelLabel.setText(trackName, juce::dontSendNotification);
     channelLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
 
     addAndMakeVisible(decibelSlider);
@@ -31,12 +31,12 @@ void MasterTrackControl::createControls()
     addAndMakeVisible(channelLabel);
 }
 
-void MasterTrackControl::paint(juce::Graphics& g)
+void TrackControl::paint(juce::Graphics& g)
 {
     g.fillAll(juce::Colour{ 0xff282828 });
 }
 
-void MasterTrackControl::resized()
+void TrackControl::resized()
 {
     auto area = getLocalBounds();
     auto sliderWidth = 100;
@@ -49,7 +49,7 @@ void MasterTrackControl::resized()
     muteButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
 }
 
-void MasterTrackControl::muteButtonClicked()
+void TrackControl::muteButtonClicked()
 {
     muted = !muted;
     muteButton.setColour(juce::TextButton::buttonColourId, muted ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));

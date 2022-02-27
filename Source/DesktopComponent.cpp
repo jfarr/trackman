@@ -31,6 +31,17 @@ DesktopComponent::~DesktopComponent()
     juce::MenuBarModel::setMacMainMenu(nullptr);
 #endif
     commandManager.setFirstCommandTarget(nullptr);
+
+    for (auto& track : tracks)
+        delete track;
+    tracks.clear();
+}
+
+void DesktopComponent::addNewTrack()
+{
+    Track* newTrack = new Track(juce::String("Track ") + juce::String::formatted(juce::String("%d"), tracks.size() + 1));
+    tracks.add(newTrack);
+    mixerComponent.addTrack(*newTrack);
 }
 
 void DesktopComponent::createChildWindow(const juce::String& name, juce::Component* component)

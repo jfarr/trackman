@@ -1,8 +1,10 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "TransportControl.h"
 #include "MasterTrackControl.h"
+#include "Track.h"
+#include "TrackControl.h"
+#include "TransportControl.h"
 
 
 class MixerComponent : public juce::Component
@@ -10,6 +12,8 @@ class MixerComponent : public juce::Component
 public:
     MixerComponent();
     ~MixerComponent();
+
+    void addTrack(Track& track);
 
     //==============================================================================
     // Component
@@ -20,6 +24,7 @@ private:
     juce::AudioTransportSource transportSource;
     TransportControl transportControl;
     MasterTrackControl masterTrackControl;
+    std::list<Track*> tracks;
 
     void createControls();
 };
