@@ -2205,6 +2205,7 @@
     <ClCompile Include="..\..\Source\FileChooserControl.cpp" />
     <ClCompile Include="..\..\Source\Track.cpp" />
     <ClCompile Include="..\..\Source\TrackControl.cpp" />
+    <ClCompile Include="..\..\Source\TrackLaneControl.cpp" />
     <ClCompile Include="..\..\Source\TransportControl.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -3062,6 +3063,7 @@
     <ClInclude Include="..\..\Source\listutil.h" />
     <ClInclude Include="..\..\Source\Track.h" />
     <ClInclude Include="..\..\Source\TrackControl.h" />
+    <ClInclude Include="..\..\Source\TrackLaneControl.h" />
     <ClInclude Include="..\..\Source\TransportControl.h" />
   </ItemGroup>
   <ItemGroup>

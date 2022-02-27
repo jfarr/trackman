@@ -42,6 +42,8 @@ void DesktopComponent::addNewTrack()
     Track* newTrack = new Track(juce::String("Track ") + juce::String::formatted(juce::String("%d"), tracks.size() + 1));
     tracks.add(newTrack);
     mixerComponent.addTrack(*newTrack);
+    addAndMakeVisible(newTrack->getTrackLaneControl());
+    resized();
 }
 
 void DesktopComponent::createChildWindow(const juce::String& name, juce::Component* component)
@@ -67,4 +69,6 @@ void DesktopComponent::resized()
 {
     auto area = getLocalBounds();
     mixerComponent.setBounds(area.removeFromBottom(mixerComponent.getHeight()));
+    for (auto& track : tracks)
+        track->getTrackLaneControl().setBounds(area.removeFromTop(track->getTrackLaneControl().getHeight()));
 }

@@ -18,8 +18,8 @@ void MixerComponent::addTrack(Track& track)
     createControls();
     for (std::list<Track*>::iterator i = tracks.begin(); i != tracks.end(); ++i)
     {
-        Track& track = **i;
-        addAndMakeVisible(track.getTrackControl());
+        Track& t = **i;
+        addAndMakeVisible(t.getTrackControl());
     }
     resized();
 }

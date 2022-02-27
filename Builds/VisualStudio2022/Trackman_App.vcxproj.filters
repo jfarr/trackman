@@ -2580,6 +2580,9 @@
     <ClCompile Include="..\..\Source\TrackControl.cpp">
       <Filter>Trackman\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\TrackLaneControl.cpp">
+      <Filter>Trackman\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\AudioPlayer.h">
@@ -5145,6 +5148,9 @@
       <Filter>Trackman\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\TrackControl.h">
+      <Filter>Trackman\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TrackLaneControl.h">
       <Filter>Trackman\Source</Filter>
     </ClInclude>
   </ItemGroup>
