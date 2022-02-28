@@ -5,7 +5,7 @@
 class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   public:
     PositionableMixingAudioSource();
-    ~PositionableMixingAudioSource();
+    ~PositionableMixingAudioSource() override;
 
     void addInputSource(PositionableAudioSource *newInput, const bool deleteWhenRemoved,
         double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2);

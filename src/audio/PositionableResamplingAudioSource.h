@@ -6,7 +6,7 @@ class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
   public:
     PositionableResamplingAudioSource(juce::PositionableAudioSource *source, const bool deleteWhenRemoved,
         double sourceSampleRateToCorrectFor, int maxNumChannels = 2);
-    ~PositionableResamplingAudioSource();
+    ~PositionableResamplingAudioSource() override;
 
     juce::PositionableAudioSource *getSource() { return source; }
 

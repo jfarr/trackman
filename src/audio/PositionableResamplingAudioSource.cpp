@@ -24,7 +24,8 @@ void PositionableResamplingAudioSource::prepareToPlay(int samplesPerBlockExpecte
 }
 
 void PositionableResamplingAudioSource::releaseResources() {
-    resamplerSource.releaseResources();
+    if (deleteWhenRemoved)
+        resamplerSource.releaseResources();
 }
 
 void PositionableResamplingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &info) {

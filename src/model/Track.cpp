@@ -6,7 +6,10 @@ Track::Track(juce::String name, juce::AudioFormatManager &formatManager)
     // gain.processor.setGainLinear(1.0);
 }
 
-Track::~Track() {}
+Track::~Track() {
+//    gain->releaseResources();
+//    gain.release();
+}
 
 void Track::fileChosen(juce::File file) {
     if (listener == nullptr)
@@ -18,11 +21,14 @@ void Track::fileChosen(juce::File file) {
         auto newSource = new juce::AudioFormatReaderSource(reader, true);
         // source.reset(new ProcessingAudioSource<juce::dsp::Gain<float>>(newSource, &gain, true));
         // source.reset(newSource);
-        listener->onSourceSet(newSource, source, true, reader->sampleRate);
-        source = newSource;
+        auto newGain = new GainAudioSource(newSource, true);
+        gain.reset(newGain);
+        listener->onSourceSet(newGain, source, true, reader->sampleRate);
+        source = newGain;
+        gain.release();
     }
 }
 
-void Track::levelChanged(float level) { /*gain.processor.setGainLinear(level);*/ }
+void Track::levelChanged(float level) { ((GainAudioSource *)gain.get())->setGain(level); }
 
 void Track::muteChanged(bool muted) {}

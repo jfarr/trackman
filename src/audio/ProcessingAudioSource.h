@@ -7,7 +7,7 @@ class ProcessingAudioSource : public juce::PositionableAudioSource {
   public:
     ProcessingAudioSource(juce::PositionableAudioSource *source, juce::dsp::ProcessorWrapper<ProcessorType> *processor,
         const bool deleteWhenRemoved);
-    ~ProcessingAudioSource();
+    ~ProcessingAudioSource() override;
 
     //==============================================================================
     // AudioSource
