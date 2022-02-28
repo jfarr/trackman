@@ -2,6 +2,7 @@
 
 ## Building
 
-1. Install [cmake](https://cmake.org/)
-2. Run `cmake -B build`
-3. Run `cmake --build build`
+1. Install Xcode or Visual Studio.
+2. Install [cmake](https://cmake.org/).
+3. Run `cmake -B build`.
+4. Run `cmake --build build`.
