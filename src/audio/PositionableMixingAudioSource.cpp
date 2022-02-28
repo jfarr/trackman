@@ -6,8 +6,8 @@ PositionableMixingAudioSource::PositionableMixingAudioSource() : length(0), loop
 
 PositionableMixingAudioSource::~PositionableMixingAudioSource() { removeAllInputs(); }
 
-void PositionableMixingAudioSource::addInputSource(
-    PositionableAudioSource *input, bool deleteWhenRemoved, double sourceSampleRateToCorrectFor, int maxNumChannels) {
+void PositionableMixingAudioSource::addInputSource(PositionableAudioSource *input, const bool deleteWhenRemoved,
+    double sourceSampleRateToCorrectFor, int maxNumChannels) {
     if (sourceSampleRateToCorrectFor > 0) {
         input = new PositionableResamplingAudioSource(
             input, deleteWhenRemoved, sourceSampleRateToCorrectFor, maxNumChannels);

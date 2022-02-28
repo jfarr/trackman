@@ -18,7 +18,6 @@ target_sources(Trackman PRIVATE
         audio/PositionableMixingAudioSource.h
         audio/PositionableResamplingAudioSource.cpp
         audio/PositionableResamplingAudioSource.h
-        audio/ProcessingAudioSource.cpp
         audio/ProcessingAudioSource.h
         controls/AudioPlayer.cpp
         controls/AudioPlayer.h
