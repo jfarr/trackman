@@ -1,5 +1,4 @@
 #include "PositionableMixingAudioSource.h"
-
 #include "PositionableResamplingAudioSource.h"
 
 PositionableMixingAudioSource::PositionableMixingAudioSource() : length(0), looping(false) {}
@@ -21,9 +20,20 @@ void PositionableMixingAudioSource::addInputSource(PositionableAudioSource *inpu
 
 void PositionableMixingAudioSource::removeInputSource(PositionableAudioSource *input) {
     if (input != nullptr) {
-        const int index = inputs.indexOf(input);
-        inputs.remove(index);
+        for (int i = inputs.size(); --i >= 0;) {
+            PositionableAudioSource *thisInput = inputs.getUnchecked(i);
+            PositionableResamplingAudioSource *wrapper = dynamic_cast<PositionableResamplingAudioSource *>(thisInput);
+            if (wrapper != nullptr && wrapper->getSource() == input) {
+                mixer.removeInputSource(thisInput);
+                inputs.remove(i);
+                break;
+            }
+        }
         mixer.removeInputSource(input);
+        const int index = inputs.indexOf(input);
+        if (index >= 0) {
+            inputs.remove(index);
+        }
         updateLength();
     }
 }

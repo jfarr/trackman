@@ -38,9 +38,12 @@ void MixerComponent::addTrack(Track &track) {
     resized();
 }
 
-void MixerComponent::onSourceSet(juce::PositionableAudioSource *source, const bool deleteWhenRemoved,
-    double sourceSampleRateToCorrectFor, int maxNumChannels) {
-    mixerSource.addInputSource(source, deleteWhenRemoved, sourceSampleRateToCorrectFor);
+void MixerComponent::onSourceSet(juce::PositionableAudioSource *newSource, juce::PositionableAudioSource *prevSource,
+    const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor, int maxNumChannels) {
+    if (prevSource != nullptr) {
+        mixerSource.removeInputSource(prevSource);
+    }
+    mixerSource.addInputSource(newSource, deleteWhenRemoved, sourceSampleRateToCorrectFor);
 }
 
 void MixerComponent::updateLoopState(bool shouldLoop) { mixerSource.setLooping(shouldLoop); }

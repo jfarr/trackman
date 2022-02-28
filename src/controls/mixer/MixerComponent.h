@@ -2,12 +2,12 @@
 
 #include "JuceHeader.h"
 
-#include "controls/common/FileChooserControl.h"
 #include "MasterTrackControl.h"
-#include "audio/PositionableMixingAudioSource.h"
-#include "model/Track.h"
 #include "TrackControl.h"
+#include "audio/PositionableMixingAudioSource.h"
+#include "controls/common/FileChooserControl.h"
 #include "controls/common/TransportControl.h"
+#include "model/Track.h"
 
 class MixerComponent : public juce::AudioAppComponent,
                        public TrackSourceListener,
@@ -19,8 +19,8 @@ class MixerComponent : public juce::AudioAppComponent,
 
     void addTrack(Track &track);
 
-    void onSourceSet(juce::PositionableAudioSource *source, const bool deleteWhenRemoved,
-        double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) override;
+    void onSourceSet(juce::PositionableAudioSource *newSource, juce::PositionableAudioSource *prevSource,
+        const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) override;
 
     //==============================================================================
     // TransportControlListener

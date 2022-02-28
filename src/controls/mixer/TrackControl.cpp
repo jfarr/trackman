@@ -87,6 +87,6 @@ void TrackControl::removeListener(TrackControlListener *listener) { listeners.re
 void TrackControl::notifyLevelChanged() {
     for (std::list<TrackControlListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
         TrackControlListener &listener = **i;
-        listener.levelChanged((float)decibelSlider.getValue());
+        listener.levelChanged(level);
     }
 }

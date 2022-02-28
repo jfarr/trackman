@@ -6,8 +6,8 @@
 
 class TrackSourceListener {
   public:
-    virtual void onSourceSet(juce::PositionableAudioSource *source, const bool deleteWhenRemoved,
-        double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) = 0;
+    virtual void onSourceSet(juce::PositionableAudioSource *newSource, juce::PositionableAudioSource *prevSource,
+        const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) = 0;
 };
 
 class GainProcessor : public juce::dsp::ProcessorWrapper<juce::dsp::Gain<float>> {};
@@ -33,11 +33,13 @@ class Track : public FileListener, public TrackControlListener {
 
   private:
     juce::AudioFormatManager &formatManager;
-    //std::unique_ptr<ProcessingAudioSource<juce::dsp::Gain<float>>> source;
-    //std::unique_ptr<juce::PositionableAudioSource> source;
+
+    // std::unique_ptr<ProcessingAudioSource<juce::dsp::Gain<float>>> source;
+    // std::unique_ptr<juce::PositionableAudioSource> source;
+    juce::PositionableAudioSource *source;
     TrackSourceListener *listener;
 
-    GainProcessor gain;
+    // GainProcessor gain;
     TrackControl trackControl;
     TrackLaneControl trackLaneControl;
 
