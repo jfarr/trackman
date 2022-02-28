@@ -1,18 +1,15 @@
 #include "FileChooserControl.h"
+
 #include "listutil.h"
 
-FileChooserControl::FileChooserControl(juce::File file)
-{
+FileChooserControl::FileChooserControl(juce::File file) {
     selectedFile = file;
     createControls();
 }
 
-FileChooserControl::~FileChooserControl()
-{
-}
+FileChooserControl::~FileChooserControl() {}
 
-void FileChooserControl::createControls()
-{
+void FileChooserControl::createControls() {
     addAndMakeVisible(&openButton);
     openButton.setButtonText("...");
     openButton.onClick = [this] { openButtonClicked(); };
@@ -20,13 +17,12 @@ void FileChooserControl::createControls()
     addAndMakeVisible(&selectedFileLabel);
 }
 
-void FileChooserControl::paint(juce::Graphics& g)
-{
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+void FileChooserControl::paint(juce::Graphics &g) {
+    g.fillAll(
+        getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
-void FileChooserControl::resized()
-{
+void FileChooserControl::resized() {
     auto area = getLocalBounds();
 
     auto buttonWidth = 30;
@@ -35,39 +31,35 @@ void FileChooserControl::resized()
     selectedFileLabel.setBounds(area.reduced(margin));
 }
 
-void FileChooserControl::openButtonClicked()
-{
-    chooser = std::make_unique<juce::FileChooser>("Select a file to play...", selectedFile, "*.wav");
-    auto chooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
+void FileChooserControl::openButtonClicked() {
+    chooser = std::make_unique<juce::FileChooser>("Select a file to play...",
+                                                  selectedFile, "*.wav");
+    auto chooserFlags = juce::FileBrowserComponent::openMode |
+                        juce::FileBrowserComponent::canSelectFiles;
 
-    chooser->launchAsync(chooserFlags, [this](const juce::FileChooser& fc)
-        {
-            auto file = fc.getResult();
+    chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
+        auto file = fc.getResult();
 
-            if (file != juce::File{})
-            {
-                selectedFileLabel.setText(file.getFileName(), juce::dontSendNotification);
-                notifyFileChosen(file);
-            }
-        });
+        if (file != juce::File{}) {
+            selectedFileLabel.setText(file.getFileName(),
+                                      juce::dontSendNotification);
+            notifyFileChosen(file);
+        }
+    });
 }
 
-void FileChooserControl::notifyFileChosen(juce::File file)
-{
-    for (std::list<FileListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
-    {
-        FileListener& listener = **i;
+void FileChooserControl::notifyFileChosen(juce::File file) {
+    for (std::list<FileListener *>::iterator i = listeners.begin();
+         i != listeners.end(); ++i) {
+        FileListener &listener = **i;
         listener.fileChosen(file);
     }
 }
 
-void FileChooserControl::AddListener(FileListener* listener)
-{
-    if (!listContains(listener, listeners))
-        listeners.push_front(listener);
+void FileChooserControl::AddListener(FileListener *listener) {
+    if (!listContains(listener, listeners)) listeners.push_front(listener);
 }
 
-void FileChooserControl::RemoveListener(FileListener* listener)
-{
+void FileChooserControl::RemoveListener(FileListener *listener) {
     listeners.remove(listener);
 }

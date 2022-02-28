@@ -48,6 +48,9 @@ target_include_directories(Trackman PRIVATE
     )
 
 if (APPLE)
+    target_compile_definitions(Trackman PRIVATE
+        JUCE_MAC=1
+    )
     target_link_libraries(Trackman PRIVATE "-framework CoreAudioKit")
 elseif (WIN32)
     set_target_properties(Trackman PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:Trackman>"

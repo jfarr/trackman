@@ -2,34 +2,31 @@
 
 #include <JuceHeader.h>
 
-class FileListener
-{
-public:
+class FileListener {
+   public:
     virtual void fileChosen(juce::File file) = 0;
 };
 
+class FileChooserControl : public juce::Component {
+   public:
+    FileChooserControl(juce::File file = juce::File{});
+    ~FileChooserControl();
 
-class FileChooserControl : public juce::Component
-{
-public:
-	FileChooserControl(juce::File file = juce::File{});
-	~FileChooserControl();
-
-    void AddListener(FileListener* listener);
-    void RemoveListener(FileListener* listener);
+    void AddListener(FileListener *listener);
+    void RemoveListener(FileListener *listener);
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics& g) override;
+    void paint(juce::Graphics &g) override;
     void resized() override;
 
     //==============================================================================
 
     void openButtonClicked();
 
-private:
+   private:
     juce::File selectedFile;
-    std::list<FileListener*> listeners;
+    std::list<FileListener *> listeners;
 
     void createControls();
     void notifyFileChosen(juce::File file);

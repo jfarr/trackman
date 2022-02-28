@@ -3,30 +3,32 @@
 #include <JuceHeader.h>
 
 #include "FileChooserControl.h"
-#include "TransportControl.h"
 #include "ThumbnailComponent.h"
+#include "TransportControl.h"
 
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class AudioPlayer : public juce::AudioAppComponent, public FileListener, public TransportControlListener
-{
-public:
+class AudioPlayer : public juce::AudioAppComponent,
+                    public FileListener,
+                    public TransportControlListener {
+   public:
     //==============================================================================
-    AudioPlayer(juce::AudioFormatManager& formatManager);
+    AudioPlayer(juce::AudioFormatManager &formatManager);
     ~AudioPlayer() override;
 
     //==============================================================================
     // AudioAppComponent
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    void getNextAudioBlock(
+        const juce::AudioSourceChannelInfo &bufferToFill) override;
     void releaseResources() override;
 
     //==============================================================================
     // Component
-    void paint (juce::Graphics& g) override;
+    void paint(juce::Graphics &g) override;
     void resized() override;
 
     //==============================================================================
@@ -37,8 +39,8 @@ public:
     // FileListener
     void fileChosen(juce::File file) override;
 
-private:
-    juce::AudioFormatManager& formatManager;
+   private:
+    juce::AudioFormatManager &formatManager;
     juce::AudioTransportSource transportSource;
     TransportControl transportControl;
     FileChooserControl fileChooserControl;
@@ -50,5 +52,5 @@ private:
 
     void createControls();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPlayer)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPlayer)
 };

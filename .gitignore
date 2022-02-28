@@ -1,3 +1,4 @@
 .vs/
 build/
 CMakeCache.txt
+.DS_Store

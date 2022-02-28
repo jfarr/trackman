@@ -2,22 +2,23 @@
 
 #include <JuceHeader.h>
 
-
-class PositionableMixingAudioSource : public juce::PositionableAudioSource
-{
-public:
+class PositionableMixingAudioSource : public juce::PositionableAudioSource {
+   public:
     PositionableMixingAudioSource();
     ~PositionableMixingAudioSource();
 
-    void addInputSource(PositionableAudioSource* newInput, bool deleteWhenRemoved, double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2);
-    void removeInputSource(PositionableAudioSource* input);
+    void addInputSource(PositionableAudioSource *newInput,
+                        bool deleteWhenRemoved,
+                        double sourceSampleRateToCorrectFor = 0.0,
+                        int maxNumChannels = 2);
+    void removeInputSource(PositionableAudioSource *input);
     void removeAllInputs();
 
     //==============================================================================
     // AudioSource
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo& info) override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &info) override;
 
     //==============================================================================
     // PositionableAudioSource
@@ -27,9 +28,9 @@ public:
     bool isLooping() const override;
     void setLooping(bool shouldLoop) override;
 
-private:
+   private:
     juce::MixerAudioSource mixer;
-    juce::Array<PositionableAudioSource*> inputs;
+    juce::Array<PositionableAudioSource *> inputs;
     juce::int64 length;
     bool looping;
 
