@@ -2,71 +2,47 @@
 
 #include <JuceHeader.h>
 
-//==============================================================================
-/*
-    This component lives inside our window, and this is where you should put all
-    your controls and content.
-*/
-class AudioPlayer : public juce::AudioAppComponent, public juce::ChangeListener, public juce::Timer
-{
-public:
+#include "FileChooserControl.h"
+#include "ThumbnailComponent.h"
+#include "TransportControl.h"
+
+class AudioPlayer : public juce::AudioAppComponent, public FileListener, public TransportControlListener {
+  public:
     //==============================================================================
-    AudioPlayer();
+    AudioPlayer(juce::AudioFormatManager &formatManager);
     ~AudioPlayer() override;
 
     //==============================================================================
     // AudioAppComponent
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
     void releaseResources() override;
 
     //==============================================================================
     // Component
-    void paint (juce::Graphics& g) override;
+    void paint(juce::Graphics &g) override;
     void resized() override;
 
     //==============================================================================
-    // ChangeListener
-    void changeListenerCallback(juce::ChangeBroadcaster* source) override;
+    // TransportControlListener
+    void updateLoopState(bool shouldLoop) override;
 
     //==============================================================================
-    // Timer
-    void AudioPlayer::timerCallback() override;
+    // FileListener
+    void fileChosen(juce::File file) override;
 
-private:
-    enum TransportState
-    {
-        Stopped,
-        Starting,
-        Playing,
-        Pausing,
-        Paused,
-        Stopping
-    };
-
-    TransportState state;
+  private:
+    juce::AudioFormatManager &formatManager;
     juce::AudioTransportSource transportSource;
-
-    juce::AudioFormatManager formatManager;
+    TransportControl transportControl;
+    FileChooserControl fileChooserControl;
+    ThumbnailComponent thumbnailComponent;
+    PositionOverlay positionOverlay;
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
 
-    void changeState(TransportState newState);
-    void updateLoopState(bool shouldLoop);
-
     //==============================================================================
 
-    void openButtonClicked();
-    void playButtonClicked();
-    void stopButtonClicked();
-    void loopButtonChanged();
+    void createControls();
 
-    std::unique_ptr<juce::FileChooser> chooser;
-
-    juce::TextButton openButton;
-    juce::TextButton playButton;
-    juce::TextButton stopButton;
-    juce::ToggleButton loopingToggle;
-    juce::Label currentPositionLabel;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPlayer)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPlayer)
 };

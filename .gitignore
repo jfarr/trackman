@@ -1,3 +1,6 @@
-Builds/VisualStudio2022/x64/
-Builds/VisualStudio2022/.vs/
-slnx.sqlite
+.vs/
+build/
+CMakeCache.txt
+.DS_Store
+.idea
+cmake-build-debug
