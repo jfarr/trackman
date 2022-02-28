@@ -14,8 +14,6 @@ PositionableResamplingAudioSource::~PositionableResamplingAudioSource() {
 
 //==============================================================================
 void PositionableResamplingAudioSource::prepareToPlay(int samplesPerBlockExpected, double newSampleRate) {
-    // const juce::ScopedLock sl(callbackLock);
-
     sampleRate = newSampleRate;
     blockSize = samplesPerBlockExpected;
 
@@ -26,12 +24,10 @@ void PositionableResamplingAudioSource::prepareToPlay(int samplesPerBlockExpecte
 }
 
 void PositionableResamplingAudioSource::releaseResources() {
-    // const juce::ScopedLock sl(callbackLock);
     resamplerSource.releaseResources();
 }
 
 void PositionableResamplingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &info) {
-    // const juce::ScopedLock sl(callbackLock);
     resamplerSource.getNextAudioBlock(info);
 }
 
@@ -45,8 +41,6 @@ juce::int64 PositionableResamplingAudioSource::getNextReadPosition() const {
 }
 
 juce::int64 PositionableResamplingAudioSource::getTotalLength() const {
-    // const juce::ScopedLock sl(callbackLock);
-
     return (juce::int64)((double)source->getTotalLength() * getSampleRatio());
 }
 

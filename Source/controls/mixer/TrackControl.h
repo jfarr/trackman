@@ -1,9 +1,9 @@
 #pragma once
 
-#include <JuceHeader.h>
+#include "JuceHeader.h"
 
-#include "DecibelSlider.h"
-#include "FileChooserControl.h"
+#include "controls/common/DecibelSlider.h"
+#include "controls/common/FileChooserControl.h"
 
 class SourceListener {
   public:

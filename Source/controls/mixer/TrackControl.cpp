@@ -1,6 +1,6 @@
 #include "TrackControl.h"
 
-#include "listutil.h"
+#include "common/listutil.h"
 
 TrackControl::TrackControl(juce::String trackName)
     : trackName(trackName), level(juce::Decibels::decibelsToGain<float>(0.0)), muted(false) {

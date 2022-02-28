@@ -1,6 +1,6 @@
 #include "AudioPlayer.h"
 
-#include "ChildWindow.h"
+#include "controls/desktop/ChildWindow.h"
 
 //==============================================================================
 AudioPlayer::AudioPlayer(juce::AudioFormatManager &formatManager)

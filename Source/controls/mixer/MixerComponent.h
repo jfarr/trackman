@@ -1,13 +1,13 @@
 #pragma once
 
-#include <JuceHeader.h>
+#include "JuceHeader.h"
 
-#include "FileChooserControl.h"
+#include "controls/common/FileChooserControl.h"
 #include "MasterTrackControl.h"
-#include "PositionableMixingAudioSource.h"
-#include "Track.h"
+#include "audio/PositionableMixingAudioSource.h"
+#include "model/Track.h"
 #include "TrackControl.h"
-#include "TransportControl.h"
+#include "controls/common/TransportControl.h"
 
 class MixerComponent : public juce::AudioAppComponent,
                        public FileListener,

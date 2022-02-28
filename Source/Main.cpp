@@ -8,7 +8,7 @@
 
 #include <JuceHeader.h>
 
-#include "DesktopComponent.h"
+#include "controls/desktop/DesktopComponent.h"
 
 //==============================================================================
 class TrackmanApplication : public juce::JUCEApplication {

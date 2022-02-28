@@ -1,7 +1,7 @@
 #pragma once
 
-#include "TrackControl.h"
-#include "TrackLaneControl.h"
+#include "controls/mixer/TrackControl.h"
+#include "controls/mixer/TrackLaneControl.h"
 
 class Track {
   public:

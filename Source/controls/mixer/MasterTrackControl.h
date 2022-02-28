@@ -1,8 +1,8 @@
 #pragma once
 
-#include <JuceHeader.h>
+#include "JuceHeader.h"
 
-#include "DecibelSlider.h"
+#include "controls/common/DecibelSlider.h"
 
 class MasterTrackListener {
   public:

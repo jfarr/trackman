@@ -11,36 +11,38 @@ juce_add_gui_app(Trackman
         )
 
 target_sources(Trackman PRIVATE
-        AudioPlayer.cpp
-        AudioPlayer.h
-        ChildWindow.cpp
-        ChildWindow.h
-        DecibelSlider.h
-        DesktopComponent.cpp
-        DesktopComponent.h
-        FileChooserControl.cpp
-        FileChooserControl.h
+        controls/AudioPlayer.cpp
+        controls/AudioPlayer.h
+        controls/desktop/ChildWindow.cpp
+        controls/desktop/ChildWindow.h
+        controls/common/DecibelSlider.h
+        controls/desktop/DesktopComponent.cpp
+        controls/desktop/DesktopComponent.h
+        controls/common/FileChooserControl.cpp
+        controls/common/FileChooserControl.h
         JuceHeader.h
-        listutil.h
+        common/listutil.h
         Main.cpp
-        MasterTrackControl.cpp
-        MasterTrackControl.h
-        MixerComponent.cpp
-        MixerComponent.h
-        PositionableMixingAudioSource.cpp
-        PositionableMixingAudioSource.h
-        PositionableResamplingAudioSource.cpp
-        PositionableResamplingAudioSource.h
-        ThumbnailComponent.cpp
-        ThumbnailComponent.h
-        Track.cpp
-        Track.h
-        TrackControl.cpp
-        TrackControl.h
-        TrackLaneControl.cpp
-        TrackLaneControl.h
-        TransportControl.cpp
-        TransportControl.h
+        controls/mixer/MasterTrackControl.cpp
+        controls/mixer/MasterTrackControl.h
+        controls/mixer/MixerComponent.cpp
+        controls/mixer/MixerComponent.h
+        audio/PositionableMixingAudioSource.cpp
+        audio/PositionableMixingAudioSource.h
+        audio/PositionableResamplingAudioSource.cpp
+        audio/PositionableResamplingAudioSource.h
+        audio/ProcessingAudioSource.cpp
+        audio/ProcessingAudioSource.h
+        controls/common/ThumbnailComponent.cpp
+        controls/common/ThumbnailComponent.h
+        model/Track.cpp
+        model/Track.h
+        controls/mixer/TrackControl.cpp
+        controls/mixer/TrackControl.h
+        controls/mixer/TrackLaneControl.cpp
+        controls/mixer/TrackLaneControl.h
+        controls/common/TransportControl.cpp
+        controls/common/TransportControl.h
         )
 
 target_include_directories(Trackman PRIVATE

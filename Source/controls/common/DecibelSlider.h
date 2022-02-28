@@ -1,6 +1,6 @@
 #pragma once
 
-#include <JuceHeader.h>
+#include "JuceHeader.h"
 
 class DecibelSlider : public juce::Slider {
   public:

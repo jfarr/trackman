@@ -1,10 +1,10 @@
 #pragma once
 
-#include <JuceHeader.h>
+#include "JuceHeader.h"
 
-#include "AudioPlayer.h"
+#include "controls/AudioPlayer.h"
 #include "ChildWindow.h"
-#include "MixerComponent.h"
+#include "controls/mixer/MixerComponent.h"
 
 //==============================================================================
 /*

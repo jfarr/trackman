@@ -1,10 +1,10 @@
 #pragma once
 
-#include <JuceHeader.h>
+#include "JuceHeader.h"
 
-#include "FileChooserControl.h"
-#include "ThumbnailComponent.h"
-#include "TransportControl.h"
+#include "controls/common/FileChooserControl.h"
+#include "controls/common/ThumbnailComponent.h"
+#include "controls/common/TransportControl.h"
 
 class AudioPlayer : public juce::AudioAppComponent, public FileListener, public TransportControlListener {
   public:

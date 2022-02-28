@@ -1,6 +1,6 @@
 #pragma once
 
-#include <JuceHeader.h>
+#include "JuceHeader.h"
 
 class TrackLaneControl : public juce::Component {
   public:

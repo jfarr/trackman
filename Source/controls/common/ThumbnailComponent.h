@@ -1,6 +1,6 @@
 #pragma once
 
-#include <JuceHeader.h>
+#include "JuceHeader.h"
 
 class ThumbnailComponent : public juce::Component, public juce::ChangeListener {
   public:

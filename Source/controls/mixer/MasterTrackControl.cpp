@@ -1,6 +1,6 @@
 #include "MasterTrackControl.h"
 
-#include "listutil.h"
+#include "common/listutil.h"
 
 MasterTrackControl::MasterTrackControl() : level(juce::Decibels::decibelsToGain<float>(0.0)), muted(false) {
     createControls();
