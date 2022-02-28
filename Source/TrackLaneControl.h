@@ -3,7 +3,7 @@
 #include <JuceHeader.h>
 
 class TrackLaneControl : public juce::Component {
-   public:
+  public:
     TrackLaneControl();
     ~TrackLaneControl();
 
@@ -12,6 +12,8 @@ class TrackLaneControl : public juce::Component {
     void paint(juce::Graphics &g) override;
     void resized() override;
 
-   private:
+  private:
     void createControls();
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackLaneControl)
 };

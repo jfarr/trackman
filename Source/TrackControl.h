@@ -6,25 +6,23 @@
 #include "FileChooserControl.h"
 
 class SourceListener {
-   public:
+  public:
     virtual void onSourceSet(juce::AudioFormatReaderSource &source) = 0;
 };
 
 class TrackControl : public juce::Component {
-   public:
+  public:
     TrackControl(juce::String trackName);
     ~TrackControl();
 
-    void setListener(class FileListener *newListener) {
-        listener = newListener;
-    }
+    void setListener(class FileListener *newListener) { listener = newListener; }
 
     //==============================================================================
     // Component
     void paint(juce::Graphics &g) override;
     void resized() override;
 
-   private:
+  private:
     juce::String trackName;
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
@@ -39,4 +37,6 @@ class TrackControl : public juce::Component {
     juce::TextButton openButton;
     void openButtonClicked();
     FileListener *listener;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackControl)
 };

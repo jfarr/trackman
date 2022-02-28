@@ -3,17 +3,14 @@
 #include <JuceHeader.h>
 
 class TransportControlListener {
-   public:
+  public:
     virtual void updateLoopState(bool shouldLoop) = 0;
 };
 
-class TransportControl : public juce::Component,
-                         public juce::ChangeListener,
-                         public juce::Timer {
-   public:
+class TransportControl : public juce::Component, public juce::ChangeListener, public juce::Timer {
+  public:
     //==============================================================================
-    TransportControl(juce::AudioTransportSource &transportSource,
-                     bool enabled = true);
+    TransportControl(juce::AudioTransportSource &transportSource, bool enabled = true);
     ~TransportControl() override;
 
     void setEnabled(bool enabled);
@@ -33,15 +30,8 @@ class TransportControl : public juce::Component,
     // Timer
     void timerCallback() override;
 
-   private:
-    enum class TransportState {
-        Stopped,
-        Starting,
-        Playing,
-        Pausing,
-        Paused,
-        Stopping
-    };
+  private:
+    enum class TransportState { Stopped, Starting, Playing, Pausing, Paused, Stopping };
     TransportState state = TransportState::Stopped;
     juce::AudioTransportSource &transportSource;
     bool enabled;
@@ -66,4 +56,6 @@ class TransportControl : public juce::Component,
     juce::TextButton startButton;
     juce::ToggleButton loopingToggle;
     juce::Label currentPositionLabel;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TransportControl)
 };

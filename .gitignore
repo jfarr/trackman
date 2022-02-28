@@ -2,3 +2,5 @@
 build/
 CMakeCache.txt
 .DS_Store
+.idea
+cmake-build-debug

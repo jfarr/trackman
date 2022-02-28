@@ -1,11 +1,8 @@
 #include "PositionableResamplingAudioSource.h"
 
-PositionableResamplingAudioSource::PositionableResamplingAudioSource(
-    juce::PositionableAudioSource *source, const bool deleteWhenRemoved,
-    double sourceSampleRateToCorrectFor, int maxNumChannels)
-    : source(source),
-      resamplerSource(source, false, maxNumChannels),
-      sourceSampleRate(sourceSampleRateToCorrectFor),
+PositionableResamplingAudioSource::PositionableResamplingAudioSource(juce::PositionableAudioSource *source,
+    const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor, int maxNumChannels)
+    : source(source), resamplerSource(source, false, maxNumChannels), sourceSampleRate(sourceSampleRateToCorrectFor),
       deleteWhenRemoved(deleteWhenRemoved) {}
 
 PositionableResamplingAudioSource::~PositionableResamplingAudioSource() {
@@ -16,8 +13,7 @@ PositionableResamplingAudioSource::~PositionableResamplingAudioSource() {
 }
 
 //==============================================================================
-void PositionableResamplingAudioSource::prepareToPlay(
-    int samplesPerBlockExpected, double newSampleRate) {
+void PositionableResamplingAudioSource::prepareToPlay(int samplesPerBlockExpected, double newSampleRate) {
     // const juce::ScopedLock sl(callbackLock);
 
     sampleRate = newSampleRate;
@@ -34,15 +30,13 @@ void PositionableResamplingAudioSource::releaseResources() {
     resamplerSource.releaseResources();
 }
 
-void PositionableResamplingAudioSource::getNextAudioBlock(
-    const juce::AudioSourceChannelInfo &info) {
+void PositionableResamplingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &info) {
     // const juce::ScopedLock sl(callbackLock);
     resamplerSource.getNextAudioBlock(info);
 }
 
 //==============================================================================
-void PositionableResamplingAudioSource::setNextReadPosition(
-    juce::int64 newPosition) {
+void PositionableResamplingAudioSource::setNextReadPosition(juce::int64 newPosition) {
     source->setNextReadPosition((juce::int64)(newPosition * getSampleRatio()));
 }
 
@@ -56,10 +50,6 @@ juce::int64 PositionableResamplingAudioSource::getTotalLength() const {
     return (juce::int64)((double)source->getTotalLength() * getSampleRatio());
 }
 
-bool PositionableResamplingAudioSource::isLooping() const {
-    return source->isLooping();
-}
+bool PositionableResamplingAudioSource::isLooping() const { return source->isLooping(); }
 
-void PositionableResamplingAudioSource::setLooping(bool shouldLoop) {
-    source->setLooping(shouldLoop);
-}
+void PositionableResamplingAudioSource::setLooping(bool shouldLoop) { source->setLooping(shouldLoop); }

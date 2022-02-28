@@ -2,20 +2,15 @@
 
 #include "PositionableResamplingAudioSource.h"
 
-PositionableMixingAudioSource::PositionableMixingAudioSource()
-    : length(0), looping(false) {}
+PositionableMixingAudioSource::PositionableMixingAudioSource() : length(0), looping(false) {}
 
-PositionableMixingAudioSource::~PositionableMixingAudioSource() {
-    removeAllInputs();
-}
+PositionableMixingAudioSource::~PositionableMixingAudioSource() { removeAllInputs(); }
 
 void PositionableMixingAudioSource::addInputSource(
-    PositionableAudioSource *input, bool deleteWhenRemoved,
-    double sourceSampleRateToCorrectFor, int maxNumChannels) {
+    PositionableAudioSource *input, bool deleteWhenRemoved, double sourceSampleRateToCorrectFor, int maxNumChannels) {
     if (sourceSampleRateToCorrectFor > 0) {
         input = new PositionableResamplingAudioSource(
-            input, deleteWhenRemoved, sourceSampleRateToCorrectFor,
-            maxNumChannels);
+            input, deleteWhenRemoved, sourceSampleRateToCorrectFor, maxNumChannels);
         mixer.addInputSource(input, true);
     } else {
         mixer.addInputSource(input, deleteWhenRemoved);
@@ -24,8 +19,7 @@ void PositionableMixingAudioSource::addInputSource(
     updateLength();
 }
 
-void PositionableMixingAudioSource::removeInputSource(
-    PositionableAudioSource *input) {
+void PositionableMixingAudioSource::removeInputSource(PositionableAudioSource *input) {
     if (input != nullptr) {
         const int index = inputs.indexOf(input);
         inputs.remove(index);
@@ -39,17 +33,13 @@ void PositionableMixingAudioSource::removeAllInputs() {
     mixer.removeAllInputs();
 }
 
-void PositionableMixingAudioSource::prepareToPlay(int samplesPerBlockExpected,
-                                                  double sampleRate) {
+void PositionableMixingAudioSource::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
     mixer.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
-void PositionableMixingAudioSource::releaseResources() {
-    mixer.releaseResources();
-}
+void PositionableMixingAudioSource::releaseResources() { mixer.releaseResources(); }
 
-void PositionableMixingAudioSource::getNextAudioBlock(
-    const juce::AudioSourceChannelInfo &info) {
+void PositionableMixingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &info) {
     juce::int64 currentPos = getNextReadPosition();
     if (currentPos > length) {
         setNextReadPosition(currentPos);
@@ -57,8 +47,7 @@ void PositionableMixingAudioSource::getNextAudioBlock(
     mixer.getNextAudioBlock(info);
 }
 
-void PositionableMixingAudioSource::setNextReadPosition(
-    juce::int64 newPosition) {
+void PositionableMixingAudioSource::setNextReadPosition(juce::int64 newPosition) {
     newPosition = looping ? newPosition % length : newPosition;
     for (int i = inputs.size(); --i >= 0;) {
         inputs.getUnchecked(i)->setNextReadPosition(newPosition);
@@ -74,9 +63,7 @@ juce::int64 PositionableMixingAudioSource::getNextReadPosition() const {
     return nextPos;
 }
 
-juce::int64 PositionableMixingAudioSource::getTotalLength() const {
-    return length;
-}
+juce::int64 PositionableMixingAudioSource::getTotalLength() const { return length; }
 
 void PositionableMixingAudioSource::updateLength() {
     juce::int64 newLength = 0;
@@ -88,6 +75,4 @@ void PositionableMixingAudioSource::updateLength() {
 
 bool PositionableMixingAudioSource::isLooping() const { return looping; }
 
-void PositionableMixingAudioSource::setLooping(bool shouldLoop) {
-    looping = shouldLoop;
-}
+void PositionableMixingAudioSource::setLooping(bool shouldLoop) { looping = shouldLoop; }

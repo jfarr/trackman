@@ -3,7 +3,7 @@
 #include <JuceHeader.h>
 
 class DecibelSlider : public juce::Slider {
-   public:
+  public:
     DecibelSlider() {
         setSliderStyle(juce::Slider::LinearVertical);
         setRange(-100, 12);
@@ -14,18 +14,13 @@ class DecibelSlider : public juce::Slider {
     double getValueFromText(const juce::String &text) override {
         auto minusInfinitydB = -100.0;
 
-        auto decibelText =
-            text.upToFirstOccurrenceOf("dB", false, false).trim();
+        auto decibelText = text.upToFirstOccurrenceOf("dB", false, false).trim();
 
-        return decibelText.equalsIgnoreCase("-INF")
-                   ? minusInfinitydB
-                   : decibelText.getDoubleValue();
+        return decibelText.equalsIgnoreCase("-INF") ? minusInfinitydB : decibelText.getDoubleValue();
     }
 
-    juce::String getTextFromValue(double value) override {
-        return juce::Decibels::toString(value);
-    }
+    juce::String getTextFromValue(double value) override { return juce::Decibels::toString(value); }
 
-   private:
+  private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DecibelSlider)
 };

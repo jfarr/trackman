@@ -5,13 +5,13 @@
 #include "DecibelSlider.h"
 
 class MasterTrackListener {
-   public:
+  public:
     virtual void levelChanged(float level) = 0;
     virtual void muteChanged(bool muted) = 0;
 };
 
 class MasterTrackControl : public juce::Component {
-   public:
+  public:
     MasterTrackControl();
     ~MasterTrackControl();
 
@@ -23,7 +23,7 @@ class MasterTrackControl : public juce::Component {
     void paint(juce::Graphics &g) override;
     void resized() override;
 
-   private:
+  private:
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
     juce::Label channelLabel;
@@ -36,4 +36,6 @@ class MasterTrackControl : public juce::Component {
     void muteButtonClicked();
     void notifyLevelChanged();
     void notifyMuteChanged();
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MasterTrackControl)
 };

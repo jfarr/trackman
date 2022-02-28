@@ -1,7 +1,6 @@
 #include "DesktopComponent.h"
 
-DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow)
-    : mixerComponent(formatManager) {
+DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow) : mixerComponent(formatManager) {
     addAndMakeVisible(mixerComponent);
 
     setApplicationCommandManagerToWatch(&commandManager);
@@ -36,14 +35,13 @@ DesktopComponent::~DesktopComponent() {
 #endif
     commandManager.setFirstCommandTarget(nullptr);
 
-    for (auto &track : tracks) delete track;
+    for (auto &track : tracks)
+        delete track;
     tracks.clear();
 }
 
 void DesktopComponent::addNewTrack() {
-    juce::String name =
-        juce::String("Track ") +
-        juce::String::formatted(juce::String("%d"), tracks.size() + 1);
+    juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), tracks.size() + 1);
     Track *newTrack = new Track(name);
     tracks.add(newTrack);
     mixerComponent.addTrack(*newTrack);
@@ -51,27 +49,25 @@ void DesktopComponent::addNewTrack() {
     resized();
 }
 
-void DesktopComponent::createChildWindow(const juce::String &name,
-                                         juce::Component *component) {
+void DesktopComponent::createChildWindow(const juce::String &name, juce::Component *component) {
     auto *window = new ChildWindow(name, component);
     windows.add(window);
     addAndMakeVisible(window);
 }
 
 void DesktopComponent::closeAllWindows() {
-    for (auto &window : windows) window.deleteAndZero();
+    for (auto &window : windows)
+        window.deleteAndZero();
 
     windows.clear();
 }
 void DesktopComponent::paint(juce::Graphics &g) {
-    g.fillAll(
-        getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
 void DesktopComponent::resized() {
     auto area = getLocalBounds();
     mixerComponent.setBounds(area.removeFromBottom(mixerComponent.getHeight()));
     for (auto &track : tracks)
-        track->getTrackLaneControl().setBounds(
-            area.removeFromTop(track->getTrackLaneControl().getHeight()));
+        track->getTrackLaneControl().setBounds(area.removeFromTop(track->getTrackLaneControl().getHeight()));
 }

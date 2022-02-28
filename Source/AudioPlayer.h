@@ -6,15 +6,8 @@
 #include "ThumbnailComponent.h"
 #include "TransportControl.h"
 
-//==============================================================================
-/*
-    This component lives inside our window, and this is where you should put all
-    your controls and content.
-*/
-class AudioPlayer : public juce::AudioAppComponent,
-                    public FileListener,
-                    public TransportControlListener {
-   public:
+class AudioPlayer : public juce::AudioAppComponent, public FileListener, public TransportControlListener {
+  public:
     //==============================================================================
     AudioPlayer(juce::AudioFormatManager &formatManager);
     ~AudioPlayer() override;
@@ -22,8 +15,7 @@ class AudioPlayer : public juce::AudioAppComponent,
     //==============================================================================
     // AudioAppComponent
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock(
-        const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
     void releaseResources() override;
 
     //==============================================================================
@@ -39,7 +31,7 @@ class AudioPlayer : public juce::AudioAppComponent,
     // FileListener
     void fileChosen(juce::File file) override;
 
-   private:
+  private:
     juce::AudioFormatManager &formatManager;
     juce::AudioTransportSource transportSource;
     TransportControl transportControl;

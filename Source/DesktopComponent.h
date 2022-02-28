@@ -11,10 +11,8 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class DesktopComponent : public juce::Component,
-                         public juce::ApplicationCommandTarget,
-                         public juce::MenuBarModel {
-   public:
+class DesktopComponent : public juce::Component, public juce::ApplicationCommandTarget, public juce::MenuBarModel {
+  public:
     //==============================================================================
     /** A list of the commands that this menu responds to. */
     enum CommandIDs { newTrack = 1, newAudioPlayer };
@@ -32,8 +30,7 @@ class DesktopComponent : public juce::Component,
 
     juce::StringArray getMenuBarNames() override { return {"new"}; }
 
-    juce::PopupMenu getMenuForIndex(
-        int menuIndex, const juce::String & /*menuName*/) override {
+    juce::PopupMenu getMenuForIndex(int menuIndex, const juce::String & /*menuName*/) override {
         juce::PopupMenu menu;
 
         if (menuIndex == 0) {
@@ -44,58 +41,49 @@ class DesktopComponent : public juce::Component,
         return menu;
     }
 
-    void menuItemSelected(int /*menuItemID*/,
-                          int /*topLevelMenuIndex*/) override {}
+    void menuItemSelected(int /*menuItemID*/, int /*topLevelMenuIndex*/) override {}
 
     //==============================================================================
     // The following methods implement the ApplicationCommandTarget interface,
     // allowing this window to publish a set of actions it can perform, and
     // which can be mapped onto menus, keypresses, etc.
-    ApplicationCommandTarget *getNextCommandTarget() override {
-        return nullptr;
-    }
+    ApplicationCommandTarget *getNextCommandTarget() override { return nullptr; }
 
     void getAllCommands(juce::Array<juce::CommandID> &c) override {
-        juce::Array<juce::CommandID> commands{CommandIDs::newTrack,
-                                              CommandIDs::newAudioPlayer};
+        juce::Array<juce::CommandID> commands{CommandIDs::newTrack, CommandIDs::newAudioPlayer};
         c.addArray(commands);
     }
 
-    void getCommandInfo(juce::CommandID commandID,
-                        juce::ApplicationCommandInfo &result) override {
+    void getCommandInfo(juce::CommandID commandID, juce::ApplicationCommandInfo &result) override {
         switch (commandID) {
-            case CommandIDs::newTrack:
-                result.setInfo("track", "Create a new track", "Menu", 0);
-                result.addDefaultKeypress('t',
-                                          juce::ModifierKeys::shiftModifier);
-                break;
-            case CommandIDs::newAudioPlayer:
-                result.setInfo("audioplayer",
-                               "Create a new audioplayer component", "Menu", 0);
-                result.addDefaultKeypress('p',
-                                          juce::ModifierKeys::shiftModifier);
-                break;
-            default:
-                break;
+        case CommandIDs::newTrack:
+            result.setInfo("track", "Create a new track", "Menu", 0);
+            result.addDefaultKeypress('t', juce::ModifierKeys::shiftModifier);
+            break;
+        case CommandIDs::newAudioPlayer:
+            result.setInfo("audioplayer", "Create a new audioplayer component", "Menu", 0);
+            result.addDefaultKeypress('p', juce::ModifierKeys::shiftModifier);
+            break;
+        default:
+            break;
         }
     }
     bool perform(const InvocationInfo &info) override {
         switch (info.commandID) {
-            case CommandIDs::newTrack:
-                addNewTrack();
-                break;
-            case CommandIDs::newAudioPlayer:
-                createChildWindow("audioplayer",
-                                  new AudioPlayer(formatManager));
-                break;
-            default:
-                return false;
+        case CommandIDs::newTrack:
+            addNewTrack();
+            break;
+        case CommandIDs::newAudioPlayer:
+            createChildWindow("audioplayer", new AudioPlayer(formatManager));
+            break;
+        default:
+            return false;
         }
 
         return true;
     }
 
-   private:
+  private:
     juce::AudioFormatManager formatManager;
     juce::Array<Track *> tracks;
 
@@ -109,8 +97,7 @@ class DesktopComponent : public juce::Component,
     juce::Array<Component::SafePointer<Component>> windows;
 
     void addNewTrack();
-    void createChildWindow(const juce::String &name,
-                           juce::Component *component);
+    void createChildWindow(const juce::String &name, juce::Component *component);
     void closeAllWindows();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DesktopComponent)

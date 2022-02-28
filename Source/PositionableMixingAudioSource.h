@@ -3,14 +3,12 @@
 #include <JuceHeader.h>
 
 class PositionableMixingAudioSource : public juce::PositionableAudioSource {
-   public:
+  public:
     PositionableMixingAudioSource();
     ~PositionableMixingAudioSource();
 
-    void addInputSource(PositionableAudioSource *newInput,
-                        bool deleteWhenRemoved,
-                        double sourceSampleRateToCorrectFor = 0.0,
-                        int maxNumChannels = 2);
+    void addInputSource(PositionableAudioSource *newInput, bool deleteWhenRemoved,
+        double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2);
     void removeInputSource(PositionableAudioSource *input);
     void removeAllInputs();
 
@@ -28,11 +26,13 @@ class PositionableMixingAudioSource : public juce::PositionableAudioSource {
     bool isLooping() const override;
     void setLooping(bool shouldLoop) override;
 
-   private:
+  private:
     juce::MixerAudioSource mixer;
     juce::Array<PositionableAudioSource *> inputs;
     juce::int64 length;
     bool looping;
 
     void updateLength();
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PositionableMixingAudioSource)
 };

@@ -2,8 +2,7 @@
 
 #include "listutil.h"
 
-MasterTrackControl::MasterTrackControl()
-    : level(juce::Decibels::decibelsToGain<float>(0.0)), muted(false) {
+MasterTrackControl::MasterTrackControl() : level(juce::Decibels::decibelsToGain<float>(0.0)), muted(false) {
     createControls();
     setSize(100, 100);
 }
@@ -19,11 +18,9 @@ void MasterTrackControl::createControls() {
     muteButton.onClick = [this] { muteButtonClicked(); };
 
     channelLabel.setText("MASTER", juce::dontSendNotification);
-    channelLabel.setJustificationType(
-        juce::Justification(juce::Justification::horizontallyCentred));
+    channelLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
     channelLabel.setColour(
-        juce::Label::backgroundColourId,
-        getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+        juce::Label::backgroundColourId, getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 
     addAndMakeVisible(decibelSlider);
     addAndMakeVisible(muteButton);
@@ -44,8 +41,7 @@ void MasterTrackControl::resized() {
     auto buttonSize = 25;
     auto labelHeight = 15;
     auto margin = 3;
-    channelLabel.setBounds(
-        area.removeFromBottom(labelHeight).withTrimmedRight(1));
+    channelLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
     decibelSlider.setBounds(area.removeFromLeft(sliderWidth).reduced(margin));
     auto buttonArea = area.removeFromLeft(buttonSize);
     muteButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
@@ -59,32 +55,26 @@ void MasterTrackControl::decibelSliderChanged() {
 void MasterTrackControl::muteButtonClicked() {
     muted = !muted;
     muteButton.setColour(juce::TextButton::buttonColourId,
-                         muted
-                             ? juce::Colours::red
-                             : getLookAndFeel().findColour(
-                                   juce::ResizableWindow::backgroundColourId));
+        muted ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     notifyMuteChanged();
 }
 
 void MasterTrackControl::addListener(MasterTrackListener *listener) {
-    if (!listContains(listener, listeners)) listeners.push_front(listener);
+    if (!listContains(listener, listeners))
+        listeners.push_front(listener);
 }
 
-void MasterTrackControl::removeListener(MasterTrackListener *listener) {
-    listeners.remove(listener);
-}
+void MasterTrackControl::removeListener(MasterTrackListener *listener) { listeners.remove(listener); }
 
 void MasterTrackControl::notifyLevelChanged() {
-    for (std::list<MasterTrackListener *>::iterator i = listeners.begin();
-         i != listeners.end(); ++i) {
+    for (std::list<MasterTrackListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
         MasterTrackListener &listener = **i;
         listener.levelChanged(level);
     }
 }
 
 void MasterTrackControl::notifyMuteChanged() {
-    for (std::list<MasterTrackListener *>::iterator i = listeners.begin();
-         i != listeners.end(); ++i) {
+    for (std::list<MasterTrackListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
         MasterTrackListener &listener = **i;
         listener.muteChanged(muted);
     }

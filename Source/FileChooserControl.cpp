@@ -18,8 +18,7 @@ void FileChooserControl::createControls() {
 }
 
 void FileChooserControl::paint(juce::Graphics &g) {
-    g.fillAll(
-        getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
 void FileChooserControl::resized() {
@@ -32,34 +31,29 @@ void FileChooserControl::resized() {
 }
 
 void FileChooserControl::openButtonClicked() {
-    chooser = std::make_unique<juce::FileChooser>("Select a file to play...",
-                                                  selectedFile, "*.wav");
-    auto chooserFlags = juce::FileBrowserComponent::openMode |
-                        juce::FileBrowserComponent::canSelectFiles;
+    chooser = std::make_unique<juce::FileChooser>("Select a file to play...", selectedFile, "*.wav");
+    auto chooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
 
     chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
         auto file = fc.getResult();
 
         if (file != juce::File{}) {
-            selectedFileLabel.setText(file.getFileName(),
-                                      juce::dontSendNotification);
+            selectedFileLabel.setText(file.getFileName(), juce::dontSendNotification);
             notifyFileChosen(file);
         }
     });
 }
 
 void FileChooserControl::notifyFileChosen(juce::File file) {
-    for (std::list<FileListener *>::iterator i = listeners.begin();
-         i != listeners.end(); ++i) {
+    for (std::list<FileListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
         FileListener &listener = **i;
         listener.fileChosen(file);
     }
 }
 
 void FileChooserControl::AddListener(FileListener *listener) {
-    if (!listContains(listener, listeners)) listeners.push_front(listener);
+    if (!listContains(listener, listeners))
+        listeners.push_front(listener);
 }
 
-void FileChooserControl::RemoveListener(FileListener *listener) {
-    listeners.remove(listener);
-}
+void FileChooserControl::RemoveListener(FileListener *listener) { listeners.remove(listener); }

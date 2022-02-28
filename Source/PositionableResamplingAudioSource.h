@@ -3,11 +3,9 @@
 #include <JuceHeader.h>
 
 class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
-   public:
-    PositionableResamplingAudioSource(juce::PositionableAudioSource *source,
-                                      const bool deleteWhenRemoved,
-                                      double sourceSampleRateToCorrectFor,
-                                      int maxNumChannels = 2);
+  public:
+    PositionableResamplingAudioSource(juce::PositionableAudioSource *source, const bool deleteWhenRemoved,
+        double sourceSampleRateToCorrectFor, int maxNumChannels = 2);
     ~PositionableResamplingAudioSource();
 
     //==============================================================================
@@ -24,7 +22,7 @@ class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
     bool isLooping() const override;
     void setLooping(bool shouldLoop) override;
 
-   private:
+  private:
     juce::PositionableAudioSource *source;
     juce::ResamplingAudioSource resamplerSource;
     // juce::CriticalSection callbackLock;
@@ -33,8 +31,8 @@ class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
     const bool deleteWhenRemoved;
 
     double getSampleRatio() const {
-        return (sampleRate > 0 && sourceSampleRate > 0)
-                   ? sampleRate / sourceSampleRate
-                   : 1.0;
+        return (sampleRate > 0 && sourceSampleRate > 0) ? sampleRate / sourceSampleRate : 1.0;
     }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PositionableResamplingAudioSource)
 };

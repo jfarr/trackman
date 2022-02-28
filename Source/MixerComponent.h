@@ -13,7 +13,7 @@ class MixerComponent : public juce::AudioAppComponent,
                        public FileListener,
                        public TransportControlListener,
                        public MasterTrackListener {
-   public:
+  public:
     MixerComponent(juce::AudioFormatManager &formatManager);
     ~MixerComponent();
 
@@ -35,8 +35,7 @@ class MixerComponent : public juce::AudioAppComponent,
     //==============================================================================
     // AudioAppComponent
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock(
-        const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
     void releaseResources() override;
 
     //==============================================================================
@@ -44,7 +43,7 @@ class MixerComponent : public juce::AudioAppComponent,
     void paint(juce::Graphics &g) override;
     void resized() override;
 
-   private:
+  private:
     juce::AudioFormatManager &formatManager;
     PositionableMixingAudioSource mixerSource;
     juce::AudioTransportSource transportSource;
@@ -54,4 +53,6 @@ class MixerComponent : public juce::AudioAppComponent,
     std::list<AudioSource *> sources;
 
     void createControls();
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerComponent)
 };

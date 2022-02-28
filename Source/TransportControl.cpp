@@ -3,8 +3,7 @@
 #include "listutil.h"
 
 //==============================================================================
-TransportControl::TransportControl(juce::AudioTransportSource &transportSource,
-                                   bool enabled)
+TransportControl::TransportControl(juce::AudioTransportSource &transportSource, bool enabled)
     : transportSource(transportSource), enabled(enabled) {
     transportSource.addChangeListener(this);
     createControls();
@@ -17,29 +16,25 @@ void TransportControl::createControls() {
     addAndMakeVisible(&playButton);
     playButton.setButtonText(">");
     playButton.onClick = [this] { playButtonClicked(); };
-    playButton.setColour(juce::TextButton::buttonColourId,
-                         juce::Colours::steelblue);
+    playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     playButton.setEnabled(enabled);
 
     addAndMakeVisible(&stopButton);
     stopButton.setButtonText("[]");
     stopButton.onClick = [this] { stopButtonClicked(); };
-    stopButton.setColour(juce::TextButton::buttonColourId,
-                         juce::Colours::steelblue);
+    stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     stopButton.setEnabled(enabled);
 
     addAndMakeVisible(&pauseButton);
     pauseButton.setButtonText("||");
     pauseButton.onClick = [this] { pauseButtonClicked(); };
-    pauseButton.setColour(juce::TextButton::buttonColourId,
-                          juce::Colours::steelblue);
+    pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     pauseButton.setEnabled(enabled);
 
     addAndMakeVisible(&startButton);
     startButton.setButtonText("|<");
     startButton.onClick = [this] { startButtonClicked(); };
-    startButton.setColour(juce::TextButton::buttonColourId,
-                          juce::Colours::steelblue);
+    startButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     startButton.setEnabled(enabled);
 
     addAndMakeVisible(&loopingToggle);
@@ -62,8 +57,7 @@ void TransportControl::setEnabled(bool isEnabled) {
 }
 
 void TransportControl::paint(juce::Graphics &g) {
-    g.fillAll(
-        getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
 void TransportControl::resized() {
@@ -71,16 +65,11 @@ void TransportControl::resized() {
 
     auto buttonWidth = 50;
     auto buttonMargin = 2;
-    startButton.setBounds(
-        area.removeFromLeft(buttonWidth).reduced(buttonMargin));
-    playButton.setBounds(
-        area.removeFromLeft(buttonWidth).reduced(buttonMargin));
-    stopButton.setBounds(
-        area.removeFromLeft(buttonWidth).reduced(buttonMargin));
-    pauseButton.setBounds(
-        area.removeFromLeft(buttonWidth).reduced(buttonMargin));
-    loopingToggle.setBounds(
-        area.removeFromLeft(buttonWidth).reduced(buttonMargin));
+    startButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
+    playButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
+    stopButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
+    pauseButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
+    loopingToggle.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
     currentPositionLabel.setBounds(area.reduced(buttonMargin));
 }
 
@@ -89,51 +78,46 @@ void TransportControl::changeState(TransportState newState) {
         state = newState;
 
         switch (state) {
-            case TransportState::Stopped:
-                playButton.setColour(juce::TextButton::buttonColourId,
-                                     juce::Colours::steelblue);
-                pauseButton.setColour(juce::TextButton::buttonColourId,
-                                      juce::Colours::steelblue);
-                transportSource.setPosition(0.0);
-                break;
+        case TransportState::Stopped:
+            playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
+            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
+            transportSource.setPosition(0.0);
+            break;
 
-            case TransportState::Starting:
-                transportSource.start();
-                break;
+        case TransportState::Starting:
+            transportSource.start();
+            break;
 
-            case TransportState::Playing:
-                playButton.setColour(juce::TextButton::buttonColourId,
-                                     juce::Colours::lightgreen);
-                pauseButton.setColour(juce::TextButton::buttonColourId,
-                                      juce::Colours::steelblue);
-                break;
+        case TransportState::Playing:
+            playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::lightgreen);
+            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
+            break;
 
-            case TransportState::Pausing:
-                transportSource.stop();
-                break;
+        case TransportState::Pausing:
+            transportSource.stop();
+            break;
 
-            case TransportState::Paused:
-                pauseButton.setColour(juce::TextButton::buttonColourId,
-                                      juce::Colours::lightgreen);
-                break;
+        case TransportState::Paused:
+            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::lightgreen);
+            break;
 
-            case TransportState::Stopping:
-                transportSource.stop();
-                break;
+        case TransportState::Stopping:
+            transportSource.stop();
+            break;
         }
     }
 }
 
 juce::String TransportControl::getStateLabel() {
     switch (state) {
-        case TransportState::Stopped:
-            return juce::String("Stopped");
-        case TransportState::Playing:
-            return juce::String("Playing");
-        case TransportState::Paused:
-            return juce::String("Paused");
-        default:
-            return juce::String("");
+    case TransportState::Stopped:
+        return juce::String("Stopped");
+    case TransportState::Playing:
+        return juce::String("Playing");
+    case TransportState::Paused:
+        return juce::String("Paused");
+    default:
+        return juce::String("");
     }
 }
 
@@ -143,8 +127,7 @@ void TransportControl::changeListenerCallback(juce::ChangeBroadcaster *source) {
             changeState(TransportState::Playing);
         else if (TransportState::Pausing == state)
             changeState(TransportState::Paused);
-        else if ((state == TransportState::Stopping) ||
-                 (state == TransportState::Playing))
+        else if ((state == TransportState::Stopping) || (state == TransportState::Playing))
             changeState(TransportState::Stopped);
     }
 }
@@ -162,17 +145,12 @@ void TransportControl::timerCallback() {
     auto lmillis = (int)(length * 1000.0) % 1000;
 
     auto stateLabel = getStateLabel();
-    auto stateText = stateLabel.isNotEmpty()
-                         ? (juce::String(" [") + stateLabel + juce::String("]"))
-                         : juce::String("");
-    auto positionString =
-        juce::String::formatted("%02d:%02d:%03d", minutes, seconds, millis);
-    auto lengthString =
-        juce::String::formatted("%02d:%02d:%03d", lmins, lsecs, lmillis);
+    auto stateText = stateLabel.isNotEmpty() ? (juce::String(" [") + stateLabel + juce::String("]")) : juce::String("");
+    auto positionString = juce::String::formatted("%02d:%02d:%03d", minutes, seconds, millis);
+    auto lengthString = juce::String::formatted("%02d:%02d:%03d", lmins, lsecs, lmillis);
 
     currentPositionLabel.setText(
-        positionString + juce::String(" / ") + lengthString + stateText,
-        juce::dontSendNotification);
+        positionString + juce::String(" / ") + lengthString + stateText, juce::dontSendNotification);
 }
 
 void TransportControl::playButtonClicked() {
@@ -199,26 +177,20 @@ void TransportControl::pauseButtonClicked() {
         changeState(TransportState::Pausing);
 }
 
-void TransportControl::startButtonClicked() {
-    transportSource.setPosition(0.0);
-}
+void TransportControl::startButtonClicked() { transportSource.setPosition(0.0); }
 
-void TransportControl::loopButtonChanged() {
-    updateLoopState(loopingToggle.getToggleState());
-}
+void TransportControl::loopButtonChanged() { updateLoopState(loopingToggle.getToggleState()); }
 
 void TransportControl::updateLoopState(bool shouldLoop) {
-    for (std::list<TransportControlListener *>::iterator i = listeners.begin();
-         i != listeners.end(); ++i) {
+    for (std::list<TransportControlListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
         TransportControlListener &listener = **i;
         listener.updateLoopState(shouldLoop);
     }
 }
 
 void TransportControl::addListener(TransportControlListener *listener) {
-    if (!listContains(listener, listeners)) listeners.push_front(listener);
+    if (!listContains(listener, listeners))
+        listeners.push_front(listener);
 }
 
-void TransportControl::removeListener(TransportControlListener *listener) {
-    listeners.remove(listener);
-}
+void TransportControl::removeListener(TransportControlListener *listener) { listeners.remove(listener); }

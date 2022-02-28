@@ -19,5 +19,5 @@ const char *const projectName = "Trackman";
 const char *const companyName = "";
 const char *const versionString = "0.1.0";
 const int versionNumber = 0x100;
-}  // namespace ProjectInfo
+} // namespace ProjectInfo
 #endif

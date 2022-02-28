@@ -3,12 +3,12 @@
 #include <JuceHeader.h>
 
 class FileListener {
-   public:
+  public:
     virtual void fileChosen(juce::File file) = 0;
 };
 
 class FileChooserControl : public juce::Component {
-   public:
+  public:
     FileChooserControl(juce::File file = juce::File{});
     ~FileChooserControl();
 
@@ -24,7 +24,7 @@ class FileChooserControl : public juce::Component {
 
     void openButtonClicked();
 
-   private:
+  private:
     juce::File selectedFile;
     std::list<FileListener *> listeners;
 

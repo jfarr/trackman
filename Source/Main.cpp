@@ -12,20 +12,16 @@
 
 //==============================================================================
 class TrackmanApplication : public juce::JUCEApplication {
-   public:
+  public:
     //==============================================================================
     TrackmanApplication() {}
 
-    const juce::String getApplicationName() override {
-        return ProjectInfo::projectName;
-    }
-    const juce::String getApplicationVersion() override {
-        return ProjectInfo::versionString;
-    }
+    const juce::String getApplicationName() override { return ProjectInfo::projectName; }
+    const juce::String getApplicationVersion() override { return ProjectInfo::versionString; }
     bool moreThanOneInstanceAllowed() override { return true; }
 
     //==============================================================================
-    void initialise(const juce::String& /*commandLine*/) override {
+    void initialise(const juce::String & /*commandLine*/) override {
         // This method is where you should put your application's initialisation
         // code..
 
@@ -35,7 +31,7 @@ class TrackmanApplication : public juce::JUCEApplication {
     void shutdown() override {
         // Add your application's shutdown code here..
 
-        mainWindow = nullptr;  // (deletes our window)
+        mainWindow = nullptr; // (deletes our window)
     }
 
     //==============================================================================
@@ -46,7 +42,7 @@ class TrackmanApplication : public juce::JUCEApplication {
         quit();
     }
 
-    void anotherInstanceStarted(const juce::String& /*commandLine*/) override {
+    void anotherInstanceStarted(const juce::String & /*commandLine*/) override {
         // When another instance of the app is launched while this one is
         // running, this method is invoked, and the commandLine parameter tells
         // you what the other instance's command-line arguments were.
@@ -58,13 +54,11 @@ class TrackmanApplication : public juce::JUCEApplication {
         our MainComponent class.
     */
     class MainWindow : public juce::DocumentWindow {
-       public:
+      public:
         MainWindow(juce::String name)
-            : DocumentWindow(
-                  name,
-                  juce::Desktop::getInstance()
-                      .getDefaultLookAndFeel()
-                      .findColour(juce::ResizableWindow::backgroundColourId),
+            : DocumentWindow(name,
+                  juce::Desktop::getInstance().getDefaultLookAndFeel().findColour(
+                      juce::ResizableWindow::backgroundColourId),
                   DocumentWindow::allButtons) {
             setUsingNativeTitleBar(true);
             setContentOwned(new DesktopComponent(this), true);
@@ -94,11 +88,11 @@ class TrackmanApplication : public juce::JUCEApplication {
            superclass's method.
         */
 
-       private:
+      private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
     };
 
-   private:
+  private:
     std::unique_ptr<MainWindow> mainWindow;
 };
 
