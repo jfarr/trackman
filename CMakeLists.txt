@@ -55,6 +55,6 @@ else()
 endif()
 
 add_subdirectory(libs)
-add_subdirectory(Source)
+add_subdirectory(src)
 
 target_include_directories(Trackman PUBLIC "${PROJECT_BINARY_DIR}")
