@@ -10,7 +10,7 @@
 #include "controls/common/TransportControl.h"
 
 class MixerComponent : public juce::AudioAppComponent,
-                       public FileListener,
+                       public TrackSourceListener,
                        public TransportControlListener,
                        public MasterTrackListener {
   public:
@@ -19,9 +19,8 @@ class MixerComponent : public juce::AudioAppComponent,
 
     void addTrack(Track &track);
 
-    //==============================================================================
-    // FileListener
-    void fileChosen(juce::File file) override;
+    void onSourceSet(juce::PositionableAudioSource *source, const bool deleteWhenRemoved,
+        double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) override;
 
     //==============================================================================
     // TransportControlListener

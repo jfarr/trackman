@@ -33,19 +33,14 @@ void MixerComponent::addTrack(Track &track) {
     for (std::list<Track *>::iterator i = tracks.begin(); i != tracks.end(); ++i) {
         Track &t = **i;
         addAndMakeVisible(t.getTrackControl());
-        t.getTrackControl().setListener(this);
+        t.getTrackControl().setListener(&t);
     }
     resized();
 }
 
-void MixerComponent::fileChosen(juce::File file) {
-    auto *reader = formatManager.createReaderFor(file);
-
-    if (reader != nullptr) {
-        auto newSource = new juce::AudioFormatReaderSource(reader, true);
-        sources.push_back(newSource);
-        mixerSource.addInputSource(newSource, false, reader->sampleRate);
-    }
+void MixerComponent::onSourceSet(juce::PositionableAudioSource *source, const bool deleteWhenRemoved,
+    double sourceSampleRateToCorrectFor, int maxNumChannels) {
+    mixerSource.addInputSource(source, deleteWhenRemoved, sourceSampleRateToCorrectFor);
 }
 
 void MixerComponent::updateLoopState(bool shouldLoop) { mixerSource.setLooping(shouldLoop); }

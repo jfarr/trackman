@@ -64,12 +64,13 @@ void TransportControl::resized() {
     auto area = getLocalBounds();
 
     auto buttonWidth = 50;
+    auto loopButtonWidth = 65;
     auto buttonMargin = 2;
     startButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
     playButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
     stopButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
     pauseButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
-    loopingToggle.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
+    loopingToggle.setBounds(area.removeFromLeft(loopButtonWidth).reduced(buttonMargin));
     currentPositionLabel.setBounds(area.reduced(buttonMargin));
 }
 

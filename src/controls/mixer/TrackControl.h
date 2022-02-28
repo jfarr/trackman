@@ -5,9 +5,10 @@
 #include "controls/common/DecibelSlider.h"
 #include "controls/common/FileChooserControl.h"
 
-class SourceListener {
+class TrackControlListener {
   public:
-    virtual void onSourceSet(juce::AudioFormatReaderSource &source) = 0;
+    virtual void levelChanged(float level) = 0;
+    virtual void muteChanged(bool muted) = 0;
 };
 
 class TrackControl : public juce::Component {
@@ -16,6 +17,9 @@ class TrackControl : public juce::Component {
     ~TrackControl();
 
     void setListener(class FileListener *newListener) { listener = newListener; }
+
+    void addListener(TrackControlListener *listener);
+    void removeListener(TrackControlListener *listener);
 
     //==============================================================================
     // Component
@@ -29,9 +33,12 @@ class TrackControl : public juce::Component {
     juce::Label channelLabel;
     float level;
     bool muted;
+    std::list<TrackControlListener *> listeners;
 
     void createControls();
+    void decibelSliderChanged();
     void muteButtonClicked();
+    void notifyLevelChanged();
 
     std::unique_ptr<juce::FileChooser> chooser;
     juce::TextButton openButton;

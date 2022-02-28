@@ -1,23 +1,42 @@
 #pragma once
 
+#include "audio/ProcessingAudioSource.h"
 #include "controls/mixer/TrackControl.h"
 #include "controls/mixer/TrackLaneControl.h"
-#include "audio/ProcessingAudioSource.h"
+
+class TrackSourceListener {
+  public:
+    virtual void onSourceSet(juce::PositionableAudioSource *source, const bool deleteWhenRemoved,
+        double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) = 0;
+};
 
 class GainProcessor : public juce::dsp::ProcessorWrapper<juce::dsp::Gain<float>> {};
 
-class Track {
+class Track : public FileListener, public TrackControlListener {
   public:
-    Track(juce::String name);
+    Track(juce::String name, juce::AudioFormatManager &formatManager);
     ~Track();
+
+    void setListener(class TrackSourceListener *newListener) { listener = newListener; }
 
     TrackControl &getTrackControl() { return trackControl; }
     TrackLaneControl &getTrackLaneControl() { return trackLaneControl; }
 
-    void setSource(juce::PositionableAudioSource *newSource, const bool deleteWhenRemoved);
+    //==============================================================================
+    // FileListener
+    void fileChosen(juce::File file) override;
+
+    //==============================================================================
+    // TrackControlListener
+    void levelChanged(float level) override;
+    void muteChanged(bool muted) override;
 
   private:
-    std::unique_ptr<ProcessingAudioSource<juce::dsp::Gain<float>>> source;
+    juce::AudioFormatManager &formatManager;
+    //std::unique_ptr<ProcessingAudioSource<juce::dsp::Gain<float>>> source;
+    //std::unique_ptr<juce::PositionableAudioSource> source;
+    TrackSourceListener *listener;
+
     GainProcessor gain;
     TrackControl trackControl;
     TrackLaneControl trackLaneControl;

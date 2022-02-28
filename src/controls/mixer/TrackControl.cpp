@@ -11,7 +11,7 @@ TrackControl::TrackControl(juce::String trackName)
 TrackControl::~TrackControl() {}
 
 void TrackControl::createControls() {
-    decibelSlider.onValueChange = [this] { level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue()); };
+    decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
     decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
 
     muteButton.setButtonText("M");
@@ -53,6 +53,11 @@ void TrackControl::resized() {
     openButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
 }
 
+void TrackControl::decibelSliderChanged() {
+    level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
+    notifyLevelChanged();
+}
+
 void TrackControl::muteButtonClicked() {
     muted = !muted;
     muteButton.setColour(juce::TextButton::buttonColourId,
@@ -70,4 +75,18 @@ void TrackControl::openButtonClicked() {
             listener->fileChosen(file);
         }
     });
+}
+
+void TrackControl::addListener(TrackControlListener *listener) {
+    if (!listContains(listener, listeners))
+        listeners.push_front(listener);
+}
+
+void TrackControl::removeListener(TrackControlListener *listener) { listeners.remove(listener); }
+
+void TrackControl::notifyLevelChanged() {
+    for (std::list<TrackControlListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
+        TrackControlListener &listener = **i;
+        listener.levelChanged((float)decibelSlider.getValue());
+    }
 }

@@ -12,8 +12,8 @@ class FileChooserControl : public juce::Component {
     FileChooserControl(juce::File file = juce::File{});
     ~FileChooserControl();
 
-    void AddListener(FileListener *listener);
-    void RemoveListener(FileListener *listener);
+    void addListener(FileListener *listener);
+    void removeListener(FileListener *listener);
 
     //==============================================================================
     // Component

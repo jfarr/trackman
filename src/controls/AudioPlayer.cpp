@@ -14,7 +14,7 @@ AudioPlayer::AudioPlayer(juce::AudioFormatManager &formatManager)
 AudioPlayer::~AudioPlayer() {
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
-    fileChooserControl.RemoveListener(this);
+    fileChooserControl.removeListener(this);
     transportControl.removeListener(this);
     transportSource.setSource(nullptr);
 }
@@ -25,7 +25,7 @@ void AudioPlayer::createControls() {
     addAndMakeVisible(positionOverlay);
     addAndMakeVisible(transportControl);
 
-    fileChooserControl.AddListener(this);
+    fileChooserControl.addListener(this);
     transportControl.addListener(this);
 }
 
