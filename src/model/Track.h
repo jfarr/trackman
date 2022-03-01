@@ -1,7 +1,6 @@
 #pragma once
 
 #include "audio/GainAudioSource.h"
-//#include "audio/ProcessingAudioSource.h"
 #include "controls/mixer/TrackControl.h"
 #include "controls/mixer/TrackLaneControl.h"
 
@@ -10,8 +9,6 @@ class TrackSourceListener {
     virtual void onSourceSet(juce::PositionableAudioSource *newSource, juce::PositionableAudioSource *prevSource,
         const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) = 0;
 };
-
-//class GainProcessor : public juce::dsp::ProcessorWrapper<juce::dsp::Gain<float>> {};
 
 class Track : public FileListener, public TrackControlListener {
   public:
@@ -35,12 +32,9 @@ class Track : public FileListener, public TrackControlListener {
   private:
     juce::AudioFormatManager &formatManager;
 
-    // std::unique_ptr<ProcessingAudioSource<juce::dsp::Gain<float>>> source;
-    // std::unique_ptr<juce::PositionableAudioSource> source;
-    juce::PositionableAudioSource *source;
-    TrackSourceListener *listener;
+    juce::PositionableAudioSource *source = nullptr;
+    TrackSourceListener *listener = nullptr;
 
-    // GainProcessor gain;
     std::unique_ptr<juce::AudioSource> gain;
     TrackControl trackControl;
     TrackLaneControl trackLaneControl;

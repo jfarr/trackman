@@ -1,9 +1,10 @@
 #include "DesktopComponent.h"
 
-DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow) : mixerComponent(formatManager) {
+DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow)
+    : trackListController(formatManager, mixerComponent, trackListPanel) {
     addAndMakeVisible(&trackListViewport);
     trackListViewport.setSize(800, 350);
-    trackListViewport.setScrollBarsShown (true, true);
+    trackListViewport.setScrollBarsShown(true, true);
     trackListViewport.setViewedComponent(&trackListPanel, false);
     addAndMakeVisible(mixerComponent);
 
@@ -38,20 +39,6 @@ DesktopComponent::~DesktopComponent() {
     juce::MenuBarModel::setMacMainMenu(nullptr);
 #endif
     commandManager.setFirstCommandTarget(nullptr);
-
-    for (auto &track : tracks)
-        delete track;
-    tracks.clear();
-}
-
-void DesktopComponent::addNewTrack() {
-    juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), tracks.size() + 1);
-    Track *newTrack = new Track(name, formatManager);
-    newTrack->setListener(&mixerComponent);
-    tracks.add(newTrack);
-    mixerComponent.addTrack(*newTrack);
-    trackListPanel.addTrack(*newTrack);
-    resized();
 }
 
 void DesktopComponent::createChildWindow(const juce::String &name, juce::Component *component) {

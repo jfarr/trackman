@@ -35,6 +35,8 @@ target_sources(Trackman PRIVATE
         controls/desktop/ChildWindow.h
         controls/desktop/DesktopComponent.cpp
         controls/desktop/DesktopComponent.h
+        controls/desktop/TrackListController.cpp
+        controls/desktop/TrackListController.h
         controls/mixer/MasterTrackControl.cpp
         controls/mixer/MasterTrackControl.h
         controls/mixer/MixerComponent.cpp
@@ -45,10 +47,10 @@ target_sources(Trackman PRIVATE
         controls/mixer/TrackLaneControl.h
         controls/tracks/TrackListPanel.cpp
         controls/tracks/TrackListPanel.h
-        controls/tracks/TrackListViewport.cpp
-        controls/tracks/TrackListViewport.h
         model/Track.cpp
         model/Track.h
+        model/TrackList.cpp
+        model/TrackList.h
         )
 
 target_include_directories(Trackman PRIVATE

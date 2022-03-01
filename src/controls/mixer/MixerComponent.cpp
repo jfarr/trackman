@@ -1,7 +1,7 @@
 #include "MixerComponent.h"
+#include "common/listutil.h"
 
-MixerComponent::MixerComponent(juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), transportControl(transportSource) {
+MixerComponent::MixerComponent() : transportControl(transportSource) {
     setAudioChannels(0, 2);
     transportSource.setSource(&mixerSource);
     transportControl.addListener(this);
@@ -24,18 +24,6 @@ MixerComponent::~MixerComponent() {
 void MixerComponent::createControls() {
     addAndMakeVisible(transportControl);
     addAndMakeVisible(masterTrackControl);
-}
-
-void MixerComponent::addTrack(Track &track) {
-    tracks.push_back(&track);
-    removeAllChildren();
-    createControls();
-    for (std::list<Track *>::iterator i = tracks.begin(); i != tracks.end(); ++i) {
-        Track &t = **i;
-        addAndMakeVisible(t.getTrackControl());
-        t.getTrackControl().setListener(&t);
-    }
-    resized();
 }
 
 void MixerComponent::onSourceSet(juce::PositionableAudioSource *newSource, juce::PositionableAudioSource *prevSource,
@@ -74,8 +62,21 @@ void MixerComponent::resized() {
     auto transportMargin = 5;
     transportControl.setBounds(area.removeFromTop(buttonHeight).reduced(transportMargin));
     masterTrackControl.setBounds(area.removeFromLeft(masterTrackControl.getWidth()));
-    for (std::list<Track *>::iterator i = tracks.begin(); i != tracks.end(); ++i) {
-        Track &track = **i;
-        track.getTrackControl().setBounds(area.removeFromLeft(track.getTrackControl().getWidth()));
+    notifyResized(area);
+}
+
+void MixerComponent::addListener(MixerComponentListener* listener) {
+    if (!listContains(listener, listeners))
+        listeners.push_front(listener);
+}
+
+void MixerComponent::removeListener(MixerComponentListener* listener) {
+    listeners.remove(listener);
+}
+
+void MixerComponent::notifyResized(juce::Rectangle<int> area) {
+    for (std::list<MixerComponentListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
+        MixerComponentListener &listener = **i;
+        listener.mixerResized(area);
     }
 }

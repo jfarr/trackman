@@ -39,7 +39,7 @@ void MasterTrackControl::resized() {
     auto area = getLocalBounds();
     auto sliderWidth = 75;
     auto buttonSize = 25;
-    auto labelHeight = 15;
+    auto labelHeight = 20;
     auto margin = 3;
     channelLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
     decibelSlider.setBounds(area.removeFromLeft(sliderWidth).reduced(margin));

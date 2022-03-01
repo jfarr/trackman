@@ -43,7 +43,7 @@ class TrackControl : public juce::Component {
     std::unique_ptr<juce::FileChooser> chooser;
     juce::TextButton openButton;
     void openButtonClicked();
-    FileListener *listener;
+    FileListener *listener = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackControl)
 };

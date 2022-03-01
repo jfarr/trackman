@@ -21,6 +21,7 @@ void TrackControl::createControls() {
     channelLabel.setText(trackName, juce::dontSendNotification);
     channelLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
     channelLabel.setColour(juce::Label::backgroundColourId, juce::Colours::grey);
+    channelLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
 
     openButton.setButtonText("...");
     openButton.onClick = [this] { openButtonClicked(); };
@@ -44,7 +45,7 @@ void TrackControl::resized() {
     auto area = getLocalBounds();
     auto sliderWidth = 75;
     auto buttonSize = 25;
-    auto labelHeight = 15;
+    auto labelHeight = 20;
     auto margin = 3;
     channelLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
     decibelSlider.setBounds(area.removeFromLeft(sliderWidth).reduced(margin));
@@ -71,7 +72,7 @@ void TrackControl::openButtonClicked() {
     chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
         auto file = fc.getResult();
 
-        if (file != juce::File{}) {
+        if (listener != nullptr && file != juce::File{}) {
             listener->fileChosen(file);
         }
     });
