@@ -2,7 +2,7 @@
 
 TrackLaneControl::TrackLaneControl() {
     createControls();
-    setSize(0, 100);
+    setSize(800, 100);
 }
 
 TrackLaneControl::~TrackLaneControl() {}
@@ -15,4 +15,6 @@ void TrackLaneControl::paint(juce::Graphics &g) {
     g.fillRect(0, getHeight() - 1, getWidth(), 1);
 }
 
-void TrackLaneControl::resized() { auto area = getLocalBounds(); }
+void TrackLaneControl::resized() {
+    //auto area = getLocalBounds();
+}

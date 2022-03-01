@@ -1,6 +1,10 @@
 #include "DesktopComponent.h"
 
 DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow) : mixerComponent(formatManager) {
+    addAndMakeVisible(&trackListViewport);
+    trackListViewport.setSize(800, 350);
+    trackListViewport.setScrollBarsShown (true, true);
+    trackListViewport.setViewedComponent(&trackListPanel, false);
     addAndMakeVisible(mixerComponent);
 
     setApplicationCommandManagerToWatch(&commandManager);
@@ -46,7 +50,7 @@ void DesktopComponent::addNewTrack() {
     newTrack->setListener(&mixerComponent);
     tracks.add(newTrack);
     mixerComponent.addTrack(*newTrack);
-    addAndMakeVisible(newTrack->getTrackLaneControl());
+    trackListPanel.addTrack(*newTrack);
     resized();
 }
 
@@ -69,6 +73,5 @@ void DesktopComponent::paint(juce::Graphics &g) {
 void DesktopComponent::resized() {
     auto area = getLocalBounds();
     mixerComponent.setBounds(area.removeFromBottom(mixerComponent.getHeight()));
-    for (auto &track : tracks)
-        track->getTrackLaneControl().setBounds(area.removeFromTop(track->getTrackLaneControl().getHeight()));
+    trackListViewport.setBounds(area);
 }

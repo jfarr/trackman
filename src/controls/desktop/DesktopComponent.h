@@ -5,6 +5,8 @@
 #include "controls/AudioPlayer.h"
 #include "ChildWindow.h"
 #include "controls/mixer/MixerComponent.h"
+#include "controls/tracks/TrackListPanel.h"
+#include "controls/tracks/TrackListViewport.h"
 
 //==============================================================================
 /*
@@ -87,6 +89,8 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     juce::AudioFormatManager formatManager;
     juce::Array<Track *> tracks;
 
+    TrackListPanel trackListPanel;
+    TrackListViewport trackListViewport;
     MixerComponent mixerComponent;
     juce::ApplicationCommandManager commandManager;
     juce::MenuBarComponent menuBar;
