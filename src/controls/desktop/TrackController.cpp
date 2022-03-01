@@ -33,6 +33,19 @@ void TrackController::fileChosen(juce::File file) {
     }
 }
 
-void TrackController::levelChanged(float level) { ((GainAudioSource *)gain.get())->setGain(level); }
+void TrackController::levelChanged(float newLevel) {
+    level = newLevel;
+    auto gainSource = (GainAudioSource *)gain.get();
+    if (gainSource != nullptr) {
+        gainSource->setGain(newLevel);
+    }
+}
 
-void TrackController::muteChanged(bool muted) {}
+void TrackController::muteToggled() {
+    muted = !muted;
+    auto newLevel = (muted ? 0.0 : level);
+    auto gainSource = (GainAudioSource *)gain.get();
+    if (gainSource != nullptr) {
+        gainSource->setGain(newLevel);
+    }
+}

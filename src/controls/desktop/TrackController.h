@@ -2,7 +2,7 @@
 
 #include "audio/GainAudioSource.h"
 #include "controls/mixer/TrackControl.h"
-#include "controls/mixer/TrackLaneControl.h"
+#include "controls/tracks/TrackLaneControl.h"
 #include "model/Track.h"
 
 class TrackSourceListener {
@@ -27,8 +27,8 @@ class TrackController : public FileListener, public TrackControlListener {
 
     //==============================================================================
     // TrackControlListener
-    void levelChanged(float level) override;
-    void muteChanged(bool muted) override;
+    void levelChanged(float newLevel) override;
+    void muteToggled() override;
 
   private:
     juce::AudioFormatManager &formatManager;
@@ -38,6 +38,8 @@ class TrackController : public FileListener, public TrackControlListener {
 
     Track& track;
     std::unique_ptr<juce::AudioSource> gain;
+    float level = juce::Decibels::decibelsToGain<float>(0.0);
+    bool muted = false;
     TrackControl trackControl;
     TrackLaneControl trackLaneControl;
 

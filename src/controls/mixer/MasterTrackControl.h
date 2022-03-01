@@ -7,7 +7,7 @@
 class MasterTrackListener {
   public:
     virtual void levelChanged(float level) = 0;
-    virtual void muteChanged(bool muted) = 0;
+    virtual void muteToggled() = 0;
 };
 
 class MasterTrackControl : public juce::Component {
@@ -27,15 +27,14 @@ class MasterTrackControl : public juce::Component {
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
     juce::Label channelLabel;
-    float level;
-    bool muted;
+    bool muted = false;
     std::list<MasterTrackListener *> listeners;
 
     void createControls();
     void decibelSliderChanged();
     void muteButtonClicked();
-    void notifyLevelChanged();
-    void notifyMuteChanged();
+    void notifyLevelChanged(float level);
+    void notifyMuteToggled();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MasterTrackControl)
 };

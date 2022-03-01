@@ -2,7 +2,7 @@
 
 #include "common/listutil.h"
 
-MasterTrackControl::MasterTrackControl() : level(juce::Decibels::decibelsToGain<float>(0.0)), muted(false) {
+MasterTrackControl::MasterTrackControl() {
     createControls();
     setSize(100, 100);
 }
@@ -11,7 +11,7 @@ MasterTrackControl::~MasterTrackControl() {}
 
 void MasterTrackControl::createControls() {
     decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
-    decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
+    decibelSlider.setValue(juce::Decibels::decibelsToGain<float>(0.0));
 
     muteButton.setButtonText("M");
     muteButton.setTooltip("mute");
@@ -48,15 +48,15 @@ void MasterTrackControl::resized() {
 }
 
 void MasterTrackControl::decibelSliderChanged() {
-    level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
-    notifyLevelChanged();
+    auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
+    notifyLevelChanged(level);
 }
 
 void MasterTrackControl::muteButtonClicked() {
     muted = !muted;
     muteButton.setColour(juce::TextButton::buttonColourId,
         muted ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    notifyMuteChanged();
+    notifyMuteToggled();
 }
 
 void MasterTrackControl::addListener(MasterTrackListener *listener) {
@@ -66,16 +66,16 @@ void MasterTrackControl::addListener(MasterTrackListener *listener) {
 
 void MasterTrackControl::removeListener(MasterTrackListener *listener) { listeners.remove(listener); }
 
-void MasterTrackControl::notifyLevelChanged() {
+void MasterTrackControl::notifyLevelChanged(float level) {
     for (std::list<MasterTrackListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
         MasterTrackListener &listener = **i;
         listener.levelChanged(level);
     }
 }
 
-void MasterTrackControl::notifyMuteChanged() {
+void MasterTrackControl::notifyMuteToggled() {
     for (std::list<MasterTrackListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
         MasterTrackListener &listener = **i;
-        listener.muteChanged(muted);
+        listener.muteToggled();
     }
 }

@@ -2,8 +2,7 @@
 
 #include "common/listutil.h"
 
-TrackControl::TrackControl(juce::String trackName)
-    : trackName(trackName), level(juce::Decibels::decibelsToGain<float>(0.0)), muted(false) {
+TrackControl::TrackControl(juce::String trackName) : trackName(trackName) {
     createControls();
     setSize(100, 100);
 }
@@ -12,7 +11,7 @@ TrackControl::~TrackControl() {}
 
 void TrackControl::createControls() {
     decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
-    decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
+    decibelSlider.setValue(juce::Decibels::decibelsToGain<float>(0.0));
 
     muteButton.setButtonText("M");
     muteButton.setTooltip("mute");
@@ -59,14 +58,15 @@ void TrackControl::resized() {
 }
 
 void TrackControl::decibelSliderChanged() {
-    level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
-    notifyLevelChanged();
+    auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
+    notifyLevelChanged(level);
 }
 
 void TrackControl::muteButtonClicked() {
     muted = !muted;
     muteButton.setColour(juce::TextButton::buttonColourId,
         muted ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    notifyMuteToggled();
 }
 
 void TrackControl::openButtonClicked() {
@@ -89,9 +89,16 @@ void TrackControl::addListener(TrackControlListener *listener) {
 
 void TrackControl::removeListener(TrackControlListener *listener) { listeners.remove(listener); }
 
-void TrackControl::notifyLevelChanged() {
+void TrackControl::notifyLevelChanged(float level) {
     for (std::list<TrackControlListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
         TrackControlListener &listener = **i;
         listener.levelChanged(level);
+    }
+}
+
+void TrackControl::notifyMuteToggled() {
+    for (std::list<TrackControlListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
+        TrackControlListener &listener = **i;
+        listener.muteToggled();
     }
 }

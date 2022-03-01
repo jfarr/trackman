@@ -37,7 +37,7 @@ class MixerComponent : public juce::AudioAppComponent,
     //==============================================================================
     // MasterTrackListener
     void levelChanged(float level) override;
-    void muteChanged(bool muted) override;
+    void muteToggled() override;
 
     //==============================================================================
     // AudioAppComponent
@@ -56,6 +56,8 @@ class MixerComponent : public juce::AudioAppComponent,
     TransportControl transportControl;
     MasterTrackControl masterTrackControl;
     std::list<AudioSource *> sources;
+    float level = juce::Decibels::decibelsToGain<float>(0.0);
+    bool muted = false;
     std::list<MixerComponentListener *> listeners;
 
     void createControls();

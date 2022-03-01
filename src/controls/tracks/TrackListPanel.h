@@ -1,7 +1,7 @@
 #pragma once
 
 #include "JuceHeader.h"
-#include "controls/mixer/TrackLaneControl.h"
+#include "TrackLaneControl.h"
 #include "model/Track.h"
 
 class TrackListPanel : public juce::Component {

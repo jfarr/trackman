@@ -36,9 +36,16 @@ void MixerComponent::onSourceSet(juce::PositionableAudioSource *newSource, juce:
 
 void MixerComponent::updateLoopState(bool shouldLoop) { mixerSource.setLooping(shouldLoop); }
 
-void MixerComponent::levelChanged(float level) { transportSource.setGain(level); }
+void MixerComponent::levelChanged(float newLevel) {
+    level = newLevel;
+    transportSource.setGain(newLevel);
+}
 
-void MixerComponent::muteChanged(bool muted) {}
+void MixerComponent::muteToggled() {
+    muted = !muted;
+    auto newLevel = (muted ? 0.0 : level);
+    transportSource.setGain(newLevel);
+}
 
 //==============================================================================
 void MixerComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {

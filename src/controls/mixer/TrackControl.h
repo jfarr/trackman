@@ -8,7 +8,7 @@
 class TrackControlListener {
   public:
     virtual void levelChanged(float level) = 0;
-    virtual void muteChanged(bool muted) = 0;
+    virtual void muteToggled() = 0;
 };
 
 class TrackControl : public juce::Component {
@@ -31,14 +31,14 @@ class TrackControl : public juce::Component {
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
     juce::Label channelLabel;
-    float level;
-    bool muted;
+    bool muted = false;
     std::list<TrackControlListener *> listeners;
 
     void createControls();
     void decibelSliderChanged();
     void muteButtonClicked();
-    void notifyLevelChanged();
+    void notifyLevelChanged(float level);
+    void notifyMuteToggled();
 
     std::unique_ptr<juce::FileChooser> chooser;
     juce::TextButton openButton;
