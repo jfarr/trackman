@@ -1,7 +1,8 @@
 #pragma once
 
-#include "controls/tracks/TrackListPanel.h"
+#include "TrackController.h"
 #include "controls/mixer/MixerComponent.h"
+#include "controls/tracks/TrackListPanel.h"
 #include "model/Track.h"
 #include "model/TrackList.h"
 
@@ -13,7 +14,7 @@ class TrackListListener {
 class TrackListController : public MixerComponentListener {
   public:
     TrackListController(juce::AudioFormatManager &formatManager, MixerComponent &mixer, TrackListPanel &trackListPanel);
-    ~TrackListController() = default;
+    ~TrackListController();
 
     void addNewTrack();
 
@@ -27,7 +28,9 @@ class TrackListController : public MixerComponentListener {
     TrackList trackList;
     MixerComponent &mixer;
     TrackListPanel &trackListPanel;
+    std::list<TrackController *> tracks;
     std::list<TrackListListener *> listeners;
 
+    void eachTrack(std::function<void(TrackController &)> f);
     void notifyTrackAdded(Track &track);
 };

@@ -8,7 +8,7 @@ class TrackList {
     ~TrackList();
 
     int size() { return tracks.size(); }
-    Track* addTrack(juce::String name, juce::AudioFormatManager &formatManager);
+    Track* addTrack(juce::String name);
 
     void eachTrack(std::function<void(Track&)> f);
 

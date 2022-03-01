@@ -7,18 +7,32 @@ TrackListController::TrackListController(
     mixer.addListener(this);
 }
 
+TrackListController::~TrackListController() {
+    for (std::list<TrackController *>::iterator i = tracks.begin(); i != tracks.end(); ++i) {
+        delete *i;
+    }
+}
+
 void TrackListController::addNewTrack() {
     juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), trackList.size() + 1);
-    Track *newTrack = trackList.addTrack(name, formatManager);
-    newTrack->setListener(&mixer);
-    mixer.addAndMakeVisible(newTrack->getTrackControl());
+    Track *newTrack = trackList.addTrack(name);
+    TrackController* controller = new TrackController(*newTrack, formatManager);
+    tracks.push_back(controller);
+    controller->setListener(&mixer);
+    mixer.addAndMakeVisible(controller->getTrackControl());
     mixer.resized();
-    trackListPanel.addTrack(*newTrack);
+    trackListPanel.addTrack(controller->getTrackLaneControl());
     notifyTrackAdded(*newTrack);
 }
 
+void TrackListController::eachTrack(std::function<void(TrackController &)> f) {
+    for (std::list<TrackController *>::iterator i = tracks.begin(); i != tracks.end(); ++i) {
+        f(**i);
+    }
+}
+
 void TrackListController::mixerResized(juce::Rectangle<int> area) {
-    trackList.eachTrack([&area](Track &track) {
+    eachTrack([&area](TrackController &track) {
         track.getTrackControl().setBounds(area.removeFromLeft(track.getTrackControl().getWidth()));
     });
 }

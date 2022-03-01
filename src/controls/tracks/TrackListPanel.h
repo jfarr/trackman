@@ -1,6 +1,7 @@
 #pragma once
 
 #include "JuceHeader.h"
+#include "controls/mixer/TrackLaneControl.h"
 #include "model/Track.h"
 
 class TrackListPanel : public juce::Component {
@@ -8,7 +9,7 @@ class TrackListPanel : public juce::Component {
     TrackListPanel();
     ~TrackListPanel();
 
-    void addTrack(Track &track);
+    void addTrack(TrackLaneControl& lane);
 
     //==============================================================================
     // Component
@@ -16,5 +17,5 @@ class TrackListPanel : public juce::Component {
     void resized() override;
 
   private:
-    std::list<Track *> tracks;
+    std::list<TrackLaneControl *> lanes;
 };

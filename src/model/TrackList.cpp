@@ -9,8 +9,8 @@ TrackList::~TrackList() {
     }
 }
 
-Track *TrackList::addTrack(juce::String name, juce::AudioFormatManager &formatManager) {
-    Track *track = new Track(name, formatManager);
+Track *TrackList::addTrack(juce::String name) {
+    Track *track = new Track(name);
     tracks.push_back(track);
     return track;
 }
