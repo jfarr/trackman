@@ -34,7 +34,10 @@ void TrackControl::createControls() {
 
 void TrackControl::paint(juce::Graphics &g) {
     auto bgColor = juce::Colour{0xff282828};
+    auto labelHeight = 20;
     g.fillAll(bgColor);
+    g.setColour(juce::Colours::grey);
+    g.fillRect(0, 0, getWidth(), labelHeight);
     g.setColour(juce::Colours::black);
     g.fillRect(getWidth() - 1, 0, 1, getHeight());
     g.setColour(bgColor);
@@ -47,6 +50,7 @@ void TrackControl::resized() {
     auto buttonSize = 25;
     auto labelHeight = 20;
     auto margin = 3;
+    area.removeFromTop(labelHeight);
     channelLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
     decibelSlider.setBounds(area.removeFromLeft(sliderWidth).reduced(margin));
     auto buttonArea = area.removeFromLeft(buttonSize);
