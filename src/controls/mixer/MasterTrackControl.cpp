@@ -11,7 +11,7 @@ MasterTrackControl::~MasterTrackControl() {}
 
 void MasterTrackControl::createControls() {
     decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
-    decibelSlider.setValue(juce::Decibels::decibelsToGain<float>(0.0));
+    decibelSlider.setValue(0.0);
 
     muteButton.setButtonText("M");
     muteButton.setTooltip("mute");
