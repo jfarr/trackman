@@ -6,7 +6,13 @@ Track::Track(juce::String name, juce::AudioFormatManager &formatManager)
     trackControl.setListener(this);
 }
 
-Track::~Track() { gain.release(); }
+Track::~Track() {
+    if (source != nullptr) {
+        source->releaseResources();
+        delete source;
+    }
+    gain.release();
+}
 
 void Track::fileChosen(juce::File file) {
     if (listener == nullptr) {
@@ -16,10 +22,13 @@ void Track::fileChosen(juce::File file) {
     auto *reader = formatManager.createReaderFor(file);
 
     if (reader != nullptr) {
+        if (source != nullptr) {
+            source->releaseResources();
+        }
         auto newSource = new juce::AudioFormatReaderSource(reader, true);
         auto newGain = new GainAudioSource(newSource, true);
         gain.reset(newGain);
-        listener->onSourceSet(newGain, source, true, reader->sampleRate);
+        listener->onSourceSet(newGain, source, false, reader->sampleRate);
         source = newGain;
     }
 }
