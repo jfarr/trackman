@@ -30,6 +30,7 @@ class TrackControl : public juce::Component {
     juce::String trackName;
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
+    juce::Label trackLabel;
     juce::Label channelLabel;
     bool muted = false;
     std::list<TrackControlListener *> listeners;

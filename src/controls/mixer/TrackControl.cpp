@@ -22,11 +22,14 @@ void TrackControl::createControls() {
     channelLabel.setColour(juce::Label::backgroundColourId, juce::Colours::grey);
     channelLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
 
+    trackLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
+
     openButton.setButtonText("...");
     openButton.onClick = [this] { openButtonClicked(); };
 
     addAndMakeVisible(decibelSlider);
     addAndMakeVisible(muteButton);
+    addAndMakeVisible(trackLabel);
     addAndMakeVisible(channelLabel);
     addAndMakeVisible(openButton);
 }
@@ -51,7 +54,8 @@ void TrackControl::resized() {
     auto margin = 3;
     area.removeFromTop(labelHeight);
     channelLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
-    decibelSlider.setBounds(area.removeFromLeft(sliderWidth).reduced(margin));
+    trackLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
+    decibelSlider.setBounds(area.removeFromLeft(sliderWidth));
     auto buttonArea = area.removeFromLeft(buttonSize);
     muteButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
     openButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
@@ -77,6 +81,7 @@ void TrackControl::openButtonClicked() {
         auto file = fc.getResult();
 
         if (listener != nullptr && file != juce::File{}) {
+            trackLabel.setText(file.getFileName(), juce::dontSendNotification);
             listener->fileChosen(file);
         }
     });
