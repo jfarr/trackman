@@ -5,6 +5,8 @@
 #include "controls/AudioPlayer.h"
 #include "ChildWindow.h"
 #include "controls/mixer/MixerComponent.h"
+#include "controls/tracks/TrackListPanel.h"
+#include "TrackListController.h"
 
 //==============================================================================
 /*
@@ -71,7 +73,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     bool perform(const InvocationInfo &info) override {
         switch (info.commandID) {
         case CommandIDs::newTrack:
-            addNewTrack();
+            trackListController.addNewTrack();
             break;
         case CommandIDs::newAudioPlayer:
             createChildWindow("audioplayer", new AudioPlayer(formatManager));
@@ -85,9 +87,11 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
 
   private:
     juce::AudioFormatManager formatManager;
-    juce::Array<Track *> tracks;
-
     MixerComponent mixerComponent;
+    TrackListPanel trackListPanel;
+
+    TrackListController trackListController;
+    juce::Viewport trackListViewport;
     juce::ApplicationCommandManager commandManager;
     juce::MenuBarComponent menuBar;
 
@@ -96,7 +100,6 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     // becomes null when the component that it points to is deleted.
     juce::Array<Component::SafePointer<Component>> windows;
 
-    void addNewTrack();
     void createChildWindow(const juce::String &name, juce::Component *component);
     void closeAllWindows();
 

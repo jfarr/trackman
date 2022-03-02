@@ -1,11 +1,15 @@
 #pragma once
 
 #include "JuceHeader.h"
+#include "TrackLaneControl.h"
+#include "model/Track.h"
 
-class TrackLaneControl : public juce::Component {
+class TrackListPanel : public juce::Component {
   public:
-    TrackLaneControl();
-    ~TrackLaneControl();
+    TrackListPanel();
+    ~TrackListPanel();
+
+    void addTrack(TrackLaneControl& lane);
 
     //==============================================================================
     // Component
@@ -13,7 +17,5 @@ class TrackLaneControl : public juce::Component {
     void resized() override;
 
   private:
-    void createControls();
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackLaneControl)
+    std::list<TrackLaneControl *> lanes;
 };
