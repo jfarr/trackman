@@ -26,6 +26,11 @@ void MixerComponent::createControls() {
     addAndMakeVisible(masterTrackControl);
 }
 
+void MixerComponent::setLevel(float newLevel) {
+    level = newLevel;
+    masterTrackControl.setLevel(level);
+}
+
 void MixerComponent::onSourceSet(juce::PositionableAudioSource *newSource, juce::PositionableAudioSource *prevSource,
     const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor, int maxNumChannels) {
     if (prevSource != nullptr) {

@@ -15,3 +15,16 @@ class AddTrackCommand : public Command {
     TrackListController &controller;
     Track *track;
 };
+
+class ChangeMasterVolumeCommand : public Command {
+  public:
+    ChangeMasterVolumeCommand(MixerComponent &mixer, float previousLevel);
+    ~ChangeMasterVolumeCommand() override;
+
+    void execute() override {}
+    void undo() override { mixer.setLevel(previousLevel); }
+
+  private:
+    MixerComponent &mixer;
+    float previousLevel;
+};

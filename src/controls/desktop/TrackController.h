@@ -16,7 +16,7 @@ class TrackController;
 
 class TrackControllerListener {
   public:
-    virtual void selectionChanged(TrackController *selected) = 0;
+    virtual void selectionChanged(TrackController *selected) {}
 };
 
 class TrackController : public FileListener, public TrackControlListener, public juce::MouseListener {
