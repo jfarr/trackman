@@ -10,6 +10,7 @@ class TrackListPanel : public juce::Component {
     ~TrackListPanel();
 
     void addTrack(TrackLaneControl& lane);
+    void removeTrack(TrackLaneControl& lane);
 
     //==============================================================================
     // Component

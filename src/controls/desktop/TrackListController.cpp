@@ -13,7 +13,7 @@ TrackListController::~TrackListController() {
     }
 }
 
-void TrackListController::addNewTrack() {
+Track* TrackListController::addNewTrack() {
     juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), trackList.size() + 1);
     Track *newTrack = trackList.addTrack(name);
     TrackController *controller = new TrackController(*newTrack, formatManager);
@@ -24,6 +24,25 @@ void TrackListController::addNewTrack() {
     mixer.resized();
     trackListPanel.addTrack(controller->getTrackLaneControl());
     notifyTrackAdded(*newTrack);
+    return newTrack;
+}
+
+void TrackListController::removeTrack(Track *track)
+{
+    TrackController *controller = nullptr;
+    for (TrackController *t : tracks) {
+        if (&t->getTrack() == track) {
+            controller = t;
+            break;
+        }
+    }
+    if (controller == nullptr) {
+        return;
+    }
+    trackListPanel.removeTrack(controller->getTrackLaneControl());
+    mixer.removeChildComponent(&controller->getTrackControl());
+    tracks.remove(controller);
+    delete controller;
 }
 
 void TrackListController::eachTrack(std::function<void(TrackController &)> f) {

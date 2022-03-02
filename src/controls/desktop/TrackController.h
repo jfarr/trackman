@@ -26,6 +26,7 @@ class TrackController : public FileListener, public TrackControlListener, public
 
     void setListener(class TrackSourceListener *newListener) { listener = newListener; }
 
+    Track &getTrack() { return track; }
     TrackControl &getTrackControl() { return trackControl; }
     TrackLaneControl &getTrackLaneControl() { return trackLaneControl; }
 

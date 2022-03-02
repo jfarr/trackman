@@ -1,7 +1,7 @@
 #include "DesktopComponent.h"
 
 DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow)
-    : trackListController(formatManager, mixerComponent, trackListPanel) {
+    : desktopController(formatManager, mixerComponent, trackListPanel) {
     addAndMakeVisible(&trackListViewport);
     trackListViewport.setSize(800, 350);
     trackListViewport.setScrollBarsShown(true, true);
