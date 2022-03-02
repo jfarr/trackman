@@ -2,7 +2,8 @@
 #include "common/listutil.h"
 
 TrackController::TrackController(Track &track, juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), track(track), source(nullptr), listener(nullptr), trackControl(track.getName()) {
+    : formatManager(formatManager), track(track), source(nullptr), listener(nullptr), trackControl(track.getName()),
+      trackLaneControl(track.getName()) {
     trackControl.addListener(this);
     trackControl.setListener(this);
     trackControl.addMouseListener(this, true);

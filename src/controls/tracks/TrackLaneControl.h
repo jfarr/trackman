@@ -4,7 +4,7 @@
 
 class TrackLaneControl : public juce::Component {
   public:
-    TrackLaneControl();
+    TrackLaneControl(juce::String trackName);
     ~TrackLaneControl();
 
     void setSelected(bool newSelected);
@@ -15,7 +15,10 @@ class TrackLaneControl : public juce::Component {
     void resized() override;
 
   private:
+    juce::String trackName;
     bool selected = false;
+
+    juce::Label trackLabel;
 
     void createControls();
 

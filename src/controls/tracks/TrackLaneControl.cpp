@@ -1,13 +1,17 @@
 #include "TrackLaneControl.h"
 
-TrackLaneControl::TrackLaneControl() {
+TrackLaneControl::TrackLaneControl(juce::String trackName) : trackName(trackName) {
     createControls();
     setSize(800, 100);
 }
 
 TrackLaneControl::~TrackLaneControl() {}
 
-void TrackLaneControl::createControls() {}
+void TrackLaneControl::createControls() {
+    trackLabel.setText(trackName, juce::dontSendNotification);
+    trackLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
+    addAndMakeVisible(trackLabel);
+}
 
 void TrackLaneControl::setSelected(bool newSelected) {
     selected = newSelected;
@@ -15,11 +19,18 @@ void TrackLaneControl::setSelected(bool newSelected) {
 }
 
 void TrackLaneControl::paint(juce::Graphics &g) {
+    auto leftPanelWidth = 25;
     g.fillAll(selected ? juce::Colours::lightseagreen : juce::Colours::darkslategrey);
     g.setColour(juce::Colours::slategrey);
     g.fillRect(0, getHeight() - 1, getWidth(), 1);
+    g.fillRect(leftPanelWidth, 0, 1, getHeight());
 }
 
 void TrackLaneControl::resized() {
-    // auto area = getLocalBounds();
+     auto area = getLocalBounds();
+     auto leftPanelWidth = 25;
+     auto labelHeight = 15;
+     auto margin = 2;
+     area.removeFromLeft(leftPanelWidth);
+     trackLabel.setBounds(area.removeFromTop(labelHeight).reduced(margin));
 }
