@@ -19,7 +19,7 @@ void TrackControl::createControls() {
 
     channelLabel.setText(trackName, juce::dontSendNotification);
     channelLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
-    channelLabel.setColour(juce::Label::backgroundColourId, juce::Colours::grey);
+    channelLabel.setColour(juce::Label::backgroundColourId, selected ? juce::Colours::lightgrey : juce::Colours::grey);
     channelLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
 
     trackLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
@@ -34,11 +34,18 @@ void TrackControl::createControls() {
     addAndMakeVisible(openButton);
 }
 
+void TrackControl::setSelected(bool newSelected)
+{
+    selected = newSelected;
+    channelLabel.setColour(juce::Label::backgroundColourId, selected ? juce::Colours::lightgrey : juce::Colours::grey);
+    repaint();
+}
+
 void TrackControl::paint(juce::Graphics &g) {
     auto bgColor = juce::Colour{0xff282828};
     auto labelHeight = 20;
     g.fillAll(bgColor);
-    g.setColour(juce::Colours::grey);
+    g.setColour(selected ? juce::Colours::lightgrey : juce::Colours::grey);
     g.fillRect(0, 0, getWidth(), labelHeight);
     g.setColour(juce::Colours::black);
     g.fillRect(getWidth() - 1, 0, 1, getHeight());

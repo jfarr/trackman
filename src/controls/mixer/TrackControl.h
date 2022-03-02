@@ -16,6 +16,7 @@ class TrackControl : public juce::Component {
     TrackControl(juce::String trackName);
     ~TrackControl();
 
+    void setSelected(bool newSelected);
     void setListener(class FileListener *newListener) { listener = newListener; }
 
     void addListener(TrackControlListener *listener);
@@ -33,6 +34,7 @@ class TrackControl : public juce::Component {
     juce::Label trackLabel;
     juce::Label channelLabel;
     bool muted = false;
+    bool selected = false;
     std::list<TrackControlListener *> listeners;
 
     void createControls();

@@ -11,17 +11,23 @@ class TrackListListener {
     virtual void trackAdded(Track &track) = 0;
 };
 
-class TrackListController : public MixerComponentListener {
+class TrackListController : public MixerComponentListener, public TrackControllerListener {
   public:
     TrackListController(juce::AudioFormatManager &formatManager, MixerComponent &mixer, TrackListPanel &trackListPanel);
     ~TrackListController();
 
     void addNewTrack();
 
-    void mixerResized(juce::Rectangle<int> area);
-
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
+
+    //==============================================================================
+    // MixerComponentListener
+    void mixerResized(juce::Rectangle<int> area);
+
+    //==============================================================================
+    // TrackControllerListener
+    void selectionChanged(TrackController *selected);
 
   private:
     juce::AudioFormatManager &formatManager;

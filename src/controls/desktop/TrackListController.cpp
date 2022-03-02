@@ -16,7 +16,8 @@ TrackListController::~TrackListController() {
 void TrackListController::addNewTrack() {
     juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), trackList.size() + 1);
     Track *newTrack = trackList.addTrack(name);
-    TrackController* controller = new TrackController(*newTrack, formatManager);
+    TrackController *controller = new TrackController(*newTrack, formatManager);
+    controller->addListener(this);
     tracks.push_back(controller);
     controller->setListener(&mixer);
     mixer.addAndMakeVisible(controller->getTrackControl());
@@ -34,6 +35,12 @@ void TrackListController::eachTrack(std::function<void(TrackController &)> f) {
 void TrackListController::mixerResized(juce::Rectangle<int> area) {
     eachTrack([&area](TrackController &track) {
         track.getTrackControl().setBounds(area.removeFromLeft(track.getTrackControl().getWidth()));
+    });
+}
+
+void TrackListController::selectionChanged(TrackController *selected) {
+    eachTrack([&selected](TrackController &track) {
+        track.setSelected(&track == selected);
     });
 }
 
