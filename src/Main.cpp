@@ -1,19 +1,9 @@
-/*
-  ==============================================================================
-
-    This file contains the basic startup code for a JUCE application.
-
-  ==============================================================================
-*/
-
 #include <JuceHeader.h>
 
 #include "controls/desktop/DesktopComponent.h"
 
-//==============================================================================
 class TrackmanApplication : public juce::JUCEApplication {
   public:
-    //==============================================================================
     TrackmanApplication() {}
 
     const juce::String getApplicationName() override { return ProjectInfo::projectName; }
@@ -48,11 +38,6 @@ class TrackmanApplication : public juce::JUCEApplication {
         // you what the other instance's command-line arguments were.
     }
 
-    //==============================================================================
-    /*
-        This class implements the desktop window that contains an instance of
-        our MainComponent class.
-    */
     class MainWindow : public juce::DocumentWindow {
       public:
         MainWindow(juce::String name)
@@ -80,14 +65,6 @@ class TrackmanApplication : public juce::JUCEApplication {
             JUCEApplication::getInstance()->systemRequestedQuit();
         }
 
-        /* Note: Be careful if you override any DocumentWindow methods - the
-           base class uses a lot of them, so by overriding you might break its
-           functionality. It's best to do all your work in your content
-           component instead, but if you really have to override any
-           DocumentWindow methods, make sure your subclass also calls the
-           superclass's method.
-        */
-
       private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
     };
@@ -96,6 +73,4 @@ class TrackmanApplication : public juce::JUCEApplication {
     std::unique_ptr<MainWindow> mainWindow;
 };
 
-//==============================================================================
-// This macro generates the main() routine that launches the app.
 START_JUCE_APPLICATION(TrackmanApplication)

@@ -16,9 +16,9 @@ class TrackListController : public MixerComponentListener, public TrackControlle
     TrackListController(juce::AudioFormatManager &formatManager, MixerComponent &mixer, TrackListPanel &trackListPanel);
     ~TrackListController();
 
-    MixerComponent& getMixer() { return mixer; }
+    MixerComponent &getMixer() { return mixer; }
 
-    Track* addNewTrack();
+    Track *addNewTrack();
     void removeTrack(Track *track);
 
     void addListener(TrackListListener *listener);

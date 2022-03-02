@@ -27,10 +27,10 @@ void TrackLaneControl::paint(juce::Graphics &g) {
 }
 
 void TrackLaneControl::resized() {
-     auto area = getLocalBounds();
-     auto leftPanelWidth = 25;
-     auto labelHeight = 15;
-     auto margin = 2;
-     area.removeFromLeft(leftPanelWidth);
-     trackLabel.setBounds(area.removeFromTop(labelHeight).reduced(margin));
+    auto area = getLocalBounds();
+    auto leftPanelWidth = 25;
+    auto labelHeight = 15;
+    auto margin = 2;
+    area.removeFromLeft(leftPanelWidth);
+    trackLabel.setBounds(area.removeFromTop(labelHeight).reduced(margin));
 }

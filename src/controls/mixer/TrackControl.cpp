@@ -34,8 +34,7 @@ void TrackControl::createControls() {
     addAndMakeVisible(openButton);
 }
 
-void TrackControl::setSelected(bool newSelected)
-{
+void TrackControl::setSelected(bool newSelected) {
     selected = newSelected;
     channelLabel.setColour(juce::Label::backgroundColourId, selected ? juce::Colours::lightgrey : juce::Colours::grey);
     repaint();

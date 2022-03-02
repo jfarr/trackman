@@ -24,15 +24,15 @@ class MixerComponent : public juce::AudioAppComponent,
     MixerComponent();
     ~MixerComponent();
 
-    MasterTrackControl& getMasterTrackControl() { return masterTrackControl; }
+    MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
 
     void setLevel(float newLevel);
 
     void onSourceSet(juce::PositionableAudioSource *newSource, juce::PositionableAudioSource *prevSource,
         const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) override;
 
-    void addListener(MixerComponentListener* listener);
-    void removeListener(MixerComponentListener* listener);
+    void addListener(MixerComponentListener *listener);
+    void removeListener(MixerComponentListener *listener);
 
     //==============================================================================
     // TransportControlListener

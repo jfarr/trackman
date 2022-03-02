@@ -1,8 +1,5 @@
 #include "AudioPlayer.h"
 
-#include "controls/desktop/ChildWindow.h"
-
-//==============================================================================
 AudioPlayer::AudioPlayer(juce::AudioFormatManager &formatManager)
     : formatManager(formatManager), transportControl(transportSource, false), thumbnailComponent(formatManager),
       positionOverlay(transportSource) {

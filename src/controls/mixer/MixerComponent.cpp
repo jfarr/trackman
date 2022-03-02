@@ -77,14 +77,12 @@ void MixerComponent::resized() {
     notifyResized(area);
 }
 
-void MixerComponent::addListener(MixerComponentListener* listener) {
+void MixerComponent::addListener(MixerComponentListener *listener) {
     if (!listContains(listener, listeners))
         listeners.push_front(listener);
 }
 
-void MixerComponent::removeListener(MixerComponentListener* listener) {
-    listeners.remove(listener);
-}
+void MixerComponent::removeListener(MixerComponentListener *listener) { listeners.remove(listener); }
 
 void MixerComponent::notifyResized(juce::Rectangle<int> area) {
     for (std::list<MixerComponentListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {

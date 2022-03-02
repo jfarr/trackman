@@ -16,7 +16,7 @@ class DecibelSlider : public juce::Slider {
         setSkewFactorFromMidPoint(-10.0);
     }
 
-    void setListener(SliderListener* newListener) { listener = newListener; }
+    void setListener(SliderListener *newListener) { listener = newListener; }
 
     void mouseDown(const juce::MouseEvent &event) override {
         if (listener != nullptr) {
@@ -36,7 +36,7 @@ class DecibelSlider : public juce::Slider {
     juce::String getTextFromValue(double value) override { return juce::Decibels::toString(value); }
 
   private:
-    SliderListener* listener;
+    SliderListener *listener;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DecibelSlider)
 };

@@ -34,9 +34,7 @@ void MasterTrackControl::setLevel(float level) {
     decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
 }
 
-void MasterTrackControl::onSliderClick() {
-    draggingSlider = true;
-}
+void MasterTrackControl::onSliderClick() { draggingSlider = true; }
 
 void MasterTrackControl::mouseUp(const juce::MouseEvent &event) {
     if (event.eventComponent == &decibelSlider) {
@@ -105,4 +103,3 @@ void MasterTrackControl::notifyMuteToggled() {
         listener->muteToggled();
     }
 }
-

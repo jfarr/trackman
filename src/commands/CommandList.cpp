@@ -11,7 +11,7 @@ CommandList::~CommandList() {
 
 void CommandList::pushCommand(Command *command) { commands.push_back(command); }
 
-Command* CommandList::popCommand() {
+Command *CommandList::popCommand() {
     if (commands.size() == 0) {
         return nullptr;
     }

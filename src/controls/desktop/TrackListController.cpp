@@ -13,7 +13,7 @@ TrackListController::~TrackListController() {
     }
 }
 
-Track* TrackListController::addNewTrack() {
+Track *TrackListController::addNewTrack() {
     juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), trackList.size() + 1);
     Track *newTrack = trackList.addTrack(name);
     TrackController *controller = new TrackController(*newTrack, formatManager);
@@ -27,8 +27,7 @@ Track* TrackListController::addNewTrack() {
     return newTrack;
 }
 
-void TrackListController::removeTrack(Track *track)
-{
+void TrackListController::removeTrack(Track *track) {
     TrackController *controller = nullptr;
     for (TrackController *t : tracks) {
         if (&t->getTrack() == track) {
@@ -58,9 +57,7 @@ void TrackListController::mixerResized(juce::Rectangle<int> area) {
 }
 
 void TrackListController::selectionChanged(TrackController *selected) {
-    eachTrack([&selected](TrackController &track) {
-        track.setSelected(&track == selected);
-    });
+    eachTrack([&selected](TrackController &track) { track.setSelected(&track == selected); });
 }
 
 void TrackListController::addListener(TrackListListener *listener) {

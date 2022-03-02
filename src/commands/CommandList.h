@@ -9,7 +9,7 @@ class CommandList {
     ~CommandList();
 
     void pushCommand(Command *command);
-    Command* popCommand();
+    Command *popCommand();
     bool isEmpty() const { return commands.size() == 0; }
     juce::String getLastCommandName();
 

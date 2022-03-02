@@ -9,8 +9,8 @@ class TrackListPanel : public juce::Component {
     TrackListPanel();
     ~TrackListPanel();
 
-    void addTrack(TrackLaneControl& lane);
-    void removeTrack(TrackLaneControl& lane);
+    void addTrack(TrackLaneControl &lane);
+    void removeTrack(TrackLaneControl &lane);
 
     //==============================================================================
     // Component
