@@ -25,7 +25,7 @@ class AudioPlayer : public juce::AudioAppComponent, public FileListener, public 
 
     //==============================================================================
     // TransportControlListener
-    void updateLoopState(bool shouldLoop) override;
+    void loopingChanged(bool shouldLoop) override;
 
     //==============================================================================
     // FileListener

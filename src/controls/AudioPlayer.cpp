@@ -69,7 +69,7 @@ void AudioPlayer::fileChosen(juce::File file) {
     }
 }
 
-void AudioPlayer::updateLoopState(bool shouldLoop) {
+void AudioPlayer::loopingChanged(bool shouldLoop) {
     if (readerSource.get() != nullptr)
         readerSource->setLooping(shouldLoop);
 }

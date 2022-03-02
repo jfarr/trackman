@@ -40,6 +40,6 @@ class TrackListController : public MixerComponentListener, public TrackControlle
     std::list<TrackController *> tracks;
     std::list<TrackListListener *> listeners;
 
-    void eachTrack(std::function<void(TrackController &)> f);
     void notifyTrackAdded(Track &track);
+    TrackController *getController(const Track *track);
 };

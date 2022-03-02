@@ -7,11 +7,7 @@ DesktopController::DesktopController(
     mixer.getMasterTrackControl().addListener(this);
 }
 
-void DesktopController::addNewTrack() {
-    Command *command = new AddTrackCommand(trackListController);
-    commandList.pushCommand(command);
-    command->execute();
-}
+bool DesktopController::canUndo() const { return !commandList.isEmpty(); }
 
 void DesktopController::undoLast() {
     Command *command = commandList.popCommand();
@@ -21,7 +17,11 @@ void DesktopController::undoLast() {
     }
 }
 
-bool DesktopController::canUndo() const { return !commandList.isEmpty(); }
+void DesktopController::addNewTrack() {
+    Command *command = new AddTrackCommand(trackListController);
+    commandList.pushCommand(command);
+    command->execute();
+}
 
 void DesktopController::levelChangeFinalized(float previousLevel) {
     Command *command = new ChangeMasterVolumeCommand(trackListController.getMixer(), previousLevel);

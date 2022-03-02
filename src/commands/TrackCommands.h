@@ -14,6 +14,8 @@ class AddTrackCommand : public Command {
   private:
     TrackListController &controller;
     Track *track;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AddTrackCommand)
 };
 
 class ChangeMasterVolumeCommand : public Command {
@@ -27,4 +29,6 @@ class ChangeMasterVolumeCommand : public Command {
   private:
     MixerComponent &mixer;
     float previousLevel;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChangeMasterVolumeCommand)
 };

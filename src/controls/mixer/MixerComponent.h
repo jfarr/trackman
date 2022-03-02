@@ -36,7 +36,7 @@ class MixerComponent : public juce::AudioAppComponent,
 
     //==============================================================================
     // TransportControlListener
-    void updateLoopState(bool shouldLoop) override;
+    void loopingChanged(bool shouldLoop) override;
 
     //==============================================================================
     // MasterTrackListener

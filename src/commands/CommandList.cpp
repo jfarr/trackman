@@ -20,7 +20,7 @@ Command *CommandList::popCommand() {
     return command;
 }
 
-juce::String CommandList::getLastCommandName() {
+juce::String CommandList::getLastCommandName() const {
     if (commands.size() == 0) {
         return "";
     }

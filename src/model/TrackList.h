@@ -9,8 +9,7 @@ class TrackList {
 
     int size() { return tracks.size(); }
     Track *addTrack(juce::String name);
-
-    void eachTrack(std::function<void(Track &)> f);
+    void removeTrack(Track *track);
 
   private:
     std::list<Track *> tracks;

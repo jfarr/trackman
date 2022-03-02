@@ -11,7 +11,7 @@ class CommandList {
     void pushCommand(Command *command);
     Command *popCommand();
     bool isEmpty() const { return commands.size() == 0; }
-    juce::String getLastCommandName();
+    juce::String getLastCommandName() const;
 
   private:
     std::list<Command *> commands;

@@ -39,7 +39,7 @@ void MixerComponent::onSourceSet(juce::PositionableAudioSource *newSource, juce:
     mixerSource.addInputSource(newSource, deleteWhenRemoved, sourceSampleRateToCorrectFor);
 }
 
-void MixerComponent::updateLoopState(bool shouldLoop) { mixerSource.setLooping(shouldLoop); }
+void MixerComponent::loopingChanged(bool shouldLoop) { mixerSource.setLooping(shouldLoop); }
 
 void MixerComponent::levelChanged(float newLevel) {
     level = newLevel;
@@ -85,8 +85,7 @@ void MixerComponent::addListener(MixerComponentListener *listener) {
 void MixerComponent::removeListener(MixerComponentListener *listener) { listeners.remove(listener); }
 
 void MixerComponent::notifyResized(juce::Rectangle<int> area) {
-    for (std::list<MixerComponentListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
-        MixerComponentListener &listener = **i;
-        listener.mixerResized(area);
+    for (MixerComponentListener *listener : listeners) {
+        listener->mixerResized(area);
     }
 }

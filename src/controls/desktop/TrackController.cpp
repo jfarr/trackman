@@ -76,8 +76,7 @@ void TrackController::addListener(TrackControllerListener *listener) {
 void TrackController::removeListener(TrackControllerListener *listener) { listeners.remove(listener); }
 
 void TrackController::notifySelectionChanged() {
-    for (std::list<TrackControllerListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
-        TrackControllerListener &listener = **i;
-        listener.selectionChanged(this);
+    for (TrackControllerListener *listener : listeners) {
+        listener->selectionChanged(this);
     }
 }

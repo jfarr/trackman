@@ -10,11 +10,11 @@ class DesktopController : public MasterTrackListener {
     DesktopController(juce::AudioFormatManager &formatManager, MixerComponent &mixer, TrackListPanel &trackListPanel);
     ~DesktopController() {}
 
-    void addNewTrack();
-
-    void undoLast();
     bool canUndo() const;
-    juce::String getLastCommandName() { return commandList.getLastCommandName(); }
+    void undoLast();
+    juce::String getLastCommandName() const { return commandList.getLastCommandName(); }
+
+    void addNewTrack();
 
     //==============================================================================
     // MasterTrackListener

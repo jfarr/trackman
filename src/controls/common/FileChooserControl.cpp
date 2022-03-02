@@ -45,15 +45,15 @@ void FileChooserControl::openButtonClicked() {
 }
 
 void FileChooserControl::notifyFileChosen(juce::File file) {
-    for (std::list<FileListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
-        FileListener &listener = **i;
-        listener.fileChosen(file);
+    for (FileListener *listener : listeners) {
+        listener->fileChosen(file);
     }
 }
 
 void FileChooserControl::addListener(FileListener *listener) {
-    if (!listContains(listener, listeners))
+    if (!listContains(listener, listeners)) {
         listeners.push_front(listener);
+    }
 }
 
 void FileChooserControl::removeListener(FileListener *listener) { listeners.remove(listener); }
