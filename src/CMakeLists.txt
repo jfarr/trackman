@@ -46,7 +46,9 @@ target_sources(Trackman PRIVATE
         controls/desktop/DesktopController.h
         controls/desktop/TrackController.cpp
         controls/desktop/TrackController.h
+        controls/desktop/TrackControllerListener.h
         controls/desktop/TrackListListener.h
+        controls/desktop/TrackSourceListener.h
         controls/mixer/MasterTrackControl.cpp
         controls/mixer/MasterTrackControl.h
         controls/mixer/MixerComponent.cpp

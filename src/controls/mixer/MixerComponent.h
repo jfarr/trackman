@@ -8,6 +8,7 @@
 #include "controls/common/FileChooserControl.h"
 #include "controls/common/TransportControl.h"
 #include "controls/desktop/TrackController.h"
+#include "controls/desktop/TrackSourceListener.h"
 #include "model/Track.h"
 #include "model/TrackList.h"
 

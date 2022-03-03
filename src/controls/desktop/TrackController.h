@@ -1,23 +1,13 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
+
 #include "audio/GainAudioSource.h"
+#include "controls/desktop/TrackControllerListener.h"
+#include "controls/desktop/TrackSourceListener.h"
 #include "controls/mixer/TrackControl.h"
 #include "controls/tracks/TrackLaneControl.h"
 #include "model/Track.h"
-
-class TrackSourceListener {
-  public:
-    virtual void onSourceSet(juce::PositionableAudioSource *newSource, juce::PositionableAudioSource *prevSource,
-        const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) = 0;
-};
-
-class TrackController;
-
-class TrackControllerListener {
-  public:
-    virtual void selectionChanged(TrackController *selected) {}
-};
 
 class TrackController : public FileListener, public TrackControlListener, public juce::MouseListener {
   public:

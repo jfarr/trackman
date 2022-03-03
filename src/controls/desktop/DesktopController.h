@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TrackControllerListener.h"
 #include "TrackListListener.h"
 #include "commands/CommandList.h"
 #include "controls/mixer/MixerComponent.h"
@@ -16,7 +17,7 @@ class DesktopController : public MixerComponentListener, public MasterTrackListe
     void undoLast();
     juce::String getLastCommandName() const { return commandList.getLastCommandName(); }
 
-//    void addNewTrack();
+    //    void addNewTrack();
 
     Track *addNewTrack();
     void removeTrack(Track *track);
