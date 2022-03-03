@@ -32,8 +32,21 @@ void TrackController::fileChosen(juce::File file) {
         auto newSource = new juce::AudioFormatReaderSource(reader, true);
         auto newGain = new GainAudioSource(newSource, true);
         gain.reset(newGain);
+        sampleRate = reader->sampleRate;
         listener->onSourceSet(newGain, source, false, reader->sampleRate);
         source = newGain;
+    }
+}
+
+void TrackController::addSource() {
+    if (source != nullptr) {
+        listener->onSourceSet(source, nullptr, false, sampleRate);
+    }
+}
+
+void TrackController::removeSource() {
+    if (source != nullptr) {
+        listener->onSourceSet(nullptr, source, false, 0);
     }
 }
 

@@ -9,7 +9,10 @@ CommandList::~CommandList() {
     }
 }
 
-void CommandList::pushCommand(Command *command) { commands.push_back(command); }
+void CommandList::pushCommand(Command *command) {
+    commands.push_back(command);
+    command->execute();
+}
 
 Command *CommandList::popCommand() {
     if (commands.size() == 0) {

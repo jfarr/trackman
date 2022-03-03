@@ -23,6 +23,8 @@ class MixerPanel : public juce::AudioAppComponent,
 
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
 
+    void addTrack(TrackControl &trackControl);
+
     void setMasterLevel(float newLevel);
     void setTrackLevel(Track *track, float newLevel);
 

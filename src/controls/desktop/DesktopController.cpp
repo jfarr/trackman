@@ -36,48 +36,56 @@ void DesktopController::levelChangeFinalized(TrackControl &trackControl, float p
     commandList.pushCommand(command);
 }
 
-Track *DesktopController::addNewTrack() {
+void DesktopController::addNewTrack() {
     juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), trackList.size() + 1);
-    Track *newTrack = trackList.addTrack(name);
-    Command *command = new AddTrackCommand(*this, newTrack);
+    Command *command = new AddTrackCommand(*this, name);
     commandList.pushCommand(command);
+}
 
+void DesktopController::deleteSelectedTrack() {
+    if (selected == nullptr) {
+        return;
+    }
+    Command *command = new DeleteTrackCommand(*this, selected);
+    commandList.pushCommand(command);
+}
+
+TrackController *DesktopController::addTrack(juce::String name) {
+    Track *newTrack = trackList.addTrack(name);
     TrackController *controller = new TrackController(*newTrack, formatManager);
+    addTrackController(controller);
+    return controller;
+}
+
+void DesktopController::addTrackController(TrackController *controller) {
     controller->addListener(this);
     controller->setListener(&mixerPanel);
     controller->getTrackControl().addListener(this);
+    controller->addSource();
     tracks.push_back(controller);
-    mixerPanel.addAndMakeVisible(controller->getTrackControl());
-    mixerPanel.resized();
+    mixerPanel.addTrack(controller->getTrackControl());
     trackListPanel.addTrack(controller->getTrackLaneControl());
-    notifyTrackAdded(*newTrack);
-    return newTrack;
+    notifyTrackAdded(controller->getTrack());
 }
 
-void DesktopController::removeTrack(Track *track) {
-    TrackController *controller = getController(track);
-    if (controller == nullptr) {
-        return;
+void DesktopController::removeTrackController(TrackController *controller) {
+    if (selected == controller) {
+        selected = nullptr;
     }
+    controller->removeSource();
     controller->removeListener(this);
     controller->setListener(nullptr);
     controller->getTrackControl().removeListener(this);
     trackListPanel.removeTrack(controller->getTrackLaneControl());
     mixerPanel.removeChildComponent(&controller->getTrackControl());
     tracks.remove(controller);
-    trackList.removeTrack(track);
-    delete controller;
 }
 
-TrackController *DesktopController::getController(const Track *track) {
-    TrackController *controller = nullptr;
-    for (TrackController *t : tracks) {
-        if (&t->getTrack() == track) {
-            controller = t;
-            break;
-        }
-    }
-    return controller;
+void DesktopController::deleteTrackController(TrackController *controller)
+{
+    // TODO: update model first, rebuild controllers from model
+    trackList.removeTrack(&controller->getTrack());
+    delete controller;
 }
 
 void DesktopController::mixerResized(juce::Rectangle<int> area) {
@@ -86,9 +94,10 @@ void DesktopController::mixerResized(juce::Rectangle<int> area) {
     }
 }
 
-void DesktopController::selectionChanged(TrackController *selected) {
+void DesktopController::selectionChanged(TrackController *newSelected) {
+    selected = newSelected;
     for (TrackController *track : tracks) {
-        track->setSelected(track == selected);
+        track->setSelected(track == newSelected);
     }
 }
 

@@ -20,8 +20,13 @@ class DesktopController : public MixerPanelListener,
     void undoLast();
     juce::String getLastCommandName() const { return commandList.getLastCommandName(); }
 
-    Track *addNewTrack();
-    void removeTrack(Track *track);
+    void addNewTrack();
+    void deleteSelectedTrack();
+
+    TrackController *addTrack(juce::String name);
+    void addTrackController(TrackController *controller);
+    void removeTrackController(TrackController *controller);
+    void deleteTrackController(TrackController *controller);
 
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
@@ -47,11 +52,11 @@ class DesktopController : public MixerPanelListener,
     TrackList trackList;
     std::list<TrackController *> tracks;
     std::list<TrackListListener *> listeners;
+    TrackController *selected = nullptr;
 
     juce::AudioFormatManager &formatManager;
     MixerPanel &mixerPanel;
     TrackListPanel &trackListPanel;
 
     void notifyTrackAdded(Track &track);
-    TrackController *getController(const Track *track);
 };

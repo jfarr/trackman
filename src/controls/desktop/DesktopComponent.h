@@ -12,7 +12,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
   public:
     //==============================================================================
     /** A list of the commands that this menu responds to. */
-    enum CommandIDs { newTrack = 1, newAudioPlayer, editUndo };
+    enum CommandIDs { newTrack = 1, newAudioPlayer, editUndo, deleteTrack };
 
     //==============================================================================
     DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager);
@@ -24,8 +24,8 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     void resized() override;
 
     //==============================================================================
-
-    juce::StringArray getMenuBarNames() override { return {"new", "edit"}; }
+    // MenuBarModel
+    juce::StringArray getMenuBarNames() override { return {"new", "edit", "track"}; }
 
     juce::PopupMenu getMenuForIndex(int menuIndex, const juce::String & /*menuName*/) override {
         juce::PopupMenu menu;
@@ -35,6 +35,8 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
             menu.addCommandItem(&commandManager, CommandIDs::newAudioPlayer);
         } else if (menuIndex == 1) {
             menu.addCommandItem(&commandManager, CommandIDs::editUndo);
+        } else if (menuIndex == 2) {
+            menu.addCommandItem(&commandManager, CommandIDs::deleteTrack);
         }
 
         return menu;
@@ -43,13 +45,12 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     void menuItemSelected(int /*menuItemID*/, int /*topLevelMenuIndex*/) override {}
 
     //==============================================================================
-    // The following methods implement the ApplicationCommandTarget interface,
-    // allowing this window to publish a set of actions it can perform, and
-    // which can be mapped onto menus, keypresses, etc.
+    // ApplicationCommandTarget
     ApplicationCommandTarget *getNextCommandTarget() override { return nullptr; }
 
     void getAllCommands(juce::Array<juce::CommandID> &c) override {
-        juce::Array<juce::CommandID> commands{CommandIDs::newTrack, CommandIDs::newAudioPlayer, CommandIDs::editUndo};
+        juce::Array<juce::CommandID> commands{
+            CommandIDs::newTrack, CommandIDs::newAudioPlayer, CommandIDs::editUndo, CommandIDs::deleteTrack};
         c.addArray(commands);
     }
 
@@ -71,6 +72,11 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
             result.addDefaultKeypress('z', juce::ModifierKeys::commandModifier);
             result.setActive(desktopController.canUndo());
             break;
+        case CommandIDs::deleteTrack:
+            result.setInfo("delete", "Delete the selected track", "Menu", 0);
+            result.addDefaultKeypress(juce::KeyPress::backspaceKey, juce::ModifierKeys::noModifiers);
+            result.addDefaultKeypress(juce::KeyPress::deleteKey, juce::ModifierKeys::noModifiers);
+            break;
         default:
             break;
         }
@@ -85,6 +91,9 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
             break;
         case CommandIDs::editUndo:
             desktopController.undoLast();
+            break;
+        case CommandIDs::deleteTrack:
+            desktopController.deleteSelectedTrack();
             break;
         default:
             return false;
