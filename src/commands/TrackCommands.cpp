@@ -1,6 +1,7 @@
 #include "commands/TrackCommands.h"
 
-AddTrackCommand::AddTrackCommand(TrackListController &controller) : Command("add track"), controller(controller) {}
+AddTrackCommand::AddTrackCommand(DesktopController &controller, Track *track)
+    : Command("add track"), controller(controller), track(track) {}
 
 AddTrackCommand::~AddTrackCommand() {}
 
