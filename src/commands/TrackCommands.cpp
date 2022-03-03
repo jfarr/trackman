@@ -5,7 +5,7 @@ AddTrackCommand::AddTrackCommand(DesktopController &controller, Track *track)
 
 AddTrackCommand::~AddTrackCommand() {}
 
-ChangeMasterVolumeCommand::ChangeMasterVolumeCommand(MixerComponent &mixer, float previousLevel)
+ChangeMasterVolumeCommand::ChangeMasterVolumeCommand(MixerPanel &mixer, float previousLevel)
     : Command("change master volume"), mixer(mixer), previousLevel(previousLevel) {}
 
 ChangeMasterVolumeCommand::~ChangeMasterVolumeCommand() {}

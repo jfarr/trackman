@@ -5,7 +5,7 @@
 #include "ChildWindow.h"
 #include "DesktopController.h"
 #include "controls/AudioPlayer.h"
-#include "controls/mixer/MixerComponent.h"
+#include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
 
 class DesktopComponent : public juce::Component, public juce::ApplicationCommandTarget, public juce::MenuBarModel {
@@ -94,7 +94,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     }
 
   private:
-    MixerComponent mixerComponent;
+    MixerPanel mixerComponent;
     TrackListPanel trackListPanel;
     juce::Viewport trackListViewport;
 

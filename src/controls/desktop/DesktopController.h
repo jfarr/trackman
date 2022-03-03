@@ -3,15 +3,15 @@
 #include "TrackControllerListener.h"
 #include "TrackListListener.h"
 #include "commands/CommandList.h"
-#include "controls/mixer/MixerComponent.h"
+#include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
 
-class DesktopController : public MixerComponentListener, public MasterTrackListener, public TrackControllerListener {
+class DesktopController : public MixerPanelListener, public MasterTrackListener, public TrackControllerListener {
   public:
-    DesktopController(juce::AudioFormatManager &formatManager, MixerComponent &mixer, TrackListPanel &trackListPanel);
+    DesktopController(juce::AudioFormatManager &formatManager, MixerPanel &mixer, TrackListPanel &trackListPanel);
     ~DesktopController();
 
-    MixerComponent &getMixer() { return mixer; }
+    MixerPanel &getMixer() { return mixer; }
 
     bool canUndo() const;
     void undoLast();
@@ -26,7 +26,7 @@ class DesktopController : public MixerComponentListener, public MasterTrackListe
     void removeListener(TrackListListener *listener);
 
     //==============================================================================
-    // MixerComponentListener
+    // MixerPanelListener
     void mixerResized(juce::Rectangle<int> area) override;
 
     //==============================================================================
@@ -44,7 +44,7 @@ class DesktopController : public MixerComponentListener, public MasterTrackListe
     std::list<TrackListListener *> listeners;
 
     juce::AudioFormatManager &formatManager;
-    MixerComponent &mixer;
+    MixerPanel &mixer;
     TrackListPanel &trackListPanel;
 
     void notifyTrackAdded(Track &track);

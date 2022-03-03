@@ -3,7 +3,7 @@
 #include "common/listutil.h"
 
 DesktopController::DesktopController(
-    juce::AudioFormatManager &formatManager, MixerComponent &mixer, TrackListPanel &trackListPanel)
+    juce::AudioFormatManager &formatManager, MixerPanel &mixer, TrackListPanel &trackListPanel)
     : formatManager(formatManager), mixer(mixer), trackListPanel(trackListPanel) {
     mixer.addListener(this);
     mixer.getMasterTrackControl().addListener(this);

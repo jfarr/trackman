@@ -20,14 +20,14 @@ class AddTrackCommand : public Command {
 
 class ChangeMasterVolumeCommand : public Command {
   public:
-    ChangeMasterVolumeCommand(MixerComponent &mixer, float previousLevel);
+    ChangeMasterVolumeCommand(MixerPanel &mixer, float previousLevel);
     ~ChangeMasterVolumeCommand() override;
 
     void execute() override {}
     void undo() override { mixer.setLevel(previousLevel); }
 
   private:
-    MixerComponent &mixer;
+    MixerPanel &mixer;
     float previousLevel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChangeMasterVolumeCommand)
