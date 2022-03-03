@@ -1,12 +1,12 @@
 #include "MainWindow.h"
 
-MainWindow::MainWindow(juce::String name)
+MainWindow::MainWindow(juce::String name, juce::AudioFormatManager &formatManager)
     : DocumentWindow(name,
           juce::Desktop::getInstance().getDefaultLookAndFeel().findColour(
               juce::ResizableWindow::backgroundColourId),
           DocumentWindow::allButtons) {
     setUsingNativeTitleBar(true);
-    setContentOwned(new DesktopComponent(this), true);
+    setContentOwned(new DesktopComponent(this, formatManager), true);
 
 #if JUCE_IOS || JUCE_ANDROID
     setFullScreen(true);

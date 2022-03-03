@@ -5,7 +5,7 @@
 
 class MainWindow : public juce::DocumentWindow {
   public:
-    MainWindow(juce::String name);
+    MainWindow(juce::String name, juce::AudioFormatManager &formatManager);
 
     void closeButtonPressed() override;
 

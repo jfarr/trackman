@@ -15,7 +15,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     enum CommandIDs { newTrack = 1, newAudioPlayer, editUndo };
 
     //==============================================================================
-    DesktopComponent(juce::DocumentWindow *parentWindow);
+    DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager);
     ~DesktopComponent() override;
 
     //==============================================================================
@@ -94,7 +94,6 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     }
 
   private:
-    juce::AudioFormatManager formatManager;
     MixerComponent mixerComponent;
     TrackListPanel trackListPanel;
 
@@ -107,6 +106,8 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     // Component::SafePointer class to point to them, which automatically
     // becomes null when the component that it points to is deleted.
     juce::Array<Component::SafePointer<Component>> windows;
+
+    juce::AudioFormatManager &formatManager;
 
     void createChildWindow(const juce::String &name, juce::Component *component);
     void closeAllWindows();

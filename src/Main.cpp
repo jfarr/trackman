@@ -15,7 +15,9 @@ class TrackmanApplication : public juce::JUCEApplication {
         // This method is where you should put your application's initialisation
         // code..
 
-        mainWindow.reset(new MainWindow(getApplicationName()));
+        formatManager.registerBasicFormats();
+
+        mainWindow.reset(new MainWindow(getApplicationName(), formatManager));
     }
 
     void shutdown() override {
@@ -39,6 +41,7 @@ class TrackmanApplication : public juce::JUCEApplication {
     }
 
   private:
+    juce::AudioFormatManager formatManager;
     std::unique_ptr<MainWindow> mainWindow;
 };
 
