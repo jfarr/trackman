@@ -2,8 +2,7 @@
 #include "common/listutil.h"
 
 TrackController::TrackController(Track &track, juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), track(track), source(nullptr), listener(nullptr), trackControl(track.getName()),
-      trackLaneControl(track.getName()) {
+    : formatManager(formatManager), track(track), trackControl(track.getName()), trackLaneControl(track.getName()) {
     trackControl.addListener(this);
     trackControl.setListener(this);
     trackControl.addMouseListener(this, true);
@@ -11,11 +10,9 @@ TrackController::TrackController(Track &track, juce::AudioFormatManager &formatM
 }
 
 TrackController::~TrackController() {
-    if (source != nullptr) {
-        source->releaseResources();
-        delete source;
+    if (previousSource != nullptr) {
+        previousSource->releaseResources();
     }
-    gain.release();
 }
 
 void TrackController::fileChosen(juce::File file) {
@@ -26,27 +23,26 @@ void TrackController::fileChosen(juce::File file) {
     auto *reader = formatManager.createReaderFor(file);
 
     if (reader != nullptr) {
-        if (source != nullptr) {
-            source->releaseResources();
+        if (previousSource != nullptr) {
+            previousSource->releaseResources();
         }
         auto newSource = new juce::AudioFormatReaderSource(reader, true);
-        auto newGain = new GainAudioSource(newSource, true);
-        gain.reset(newGain);
+        gain = std::shared_ptr<juce::PositionableAudioSource>(new GainAudioSource(newSource, true));
         sampleRate = reader->sampleRate;
-        listener->onSourceSet(newGain, source, false, reader->sampleRate);
-        source = newGain;
+        listener->onSourceSet(gain, previousSource, false, reader->sampleRate);
+        previousSource = gain;
     }
 }
 
 void TrackController::addSource() {
-    if (source != nullptr) {
-        listener->onSourceSet(source, nullptr, false, sampleRate);
+    if (previousSource != nullptr) {
+        listener->onSourceSet(previousSource, nullptr, false, sampleRate);
     }
 }
 
 void TrackController::removeSource() {
-    if (source != nullptr) {
-        listener->onSourceSet(nullptr, source, false, 0);
+    if (previousSource != nullptr) {
+        listener->onSourceSet(nullptr, previousSource, false, 0);
     }
 }
 

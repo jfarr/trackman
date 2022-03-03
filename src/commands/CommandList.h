@@ -9,12 +9,12 @@ class CommandList {
     ~CommandList();
 
     void pushCommand(Command *command);
-    Command *popCommand();
+    void undoLast();
     bool isEmpty() const { return commands.size() == 0; }
     juce::String getLastCommandName() const;
 
   private:
-    std::list<Command *> commands;
+    std::list<std::unique_ptr<Command>> commands;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandList)
 };

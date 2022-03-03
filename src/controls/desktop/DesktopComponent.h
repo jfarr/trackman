@@ -7,6 +7,7 @@
 #include "controls/AudioPlayer.h"
 #include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
+#include "model/Mixer.h"
 
 class DesktopComponent : public juce::Component, public juce::ApplicationCommandTarget, public juce::MenuBarModel {
   public:
@@ -81,6 +82,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
             break;
         }
     }
+
     bool perform(const InvocationInfo &info) override {
         switch (info.commandID) {
         case CommandIDs::newTrack:
@@ -98,16 +100,16 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
         default:
             return false;
         }
-
         return true;
     }
 
   private:
-    MixerPanel mixerComponent;
+    Mixer mixer;
+    MixerPanel mixerPanel;
     TrackListPanel trackListPanel;
     juce::Viewport trackListViewport;
-
     DesktopController desktopController;
+
     juce::ApplicationCommandManager commandManager;
     juce::MenuBarComponent menuBar;
 

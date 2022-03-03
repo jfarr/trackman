@@ -5,14 +5,14 @@
 
 class ChangeMasterVolumeCommand : public Command {
   public:
-    ChangeMasterVolumeCommand(MixerPanel &mixerPanel, float previousLevel)
-        : Command("change master volume"), mixerPanel(mixerPanel), previousLevel(previousLevel) {}
+    ChangeMasterVolumeCommand(MixerController &mixerController, float previousLevel)
+        : Command("change master volume"), mixerController(mixerController), previousLevel(previousLevel) {}
     ~ChangeMasterVolumeCommand() override {}
 
-    void undo() override { mixerPanel.setMasterLevel(previousLevel); }
+    void undo() override { mixerController.setMasterLevel(previousLevel); }
 
   private:
-    MixerPanel &mixerPanel;
+    MixerController &mixerController;
     float previousLevel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChangeMasterVolumeCommand)

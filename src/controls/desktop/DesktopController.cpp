@@ -2,32 +2,29 @@
 #include "commands/MixerCommands.h"
 #include "commands/TrackCommands.h"
 #include "common/listutil.h"
+#include "controls/desktop/TrackController.h"
 
 DesktopController::DesktopController(
-    juce::AudioFormatManager &formatManager, MixerPanel &mixerPanel, TrackListPanel &trackListPanel)
-    : formatManager(formatManager), mixerPanel(mixerPanel), trackListPanel(trackListPanel) {
+    juce::AudioFormatManager &formatManager, Mixer &mixer, MixerPanel &mixerPanel, TrackListPanel &trackListPanel)
+    : mixerController(mixer, mixerPanel), formatManager(formatManager), mixer(mixer), mixerPanel(mixerPanel),
+      trackListPanel(trackListPanel) {
     mixerPanel.addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
 }
 
 DesktopController::~DesktopController() {
-    for (TrackController *track : tracks) {
-        delete track;
+    for (TrackController *controller : tracks) {
+        delete controller;
     }
+    tracks.clear();
 }
 
 bool DesktopController::canUndo() const { return !commandList.isEmpty(); }
 
-void DesktopController::undoLast() {
-    Command *command = commandList.popCommand();
-    if (command != nullptr) {
-        command->undo();
-        delete command;
-    }
-}
+void DesktopController::undoLast() { commandList.undoLast(); }
 
 void DesktopController::masterLevelChangeFinalized(float previousLevel) {
-    Command *command = new ChangeMasterVolumeCommand(getMixer(), previousLevel);
+    Command *command = new ChangeMasterVolumeCommand(mixerController, previousLevel);
     commandList.pushCommand(command);
 }
 
@@ -53,19 +50,19 @@ void DesktopController::deleteSelectedTrack() {
 TrackController *DesktopController::addTrack(juce::String name) {
     Track *newTrack = trackList.addTrack(name);
     TrackController *controller = new TrackController(*newTrack, formatManager);
+    tracks.push_back(controller);
     addTrackController(controller);
     return controller;
 }
 
 void DesktopController::addTrackController(TrackController *controller) {
     controller->addListener(this);
-    controller->setListener(&mixerPanel);
+    controller->setListener(&mixerController);
     controller->getTrackControl().addListener(this);
     controller->addSource();
-    tracks.push_back(controller);
+    controller->setVisible(true);
     mixerPanel.addTrack(controller->getTrackControl());
     trackListPanel.addTrack(controller->getTrackLaneControl());
-    notifyTrackAdded(controller->getTrack());
 }
 
 void DesktopController::removeTrackController(TrackController *controller) {
@@ -76,21 +73,16 @@ void DesktopController::removeTrackController(TrackController *controller) {
     controller->removeListener(this);
     controller->setListener(nullptr);
     controller->getTrackControl().removeListener(this);
+    controller->setVisible(false);
     trackListPanel.removeTrack(controller->getTrackLaneControl());
-    mixerPanel.removeChildComponent(&controller->getTrackControl());
-    tracks.remove(controller);
-}
-
-void DesktopController::deleteTrackController(TrackController *controller)
-{
-    // TODO: update model first, rebuild controllers from model
-    trackList.removeTrack(&controller->getTrack());
-    delete controller;
+    mixerPanel.removeTrack(controller->getTrackControl());
 }
 
 void DesktopController::mixerResized(juce::Rectangle<int> area) {
     for (TrackController *track : tracks) {
-        track->getTrackControl().setBounds(area.removeFromLeft(track->getTrackControl().getWidth()));
+        if (track->isVisible()) {
+            track->getTrackControl().setBounds(area.removeFromLeft(track->getTrackControl().getWidth()));
+        }
     }
 }
 
@@ -98,19 +90,5 @@ void DesktopController::selectionChanged(TrackController *newSelected) {
     selected = newSelected;
     for (TrackController *track : tracks) {
         track->setSelected(track == newSelected);
-    }
-}
-
-void DesktopController::addListener(TrackListListener *listener) {
-    if (!listContains(listener, listeners)) {
-        listeners.push_front(listener);
-    }
-}
-
-void DesktopController::removeListener(TrackListListener *listener) { listeners.remove(listener); }
-
-void DesktopController::notifyTrackAdded(Track &track) {
-    for (TrackListListener *listener : listeners) {
-        listener->trackAdded(track);
     }
 }

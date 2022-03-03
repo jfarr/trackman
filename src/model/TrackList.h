@@ -7,9 +7,13 @@ class TrackList {
     TrackList();
     ~TrackList();
 
-    int size() { return tracks.size(); }
     Track *addTrack(juce::String name);
     void removeTrack(Track *track);
+    int size() { return tracks.size(); }
+
+    void eachTrack(std::function<void(Track &track)> f) {
+        std::for_each(tracks.begin(), tracks.end(), [&f](Track *track) { f(*track); });
+    }
 
   private:
     std::list<Track *> tracks;

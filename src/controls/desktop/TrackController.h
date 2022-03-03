@@ -21,6 +21,8 @@ class TrackController : public FileListener, public TrackControlListener, public
     TrackLaneControl &getTrackLaneControl() { return trackLaneControl; }
 
     void setSelected(bool newSelected);
+    void setVisible(bool newVisible) { visible = newVisible; }
+    bool isVisible() const { return visible; }
 
     void addSource();
     void removeSource();
@@ -43,20 +45,20 @@ class TrackController : public FileListener, public TrackControlListener, public
 
   private:
     juce::AudioFormatManager &formatManager;
-
-    juce::PositionableAudioSource *source = nullptr;
-    TrackSourceListener *listener = nullptr;
-    std::list<TrackControllerListener *> listeners;
-
     Track &track;
-    std::unique_ptr<juce::AudioSource> gain;
+    std::shared_ptr<juce::PositionableAudioSource> gain;
+    std::shared_ptr<juce::PositionableAudioSource> previousSource = nullptr;
     double sampleRate = 0;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
     bool selected = false;
+    bool visible = true;
 
     TrackControl trackControl;
     TrackLaneControl trackLaneControl;
+
+    TrackSourceListener *listener = nullptr;
+    std::list<TrackControllerListener *> listeners;
 
     void notifySelectionChanged();
 
