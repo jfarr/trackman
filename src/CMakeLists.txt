@@ -29,6 +29,8 @@ target_sources(Trackman PRIVATE
         commands/TrackCommands.h
         controls/AudioPlayer.cpp
         controls/AudioPlayer.h
+        controls/MainWindow.cpp
+        controls/MainWindow.h
         controls/common/DecibelSlider.h
         controls/common/FileChooserControl.cpp
         controls/common/FileChooserControl.h

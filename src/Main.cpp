@@ -1,6 +1,6 @@
 #include <JuceHeader.h>
 
-#include "controls/desktop/DesktopComponent.h"
+#include "controls/MainWindow.h"
 
 class TrackmanApplication : public juce::JUCEApplication {
   public:
@@ -37,37 +37,6 @@ class TrackmanApplication : public juce::JUCEApplication {
         // running, this method is invoked, and the commandLine parameter tells
         // you what the other instance's command-line arguments were.
     }
-
-    class MainWindow : public juce::DocumentWindow {
-      public:
-        MainWindow(juce::String name)
-            : DocumentWindow(name,
-                  juce::Desktop::getInstance().getDefaultLookAndFeel().findColour(
-                      juce::ResizableWindow::backgroundColourId),
-                  DocumentWindow::allButtons) {
-            setUsingNativeTitleBar(true);
-            setContentOwned(new DesktopComponent(this), true);
-
-#if JUCE_IOS || JUCE_ANDROID
-            setFullScreen(true);
-#else
-            setResizable(true, true);
-            centreWithSize(getWidth(), getHeight());
-#endif
-
-            setVisible(true);
-        }
-
-        void closeButtonPressed() override {
-            // This is called when the user tries to close this window. Here,
-            // we'll just ask the app to quit when this happens, but you can
-            // change this to do whatever you need.
-            JUCEApplication::getInstance()->systemRequestedQuit();
-        }
-
-      private:
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
-    };
 
   private:
     std::unique_ptr<MainWindow> mainWindow;
