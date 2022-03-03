@@ -26,7 +26,7 @@ void MixerPanel::createControls() {
     addAndMakeVisible(masterTrackControl);
 }
 
-void MixerPanel::setLevel(float newLevel) {
+void MixerPanel::setMasterLevel(float newLevel) {
     level = newLevel;
     masterTrackControl.setLevel(level);
 }
@@ -41,12 +41,12 @@ void MixerPanel::onSourceSet(juce::PositionableAudioSource *newSource, juce::Pos
 
 void MixerPanel::loopingChanged(bool shouldLoop) { mixerSource.setLooping(shouldLoop); }
 
-void MixerPanel::levelChanged(float newLevel) {
+void MixerPanel::masterLevelChanged(float newLevel) {
     level = newLevel;
     transportSource.setGain(newLevel);
 }
 
-void MixerPanel::muteToggled() {
+void MixerPanel::masterMuteToggled() {
     muted = !muted;
     auto newLevel = (muted ? 0.0 : level);
     transportSource.setGain(newLevel);

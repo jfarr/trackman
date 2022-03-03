@@ -6,9 +6,9 @@
 
 class MasterTrackListener {
   public:
-    virtual void levelChanged(float level) {}
-    virtual void levelChangeFinalized(float previousLevel) {}
-    virtual void muteToggled() {}
+    virtual void masterLevelChanged(float level) {}
+    virtual void masterLevelChangeFinalized(float previousLevel) {}
+    virtual void masterMuteToggled() {}
 };
 
 class MasterTrackControl : public juce::Component, public SliderListener {
@@ -16,10 +16,10 @@ class MasterTrackControl : public juce::Component, public SliderListener {
     MasterTrackControl();
     ~MasterTrackControl();
 
+    void setLevel(float level);
+
     void addListener(MasterTrackListener *listener);
     void removeListener(MasterTrackListener *listener);
-
-    void setLevel(float level);
 
     //==============================================================================
     // Component

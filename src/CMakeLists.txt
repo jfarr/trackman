@@ -25,7 +25,7 @@ target_sources(Trackman PRIVATE
         commands/Command.h
         commands/CommandList.cpp
         commands/CommandList.h
-        commands/TrackCommands.cpp
+        commands/MixerCommands.h
         commands/TrackCommands.h
         controls/AudioPlayer.cpp
         controls/AudioPlayer.h

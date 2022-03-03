@@ -88,18 +88,18 @@ void MasterTrackControl::removeListener(MasterTrackListener *listener) { listene
 
 void MasterTrackControl::notifyLevelChanged(float level) {
     for (MasterTrackListener *listener : listeners) {
-        listener->levelChanged(level);
+        listener->masterLevelChanged(level);
     }
 }
 
 void MasterTrackControl::notifyLevelChangeFinalized(float previousLevel) {
     for (MasterTrackListener *listener : listeners) {
-        listener->levelChangeFinalized(previousLevel);
+        listener->masterLevelChangeFinalized(previousLevel);
     }
 }
 
 void MasterTrackControl::notifyMuteToggled() {
     for (MasterTrackListener *listener : listeners) {
-        listener->muteToggled();
+        listener->masterMuteToggled();
     }
 }

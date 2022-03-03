@@ -6,7 +6,10 @@
 #include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
 
-class DesktopController : public MixerPanelListener, public MasterTrackListener, public TrackControllerListener {
+class DesktopController : public MixerPanelListener,
+                          public MasterTrackListener,
+                          public TrackControlListener,
+                          public TrackControllerListener {
   public:
     DesktopController(juce::AudioFormatManager &formatManager, MixerPanel &mixerPanel, TrackListPanel &trackListPanel);
     ~DesktopController();
@@ -16,8 +19,6 @@ class DesktopController : public MixerPanelListener, public MasterTrackListener,
     bool canUndo() const;
     void undoLast();
     juce::String getLastCommandName() const { return commandList.getLastCommandName(); }
-
-    //    void addNewTrack();
 
     Track *addNewTrack();
     void removeTrack(Track *track);
@@ -31,7 +32,11 @@ class DesktopController : public MixerPanelListener, public MasterTrackListener,
 
     //==============================================================================
     // MasterTrackListener
-    void levelChangeFinalized(float previousLevel) override;
+    void masterLevelChangeFinalized(float previousLevel) override;
+
+    //==============================================================================
+    // TrackControlListener
+    void levelChangeFinalized(TrackControl &trackControl, float previousLevel) override;
 
     //==============================================================================
     // TrackControllerListener
