@@ -83,20 +83,10 @@ void DesktopController::removeTrackController(TrackController *controller) {
 
 void DesktopController::deleteTrackController(TrackController *controller)
 {
+    // TODO: update model first, rebuild controllers from model
     trackList.removeTrack(&controller->getTrack());
     delete controller;
 }
-
-//TrackController *DesktopController::getController(const Track *track) {
-//    TrackController *controller = nullptr;
-//    for (TrackController *t : tracks) {
-//        if (&t->getTrack() == track) {
-//            controller = t;
-//            break;
-//        }
-//    }
-//    return controller;
-//}
 
 void DesktopController::mixerResized(juce::Rectangle<int> area) {
     for (TrackController *track : tracks) {

@@ -59,5 +59,4 @@ class DesktopController : public MixerPanelListener,
     TrackListPanel &trackListPanel;
 
     void notifyTrackAdded(Track &track);
-//    TrackController *getController(const Track *track);
 };
