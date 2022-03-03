@@ -8,10 +8,10 @@
 
 class DesktopController : public MixerPanelListener, public MasterTrackListener, public TrackControllerListener {
   public:
-    DesktopController(juce::AudioFormatManager &formatManager, MixerPanel &mixer, TrackListPanel &trackListPanel);
+    DesktopController(juce::AudioFormatManager &formatManager, MixerPanel &mixerPanel, TrackListPanel &trackListPanel);
     ~DesktopController();
 
-    MixerPanel &getMixer() { return mixer; }
+    MixerPanel &getMixer() { return mixerPanel; }
 
     bool canUndo() const;
     void undoLast();
@@ -44,7 +44,7 @@ class DesktopController : public MixerPanelListener, public MasterTrackListener,
     std::list<TrackListListener *> listeners;
 
     juce::AudioFormatManager &formatManager;
-    MixerPanel &mixer;
+    MixerPanel &mixerPanel;
     TrackListPanel &trackListPanel;
 
     void notifyTrackAdded(Track &track);

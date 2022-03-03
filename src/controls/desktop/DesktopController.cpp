@@ -3,10 +3,10 @@
 #include "common/listutil.h"
 
 DesktopController::DesktopController(
-    juce::AudioFormatManager &formatManager, MixerPanel &mixer, TrackListPanel &trackListPanel)
-    : formatManager(formatManager), mixer(mixer), trackListPanel(trackListPanel) {
-    mixer.addListener(this);
-    mixer.getMasterTrackControl().addListener(this);
+    juce::AudioFormatManager &formatManager, MixerPanel &mixerPanel, TrackListPanel &trackListPanel)
+    : formatManager(formatManager), mixerPanel(mixerPanel), trackListPanel(trackListPanel) {
+    mixerPanel.addListener(this);
+    mixerPanel.getMasterTrackControl().addListener(this);
 }
 
 DesktopController::~DesktopController() {
@@ -38,10 +38,10 @@ Track *DesktopController::addNewTrack() {
 
     TrackController *controller = new TrackController(*newTrack, formatManager);
     controller->addListener(this);
-    controller->setListener(&mixer);
+    controller->setListener(&mixerPanel);
     tracks.push_back(controller);
-    mixer.addAndMakeVisible(controller->getTrackControl());
-    mixer.resized();
+    mixerPanel.addAndMakeVisible(controller->getTrackControl());
+    mixerPanel.resized();
     trackListPanel.addTrack(controller->getTrackLaneControl());
     notifyTrackAdded(*newTrack);
     return newTrack;
@@ -53,7 +53,7 @@ void DesktopController::removeTrack(Track *track) {
         return;
     }
     trackListPanel.removeTrack(controller->getTrackLaneControl());
-    mixer.removeChildComponent(&controller->getTrackControl());
+    mixerPanel.removeChildComponent(&controller->getTrackControl());
     tracks.remove(controller);
     trackList.removeTrack(track);
     delete controller;
