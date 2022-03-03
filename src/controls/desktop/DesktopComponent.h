@@ -2,25 +2,20 @@
 
 #include "JuceHeader.h"
 
-#include "controls/AudioPlayer.h"
 #include "ChildWindow.h"
-#include "controls/mixer/MixerComponent.h"
+#include "DesktopController.h"
+#include "controls/AudioPlayer.h"
+#include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
-#include "TrackListController.h"
 
-//==============================================================================
-/*
-    This component lives inside our window, and this is where you should put all
-    your controls and content.
-*/
 class DesktopComponent : public juce::Component, public juce::ApplicationCommandTarget, public juce::MenuBarModel {
   public:
     //==============================================================================
     /** A list of the commands that this menu responds to. */
-    enum CommandIDs { newTrack = 1, newAudioPlayer };
+    enum CommandIDs { newTrack = 1, newAudioPlayer, editUndo };
 
     //==============================================================================
-    DesktopComponent(juce::DocumentWindow *parentWindow);
+    DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager);
     ~DesktopComponent() override;
 
     //==============================================================================
@@ -30,7 +25,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
 
     //==============================================================================
 
-    juce::StringArray getMenuBarNames() override { return {"new"}; }
+    juce::StringArray getMenuBarNames() override { return {"new", "edit"}; }
 
     juce::PopupMenu getMenuForIndex(int menuIndex, const juce::String & /*menuName*/) override {
         juce::PopupMenu menu;
@@ -38,6 +33,8 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
         if (menuIndex == 0) {
             menu.addCommandItem(&commandManager, CommandIDs::newTrack);
             menu.addCommandItem(&commandManager, CommandIDs::newAudioPlayer);
+        } else if (menuIndex == 1) {
+            menu.addCommandItem(&commandManager, CommandIDs::editUndo);
         }
 
         return menu;
@@ -52,7 +49,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     ApplicationCommandTarget *getNextCommandTarget() override { return nullptr; }
 
     void getAllCommands(juce::Array<juce::CommandID> &c) override {
-        juce::Array<juce::CommandID> commands{CommandIDs::newTrack, CommandIDs::newAudioPlayer};
+        juce::Array<juce::CommandID> commands{CommandIDs::newTrack, CommandIDs::newAudioPlayer, CommandIDs::editUndo};
         c.addArray(commands);
     }
 
@@ -66,6 +63,14 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
             result.setInfo("audioplayer", "Create a new audioplayer component", "Menu", 0);
             result.addDefaultKeypress('p', juce::ModifierKeys::shiftModifier);
             break;
+        case CommandIDs::editUndo:
+            result.setInfo(
+                (desktopController.getLastCommandName() == "" ? "undo"
+                                                              : "undo " + desktopController.getLastCommandName()),
+                "Undo the last edit", "Menu", 0);
+            result.addDefaultKeypress('z', juce::ModifierKeys::commandModifier);
+            result.setActive(desktopController.canUndo());
+            break;
         default:
             break;
         }
@@ -73,10 +78,13 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     bool perform(const InvocationInfo &info) override {
         switch (info.commandID) {
         case CommandIDs::newTrack:
-            trackListController.addNewTrack();
+            desktopController.addNewTrack();
             break;
         case CommandIDs::newAudioPlayer:
             createChildWindow("audioplayer", new AudioPlayer(formatManager));
+            break;
+        case CommandIDs::editUndo:
+            desktopController.undoLast();
             break;
         default:
             return false;
@@ -86,12 +94,11 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     }
 
   private:
-    juce::AudioFormatManager formatManager;
-    MixerComponent mixerComponent;
+    MixerPanel mixerComponent;
     TrackListPanel trackListPanel;
-
-    TrackListController trackListController;
     juce::Viewport trackListViewport;
+
+    DesktopController desktopController;
     juce::ApplicationCommandManager commandManager;
     juce::MenuBarComponent menuBar;
 
@@ -99,6 +106,8 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     // Component::SafePointer class to point to them, which automatically
     // becomes null when the component that it points to is deleted.
     juce::Array<Component::SafePointer<Component>> windows;
+
+    juce::AudioFormatManager &formatManager;
 
     void createChildWindow(const juce::String &name, juce::Component *component);
     void closeAllWindows();

@@ -3,9 +3,8 @@
 TrackList::TrackList() {}
 
 TrackList::~TrackList() {
-    for (std::list<Track *>::iterator i = tracks.begin(); i != tracks.end(); ++i) {
-        std::unique_ptr<Track> toDelete;
-        toDelete.reset(*i);
+    for (Track *track : tracks) {
+        delete track;
     }
 }
 
@@ -15,8 +14,7 @@ Track *TrackList::addTrack(juce::String name) {
     return track;
 }
 
-void TrackList::eachTrack(std::function<void(Track &)> f) {
-    for (std::list<Track *>::iterator i = tracks.begin(); i != tracks.end(); ++i) {
-        f(**i);
-    }
+void TrackList::removeTrack(Track *track) {
+    tracks.remove(track);
+    delete track;
 }

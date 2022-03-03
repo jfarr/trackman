@@ -38,7 +38,7 @@ void TransportControl::createControls() {
 
     addAndMakeVisible(&loopingToggle);
     loopingToggle.setButtonText("loop");
-    loopingToggle.onClick = [this] { loopButtonChanged(); };
+    loopingToggle.onClick = [this] { loopButtonClicked(); };
     loopingToggle.setEnabled(enabled);
 
     addAndMakeVisible(&currentPositionLabel);
@@ -123,12 +123,13 @@ juce::String TransportControl::getStateLabel() {
 
 void TransportControl::changeListenerCallback(juce::ChangeBroadcaster *source) {
     if (source == &transportSource) {
-        if (transportSource.isPlaying())
+        if (transportSource.isPlaying()) {
             changeState(TransportState::Playing);
-        else if (TransportState::Pausing == state)
+        } else if (TransportState::Pausing == state) {
             changeState(TransportState::Paused);
-        else if ((state == TransportState::Stopping) || (state == TransportState::Playing))
+        } else if ((state == TransportState::Stopping) || (state == TransportState::Playing)) {
             changeState(TransportState::Stopped);
+        }
     }
 }
 
@@ -154,43 +155,46 @@ void TransportControl::timerCallback() {
 }
 
 void TransportControl::playButtonClicked() {
-    updateLoopState(loopingToggle.getToggleState());
-    if ((state == TransportState::Stopped) || (state == TransportState::Paused))
+    notifyLoopingChanged(loopingToggle.getToggleState());
+    if ((state == TransportState::Stopped) || (state == TransportState::Paused)) {
         changeState(TransportState::Starting);
-    else if (state == TransportState::Playing)
+    } else if (state == TransportState::Playing) {
         transportSource.setPosition(0.0);
+    }
 }
 
 void TransportControl::stopButtonClicked() {
-    if (state == TransportState::Paused)
+    if (state == TransportState::Paused) {
         changeState(TransportState::Stopped);
-    else if (state != TransportState::Stopped)
+    } else if (state != TransportState::Stopped) {
         changeState(TransportState::Stopping);
+    }
 }
 
 void TransportControl::pauseButtonClicked() {
-    if (state == TransportState::Paused)
+    if (state == TransportState::Paused) {
         changeState(TransportState::Starting);
-    else if (state == TransportState::Stopped)
+    } else if (state == TransportState::Stopped) {
         changeState(TransportState::Paused);
-    else
+    } else {
         changeState(TransportState::Pausing);
+    }
 }
 
 void TransportControl::startButtonClicked() { transportSource.setPosition(0.0); }
 
-void TransportControl::loopButtonChanged() { updateLoopState(loopingToggle.getToggleState()); }
+void TransportControl::loopButtonClicked() { notifyLoopingChanged(loopingToggle.getToggleState()); }
 
-void TransportControl::updateLoopState(bool shouldLoop) {
-    for (std::list<TransportControlListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
-        TransportControlListener &listener = **i;
-        listener.updateLoopState(shouldLoop);
+void TransportControl::addListener(TransportControlListener *listener) {
+    if (!listContains(listener, listeners)) {
+        listeners.push_front(listener);
     }
 }
 
-void TransportControl::addListener(TransportControlListener *listener) {
-    if (!listContains(listener, listeners))
-        listeners.push_front(listener);
-}
-
 void TransportControl::removeListener(TransportControlListener *listener) { listeners.remove(listener); }
+
+void TransportControl::notifyLoopingChanged(bool shouldLoop) {
+    for (TransportControlListener *listener : listeners) {
+        listener->loopingChanged(shouldLoop);
+    }
+}

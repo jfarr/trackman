@@ -1,8 +1,5 @@
 #include "AudioPlayer.h"
 
-#include "controls/desktop/ChildWindow.h"
-
-//==============================================================================
 AudioPlayer::AudioPlayer(juce::AudioFormatManager &formatManager)
     : formatManager(formatManager), transportControl(transportSource, false), thumbnailComponent(formatManager),
       positionOverlay(transportSource) {
@@ -72,7 +69,7 @@ void AudioPlayer::fileChosen(juce::File file) {
     }
 }
 
-void AudioPlayer::updateLoopState(bool shouldLoop) {
+void AudioPlayer::loopingChanged(bool shouldLoop) {
     if (readerSource.get() != nullptr)
         readerSource->setLooping(shouldLoop);
 }

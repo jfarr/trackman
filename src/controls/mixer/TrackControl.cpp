@@ -34,8 +34,7 @@ void TrackControl::createControls() {
     addAndMakeVisible(openButton);
 }
 
-void TrackControl::setSelected(bool newSelected)
-{
+void TrackControl::setSelected(bool newSelected) {
     selected = newSelected;
     channelLabel.setColour(juce::Label::backgroundColourId, selected ? juce::Colours::lightgrey : juce::Colours::grey);
     repaint();
@@ -102,15 +101,13 @@ void TrackControl::addListener(TrackControlListener *listener) {
 void TrackControl::removeListener(TrackControlListener *listener) { listeners.remove(listener); }
 
 void TrackControl::notifyLevelChanged(float level) {
-    for (std::list<TrackControlListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
-        TrackControlListener &listener = **i;
-        listener.levelChanged(level);
+    for (TrackControlListener *listener : listeners) {
+        listener->levelChanged(level);
     }
 }
 
 void TrackControl::notifyMuteToggled() {
-    for (std::list<TrackControlListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
-        TrackControlListener &listener = **i;
-        listener.muteToggled();
+    for (TrackControlListener *listener : listeners) {
+        listener->muteToggled();
     }
 }

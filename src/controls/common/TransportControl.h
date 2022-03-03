@@ -4,7 +4,7 @@
 
 class TransportControlListener {
   public:
-    virtual void updateLoopState(bool shouldLoop) = 0;
+    virtual void loopingChanged(bool shouldLoop) = 0;
 };
 
 class TransportControl : public juce::Component, public juce::ChangeListener, public juce::Timer {
@@ -40,7 +40,7 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
     void createControls();
     void changeState(TransportState newState);
     juce::String getStateLabel();
-    void updateLoopState(bool shouldLoop);
+    void notifyLoopingChanged(bool shouldLoop);
 
     //==============================================================================
 
@@ -48,7 +48,7 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
     void stopButtonClicked();
     void pauseButtonClicked();
     void startButtonClicked();
-    void loopButtonChanged();
+    void loopButtonClicked();
 
     juce::TextButton playButton;
     juce::TextButton stopButton;

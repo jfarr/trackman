@@ -2,8 +2,7 @@
 
 #include <JuceHeader.h>
 
-template <typename ProcessorType>
-class ProcessingAudioSource : public juce::PositionableAudioSource {
+template <typename ProcessorType> class ProcessingAudioSource : public juce::PositionableAudioSource {
   public:
     ProcessingAudioSource(juce::PositionableAudioSource *source, juce::dsp::ProcessorWrapper<ProcessorType> *processor,
         const bool deleteWhenRemoved);

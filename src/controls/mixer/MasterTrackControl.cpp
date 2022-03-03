@@ -12,6 +12,8 @@ MasterTrackControl::~MasterTrackControl() {}
 void MasterTrackControl::createControls() {
     decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
     decibelSlider.setValue(0.0);
+    decibelSlider.addMouseListener(this, false);
+    decibelSlider.setListener(this);
 
     muteButton.setButtonText("M");
     muteButton.setTooltip("mute");
@@ -25,6 +27,20 @@ void MasterTrackControl::createControls() {
     addAndMakeVisible(decibelSlider);
     addAndMakeVisible(muteButton);
     addAndMakeVisible(channelLabel);
+}
+
+void MasterTrackControl::setLevel(float level) {
+    previousLevel = level;
+    decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
+}
+
+void MasterTrackControl::onSliderClick() { draggingSlider = true; }
+
+void MasterTrackControl::mouseUp(const juce::MouseEvent &event) {
+    if (event.eventComponent == &decibelSlider) {
+        draggingSlider = false;
+        decibelSliderChanged();
+    }
 }
 
 void MasterTrackControl::paint(juce::Graphics &g) {
@@ -50,6 +66,10 @@ void MasterTrackControl::resized() {
 void MasterTrackControl::decibelSliderChanged() {
     auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
     notifyLevelChanged(level);
+    if (!draggingSlider && level != previousLevel) {
+        notifyLevelChangeFinalized(previousLevel);
+        previousLevel = level;
+    }
 }
 
 void MasterTrackControl::muteButtonClicked() {
@@ -67,15 +87,19 @@ void MasterTrackControl::addListener(MasterTrackListener *listener) {
 void MasterTrackControl::removeListener(MasterTrackListener *listener) { listeners.remove(listener); }
 
 void MasterTrackControl::notifyLevelChanged(float level) {
-    for (std::list<MasterTrackListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
-        MasterTrackListener &listener = **i;
-        listener.levelChanged(level);
+    for (MasterTrackListener *listener : listeners) {
+        listener->levelChanged(level);
+    }
+}
+
+void MasterTrackControl::notifyLevelChangeFinalized(float previousLevel) {
+    for (MasterTrackListener *listener : listeners) {
+        listener->levelChangeFinalized(previousLevel);
     }
 }
 
 void MasterTrackControl::notifyMuteToggled() {
-    for (std::list<MasterTrackListener *>::iterator i = listeners.begin(); i != listeners.end(); ++i) {
-        MasterTrackListener &listener = **i;
-        listener.muteToggled();
+    for (MasterTrackListener *listener : listeners) {
+        listener->muteToggled();
     }
 }

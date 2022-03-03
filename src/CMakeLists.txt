@@ -22,8 +22,15 @@ target_sources(Trackman PRIVATE
         audio/PositionableResamplingAudioSource.cpp
         audio/PositionableResamplingAudioSource.h
         audio/ProcessingAudioSource.h
+        commands/Command.h
+        commands/CommandList.cpp
+        commands/CommandList.h
+        commands/TrackCommands.cpp
+        commands/TrackCommands.h
         controls/AudioPlayer.cpp
         controls/AudioPlayer.h
+        controls/MainWindow.cpp
+        controls/MainWindow.h
         controls/common/DecibelSlider.h
         controls/common/FileChooserControl.cpp
         controls/common/FileChooserControl.h
@@ -35,14 +42,17 @@ target_sources(Trackman PRIVATE
         controls/desktop/ChildWindow.h
         controls/desktop/DesktopComponent.cpp
         controls/desktop/DesktopComponent.h
+        controls/desktop/DesktopController.cpp
+        controls/desktop/DesktopController.h
         controls/desktop/TrackController.cpp
         controls/desktop/TrackController.h
-        controls/desktop/TrackListController.cpp
-        controls/desktop/TrackListController.h
+        controls/desktop/TrackControllerListener.h
+        controls/desktop/TrackListListener.h
+        controls/desktop/TrackSourceListener.h
         controls/mixer/MasterTrackControl.cpp
         controls/mixer/MasterTrackControl.h
-        controls/mixer/MixerComponent.cpp
-        controls/mixer/MixerComponent.h
+        controls/mixer/MixerPanel.cpp
+        controls/mixer/MixerPanel.h
         controls/mixer/TrackControl.cpp
         controls/mixer/TrackControl.h
         controls/tracks/TrackLaneControl.cpp
