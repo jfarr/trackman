@@ -5,22 +5,36 @@
 #include "controls/common/DecibelSlider.h"
 #include "controls/common/FileChooserControl.h"
 
+class TrackControl;
+
 class TrackControlListener {
   public:
-    virtual void levelChanged(float level) = 0;
-    virtual void muteToggled() = 0;
+    virtual void levelChanged(float level) {}
+    virtual void levelChangeFinalized(TrackControl &trackControl, float previousLevel) {}
+    virtual void muteToggled() {}
 };
 
-class TrackControl : public juce::Component {
+class TrackControl : public juce::Component, public SliderListener {
   public:
     TrackControl(juce::String trackName);
     ~TrackControl();
 
+    juce::String getTrackName() const { return trackName; }
+
+    void setLevel(float level);
     void setSelected(bool newSelected);
     void setListener(class FileListener *newListener) { listener = newListener; }
 
     void addListener(TrackControlListener *listener);
     void removeListener(TrackControlListener *listener);
+
+    //==============================================================================
+    // SliderListener
+    void onSliderClick() override;
+
+    //==============================================================================
+    // MouseListener
+    void mouseUp(const juce::MouseEvent &event) override;
 
     //==============================================================================
     // Component
@@ -34,6 +48,8 @@ class TrackControl : public juce::Component {
     juce::Label trackLabel;
     juce::Label channelLabel;
     bool muted = false;
+    bool draggingSlider = false;
+    float previousLevel = juce::Decibels::decibelsToGain<float>(0.0);
     bool selected = false;
     std::list<TrackControlListener *> listeners;
 
@@ -41,6 +57,7 @@ class TrackControl : public juce::Component {
     void decibelSliderChanged();
     void muteButtonClicked();
     void notifyLevelChanged(float level);
+    void notifyLevelChangeFinalized(float previousLevel);
     void notifyMuteToggled();
 
     std::unique_ptr<juce::FileChooser> chooser;

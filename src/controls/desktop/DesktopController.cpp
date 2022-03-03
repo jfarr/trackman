@@ -1,4 +1,5 @@
 #include "DesktopController.h"
+#include "commands/MixerCommands.h"
 #include "commands/TrackCommands.h"
 #include "common/listutil.h"
 
@@ -25,8 +26,13 @@ void DesktopController::undoLast() {
     }
 }
 
-void DesktopController::levelChangeFinalized(float previousLevel) {
+void DesktopController::masterLevelChangeFinalized(float previousLevel) {
     Command *command = new ChangeMasterVolumeCommand(getMixer(), previousLevel);
+    commandList.pushCommand(command);
+}
+
+void DesktopController::levelChangeFinalized(TrackControl &trackControl, float previousLevel) {
+    Command *command = new ChangeTrackVolumeCommand(trackControl, previousLevel);
     commandList.pushCommand(command);
 }
 
@@ -39,6 +45,7 @@ Track *DesktopController::addNewTrack() {
     TrackController *controller = new TrackController(*newTrack, formatManager);
     controller->addListener(this);
     controller->setListener(&mixerPanel);
+    controller->getTrackControl().addListener(this);
     tracks.push_back(controller);
     mixerPanel.addAndMakeVisible(controller->getTrackControl());
     mixerPanel.resized();
@@ -52,6 +59,9 @@ void DesktopController::removeTrack(Track *track) {
     if (controller == nullptr) {
         return;
     }
+    controller->removeListener(this);
+    controller->setListener(nullptr);
+    controller->getTrackControl().removeListener(this);
     trackListPanel.removeTrack(controller->getTrackLaneControl());
     mixerPanel.removeChildComponent(&controller->getTrackControl());
     tracks.remove(controller);

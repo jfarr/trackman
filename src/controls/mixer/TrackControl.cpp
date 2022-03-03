@@ -12,6 +12,8 @@ TrackControl::~TrackControl() {}
 void TrackControl::createControls() {
     decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
     decibelSlider.setValue(0.0);
+    decibelSlider.addMouseListener(this, false);
+    decibelSlider.setListener(this);
 
     muteButton.setButtonText("M");
     muteButton.setTooltip("mute");
@@ -32,6 +34,20 @@ void TrackControl::createControls() {
     addAndMakeVisible(trackLabel);
     addAndMakeVisible(channelLabel);
     addAndMakeVisible(openButton);
+}
+
+void TrackControl::setLevel(float level) {
+    previousLevel = level;
+    decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
+}
+
+void TrackControl::onSliderClick() { draggingSlider = true; }
+
+void TrackControl::mouseUp(const juce::MouseEvent &event) {
+    if (event.eventComponent == &decibelSlider) {
+        draggingSlider = false;
+        decibelSliderChanged();
+    }
 }
 
 void TrackControl::setSelected(bool newSelected) {
@@ -70,6 +86,10 @@ void TrackControl::resized() {
 void TrackControl::decibelSliderChanged() {
     auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
     notifyLevelChanged(level);
+    if (!draggingSlider && level != previousLevel) {
+        notifyLevelChangeFinalized(previousLevel);
+        previousLevel = level;
+    }
 }
 
 void TrackControl::muteButtonClicked() {
@@ -103,6 +123,12 @@ void TrackControl::removeListener(TrackControlListener *listener) { listeners.re
 void TrackControl::notifyLevelChanged(float level) {
     for (TrackControlListener *listener : listeners) {
         listener->levelChanged(level);
+    }
+}
+
+void TrackControl::notifyLevelChangeFinalized(float previousLevel) {
+    for (TrackControlListener *listener : listeners) {
+        listener->levelChangeFinalized(*this, previousLevel);
     }
 }
 

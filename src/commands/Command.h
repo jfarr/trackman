@@ -9,7 +9,7 @@ class Command {
 
     juce::String getName() { return name; }
 
-    virtual void execute() = 0;
+    virtual void execute() {}
     virtual void undo() = 0;
 
   private:

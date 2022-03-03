@@ -23,7 +23,8 @@ class MixerPanel : public juce::AudioAppComponent,
 
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
 
-    void setLevel(float newLevel);
+    void setMasterLevel(float newLevel);
+    void setTrackLevel(Track *track, float newLevel);
 
     void onSourceSet(juce::PositionableAudioSource *newSource, juce::PositionableAudioSource *prevSource,
         const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) override;
@@ -37,8 +38,8 @@ class MixerPanel : public juce::AudioAppComponent,
 
     //==============================================================================
     // MasterTrackListener
-    void levelChanged(float level) override;
-    void muteToggled() override;
+    void masterLevelChanged(float level) override;
+    void masterMuteToggled() override;
 
     //==============================================================================
     // AudioAppComponent
@@ -52,6 +53,7 @@ class MixerPanel : public juce::AudioAppComponent,
     void resized() override;
 
   private:
+    // TODO: factor out MixerController
     PositionableMixingAudioSource mixerSource;
     juce::AudioTransportSource transportSource;
     TransportControl transportControl;
