@@ -22,6 +22,9 @@ class TrackController : public FileListener, public TrackControlListener, public
 
     void setSelected(bool newSelected);
 
+    void addSource();
+    void removeSource();
+
     void addListener(TrackControllerListener *listener);
     void removeListener(TrackControllerListener *listener);
 
@@ -47,9 +50,11 @@ class TrackController : public FileListener, public TrackControlListener, public
 
     Track &track;
     std::unique_ptr<juce::AudioSource> gain;
+    double sampleRate = 0;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
     bool selected = false;
+
     TrackControl trackControl;
     TrackLaneControl trackLaneControl;
 

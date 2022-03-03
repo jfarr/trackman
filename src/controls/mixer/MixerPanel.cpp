@@ -26,6 +26,11 @@ void MixerPanel::createControls() {
     addAndMakeVisible(masterTrackControl);
 }
 
+void MixerPanel::addTrack(TrackControl &trackControl) {
+    addAndMakeVisible(trackControl);
+    resized();
+}
+
 void MixerPanel::setMasterLevel(float newLevel) {
     level = newLevel;
     masterTrackControl.setLevel(level);
@@ -36,7 +41,9 @@ void MixerPanel::onSourceSet(juce::PositionableAudioSource *newSource, juce::Pos
     if (prevSource != nullptr) {
         mixerSource.removeInputSource(prevSource);
     }
-    mixerSource.addInputSource(newSource, deleteWhenRemoved, sourceSampleRateToCorrectFor);
+    if (newSource != nullptr) {
+        mixerSource.addInputSource(newSource, deleteWhenRemoved, sourceSampleRateToCorrectFor);
+    }
 }
 
 void MixerPanel::loopingChanged(bool shouldLoop) { mixerSource.setLooping(shouldLoop); }
