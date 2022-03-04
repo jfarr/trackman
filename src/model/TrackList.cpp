@@ -2,24 +2,31 @@
 
 TrackList::TrackList() {}
 
-TrackList::~TrackList() {
-}
+TrackList::~TrackList() {}
 
 Track *TrackList::addTrack(juce::String name) {
     Track *track = new Track(name);
     tracks.push_back(std::unique_ptr<Track>(track));
     return track;
 }
+
+void TrackList::removeTrack(Track *track) {
+    for (auto iter = tracks.begin(); iter != tracks.end();) {
+        if (track == iter->get()) {
+            tracks.erase(iter++);
+        } else
+            ++iter;
+    }
+}
+
 //
-//void TrackList::removeTrack(Track *track) {
+// void TrackList::removeTrack(Track *track) {
 //    tracks.remove(track);
 //    delete track;
 //}
 
 void TrackList::setSelected(Track &selected) {
-    eachTrack([&selected](Track& track) {
-        track.setSelected(&track == &selected);
-    });
+    eachTrack([&selected](Track &track) { track.setSelected(&track == &selected); });
 }
 
 void TrackList::eachTrack(std::function<void(Track &track)> f) {

@@ -14,7 +14,7 @@
 class DesktopController : /*public MixerPanelListener,*/
                           public MasterTrackListener,
                           public TrackControlListener,
-//                          public TrackControllerListener,
+                          //                          public TrackControllerListener,
                           public TrackListListener {
   public:
     DesktopController(juce::AudioFormatManager &formatManager);
@@ -32,7 +32,9 @@ class DesktopController : /*public MixerPanelListener,*/
     void deleteSelectedTrack();
 
     Track *addTrack(juce::String name);
-    void deleteTrack(Track *track);
+    void deleteTrack(Track *track, bool purge);
+    void undeleteTrack(Track *track);
+
     //    void addTrackController(TrackController *track);
     //    void removeTrackController(TrackController *track);
 
@@ -54,7 +56,7 @@ class DesktopController : /*public MixerPanelListener,*/
 
     //==============================================================================
     // TrackControllerListener
-//    void selectionChanged(TrackController *newSelected) override;
+    //    void selectionChanged(TrackController *newSelected) override;
 
   private:
     CommandList commandList;
