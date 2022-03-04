@@ -2,25 +2,20 @@
 
 CommandList::CommandList() {}
 
-CommandList::~CommandList() {
-    for (Command *command : commands) {
-        std::unique_ptr<Command> toDelete;
-        toDelete.reset(command);
-    }
-}
+CommandList::~CommandList() {}
 
 void CommandList::pushCommand(Command *command) {
-    commands.push_back(command);
+    std::unique_ptr<Command> p(command);
+    commands.push_back(std::move(p));
     command->execute();
 }
 
-Command *CommandList::popCommand() {
+void CommandList::undoLast() {
     if (commands.size() == 0) {
-        return nullptr;
+        return;
     }
-    Command *command = commands.back();
+    commands.back()->undo();
     commands.pop_back();
-    return command;
 }
 
 juce::String CommandList::getLastCommandName() const {

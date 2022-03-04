@@ -5,43 +5,22 @@
 #include "MasterTrackControl.h"
 #include "MixerPanelListener.h"
 #include "TrackControl.h"
-#include "audio/PositionableMixingAudioSource.h"
-#include "controls/common/FileChooserControl.h"
 #include "controls/common/TransportControl.h"
-#include "controls/desktop/TrackController.h"
-#include "controls/desktop/TrackSourceListener.h"
-#include "model/Track.h"
-#include "model/TrackList.h"
+#include "model/Mixer.h"
 
-class MixerPanel : public juce::AudioAppComponent,
-                       public TrackSourceListener,
-                       public TransportControlListener,
-                       public MasterTrackListener {
+class MixerPanel : public juce::AudioAppComponent {
   public:
-    MixerPanel();
+    MixerPanel(Mixer &mixer);
     ~MixerPanel();
 
+    TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
 
     void addTrack(TrackControl &trackControl);
-
-    void setMasterLevel(float newLevel);
-    void setTrackLevel(Track *track, float newLevel);
-
-    void onSourceSet(juce::PositionableAudioSource *newSource, juce::PositionableAudioSource *prevSource,
-        const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) override;
+    void removeTrack(TrackControl &trackControl);
 
     void addListener(MixerPanelListener *listener);
     void removeListener(MixerPanelListener *listener);
-
-    //==============================================================================
-    // TransportControlListener
-    void loopingChanged(bool shouldLoop) override;
-
-    //==============================================================================
-    // MasterTrackListener
-    void masterLevelChanged(float level) override;
-    void masterMuteToggled() override;
 
     //==============================================================================
     // AudioAppComponent
@@ -55,18 +34,13 @@ class MixerPanel : public juce::AudioAppComponent,
     void resized() override;
 
   private:
-    // TODO: factor out MixerController
-    PositionableMixingAudioSource mixerSource;
-    juce::AudioTransportSource transportSource;
     TransportControl transportControl;
     MasterTrackControl masterTrackControl;
-    std::list<AudioSource *> sources;
-    float level = juce::Decibels::decibelsToGain<float>(0.0);
-    bool muted = false;
+    Mixer &mixer;
+
     std::list<MixerPanelListener *> listeners;
 
     void createControls();
-
     void notifyResized(juce::Rectangle<int> area);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerPanel)

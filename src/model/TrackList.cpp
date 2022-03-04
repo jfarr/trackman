@@ -6,6 +6,7 @@ TrackList::~TrackList() {
     for (Track *track : tracks) {
         delete track;
     }
+    tracks.clear();
 }
 
 Track *TrackList::addTrack(juce::String name) {

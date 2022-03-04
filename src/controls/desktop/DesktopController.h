@@ -3,18 +3,19 @@
 #include "TrackControllerListener.h"
 #include "TrackListListener.h"
 #include "commands/CommandList.h"
+#include "controls/mixer/MixerController.h"
 #include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
+#include "model/TrackList.h"
 
 class DesktopController : public MixerPanelListener,
                           public MasterTrackListener,
                           public TrackControlListener,
                           public TrackControllerListener {
   public:
-    DesktopController(juce::AudioFormatManager &formatManager, MixerPanel &mixerPanel, TrackListPanel &trackListPanel);
+    DesktopController(
+        juce::AudioFormatManager &formatManager, Mixer &mixer, MixerPanel &mixerPanel, TrackListPanel &trackListPanel);
     ~DesktopController();
-
-    MixerPanel &getMixer() { return mixerPanel; }
 
     bool canUndo() const;
     void undoLast();
@@ -24,12 +25,8 @@ class DesktopController : public MixerPanelListener,
     void deleteSelectedTrack();
 
     TrackController *addTrack(juce::String name);
-    void addTrackController(TrackController *controller);
-    void removeTrackController(TrackController *controller);
-    void deleteTrackController(TrackController *controller);
-
-    void addListener(TrackListListener *listener);
-    void removeListener(TrackListListener *listener);
+    void addTrackController(TrackController *track);
+    void removeTrackController(TrackController *track);
 
     //==============================================================================
     // MixerPanelListener
@@ -45,18 +42,17 @@ class DesktopController : public MixerPanelListener,
 
     //==============================================================================
     // TrackControllerListener
-    void selectionChanged(TrackController *selected) override;
+    void selectionChanged(TrackController *newSelected) override;
 
   private:
     CommandList commandList;
     TrackList trackList;
     std::list<TrackController *> tracks;
-    std::list<TrackListListener *> listeners;
     TrackController *selected = nullptr;
+    MixerController mixerController;
 
     juce::AudioFormatManager &formatManager;
+    Mixer &mixer;
     MixerPanel &mixerPanel;
     TrackListPanel &trackListPanel;
-
-    void notifyTrackAdded(Track &track);
 };
