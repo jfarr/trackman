@@ -86,7 +86,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     bool perform(const InvocationInfo &info) override {
         switch (info.commandID) {
         case CommandIDs::newTrack:
-            desktopController.addNewTrack();
+//            desktopController.addNewTrack();
             break;
         case CommandIDs::newAudioPlayer:
             createChildWindow("audioplayer", new AudioPlayer(formatManager));
@@ -95,7 +95,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
             desktopController.undoLast();
             break;
         case CommandIDs::deleteTrack:
-            desktopController.deleteSelectedTrack();
+//            desktopController.deleteSelectedTrack();
             break;
         default:
             return false;

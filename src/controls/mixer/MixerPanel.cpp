@@ -15,6 +15,16 @@ void MixerPanel::createControls() {
     addAndMakeVisible(masterTrackControl);
 }
 
+void MixerPanel::update() {
+    removeAllChildren();
+    tracks.clear();
+    trackList.eachTrack([this](Track &track) {
+        auto control = new TrackControl(track);
+        tracks.push_back(std::unique_ptr<TrackControl>(control));
+        addAndMakeVisible(control);
+    });
+}
+
 void MixerPanel::addTrack(TrackControl &trackControl) {
     addAndMakeVisible(trackControl);
     resized();
@@ -52,12 +62,16 @@ void MixerPanel::resized() {
     auto transportMargin = 5;
     transportControl.setBounds(area.removeFromTop(buttonHeight).reduced(transportMargin));
     masterTrackControl.setBounds(area.removeFromLeft(masterTrackControl.getWidth()));
+    for (auto &track : tracks) {
+        track->setBounds(area.removeFromLeft(track->getWidth()));
+    }
     notifyResized(area);
 }
 
 void MixerPanel::addListener(MixerPanelListener *listener) {
-    if (!listContains(listener, listeners))
+    if (!listContains(listener, listeners)) {
         listeners.push_front(listener);
+    }
 }
 
 void MixerPanel::removeListener(MixerPanelListener *listener) { listeners.remove(listener); }

@@ -11,7 +11,7 @@
 #include "model/TrackList.h"
 #include "controls/tracks/TrackListController.h"
 
-class DesktopController : public MixerPanelListener,
+class DesktopController : /*public MixerPanelListener,*/
                           public MasterTrackListener,
                           public TrackControlListener,
                           public TrackControllerListener {
@@ -26,16 +26,16 @@ class DesktopController : public MixerPanelListener,
     void undoLast();
     juce::String getLastCommandName() const { return commandList.getLastCommandName(); }
 
-    void addNewTrack();
-    void deleteSelectedTrack();
-
-    TrackController *addTrack(juce::String name);
-    void addTrackController(TrackController *track);
-    void removeTrackController(TrackController *track);
+//    void addNewTrack();
+//    void deleteSelectedTrack();
+//
+//    TrackController *addTrack(juce::String name);
+//    void addTrackController(TrackController *track);
+//    void removeTrackController(TrackController *track);
 
     //==============================================================================
     // MixerPanelListener
-    void mixerResized(juce::Rectangle<int> area) override;
+//    void mixerResized(juce::Rectangle<int> area) override;
 
     //==============================================================================
     // MasterTrackListener
@@ -52,8 +52,8 @@ class DesktopController : public MixerPanelListener,
   private:
     CommandList commandList;
     TrackList trackList;
-    std::list<TrackController *> tracks;
-    TrackController *selected = nullptr;
+//    std::list<TrackController *> tracks;
+//    TrackController *selected = nullptr;
     MixerController mixerController;
     TrackListController trackListController;
 

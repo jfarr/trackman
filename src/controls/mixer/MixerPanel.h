@@ -14,6 +14,8 @@ class MixerPanel : public juce::AudioAppComponent {
     MixerPanel(TrackList &trackList, Mixer &mixer);
     ~MixerPanel();
 
+    void update();
+
     TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
 
@@ -37,6 +39,8 @@ class MixerPanel : public juce::AudioAppComponent {
   private:
     TransportControl transportControl;
     MasterTrackControl masterTrackControl;
+    std::list<std::unique_ptr<TrackControl>> tracks;
+
     TrackList &trackList;
     Mixer &mixer;
 
