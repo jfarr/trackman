@@ -1,13 +1,13 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
+
+#include "model/Track.h"
 
 class TrackLaneControl : public juce::Component {
   public:
-    TrackLaneControl(juce::String trackName);
+    TrackLaneControl(Track &track);
     ~TrackLaneControl();
-
-    void setSelected(bool newSelected);
 
     //==============================================================================
     // Component
@@ -15,8 +15,7 @@ class TrackLaneControl : public juce::Component {
     void resized() override;
 
   private:
-    juce::String trackName;
-    bool selected = false;
+    Track &track;
 
     juce::Label trackLabel;
 

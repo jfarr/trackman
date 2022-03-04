@@ -1,21 +1,21 @@
 #pragma once
 
-#include "TrackControllerListener.h"
 #include "TrackListListener.h"
 #include "commands/CommandList.h"
+#include "controls/mixer/MasterTrackListener.h"
 #include "controls/mixer/MixerController.h"
-#include "controls/mixer/MixerPanel.h"
-#include "controls/tracks/TrackListPanel.h"
+#include "controls/mixer/TrackControlListener.h"
+#include "controls/tracks/TrackListController.h"
 #include "model/TrackList.h"
 
-class DesktopController : public MixerPanelListener,
-                          public MasterTrackListener,
-                          public TrackControlListener,
-                          public TrackControllerListener {
+class DesktopController : public MasterTrackListener, public TrackControlListener, public TrackListListener {
   public:
-    DesktopController(
-        juce::AudioFormatManager &formatManager, Mixer &mixer, MixerPanel &mixerPanel, TrackListPanel &trackListPanel);
+    DesktopController(juce::AudioFormatManager &formatManager);
     ~DesktopController();
+
+    TrackList &getTrackList() { return trackList; }
+    MixerController &getMixerController() { return mixerController; }
+    TrackListController &getTrackListController() { return trackListController; }
 
     bool canUndo() const;
     void undoLast();
@@ -24,13 +24,13 @@ class DesktopController : public MixerPanelListener,
     void addNewTrack();
     void deleteSelectedTrack();
 
-    TrackController *addTrack(juce::String name);
-    void addTrackController(TrackController *track);
-    void removeTrackController(TrackController *track);
+    Track *addTrack(juce::String name);
+    void deleteTrack(Track *track, bool purge);
+    void undeleteTrack(Track *track);
 
     //==============================================================================
-    // MixerPanelListener
-    void mixerResized(juce::Rectangle<int> area) override;
+    // TrackListListener
+    void selectionChanged(Track &track) override;
 
     //==============================================================================
     // MasterTrackListener
@@ -38,21 +38,13 @@ class DesktopController : public MixerPanelListener,
 
     //==============================================================================
     // TrackControlListener
-    void levelChangeFinalized(TrackControl &trackControl, float previousLevel) override;
-
-    //==============================================================================
-    // TrackControllerListener
-    void selectionChanged(TrackController *newSelected) override;
+    void levelChangeFinalized(Track &track, float previousLevel) override;
 
   private:
     CommandList commandList;
     TrackList trackList;
-    std::list<TrackController *> tracks;
-    TrackController *selected = nullptr;
     MixerController mixerController;
+    TrackListController trackListController;
 
     juce::AudioFormatManager &formatManager;
-    Mixer &mixer;
-    MixerPanel &mixerPanel;
-    TrackListPanel &trackListPanel;
 };

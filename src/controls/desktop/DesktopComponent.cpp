@@ -1,12 +1,10 @@
 #include "DesktopComponent.h"
 
 DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), mixerPanel(mixer), desktopController(formatManager, mixer, mixerPanel, trackListPanel)
-       {
-    addAndMakeVisible(&trackListViewport);
-    trackListViewport.setSize(800, 350);
-    trackListViewport.setScrollBarsShown(true, true);
-    trackListViewport.setViewedComponent(&trackListPanel, false);
+    : formatManager(formatManager), desktopController(formatManager),
+      trackListViewport(desktopController.getTrackListController().getViewport()),
+      mixerPanel(desktopController.getMixerController().getMixerPanel()) {
+    addAndMakeVisible(trackListViewport);
     addAndMakeVisible(mixerPanel);
 
     setApplicationCommandManagerToWatch(&commandManager);
