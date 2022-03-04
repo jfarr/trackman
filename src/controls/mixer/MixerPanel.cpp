@@ -53,19 +53,4 @@ void MixerPanel::resized() {
     for (auto &track : tracks) {
         track->setBounds(area.removeFromLeft(track->getWidth()));
     }
-    notifyResized(area);
-}
-
-void MixerPanel::addListener(MixerPanelListener *listener) {
-    if (!listContains(listener, listeners)) {
-        listeners.push_front(listener);
-    }
-}
-
-void MixerPanel::removeListener(MixerPanelListener *listener) { listeners.remove(listener); }
-
-void MixerPanel::notifyResized(juce::Rectangle<int> area) {
-    for (MixerPanelListener *listener : listeners) {
-        listener->mixerResized(area);
-    }
 }

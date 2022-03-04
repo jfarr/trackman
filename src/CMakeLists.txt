@@ -26,7 +26,7 @@ target_sources(Trackman PRIVATE
         commands/CommandList.cpp
         commands/CommandList.h
         commands/MixerCommands.h
-        commands/TrackCommands.h
+        commands/TrackListCommands.h
         controls/AudioPlayer.cpp
         controls/AudioPlayer.h
         controls/MainWindow.cpp
@@ -44,7 +44,6 @@ target_sources(Trackman PRIVATE
         controls/desktop/DesktopComponent.h
         controls/desktop/DesktopController.cpp
         controls/desktop/DesktopController.h
-        controls/desktop/TrackControllerListener.h
         controls/desktop/TrackListListener.h
         controls/desktop/TrackSourceListener.h
         controls/mixer/MasterTrackControl.cpp

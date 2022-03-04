@@ -92,7 +92,6 @@ void TrackControl::decibelSliderChanged() {
 }
 
 void TrackControl::muteButtonClicked() {
-//    muted = !muted;
     notifyMuteToggled();
     muteButton.setColour(juce::TextButton::buttonColourId,
         track.getMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));

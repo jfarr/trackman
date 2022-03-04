@@ -5,9 +5,6 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::Aud
       viewport(desktopController.getTrackListController().getViewport()),
       mixer(desktopController.getMixerController().getMixerPanel()) {
     addAndMakeVisible(viewport);
-    //    trackListViewport.setSize(800, 350);
-    //    trackListViewport.setScrollBarsShown(true, true);
-    //    trackListViewport.setViewedComponent(&trackListPanel, false);
     addAndMakeVisible(mixer);
 
     setApplicationCommandManagerToWatch(&commandManager);

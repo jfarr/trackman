@@ -10,7 +10,6 @@ class TrackList {
     Track *addTrack(juce::String name);
     void removeTrack(Track *track);
 
-//    void removeTrack(Track *track);
     int size() { return tracks.size(); }
 
     void setSelected(Track &selected);

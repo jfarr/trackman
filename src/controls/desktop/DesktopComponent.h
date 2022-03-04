@@ -104,8 +104,6 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     }
 
   private:
-//    Mixer mixer;
-//    MixerPanel mixerPanel;
     DesktopController desktopController;
     juce::Component &viewport;
     juce::Component &mixer;

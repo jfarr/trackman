@@ -15,11 +15,6 @@ class TrackListPanel : public juce::Component {
 
     void update();
 
-//    void update();
-//
-//    void addTrack(TrackLaneControl &lane);
-//    void removeTrack(TrackLaneControl &lane);
-
     //==============================================================================
     // Component
     void paint(juce::Graphics &g) override;
@@ -28,5 +23,4 @@ class TrackListPanel : public juce::Component {
   private:
     TrackList &trackList;
     std::list<TrackLaneControl *> lanes;
-//    std::list<std::unique_ptr<TrackLaneControl>> lanes;
 };

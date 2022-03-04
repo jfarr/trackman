@@ -8,7 +8,6 @@ TrackListController::TrackListController(TrackList &trackList) : trackList(track
 }
 
 void TrackListController::update() {
-//    trackListPanel.removeAllChildren();
     lanes.clear();
     trackListPanel.clear();
     trackList.eachTrack([this](Track &track) {
@@ -16,14 +15,8 @@ void TrackListController::update() {
         lane->addListener(this);
         lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
         trackListPanel.addLane(&lane->getTrackLaneControl());
-//        trackListPanel.addAndMakeVisible(lane->getTrackLaneControl());
     });
     trackListPanel.update();
-//    if (!lanes.empty()) {
-//        trackListPanel.setSize(
-//            trackListPanel.getWidth(), lanes.size() * lanes.back()->getTrackLaneControl().getHeight());
-//    }
-//    trackListPanel.resized();
 }
 
 void TrackListController::repaint() {
