@@ -23,6 +23,7 @@ class TrackController : public FileListener, public TrackControlListener, public
 //    TrackControl &getTrackControl() { return trackControl; }
 
     //    void setSelected(bool newSelected);
+    void setLevel(float newLevel);
     void setVisible(bool newVisible) { visible = newVisible; }
     bool isVisible() const { return visible; }
 

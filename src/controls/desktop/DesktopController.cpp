@@ -29,8 +29,8 @@ void DesktopController::masterLevelChangeFinalized(float previousLevel) {
     commandList.pushCommand(command);
 }
 
-void DesktopController::levelChangeFinalized(TrackControl &trackControl, float previousLevel) {
-    Command *command = new ChangeTrackVolumeCommand(trackControl, previousLevel);
+void DesktopController::levelChangeFinalized(Track &track, float previousLevel) {
+    Command *command = new ChangeTrackVolumeCommand(mixerController, track, previousLevel);
     commandList.pushCommand(command);
 }
 

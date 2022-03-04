@@ -44,6 +44,19 @@ void MixerController::setMasterLevel(float newLevel) {
     mixerPanel.getMasterTrackControl().setLevel(newLevel);
 }
 
+void MixerController::setLevel(Track &track, float newLevel) {
+    //    trackList.eachTrack([&track](Track &t) {
+    //        if (&t == &track) {
+    //
+    //        }
+    //    });
+    for (std::unique_ptr<TrackController> &trackController : tracks) {
+        if (&trackController->getTrack() == &track) {
+            trackController->setLevel(newLevel);
+        }
+    }
+}
+
 void MixerController::onSourceSet(std::shared_ptr<juce::PositionableAudioSource> newSource,
     std::shared_ptr<juce::PositionableAudioSource> prevSource, const bool deleteWhenRemoved,
     double sourceSampleRateToCorrectFor, int maxNumChannels) {
@@ -68,11 +81,11 @@ void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevel(
 
 void MixerController::masterMuteToggled() { mixer.toggleMasterMute(); }
 
-void MixerController::levelChangeFinalized(TrackControl &trackControl, float previousLevel) {
-    notifyLevelChangeFinalized(trackControl, previousLevel);
+void MixerController::levelChangeFinalized(Track &track, float previousLevel) {
+    notifyLevelChangeFinalized(track, previousLevel);
 }
 
-//void MixerController::selectionChanged(TrackController *newSelected) {}
+// void MixerController::selectionChanged(TrackController *newSelected) {}
 
 void MixerController::selectionChanged(Track &track, juce::Component *source) { notifySelectionChanged(track, source); }
 
@@ -98,8 +111,8 @@ void MixerController::addListener(TrackControlListener *listener) {
 
 void MixerController::removeListener(TrackControlListener *listener) { trackControlListeners.remove(listener); }
 
-void MixerController::notifyLevelChangeFinalized(TrackControl &trackControl, float previousLevel) {
+void MixerController::notifyLevelChangeFinalized(Track &track, float previousLevel) {
     for (TrackControlListener *listener : trackControlListeners) {
-        listener->levelChangeFinalized(trackControl, previousLevel);
+        listener->levelChangeFinalized(track, previousLevel);
     }
 }

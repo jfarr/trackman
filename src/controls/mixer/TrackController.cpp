@@ -18,6 +18,9 @@ TrackController::~TrackController() {
 //void TrackController::update() {
 //    trackControl.update();
 //}
+void TrackController::setLevel(float newLevel) {
+    trackControl.setLevel(newLevel);
+}
 
 void TrackController::repaint() {
 //    trackControl.update();

@@ -46,7 +46,8 @@ class TrackControl : public juce::Component, public SliderListener {
     juce::Label channelLabel;
     bool muted = false;
     bool draggingSlider = false;
-    float previousLevel = juce::Decibels::decibelsToGain<float>(0.0);
+//    float previousLevel = juce::Decibels::decibelsToGain<float>(0.0);
+//    bool creating = false;
 //    bool selected = false;
     std::list<TrackControlListener *> listeners;
 

@@ -10,8 +10,9 @@ TrackControl::TrackControl(Track &track) : track(track) {
 TrackControl::~TrackControl() {}
 
 void TrackControl::createControls() {
+//    creating = true;
+    decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevel()));
     decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
-    decibelSlider.setValue(0.0);
     decibelSlider.addMouseListener(this, false);
     decibelSlider.setListener(this);
 
@@ -38,6 +39,7 @@ void TrackControl::createControls() {
     addAndMakeVisible(trackLabel);
     addAndMakeVisible(channelLabel);
     addAndMakeVisible(openButton);
+//    creating = false;
 }
 
 //void TrackControl::update() {
@@ -47,7 +49,8 @@ void TrackControl::createControls() {
 //}
 
 void TrackControl::setLevel(float level) {
-    previousLevel = level;
+    track.setLevel(level);
+//    previousLevel = level;
     decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
 }
 
@@ -96,11 +99,15 @@ void TrackControl::resized() {
 }
 
 void TrackControl::decibelSliderChanged() {
+//    if (creating) {
+//        return;
+//    }
     auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
     notifyLevelChanged(level);
-    if (!draggingSlider && level != previousLevel) {
-        notifyLevelChangeFinalized(previousLevel);
-        previousLevel = level;
+    if (!draggingSlider && level != track.getLevel()) {
+        notifyLevelChangeFinalized(track.getLevel());
+        track.setLevel(level);
+//        previousLevel = level;
     }
 }
 
@@ -140,7 +147,7 @@ void TrackControl::notifyLevelChanged(float level) {
 
 void TrackControl::notifyLevelChangeFinalized(float previousLevel) {
     for (TrackControlListener *listener : listeners) {
-        listener->levelChangeFinalized(*this, previousLevel);
+        listener->levelChangeFinalized(track, previousLevel);
     }
 }
 

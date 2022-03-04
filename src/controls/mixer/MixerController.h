@@ -31,6 +31,7 @@ class MixerController : public TrackListListener,
     void repaint();
 
     void setMasterLevel(float newLevel);
+    void setLevel(Track &track, float newLevel);
 
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
@@ -59,7 +60,7 @@ class MixerController : public TrackListListener,
 
     //==============================================================================
     // TrackControlListener
-    void levelChangeFinalized(TrackControl &trackControl, float previousLevel) override;
+    void levelChangeFinalized(Track &track, float previousLevel) override;
 
     //==============================================================================
     // TrackControllerListener
@@ -75,7 +76,7 @@ class MixerController : public TrackListListener,
     std::list<TrackControlListener *> trackControlListeners;
 
     void notifySelectionChanged(Track &track, juce::Component *source);
-    void notifyLevelChangeFinalized(TrackControl &trackControl, float previousLevel);
+    void notifyLevelChangeFinalized(Track &track, float previousLevel);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerController)
 };

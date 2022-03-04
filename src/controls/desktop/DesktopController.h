@@ -52,7 +52,7 @@ class DesktopController : /*public MixerPanelListener,*/
 
     //==============================================================================
     // TrackControlListener
-    void levelChangeFinalized(TrackControl &trackControl, float previousLevel) override;
+    void levelChangeFinalized(Track &track, float previousLevel) override;
 
     //==============================================================================
     // TrackControllerListener
