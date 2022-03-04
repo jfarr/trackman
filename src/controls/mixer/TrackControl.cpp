@@ -42,17 +42,18 @@ void TrackControl::createControls() {
 //    creating = false;
 }
 
-//void TrackControl::update() {
-////    removeChildComponent(&trackLabel);
-//    trackLabel.setText(track.getFile().getFileName(), juce::dontSendNotification);
-////    addAndMakeVisible(trackLabel);
-//}
-
-void TrackControl::setLevel(float level) {
-    track.setLevel(level);
-//    previousLevel = level;
-    decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
+void TrackControl::update() {
+//    removeChildComponent(&trackLabel);
+    previousLevel = track.getLevel();
+    decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevel()));
+//    addAndMakeVisible(trackLabel);
 }
+
+//void TrackControl::setLevel(float level) {
+////    track.setLevel(level);
+//    previousLevel = level;
+//    decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
+//}
 
 void TrackControl::onSliderClick() { draggingSlider = true; }
 
@@ -104,10 +105,9 @@ void TrackControl::decibelSliderChanged() {
 //    }
     auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
     notifyLevelChanged(level);
-    if (!draggingSlider && level != track.getLevel()) {
-        notifyLevelChangeFinalized(track.getLevel());
-        track.setLevel(level);
-//        previousLevel = level;
+    if (!draggingSlider && level != previousLevel) {
+        notifyLevelChangeFinalized(previousLevel);
+        previousLevel = level;
     }
 }
 

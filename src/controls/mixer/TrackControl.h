@@ -14,9 +14,9 @@ class TrackControl : public juce::Component, public SliderListener {
 
     juce::String getTrackName() const { return track.getName(); }
 
-//    void update();
+    void update();
 
-    void setLevel(float level);
+//    void setLevel(float level);
 //    void setSelected(bool newSelected);
     void setListener(class FileListener *newListener) { listener = newListener; }
 
@@ -46,7 +46,7 @@ class TrackControl : public juce::Component, public SliderListener {
     juce::Label channelLabel;
     bool muted = false;
     bool draggingSlider = false;
-//    float previousLevel = juce::Decibels::decibelsToGain<float>(0.0);
+    float previousLevel = juce::Decibels::decibelsToGain<float>(0.0);
 //    bool creating = false;
 //    bool selected = false;
     std::list<TrackControlListener *> listeners;

@@ -57,9 +57,7 @@ void MixerController::setLevel(Track &track, float newLevel) {
     }
 }
 
-void MixerController::onSourceSet(std::shared_ptr<juce::PositionableAudioSource> newSource,
-    std::shared_ptr<juce::PositionableAudioSource> prevSource, const bool deleteWhenRemoved,
-    double sourceSampleRateToCorrectFor, int maxNumChannels) {
+void MixerController::onSourceSet() {
     //    if (prevSource != nullptr) {
     //        mixer.removeSource(prevSource);
     //    }
@@ -69,7 +67,7 @@ void MixerController::onSourceSet(std::shared_ptr<juce::PositionableAudioSource>
     mixer.removeAllSources();
     trackList.eachTrack([this](Track &track) {
         if (track.getSource() != nullptr) {
-            mixer.addSource(track.getSource(), false, track.getSampleRate(), 2);
+            mixer.addSource(track.getGain(), false, track.getSampleRate(), 2);
         }
     });
     //    update();

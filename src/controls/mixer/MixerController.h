@@ -45,9 +45,7 @@ class MixerController : public TrackListListener,
 
     //==============================================================================
     // TrackSourceListener
-    void onSourceSet(std::shared_ptr<juce::PositionableAudioSource> newSource,
-        std::shared_ptr<juce::PositionableAudioSource> prevSource, const bool deleteWhenRemoved,
-        double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) override;
+    void onSourceSet() override;
 
     //==============================================================================
     // TransportControlListener
