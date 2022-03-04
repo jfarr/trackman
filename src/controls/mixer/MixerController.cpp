@@ -1,4 +1,5 @@
 #include "MixerController.h"
+#include "common/listutil.h"
 #include "controls/mixer/TrackController.h"
 
 MixerController::MixerController(TrackList &trackList, juce::AudioFormatManager &formatManager)
@@ -12,9 +13,7 @@ MixerController::~MixerController() {
     mixerPanel.getTransportControl().removeListener(this);
 }
 
-void MixerController::update() {
-    mixerPanel.update();
-}
+void MixerController::update() { mixerPanel.update(); }
 
 void MixerController::setMasterLevel(float newLevel) {
     mixer.setMasterLevel(newLevel);
@@ -39,3 +38,17 @@ void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevel(
 void MixerController::masterMuteToggled() { mixer.toggleMasterMute(); }
 
 void MixerController::selectionChanged(Track &track, juce::Component *source) {}
+
+void MixerController::addListener(TrackListListener *listener) {
+    if (!listContains(listener, listeners)) {
+        listeners.push_front(listener);
+    }
+}
+
+void MixerController::removeListener(TrackListListener *listener) { listeners.remove(listener); }
+
+void MixerController::notifySelectionChanged(Track &track, juce::Component *source) {
+    for (TrackListListener *listener : listeners) {
+        listener->selectionChanged(track, source);
+    }
+}

@@ -8,7 +8,8 @@ DesktopController::DesktopController(juce::AudioFormatManager &formatManager)
     : mixerController(trackList, formatManager), trackListController(trackList), formatManager(formatManager) {
 //    mixerPanel.addListener(this);
     mixerController.getMixerPanel().getMasterTrackControl().addListener(this);
-
+    mixerController.addListener(this);
+    trackListController.addListener(this);
 }
 
 DesktopController::~DesktopController() {
@@ -84,9 +85,14 @@ Track *DesktopController::addTrack(juce::String name) {
 //    }
 //}
 
-void DesktopController::selectionChanged(TrackController *newSelected) {
-//    selected = newSelected;
-//    for (TrackController *track : tracks) {
-//        track->setSelected(track == newSelected);
-//    }
+//void DesktopController::selectionChanged(TrackController *newSelected) {
+////    selected = newSelected;
+////    for (TrackController *track : tracks) {
+////        track->setSelected(track == newSelected);
+////    }
+//}
+
+void DesktopController::selectionChanged(Track &track, juce::Component *source) {
+    trackList.setSelected(track);
+    trackListController.repaint();
 }

@@ -5,8 +5,13 @@ TrackLaneController::TrackLaneController(Track &track) : track(track), trackLane
     trackLaneControl.addMouseListener(this, true);
 }
 
-//==============================================================================
-void TrackLaneController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(event.eventComponent); }
+void TrackLaneController::repaint() {
+    trackLaneControl.repaint();
+}
+
+void TrackLaneController::mouseDown(const juce::MouseEvent &event) {
+    notifySelectionChanged(event.eventComponent);
+}
 
 void TrackLaneController::selectionChanged(Track &track, juce::Component *source) {
     if (source != &trackLaneControl) {

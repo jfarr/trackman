@@ -11,6 +11,8 @@ class TrackList {
     void removeTrack(Track *track);
     int size() { return tracks.size(); }
 
+    void setSelected(Track &selected);
+
     void eachTrack(std::function<void(Track &track)> f) {
         std::for_each(tracks.begin(), tracks.end(), [&f](Track *track) { f(*track); });
     }

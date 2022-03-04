@@ -7,14 +7,15 @@
 #include "controls/mixer/MixerPanel.h"
 #include "controls/mixer/TrackControlListener.h"
 #include "controls/mixer/TrackController.h"
+#include "controls/tracks/TrackListController.h"
 #include "controls/tracks/TrackListPanel.h"
 #include "model/TrackList.h"
-#include "controls/tracks/TrackListController.h"
 
 class DesktopController : /*public MixerPanelListener,*/
                           public MasterTrackListener,
                           public TrackControlListener,
-                          public TrackControllerListener {
+//                          public TrackControllerListener,
+                          public TrackListListener {
   public:
     DesktopController(juce::AudioFormatManager &formatManager);
     ~DesktopController();
@@ -31,12 +32,16 @@ class DesktopController : /*public MixerPanelListener,*/
     void deleteSelectedTrack();
 
     Track *addTrack(juce::String name);
-//    void addTrackController(TrackController *track);
-//    void removeTrackController(TrackController *track);
+    //    void addTrackController(TrackController *track);
+    //    void removeTrackController(TrackController *track);
 
     //==============================================================================
     // MixerPanelListener
-//    void mixerResized(juce::Rectangle<int> area) override;
+    //    void mixerResized(juce::Rectangle<int> area) override;
+
+    //==============================================================================
+    // TrackListListener
+    void selectionChanged(Track &track, juce::Component *source) override;
 
     //==============================================================================
     // MasterTrackListener
@@ -48,16 +53,16 @@ class DesktopController : /*public MixerPanelListener,*/
 
     //==============================================================================
     // TrackControllerListener
-    void selectionChanged(TrackController *newSelected) override;
+//    void selectionChanged(TrackController *newSelected) override;
 
   private:
     CommandList commandList;
     TrackList trackList;
-//    std::list<TrackController *> tracks;
-//    TrackController *selected = nullptr;
+    //    std::list<TrackController *> tracks;
+    //    TrackController *selected = nullptr;
     MixerController mixerController;
     TrackListController trackListController;
 
     juce::AudioFormatManager &formatManager;
-//    TrackListPanel &trackListPanel;
+    //    TrackListPanel &trackListPanel;
 };

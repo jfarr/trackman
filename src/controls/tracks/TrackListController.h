@@ -15,6 +15,7 @@ class TrackListController : public TrackListListener {
     juce::Component &getViewport() { return trackListViewport; }
 
     void update();
+    void repaint();
 
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);

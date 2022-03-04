@@ -13,10 +13,10 @@ void TrackLaneControl::createControls() {
     addAndMakeVisible(trackLabel);
 }
 
-void TrackLaneControl::setSelected(bool newSelected) {
-    track.setSelected(newSelected);
-    repaint();
-}
+//void TrackLaneControl::setSelected(bool newSelected) {
+//    track.setSelected(newSelected);
+//    repaint();
+//}
 
 void TrackLaneControl::paint(juce::Graphics &g) {
     auto leftPanelWidth = 25;

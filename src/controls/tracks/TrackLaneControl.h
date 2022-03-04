@@ -9,7 +9,7 @@ class TrackLaneControl : public juce::Component {
     TrackLaneControl(Track &track);
     ~TrackLaneControl();
 
-    void setSelected(bool newSelected);
+//    void setSelected(bool newSelected);
 
     //==============================================================================
     // Component

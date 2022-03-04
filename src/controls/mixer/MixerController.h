@@ -24,6 +24,9 @@ class MixerController : public TrackSourceListener,
 
     void setMasterLevel(float newLevel);
 
+    void addListener(TrackListListener *listener);
+    void removeListener(TrackListListener *listener);
+
     //==============================================================================
     // TrackSourceListener
     void onSourceSet(std::shared_ptr<juce::PositionableAudioSource> newSource,
@@ -49,6 +52,9 @@ class MixerController : public TrackSourceListener,
     MixerPanel mixerPanel;
     std::list<std::unique_ptr<TrackController>> tracks;
     juce::AudioFormatManager &formatManager;
+    std::list<TrackListListener *> listeners;
+
+    void notifySelectionChanged(Track &track, juce::Component *source);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerController)
 };

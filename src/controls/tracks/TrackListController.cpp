@@ -26,6 +26,12 @@ void TrackListController::update() {
 //    trackListPanel.resized();
 }
 
+void TrackListController::repaint() {
+    for (std::unique_ptr<TrackLaneController> &lane : lanes) {
+        lane->repaint();
+    }
+}
+
 void TrackListController::selectionChanged(Track &track, juce::Component *source) {
     notifySelectionChanged(track, source);
 }

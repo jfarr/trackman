@@ -13,6 +13,8 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
 
     TrackLaneControl &getTrackLaneControl() { return trackLaneControl; }
 
+    void repaint();
+
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
 
