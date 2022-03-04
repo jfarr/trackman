@@ -18,8 +18,9 @@ class MixerController : public TrackListListener,
                         public TrackSourceListener,
                         public TransportControlListener,
                         public MasterTrackListener,
-                        public TrackControlListener
-                        /*public TrackControllerListener*/ {
+                        public TrackControlListener //,
+                        //public TrackControllerListener
+{
   public:
     MixerController(TrackList &trackList, juce::AudioFormatManager &formatManager);
     ~MixerController();

@@ -14,9 +14,9 @@ void TrackLaneController::mouseDown(const juce::MouseEvent &event) {
 }
 
 void TrackLaneController::selectionChanged(Track &track, juce::Component *source) {
-    if (source != &trackLaneControl) {
+//    if (source != &trackLaneControl) {
         notifySelectionChanged(source);
-    }
+//    }
 }
 
 void TrackLaneController::addListener(TrackListListener *listener) {

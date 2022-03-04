@@ -21,11 +21,11 @@ void MixerController::update() {
         if (track.getSource() != nullptr) {
             mixer.addSource(track.getSource(), false, track.getSampleRate(), 2);
         }
-        auto controller = new TrackController(track, formatManager);
-        controller->setListener(this);
-        tracks.push_back(std::unique_ptr<TrackController>(controller));
         auto control = new TrackControl(track);
-        control->setListener(controller);
+        auto controller = new TrackController(track, *control, formatManager);
+        controller->setListener(this);
+        controller->addListener(this);
+        tracks.push_back(std::unique_ptr<TrackController>(controller));
         mixerPanel.addTrack(control);
     });
     mixerPanel.resized();
@@ -58,7 +58,7 @@ void MixerController::onSourceSet(std::shared_ptr<juce::PositionableAudioSource>
             mixer.addSource(track.getSource(), false, track.getSampleRate(), 2);
         }
     });
-//    update();
+    //    update();
 }
 
 void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldLoop); }
@@ -70,6 +70,8 @@ void MixerController::masterMuteToggled() { mixer.toggleMasterMute(); }
 void MixerController::levelChangeFinalized(TrackControl &trackControl, float previousLevel) {
     notifyLevelChangeFinalized(trackControl, previousLevel);
 }
+
+//void MixerController::selectionChanged(TrackController *newSelected) {}
 
 void MixerController::selectionChanged(Track &track, juce::Component *source) { notifySelectionChanged(track, source); }
 

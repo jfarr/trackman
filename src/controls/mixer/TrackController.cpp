@@ -1,8 +1,8 @@
 #include "TrackController.h"
 #include "common/listutil.h"
 
-TrackController::TrackController(Track &track, juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), track(track), trackControl(track) {
+TrackController::TrackController(Track &track, TrackControl &trackControl, juce::AudioFormatManager &formatManager)
+    : formatManager(formatManager), track(track), trackControl(trackControl) {
     trackControl.addListener(this);
     trackControl.setListener(this);
     trackControl.addMouseListener(this, true);
@@ -52,11 +52,11 @@ void TrackController::addSource() {
     }
 }
 
-void TrackController::removeSource() {
-    if (previousSource != nullptr) {
-        listener->onSourceSet(nullptr, previousSource, false, 0);
-    }
-}
+//void TrackController::removeSource() {
+//    if (previousSource != nullptr) {
+//        listener->onSourceSet(nullptr, previousSource, false, 0);
+//    }
+//}
 
 void TrackController::levelChanged(float newLevel) {
     level = newLevel;
@@ -76,10 +76,10 @@ void TrackController::muteToggled() {
 }
 
 void TrackController::mouseDown(const juce::MouseEvent &event) {
-    auto pos = event.getScreenPosition();
-    if (trackControl.getScreenBounds().contains(pos)) {
+//    auto pos = event.getScreenPosition();
+//    if (trackControl.getScreenBounds().contains(pos)) {
         notifySelectionChanged();
-    }
+//    }
 }
 //
 //void TrackController::setSelected(bool newSelected) {
@@ -88,16 +88,16 @@ void TrackController::mouseDown(const juce::MouseEvent &event) {
 ////    trackLaneControl.setSelected(selected);
 //}
 
-void TrackController::addListener(TrackControllerListener *listener) {
+void TrackController::addListener(TrackListListener *listener) {
     if (!listContains(listener, listeners)) {
         listeners.push_front(listener);
     }
 }
 
-void TrackController::removeListener(TrackControllerListener *listener) { listeners.remove(listener); }
+void TrackController::removeListener(TrackListListener *listener) { listeners.remove(listener); }
 
 void TrackController::notifySelectionChanged() {
-    for (TrackControllerListener *listener : listeners) {
-        listener->selectionChanged(this);
+    for (TrackListListener *listener : listeners) {
+        listener->selectionChanged(track, nullptr);
     }
 }

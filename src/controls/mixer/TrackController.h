@@ -3,7 +3,7 @@
 #include "JuceHeader.h"
 
 #include "audio/GainAudioSource.h"
-#include "controls/desktop/TrackControllerListener.h"
+#include "controls/desktop/TrackListListener.h"
 #include "controls/desktop/TrackSourceListener.h"
 #include "controls/mixer/TrackControl.h"
 #include "controls/tracks/TrackLaneControl.h"
@@ -11,26 +11,26 @@
 
 class TrackController : public FileListener, public TrackControlListener, public juce::MouseListener {
   public:
-    TrackController(Track &track, juce::AudioFormatManager &formatManager);
+    TrackController(Track &track, TrackControl &trackControl, juce::AudioFormatManager &formatManager);
     ~TrackController();
 
-//    void update();
+    //    void update();
     void repaint();
 
     void setListener(class TrackSourceListener *newListener) { listener = newListener; }
 
     Track &getTrack() { return track; }
-    TrackControl &getTrackControl() { return trackControl; }
+//    TrackControl &getTrackControl() { return trackControl; }
 
-//    void setSelected(bool newSelected);
+    //    void setSelected(bool newSelected);
     void setVisible(bool newVisible) { visible = newVisible; }
     bool isVisible() const { return visible; }
 
     void addSource();
-    void removeSource();
+    //    void removeSource();
 
-    void addListener(TrackControllerListener *listener);
-    void removeListener(TrackControllerListener *listener);
+    void addListener(TrackListListener *listener);
+    void removeListener(TrackListListener *listener);
 
     //==============================================================================
     // FileListener
@@ -53,13 +53,13 @@ class TrackController : public FileListener, public TrackControlListener, public
     double sampleRate = 0;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
-//    bool selected = false;
+    //    bool selected = false;
     bool visible = true;
 
-    TrackControl trackControl;
+    TrackControl &trackControl;
 
     TrackSourceListener *listener = nullptr;
-    std::list<TrackControllerListener *> listeners;
+    std::list<TrackListListener *> listeners;
 
     void notifySelectionChanged();
 
