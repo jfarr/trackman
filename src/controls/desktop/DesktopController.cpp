@@ -41,6 +41,14 @@ void DesktopController::addNewTrack() {
 }
 
 void DesktopController::deleteSelectedTrack() {
+    trackList.eachTrack([](Track &track) {
+        if (track.isSelected()) {
+            track.setDeleted(true);
+        }
+    });
+    trackListController.update();
+    mixerController.update();
+
 //    if (selected == nullptr) {
 //        return;
 //    }
@@ -53,6 +61,18 @@ Track *DesktopController::addTrack(juce::String name) {
     trackListController.update();
     mixerController.update();
     return track;
+}
+
+void DesktopController::deleteTrack(Track *track) {
+    track->setDeleted(true);
+    trackListController.update();
+    mixerController.update();
+
+    //    if (selected == nullptr) {
+    //        return;
+    //    }
+    //    Command *command = new DeleteTrackCommand(*this, selected);
+    //    commandList.pushCommand(command);
 }
 
 //void DesktopController::addTrackController(TrackController *controller) {

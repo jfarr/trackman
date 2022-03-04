@@ -8,17 +8,15 @@ class TrackList {
     ~TrackList();
 
     Track *addTrack(juce::String name);
-    void removeTrack(Track *track);
+//    void removeTrack(Track *track);
     int size() { return tracks.size(); }
 
     void setSelected(Track &selected);
 
-    void eachTrack(std::function<void(Track &track)> f) {
-        std::for_each(tracks.begin(), tracks.end(), [&f](Track *track) { f(*track); });
-    }
+    void eachTrack(std::function<void(Track &track)> f);
 
   private:
-    std::list<Track *> tracks;
+    std::list<std::unique_ptr<Track>> tracks;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackList)
 };

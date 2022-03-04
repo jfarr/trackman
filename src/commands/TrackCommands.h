@@ -12,9 +12,7 @@ class AddTrackCommand : public Command {
     ~AddTrackCommand() override {}
 
     void execute() override { track = controller.addTrack(name); }
-    void undo() override {
-        //        controller.removeTrackController(track);
-    }
+    void undo() override { controller.deleteTrack(track); }
 
   private:
     DesktopController &controller;
@@ -26,12 +24,12 @@ class AddTrackCommand : public Command {
 
 class DeleteTrackCommand : public Command {
   public:
-    DeleteTrackCommand(DesktopController &controller, TrackController *track)
-        : Command("delete " + track->getTrack().getName()), controller(controller), track(track) {}
+    DeleteTrackCommand(DesktopController &controller, Track *track)
+        : Command("delete " + track->getName()), controller(controller), track(track) {}
     ~DeleteTrackCommand() override {}
 
     void execute() override {
-        //        controller.removeTrackController(track);
+//        controller.removeTrackController(track);
     }
     void undo() override {
         //        controller.addTrackController(track);
@@ -39,5 +37,5 @@ class DeleteTrackCommand : public Command {
 
   private:
     DesktopController &controller;
-    TrackController *track;
+    Track *track;
 };
