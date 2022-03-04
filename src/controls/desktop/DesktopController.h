@@ -18,6 +18,8 @@ class DesktopController : public MixerPanelListener,
         juce::AudioFormatManager &formatManager, Mixer &mixer, MixerPanel &mixerPanel, TrackListPanel &trackListPanel);
     ~DesktopController();
 
+    TrackList& getTrackList() { return trackList; }
+
     bool canUndo() const;
     void undoLast();
     juce::String getLastCommandName() const { return commandList.getLastCommandName(); }

@@ -62,7 +62,7 @@ void DesktopController::addTrackController(TrackController *controller) {
     controller->addSource();
     controller->setVisible(true);
     mixerPanel.addTrack(controller->getTrackControl());
-    trackListPanel.addTrack(controller->getTrackLaneControl());
+    trackListPanel.update();
 }
 
 void DesktopController::removeTrackController(TrackController *controller) {
@@ -74,7 +74,7 @@ void DesktopController::removeTrackController(TrackController *controller) {
     controller->setListener(nullptr);
     controller->getTrackControl().removeListener(this);
     controller->setVisible(false);
-    trackListPanel.removeTrack(controller->getTrackLaneControl());
+    trackListPanel.update();
     mixerPanel.removeTrack(controller->getTrackControl());
 }
 

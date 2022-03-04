@@ -3,14 +3,17 @@
 #include "JuceHeader.h"
 #include "TrackLaneControl.h"
 #include "model/Track.h"
+#include "model/TrackList.h"
 
 class TrackListPanel : public juce::Component {
   public:
-    TrackListPanel();
+    TrackListPanel(TrackList &trackList);
     ~TrackListPanel();
 
-    void addTrack(TrackLaneControl &lane);
-    void removeTrack(TrackLaneControl &lane);
+    void update();
+//
+//    void addTrack(TrackLaneControl &lane);
+//    void removeTrack(TrackLaneControl &lane);
 
     //==============================================================================
     // Component
@@ -18,5 +21,6 @@ class TrackListPanel : public juce::Component {
     void resized() override;
 
   private:
-    std::list<TrackLaneControl *> lanes;
+    TrackList &trackList;
+    std::list<std::unique_ptr<TrackLaneControl>> lanes;
 };

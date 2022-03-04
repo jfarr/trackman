@@ -37,7 +37,6 @@ class TrackControl : public juce::Component, public SliderListener {
   private:
     Track &track;
 
-//    juce::String trackName;
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
     juce::Label trackLabel;
