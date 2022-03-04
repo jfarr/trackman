@@ -12,6 +12,8 @@ class TrackListController : public TrackListListener {
     TrackListController(TrackList &trackList);
     ~TrackListController() {}
 
+    juce::Component &getViewport() { return trackListViewport; }
+
     void update();
 
     void addListener(TrackListListener *listener);
@@ -24,6 +26,7 @@ class TrackListController : public TrackListListener {
   private:
     TrackList &trackList;
     TrackListPanel trackListPanel;
+    juce::Viewport trackListViewport;
     std::list<std::unique_ptr<TrackLaneController>> lanes;
     std::list<TrackListListener *> listeners;
 

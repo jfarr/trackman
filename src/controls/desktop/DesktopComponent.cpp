@@ -1,14 +1,14 @@
 #include "DesktopComponent.h"
 
 DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), mixerPanel(desktopController.getTrackList(), mixer),
-      desktopController(formatManager, mixer, mixerPanel, trackListPanel),
-      trackListPanel(desktopController.getTrackList()) {
-    addAndMakeVisible(&trackListViewport);
-    trackListViewport.setSize(800, 350);
-    trackListViewport.setScrollBarsShown(true, true);
-    trackListViewport.setViewedComponent(&trackListPanel, false);
-    addAndMakeVisible(mixerPanel);
+    : formatManager(formatManager), desktopController(formatManager),
+      viewport(desktopController.getTrackListController().getViewport()),
+      mixer(desktopController.getMixerController().getMixerPanel()) {
+    addAndMakeVisible(viewport);
+    //    trackListViewport.setSize(800, 350);
+    //    trackListViewport.setScrollBarsShown(true, true);
+    //    trackListViewport.setViewedComponent(&trackListPanel, false);
+    addAndMakeVisible(mixer);
 
     setApplicationCommandManagerToWatch(&commandManager);
     commandManager.registerAllCommandsForTarget(this);
@@ -59,6 +59,6 @@ void DesktopComponent::paint(juce::Graphics &g) {
 
 void DesktopComponent::resized() {
     auto area = getLocalBounds();
-    mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getHeight()));
-    trackListViewport.setBounds(area);
+    mixer.setBounds(area.removeFromBottom(mixer.getHeight()));
+    viewport.setBounds(area);
 }

@@ -4,12 +4,11 @@
 #include "common/listutil.h"
 #include "controls/mixer/TrackController.h"
 
-DesktopController::DesktopController(
-    juce::AudioFormatManager &formatManager, Mixer &mixer, MixerPanel &mixerPanel, TrackListPanel &trackListPanel)
-    : mixerController(trackList, formatManager), trackListController(trackList), formatManager(formatManager),
-      trackListPanel(trackListPanel) {
+DesktopController::DesktopController(juce::AudioFormatManager &formatManager)
+    : mixerController(trackList, formatManager), trackListController(trackList), formatManager(formatManager) {
 //    mixerPanel.addListener(this);
-    mixerPanel.getMasterTrackControl().addListener(this);
+    mixerController.getMixerPanel().getMasterTrackControl().addListener(this);
+
 }
 
 DesktopController::~DesktopController() {
@@ -32,20 +31,20 @@ void DesktopController::levelChangeFinalized(TrackControl &trackControl, float p
     Command *command = new ChangeTrackVolumeCommand(trackControl, previousLevel);
     commandList.pushCommand(command);
 }
-//
-//void DesktopController::addNewTrack() {
+
+void DesktopController::addNewTrack() {
 //    juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), trackList.size() + 1);
 //    Command *command = new AddTrackCommand(*this, name);
 //    commandList.pushCommand(command);
-//}
-//
-//void DesktopController::deleteSelectedTrack() {
+}
+
+void DesktopController::deleteSelectedTrack() {
 //    if (selected == nullptr) {
 //        return;
 //    }
 //    Command *command = new DeleteTrackCommand(*this, selected);
 //    commandList.pushCommand(command);
-//}
+}
 //
 //TrackController *DesktopController::addTrack(juce::String name) {
 //    Track *newTrack = trackList.addTrack(name);

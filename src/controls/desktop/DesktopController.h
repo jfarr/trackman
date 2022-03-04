@@ -16,18 +16,19 @@ class DesktopController : /*public MixerPanelListener,*/
                           public TrackControlListener,
                           public TrackControllerListener {
   public:
-    DesktopController(
-        juce::AudioFormatManager &formatManager, Mixer &mixer, MixerPanel &mixerPanel, TrackListPanel &trackListPanel);
+    DesktopController(juce::AudioFormatManager &formatManager);
     ~DesktopController();
 
     TrackList &getTrackList() { return trackList; }
+    MixerController &getMixerController() { return mixerController; }
+    TrackListController &getTrackListController() { return trackListController; }
 
     bool canUndo() const;
     void undoLast();
     juce::String getLastCommandName() const { return commandList.getLastCommandName(); }
 
-//    void addNewTrack();
-//    void deleteSelectedTrack();
+    void addNewTrack();
+    void deleteSelectedTrack();
 //
 //    TrackController *addTrack(juce::String name);
 //    void addTrackController(TrackController *track);
@@ -58,5 +59,5 @@ class DesktopController : /*public MixerPanelListener,*/
     TrackListController trackListController;
 
     juce::AudioFormatManager &formatManager;
-    TrackListPanel &trackListPanel;
+//    TrackListPanel &trackListPanel;
 };
