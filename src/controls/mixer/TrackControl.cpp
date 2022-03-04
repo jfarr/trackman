@@ -26,7 +26,9 @@ void TrackControl::createControls() {
 //        juce::Label::backgroundColourId, track.isSelected() ? juce::Colours::lightgrey : juce::Colours::grey);
     channelLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
 
+    trackLabel.setText(track.getFile().getFileName(), juce::dontSendNotification);
     trackLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
+//    trackLabel
 
     openButton.setButtonText("...");
     openButton.onClick = [this] { openButtonClicked(); };
@@ -37,6 +39,12 @@ void TrackControl::createControls() {
     addAndMakeVisible(channelLabel);
     addAndMakeVisible(openButton);
 }
+
+//void TrackControl::update() {
+////    removeChildComponent(&trackLabel);
+//    trackLabel.setText(track.getFile().getFileName(), juce::dontSendNotification);
+////    addAndMakeVisible(trackLabel);
+//}
 
 void TrackControl::setLevel(float level) {
     previousLevel = level;

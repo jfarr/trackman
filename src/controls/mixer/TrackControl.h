@@ -41,6 +41,7 @@ class TrackControl : public juce::Component, public SliderListener {
 
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
+    juce::String trackFilename;
     juce::Label trackLabel;
     juce::Label channelLabel;
     bool muted = false;

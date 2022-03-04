@@ -14,7 +14,7 @@ class TrackController : public FileListener, public TrackControlListener, public
     TrackController(Track &track, juce::AudioFormatManager &formatManager);
     ~TrackController();
 
-    void update();
+//    void update();
     void repaint();
 
     void setListener(class TrackSourceListener *newListener) { listener = newListener; }

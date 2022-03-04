@@ -58,6 +58,7 @@ void MixerController::onSourceSet(std::shared_ptr<juce::PositionableAudioSource>
             mixer.addSource(track.getSource(), false, track.getSampleRate(), 2);
         }
     });
+//    update();
 }
 
 void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldLoop); }

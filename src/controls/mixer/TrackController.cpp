@@ -15,9 +15,9 @@ TrackController::~TrackController() {
     }
 }
 
-void TrackController::update() {
-
-}
+//void TrackController::update() {
+//    trackControl.update();
+//}
 
 void TrackController::repaint() {
 //    trackControl.update();
@@ -39,6 +39,8 @@ void TrackController::fileChosen(juce::File file) {
         gain = std::shared_ptr<juce::PositionableAudioSource>(new GainAudioSource(newSource, true));
         sampleRate = reader->sampleRate;
         track.setSource(gain, reader->sampleRate);
+        track.setFile(file);
+//        trackControl.update();
         listener->onSourceSet(gain, previousSource, false, reader->sampleRate);
         previousSource = gain;
     }
