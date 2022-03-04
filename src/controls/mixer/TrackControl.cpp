@@ -10,8 +10,10 @@ TrackControl::TrackControl(Track &track) : track(track) {
 TrackControl::~TrackControl() {}
 
 void TrackControl::createControls() {
-//    creating = true;
-    decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevel()));
+    //    creating = true;
+    //    decibelSlider.onValueChange = nullptr;
+    previousLevel = track.getLevelGain();
+    decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevelGain()));
     decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
     decibelSlider.addMouseListener(this, false);
     decibelSlider.setListener(this);
@@ -23,13 +25,13 @@ void TrackControl::createControls() {
     channelLabel.setText(track.getName(), juce::dontSendNotification);
     channelLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
     channelLabel.setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
-//    channelLabel.setColour(
-//        juce::Label::backgroundColourId, track.isSelected() ? juce::Colours::lightgrey : juce::Colours::grey);
+    //    channelLabel.setColour(
+    //        juce::Label::backgroundColourId, track.isSelected() ? juce::Colours::lightgrey : juce::Colours::grey);
     channelLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
 
     trackLabel.setText(track.getFile().getFileName(), juce::dontSendNotification);
     trackLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
-//    trackLabel
+    //    trackLabel
 
     openButton.setButtonText("...");
     openButton.onClick = [this] { openButtonClicked(); };
@@ -39,17 +41,17 @@ void TrackControl::createControls() {
     addAndMakeVisible(trackLabel);
     addAndMakeVisible(channelLabel);
     addAndMakeVisible(openButton);
-//    creating = false;
+    //    creating = false;
 }
 
 void TrackControl::update() {
-//    removeChildComponent(&trackLabel);
-    previousLevel = track.getLevel();
-    decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevel()));
-//    addAndMakeVisible(trackLabel);
+    //    removeChildComponent(&trackLabel);
+    previousLevel = track.getLevelGain();
+    decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevelGain()));
+    //    addAndMakeVisible(trackLabel);
 }
 
-//void TrackControl::setLevel(float level) {
+// void TrackControl::setLevel(float level) {
 ////    track.setLevel(level);
 //    previousLevel = level;
 //    decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
@@ -100,9 +102,9 @@ void TrackControl::resized() {
 }
 
 void TrackControl::decibelSliderChanged() {
-//    if (creating) {
-//        return;
-//    }
+    //    if (creating) {
+    //        return;
+    //    }
     auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
     notifyLevelChanged(level);
     if (!draggingSlider && level != previousLevel) {

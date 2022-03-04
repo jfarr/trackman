@@ -19,5 +19,7 @@ void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, 
 
 void Track::setLevel(float newLevel) {
     level = newLevel;
-    gain->setGain(level);
+    if (gain != nullptr) {
+        gain->setGain(level);
+    }
 }

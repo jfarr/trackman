@@ -14,7 +14,7 @@ class Track {
     std::shared_ptr<juce::PositionableAudioSource> getSource() const { return source; }
     std::shared_ptr<GainAudioSource> getGain() const { return gain; }
     double getSampleRate() const { return sampleRate; }
-    float getLevel() const { return level; }
+    float getLevelGain() const { return level; }
     bool getMuted() const { return muted; }
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
