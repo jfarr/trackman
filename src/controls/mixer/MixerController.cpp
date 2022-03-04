@@ -13,7 +13,22 @@ MixerController::~MixerController() {
     mixerPanel.getTransportControl().removeListener(this);
 }
 
-void MixerController::update() { mixerPanel.update(); }
+void MixerController::update() {
+    tracks.clear();
+    mixerPanel.clear();
+    trackList.eachTrack([this](Track &track) {
+        auto controller = new TrackController(track, formatManager);
+        tracks.push_back(std::unique_ptr<TrackController>(controller));
+    });
+    mixerPanel.update();
+}
+
+void MixerController::repaint() {
+    for (std::unique_ptr<TrackController> &track : tracks) {
+        track->repaint();
+    }
+    mixerPanel.repaint();
+}
 
 void MixerController::setMasterLevel(float newLevel) {
     mixer.setMasterLevel(newLevel);
@@ -37,18 +52,36 @@ void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevel(
 
 void MixerController::masterMuteToggled() { mixer.toggleMasterMute(); }
 
-void MixerController::selectionChanged(Track &track, juce::Component *source) {}
+void MixerController::levelChangeFinalized(TrackControl &trackControl, float previousLevel) {
+    notifyLevelChangeFinalized(trackControl, previousLevel);
+}
+
+void MixerController::selectionChanged(Track &track, juce::Component *source) { notifySelectionChanged(track, source); }
 
 void MixerController::addListener(TrackListListener *listener) {
-    if (!listContains(listener, listeners)) {
-        listeners.push_front(listener);
+    if (!listContains(listener, trackListListeners)) {
+        trackListListeners.push_front(listener);
     }
 }
 
-void MixerController::removeListener(TrackListListener *listener) { listeners.remove(listener); }
+void MixerController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
 
 void MixerController::notifySelectionChanged(Track &track, juce::Component *source) {
-    for (TrackListListener *listener : listeners) {
+    for (TrackListListener *listener : trackListListeners) {
         listener->selectionChanged(track, source);
+    }
+}
+
+void MixerController::addListener(TrackControlListener *listener) {
+    if (!listContains(listener, trackControlListeners)) {
+        trackControlListeners.push_front(listener);
+    }
+}
+
+void MixerController::removeListener(TrackControlListener *listener) { trackControlListeners.remove(listener); }
+
+void MixerController::notifyLevelChangeFinalized(TrackControl &trackControl, float previousLevel) {
+    for (TrackControlListener *listener : trackControlListeners) {
+        listener->levelChangeFinalized(trackControl, previousLevel);
     }
 }

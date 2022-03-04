@@ -26,6 +26,7 @@ void MixerPanel::update() {
     });
     resized();
 }
+
 //
 //void MixerPanel::addTrack(TrackControl &trackControl) {
 //    addAndMakeVisible(trackControl);

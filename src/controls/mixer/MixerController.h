@@ -4,16 +4,22 @@
 
 #include "MasterTrackControl.h"
 #include "MixerPanel.h"
+#include "TrackControl.h"
+#include "TrackControlListener.h"
 #include "TrackController.h"
 #include "controls/common/TransportControl.h"
+//#include "controls/desktop/TrackControllerListener.h"
 #include "controls/desktop/TrackListListener.h"
+#include "controls/desktop/TrackSourceListener.h"
 #include "model/Mixer.h"
 #include "model/TrackList.h"
 
-class MixerController : public TrackSourceListener,
+class MixerController : public TrackListListener,
+                        public TrackSourceListener,
                         public TransportControlListener,
                         public MasterTrackListener,
-                        public TrackListListener {
+                        public TrackControlListener
+                        /*public TrackControllerListener*/ {
   public:
     MixerController(TrackList &trackList, juce::AudioFormatManager &formatManager);
     ~MixerController();
@@ -21,11 +27,19 @@ class MixerController : public TrackSourceListener,
     MixerPanel &getMixerPanel() { return mixerPanel; }
 
     void update();
+    void repaint();
 
     void setMasterLevel(float newLevel);
 
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
+
+    void addListener(TrackControlListener *listener);
+    void removeListener(TrackControlListener *listener);
+
+    //==============================================================================
+    // TrackListListener
+    void selectionChanged(Track &track, juce::Component *source) override;
 
     //==============================================================================
     // TrackSourceListener
@@ -43,8 +57,12 @@ class MixerController : public TrackSourceListener,
     void masterMuteToggled() override;
 
     //==============================================================================
-    // TrackListListener
-    void selectionChanged(Track &track, juce::Component *source) override;
+    // TrackControlListener
+    void levelChangeFinalized(TrackControl &trackControl, float previousLevel) override;
+
+    //==============================================================================
+    // TrackControllerListener
+//    void selectionChanged(TrackController *newSelected) override;
 
   private:
     TrackList &trackList;
@@ -52,9 +70,11 @@ class MixerController : public TrackSourceListener,
     MixerPanel mixerPanel;
     std::list<std::unique_ptr<TrackController>> tracks;
     juce::AudioFormatManager &formatManager;
-    std::list<TrackListListener *> listeners;
+    std::list<TrackListListener *> trackListListeners;
+    std::list<TrackControlListener *> trackControlListeners;
 
     void notifySelectionChanged(Track &track, juce::Component *source);
+    void notifyLevelChangeFinalized(TrackControl &trackControl, float previousLevel);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerController)
 };

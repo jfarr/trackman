@@ -20,7 +20,7 @@ void TrackLaneControl::createControls() {
 
 void TrackLaneControl::paint(juce::Graphics &g) {
     auto leftPanelWidth = 25;
-    g.fillAll(track.getSelected() ? juce::Colour{0xff3f5f5f} : juce::Colours::darkslategrey);
+    g.fillAll(track.isSelected() ? juce::Colour{0xff3f5f5f} : juce::Colours::darkslategrey);
     g.setColour(juce::Colours::slategrey);
     g.fillRect(0, getHeight() - 1, getWidth(), 1);
     g.fillRect(leftPanelWidth, 0, 1, getHeight());

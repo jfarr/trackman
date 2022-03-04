@@ -15,6 +15,15 @@ TrackController::~TrackController() {
     }
 }
 
+void TrackController::update() {
+
+}
+
+void TrackController::repaint() {
+//    trackControl.update();
+    trackControl.repaint();
+}
+
 void TrackController::fileChosen(juce::File file) {
     if (listener == nullptr) {
         return;
@@ -69,12 +78,12 @@ void TrackController::mouseDown(const juce::MouseEvent &event) {
         notifySelectionChanged();
     }
 }
-
-void TrackController::setSelected(bool newSelected) {
-    selected = newSelected;
-    trackControl.setSelected(selected);
-//    trackLaneControl.setSelected(selected);
-}
+//
+//void TrackController::setSelected(bool newSelected) {
+//    selected = newSelected;
+//    trackControl.setSelected(selected);
+////    trackLaneControl.setSelected(selected);
+//}
 
 void TrackController::addListener(TrackControllerListener *listener) {
     if (!listContains(listener, listeners)) {

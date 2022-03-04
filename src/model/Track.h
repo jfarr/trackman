@@ -10,7 +10,7 @@ class Track {
     juce::String getName() { return name; }
     float getLevel() const { return level; }
     bool getMuted() const { return muted; }
-    bool getSelected() const { return selected; }
+    bool isSelected() const { return selected; }
 
     void setLevel(float newLevel) { level = newLevel; }
     void setMuted(bool newMuted) { muted = newMuted; }
