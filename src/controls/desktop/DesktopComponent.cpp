@@ -2,10 +2,10 @@
 
 DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager)
     : formatManager(formatManager), desktopController(formatManager),
-      viewport(desktopController.getTrackListController().getViewport()),
-      mixer(desktopController.getMixerController().getMixerPanel()) {
-    addAndMakeVisible(viewport);
-    addAndMakeVisible(mixer);
+      trackListViewport(desktopController.getTrackListController().getViewport()),
+      mixerPanel(desktopController.getMixerController().getMixerPanel()) {
+    addAndMakeVisible(trackListViewport);
+    addAndMakeVisible(mixerPanel);
 
     setApplicationCommandManagerToWatch(&commandManager);
     commandManager.registerAllCommandsForTarget(this);
@@ -56,6 +56,6 @@ void DesktopComponent::paint(juce::Graphics &g) {
 
 void DesktopComponent::resized() {
     auto area = getLocalBounds();
-    mixer.setBounds(area.removeFromBottom(mixer.getHeight()));
-    viewport.setBounds(area);
+    mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getHeight()));
+    trackListViewport.setBounds(area);
 }

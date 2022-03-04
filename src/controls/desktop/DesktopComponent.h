@@ -105,8 +105,8 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
 
   private:
     DesktopController desktopController;
-    juce::Component &viewport;
-    juce::Component &mixer;
+    juce::Component &trackListViewport;
+    juce::Component &mixerPanel;
 
     juce::ApplicationCommandManager commandManager;
     juce::MenuBarComponent menuBar;
