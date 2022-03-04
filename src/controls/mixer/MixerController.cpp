@@ -44,6 +44,11 @@ void MixerController::setMasterLevel(float newLevel) {
     mixerPanel.getMasterTrackControl().setLevel(newLevel);
 }
 
+void MixerController::toggleMasterMute() {
+    mixer.toggleMasterMute();
+    mixerPanel.getMasterTrackControl().update();
+}
+
 void MixerController::setLevel(Track &track, float newLevel) {
     for (std::unique_ptr<TrackController> &trackController : tracks) {
         if (&trackController->getTrack() == &track) {

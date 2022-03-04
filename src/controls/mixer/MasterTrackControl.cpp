@@ -29,6 +29,12 @@ void MasterTrackControl::createControls() {
     addAndMakeVisible(channelLabel);
 }
 
+void MasterTrackControl::update() {
+    muteButton.setColour(juce::TextButton::buttonColourId,
+        mixer.getMasterMute() ? juce::Colours::red
+                              : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+}
+
 void MasterTrackControl::setLevel(float level) {
     previousLevel = level;
     decibelSlider.setValue(juce::Decibels::gainToDecibels(level));

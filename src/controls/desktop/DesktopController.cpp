@@ -22,6 +22,11 @@ void DesktopController::masterLevelChangeFinalized(float previousLevel) {
     commandList.pushCommand(command);
 }
 
+void DesktopController::masterMuteToggled() {
+    Command *command = new ToggleMasterMuteCommand(mixerController, mixerController.getMixer().getMasterMute());
+    commandList.pushCommand(command);
+}
+
 void DesktopController::levelChangeFinalized(Track &track, float previousLevel) {
     Command *command = new ChangeTrackVolumeCommand(mixerController, track, previousLevel);
     commandList.pushCommand(command);

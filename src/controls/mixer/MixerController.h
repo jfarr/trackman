@@ -24,11 +24,13 @@ class MixerController : public TrackListListener,
     ~MixerController();
 
     MixerPanel &getMixerPanel() { return mixerPanel; }
+    Mixer &getMixer() { return mixer; }
 
     void update();
     void repaint();
 
     void setMasterLevel(float newLevel);
+    void toggleMasterMute();
     void setLevel(Track &track, float newLevel);
 
     void addListener(TrackListListener *listener);
