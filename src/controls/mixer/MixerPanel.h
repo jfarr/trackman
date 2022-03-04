@@ -14,8 +14,9 @@ class MixerPanel : public juce::AudioAppComponent {
     MixerPanel(TrackList &trackList, Mixer &mixer);
     ~MixerPanel();
 
-    void clear() { tracks.clear(); }
-    void update();
+    void clear();
+    void addTrack(TrackControl *trackControl);
+//    void update();
 
     TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }

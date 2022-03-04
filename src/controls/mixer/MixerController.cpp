@@ -16,11 +16,19 @@ MixerController::~MixerController() {
 void MixerController::update() {
     tracks.clear();
     mixerPanel.clear();
+    mixer.removeAllSources();
     trackList.eachTrack([this](Track &track) {
+        if (track.getSource() != nullptr) {
+            mixer.addSource(track.getSource(), false, track.getSampleRate(), 2);
+        }
         auto controller = new TrackController(track, formatManager);
+        controller->setListener(this);
         tracks.push_back(std::unique_ptr<TrackController>(controller));
+        auto control = new TrackControl(track);
+        control->setListener(controller);
+        mixerPanel.addTrack(control);
     });
-    mixerPanel.update();
+    mixerPanel.resized();
 }
 
 void MixerController::repaint() {
@@ -38,12 +46,18 @@ void MixerController::setMasterLevel(float newLevel) {
 void MixerController::onSourceSet(std::shared_ptr<juce::PositionableAudioSource> newSource,
     std::shared_ptr<juce::PositionableAudioSource> prevSource, const bool deleteWhenRemoved,
     double sourceSampleRateToCorrectFor, int maxNumChannels) {
-    if (prevSource != nullptr) {
-        mixer.removeSource(prevSource);
-    }
-    if (newSource != nullptr) {
-        mixer.addSource(newSource, deleteWhenRemoved, sourceSampleRateToCorrectFor);
-    }
+    //    if (prevSource != nullptr) {
+    //        mixer.removeSource(prevSource);
+    //    }
+    //    if (newSource != nullptr) {
+    //        mixer.addSource(newSource, deleteWhenRemoved, sourceSampleRateToCorrectFor);
+    //    }
+    mixer.removeAllSources();
+    trackList.eachTrack([this](Track &track) {
+        if (track.getSource() != nullptr) {
+            mixer.addSource(track.getSource(), false, track.getSampleRate(), 2);
+        }
+    });
 }
 
 void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldLoop); }

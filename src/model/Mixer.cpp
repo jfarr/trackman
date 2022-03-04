@@ -20,6 +20,13 @@ void Mixer::removeSource(std::shared_ptr<juce::PositionableAudioSource> source) 
     sources.remove(source);
 }
 
+void Mixer::removeAllSources() {
+    for (std::shared_ptr<juce::PositionableAudioSource> &source : sources) {
+        mixerSource.removeInputSource(source.get());
+    }
+    sources.clear();
+}
+
 void Mixer::setMasterLevel(float newLevel) { level = newLevel; }
 
 void Mixer::toggleMasterMute() {

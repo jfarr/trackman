@@ -15,6 +15,7 @@ class Mixer {
     void addSource(std::shared_ptr<juce::PositionableAudioSource> source, const bool deleteWhenRemoved,
         double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2);
     void removeSource(std::shared_ptr<juce::PositionableAudioSource> source);
+    void removeAllSources();
 
     void setMasterLevel(float newLevel);
     void toggleMasterMute();

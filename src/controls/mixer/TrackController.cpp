@@ -38,6 +38,7 @@ void TrackController::fileChosen(juce::File file) {
         auto newSource = new juce::AudioFormatReaderSource(reader, true);
         gain = std::shared_ptr<juce::PositionableAudioSource>(new GainAudioSource(newSource, true));
         sampleRate = reader->sampleRate;
+        track.setSource(gain, reader->sampleRate);
         listener->onSourceSet(gain, previousSource, false, reader->sampleRate);
         previousSource = gain;
     }
