@@ -1,15 +1,14 @@
 #include "MixerPanel.h"
 #include "common/listutil.h"
 
-MixerPanel::MixerPanel(Mixer &mixer) : mixer(mixer), transportControl(mixer.getTransportSource()) {
+MixerPanel::MixerPanel(TrackList &trackList, Mixer &mixer)
+    : trackList(trackList), mixer(mixer), transportControl(mixer.getTransportSource()) {
     setAudioChannels(0, 2);
     createControls();
     setSize(800, 250);
 }
 
-MixerPanel::~MixerPanel() {
-    shutdownAudio();
-}
+MixerPanel::~MixerPanel() { shutdownAudio(); }
 
 void MixerPanel::createControls() {
     addAndMakeVisible(transportControl);
@@ -21,8 +20,7 @@ void MixerPanel::addTrack(TrackControl &trackControl) {
     resized();
 }
 
-void MixerPanel::removeTrack(TrackControl &trackControl)
-{
+void MixerPanel::removeTrack(TrackControl &trackControl) {
     removeChildComponent(&trackControl);
     resized();
 }

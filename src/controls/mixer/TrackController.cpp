@@ -2,11 +2,11 @@
 #include "common/listutil.h"
 
 TrackController::TrackController(Track &track, juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), track(track), trackControl(track), trackLaneControl(track) {
+    : formatManager(formatManager), track(track), trackControl(track) {
     trackControl.addListener(this);
     trackControl.setListener(this);
     trackControl.addMouseListener(this, true);
-    trackLaneControl.addMouseListener(this, true);
+//    trackLaneControl.addMouseListener(this, true);
 }
 
 TrackController::~TrackController() {
@@ -65,7 +65,7 @@ void TrackController::muteToggled() {
 
 void TrackController::mouseDown(const juce::MouseEvent &event) {
     auto pos = event.getScreenPosition();
-    if (trackControl.getScreenBounds().contains(pos) || trackLaneControl.getScreenBounds().contains(pos)) {
+    if (trackControl.getScreenBounds().contains(pos)) {
         notifySelectionChanged();
     }
 }
@@ -73,7 +73,7 @@ void TrackController::mouseDown(const juce::MouseEvent &event) {
 void TrackController::setSelected(bool newSelected) {
     selected = newSelected;
     trackControl.setSelected(selected);
-    trackLaneControl.setSelected(selected);
+//    trackLaneControl.setSelected(selected);
 }
 
 void TrackController::addListener(TrackControllerListener *listener) {

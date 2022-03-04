@@ -7,10 +7,11 @@
 #include "TrackControl.h"
 #include "controls/common/TransportControl.h"
 #include "model/Mixer.h"
+#include "model/TrackList.h"
 
 class MixerPanel : public juce::AudioAppComponent {
   public:
-    MixerPanel(Mixer &mixer);
+    MixerPanel(TrackList &trackList, Mixer &mixer);
     ~MixerPanel();
 
     TransportControl &getTransportControl() { return transportControl; }
@@ -36,6 +37,7 @@ class MixerPanel : public juce::AudioAppComponent {
   private:
     TransportControl transportControl;
     MasterTrackControl masterTrackControl;
+    TrackList &trackList;
     Mixer &mixer;
 
     std::list<MixerPanelListener *> listeners;

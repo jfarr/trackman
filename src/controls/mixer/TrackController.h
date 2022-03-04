@@ -18,7 +18,6 @@ class TrackController : public FileListener, public TrackControlListener, public
 
     Track &getTrack() { return track; }
     TrackControl &getTrackControl() { return trackControl; }
-    TrackLaneControl &getTrackLaneControl() { return trackLaneControl; }
 
     void setSelected(bool newSelected);
     void setVisible(bool newVisible) { visible = newVisible; }
@@ -55,7 +54,6 @@ class TrackController : public FileListener, public TrackControlListener, public
     bool visible = true;
 
     TrackControl trackControl;
-    TrackLaneControl trackLaneControl;
 
     TrackSourceListener *listener = nullptr;
     std::list<TrackControllerListener *> listeners;

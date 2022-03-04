@@ -58,7 +58,5 @@ class DesktopController : public MixerPanelListener,
     TrackListController trackListController;
 
     juce::AudioFormatManager &formatManager;
-    Mixer &mixer;
-    MixerPanel &mixerPanel;
     TrackListPanel &trackListPanel;
 };

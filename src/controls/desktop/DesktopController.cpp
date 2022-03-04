@@ -6,8 +6,8 @@
 
 DesktopController::DesktopController(
     juce::AudioFormatManager &formatManager, Mixer &mixer, MixerPanel &mixerPanel, TrackListPanel &trackListPanel)
-    : mixerController(mixer, mixerPanel), trackListController(trackList), formatManager(formatManager), mixer(mixer),
-      mixerPanel(mixerPanel), trackListPanel(trackListPanel) {
+    : mixerController(trackList, formatManager), trackListController(trackList), formatManager(formatManager),
+      trackListPanel(trackListPanel) {
     mixerPanel.addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
 }
@@ -61,7 +61,7 @@ void DesktopController::addTrackController(TrackController *controller) {
     controller->getTrackControl().addListener(this);
     controller->addSource();
     controller->setVisible(true);
-    mixerPanel.addTrack(controller->getTrackControl());
+    mixerController.getMixerPanel().addTrack(controller->getTrackControl());
     trackListPanel.update();
 }
 
@@ -75,7 +75,7 @@ void DesktopController::removeTrackController(TrackController *controller) {
     controller->getTrackControl().removeListener(this);
     controller->setVisible(false);
     trackListPanel.update();
-    mixerPanel.removeTrack(controller->getTrackControl());
+    mixerController.getMixerPanel().removeTrack(controller->getTrackControl());
 }
 
 void DesktopController::mixerResized(juce::Rectangle<int> area) {

@@ -4,17 +4,23 @@
 
 #include "MasterTrackControl.h"
 #include "MixerPanel.h"
+#include "TrackController.h"
 #include "controls/common/TransportControl.h"
 #include "controls/desktop/TrackListListener.h"
 #include "model/Mixer.h"
+#include "model/TrackList.h"
 
 class MixerController : public TrackSourceListener,
                         public TransportControlListener,
                         public MasterTrackListener,
                         public TrackListListener {
   public:
-    MixerController(Mixer &mixer, MixerPanel &mixerPanel);
+    MixerController(TrackList &trackList, juce::AudioFormatManager &formatManager);
     ~MixerController();
+
+    MixerPanel &getMixerPanel() { return mixerPanel; }
+
+    void update();
 
     void setMasterLevel(float newLevel);
 
@@ -38,8 +44,11 @@ class MixerController : public TrackSourceListener,
     void selectionChanged(Track &track, juce::Component *source) override;
 
   private:
-    Mixer &mixer;
-    MixerPanel &mixerPanel;
+    TrackList &trackList;
+    Mixer mixer;
+    MixerPanel mixerPanel;
+    std::list<std::unique_ptr<TrackController>> tracks;
+    juce::AudioFormatManager &formatManager;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerController)
 };
