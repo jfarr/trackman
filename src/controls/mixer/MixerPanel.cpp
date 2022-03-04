@@ -17,23 +17,25 @@ void MixerPanel::createControls() {
 
 void MixerPanel::update() {
     removeAllChildren();
+    createControls();
     tracks.clear();
     trackList.eachTrack([this](Track &track) {
         auto control = new TrackControl(track);
         tracks.push_back(std::unique_ptr<TrackControl>(control));
         addAndMakeVisible(control);
     });
-}
-
-void MixerPanel::addTrack(TrackControl &trackControl) {
-    addAndMakeVisible(trackControl);
     resized();
 }
-
-void MixerPanel::removeTrack(TrackControl &trackControl) {
-    removeChildComponent(&trackControl);
-    resized();
-}
+//
+//void MixerPanel::addTrack(TrackControl &trackControl) {
+//    addAndMakeVisible(trackControl);
+//    resized();
+//}
+//
+//void MixerPanel::removeTrack(TrackControl &trackControl) {
+//    removeChildComponent(&trackControl);
+//    resized();
+//}
 
 //==============================================================================
 void MixerPanel::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {

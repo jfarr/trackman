@@ -19,8 +19,8 @@ class MixerPanel : public juce::AudioAppComponent {
     TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
 
-    void addTrack(TrackControl &trackControl);
-    void removeTrack(TrackControl &trackControl);
+//    void addTrack(TrackControl &trackControl);
+//    void removeTrack(TrackControl &trackControl);
 
     void addListener(MixerPanelListener *listener);
     void removeListener(MixerPanelListener *listener);

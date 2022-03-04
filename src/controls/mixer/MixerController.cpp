@@ -13,11 +13,7 @@ MixerController::~MixerController() {
 }
 
 void MixerController::update() {
-    mixerPanel.removeAllChildren();
-    for (std::unique_ptr<TrackController> &track : tracks) {
-        auto trackController = new TrackController(track->getTrack(), formatManager);
-        mixerPanel.addAndMakeVisible(trackController->getTrackControl());
-    }
+    mixerPanel.update();
 }
 
 void MixerController::setMasterLevel(float newLevel) {
