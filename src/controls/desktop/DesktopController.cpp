@@ -33,9 +33,9 @@ void DesktopController::levelChangeFinalized(TrackControl &trackControl, float p
 }
 
 void DesktopController::addNewTrack() {
-//    juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), trackList.size() + 1);
-//    Command *command = new AddTrackCommand(*this, name);
-//    commandList.pushCommand(command);
+    juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), trackList.size() + 1);
+    Command *command = new AddTrackCommand(*this, name);
+    commandList.pushCommand(command);
 }
 
 void DesktopController::deleteSelectedTrack() {
@@ -45,15 +45,14 @@ void DesktopController::deleteSelectedTrack() {
 //    Command *command = new DeleteTrackCommand(*this, selected);
 //    commandList.pushCommand(command);
 }
-//
-//TrackController *DesktopController::addTrack(juce::String name) {
-//    Track *newTrack = trackList.addTrack(name);
-//    TrackController *controller = new TrackController(*newTrack, formatManager);
-//    tracks.push_back(controller);
-//    addTrackController(controller);
-//    return controller;
-//}
-////
+
+Track *DesktopController::addTrack(juce::String name) {
+    auto track = trackList.addTrack(name);
+    trackListController.update();
+    mixerController.update();
+    return track;
+}
+
 //void DesktopController::addTrackController(TrackController *controller) {
 //    controller->addListener(this);
 //    controller->setListener(&mixerController);

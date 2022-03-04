@@ -10,7 +10,12 @@ class TrackListPanel : public juce::Component {
     TrackListPanel(TrackList &trackList);
     ~TrackListPanel();
 
+    void addLane(TrackLaneControl* lane) { lanes.push_back(lane); }
+    void clear() { lanes.clear(); }
+
     void update();
+
+//    void update();
 //
 //    void addTrack(TrackLaneControl &lane);
 //    void removeTrack(TrackLaneControl &lane);
@@ -22,5 +27,6 @@ class TrackListPanel : public juce::Component {
 
   private:
     TrackList &trackList;
-    std::list<std::unique_ptr<TrackLaneControl>> lanes;
+    std::list<TrackLaneControl *> lanes;
+//    std::list<std::unique_ptr<TrackLaneControl>> lanes;
 };

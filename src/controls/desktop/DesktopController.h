@@ -29,8 +29,8 @@ class DesktopController : /*public MixerPanelListener,*/
 
     void addNewTrack();
     void deleteSelectedTrack();
-//
-//    TrackController *addTrack(juce::String name);
+
+    Track *addTrack(juce::String name);
 //    void addTrackController(TrackController *track);
 //    void removeTrackController(TrackController *track);
 

@@ -6,15 +6,13 @@ TrackListPanel::~TrackListPanel() {}
 
 void TrackListPanel::update() {
     removeAllChildren();
-    lanes.clear();
-    trackList.eachTrack([this](Track &track) {
-        auto lane = new TrackLaneControl(track);
-        lanes.push_back(std::unique_ptr<TrackLaneControl>(lane));
+    for (TrackLaneControl *lane : lanes) {
         addAndMakeVisible(lane);
-    });
+    }
     if (!lanes.empty()) {
         setSize(getWidth(), lanes.size() * lanes.back()->getHeight());
     }
+    resized();
 }
 
 //
@@ -37,6 +35,7 @@ void TrackListPanel::paint(juce::Graphics &g) {
 
 void TrackListPanel::resized() {
     auto area = getLocalBounds();
-    for (auto &lane : lanes)
+    for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(lane->getHeight()));
+    }
 }

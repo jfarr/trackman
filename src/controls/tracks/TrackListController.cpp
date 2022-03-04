@@ -8,18 +8,22 @@ TrackListController::TrackListController(TrackList &trackList) : trackList(track
 }
 
 void TrackListController::update() {
-    trackListPanel.removeAllChildren();
+//    trackListPanel.removeAllChildren();
     lanes.clear();
+    trackListPanel.clear();
     trackList.eachTrack([this](Track &track) {
         auto lane = new TrackLaneController(track);
         lane->addListener(this);
         lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
-        trackListPanel.addAndMakeVisible(lane->getTrackLaneControl());
+        trackListPanel.addLane(&lane->getTrackLaneControl());
+//        trackListPanel.addAndMakeVisible(lane->getTrackLaneControl());
     });
-    if (!lanes.empty()) {
-        trackListPanel.setSize(
-            trackListPanel.getWidth(), lanes.size() * lanes.back()->getTrackLaneControl().getHeight());
-    }
+    trackListPanel.update();
+//    if (!lanes.empty()) {
+//        trackListPanel.setSize(
+//            trackListPanel.getWidth(), lanes.size() * lanes.back()->getTrackLaneControl().getHeight());
+//    }
+//    trackListPanel.resized();
 }
 
 void TrackListController::selectionChanged(Track &track, juce::Component *source) {

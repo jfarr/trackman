@@ -3,6 +3,7 @@
 #include "Command.h"
 #include "controls/desktop/DesktopController.h"
 #include "controls/mixer/TrackController.h"
+#include "model/Track.h"
 
 class AddTrackCommand : public Command {
   public:
@@ -10,17 +11,15 @@ class AddTrackCommand : public Command {
         : Command("add track"), controller(controller), name(name) {}
     ~AddTrackCommand() override {}
 
-    void execute() override {
-//        track = controller.addTrack(name);
-    }
+    void execute() override { track = controller.addTrack(name); }
     void undo() override {
-//        controller.removeTrackController(track);
+        //        controller.removeTrackController(track);
     }
 
   private:
     DesktopController &controller;
     juce::String name;
-    TrackController *track;
+    Track *track;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AddTrackCommand)
 };
@@ -32,10 +31,10 @@ class DeleteTrackCommand : public Command {
     ~DeleteTrackCommand() override {}
 
     void execute() override {
-//        controller.removeTrackController(track);
+        //        controller.removeTrackController(track);
     }
     void undo() override {
-//        controller.addTrackController(track);
+        //        controller.addTrackController(track);
     }
 
   private:
