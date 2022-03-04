@@ -11,6 +11,7 @@ class Mixer {
     ~Mixer();
 
     juce::AudioTransportSource &getTransportSource() { return transportSource; }
+    bool getMasterMute() { return muted; }
 
     void addSource(std::shared_ptr<juce::PositionableAudioSource> source, const bool deleteWhenRemoved,
         double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2);

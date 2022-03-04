@@ -4,10 +4,11 @@
 
 #include "MasterTrackListener.h"
 #include "controls/common/DecibelSlider.h"
+#include "model/Mixer.h"
 
 class MasterTrackControl : public juce::Component, public SliderListener {
   public:
-    MasterTrackControl();
+    MasterTrackControl(Mixer &mixer);
     ~MasterTrackControl();
 
     void setLevel(float level);
@@ -32,7 +33,8 @@ class MasterTrackControl : public juce::Component, public SliderListener {
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
     juce::Label channelLabel;
-    bool muted = false;
+
+    Mixer &mixer;
     bool draggingSlider = false;
     float previousLevel = juce::Decibels::decibelsToGain<float>(0.0);
     std::list<MasterTrackListener *> listeners;

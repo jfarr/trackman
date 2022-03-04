@@ -2,7 +2,7 @@
 
 #include "common/listutil.h"
 
-MasterTrackControl::MasterTrackControl() {
+MasterTrackControl::MasterTrackControl(Mixer &mixer) : mixer(mixer) {
     createControls();
     setSize(100, 100);
 }
@@ -73,10 +73,11 @@ void MasterTrackControl::decibelSliderChanged() {
 }
 
 void MasterTrackControl::muteButtonClicked() {
-    muted = !muted;
-    muteButton.setColour(juce::TextButton::buttonColourId,
-        muted ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    //    muted = !muted;
     notifyMuteToggled();
+    muteButton.setColour(juce::TextButton::buttonColourId,
+        mixer.getMasterMute() ? juce::Colours::red
+                                   : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
 void MasterTrackControl::addListener(MasterTrackListener *listener) {

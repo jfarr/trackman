@@ -19,7 +19,7 @@ void MixerController::update() {
     mixer.removeAllSources();
     trackList.eachTrack([this](Track &track) {
         if (track.getSource() != nullptr) {
-            mixer.addSource(track.getSource(), false, track.getSampleRate(), 2);
+            mixer.addSource(track.getGain(), false, track.getSampleRate(), 2);
         }
         auto control = new TrackControl(track);
         control->addListener(this);
