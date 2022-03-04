@@ -7,9 +7,9 @@ TrackLaneController::TrackLaneController(Track &track) : track(track), trackLane
 
 void TrackLaneController::repaint() { trackLaneControl.repaint(); }
 
-void TrackLaneController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(event.eventComponent); }
+void TrackLaneController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }
 
-void TrackLaneController::selectionChanged(Track &track, juce::Component *source) { notifySelectionChanged(source); }
+void TrackLaneController::selectionChanged(Track &track) { notifySelectionChanged(); }
 
 void TrackLaneController::addListener(TrackListListener *listener) {
     if (!listContains(listener, listeners)) {
@@ -19,8 +19,8 @@ void TrackLaneController::addListener(TrackListListener *listener) {
 
 void TrackLaneController::removeListener(TrackListListener *listener) { listeners.remove(listener); }
 
-void TrackLaneController::notifySelectionChanged(juce::Component *source) {
+void TrackLaneController::notifySelectionChanged() {
     for (TrackListListener *listener : listeners) {
-        listener->selectionChanged(track, source);
+        listener->selectionChanged(track);
     }
 }

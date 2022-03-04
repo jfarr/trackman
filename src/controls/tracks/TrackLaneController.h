@@ -24,12 +24,12 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
 
     //==============================================================================
     // TrackListListener
-    void selectionChanged(Track &track, juce::Component *source) override;
+    void selectionChanged(Track &track) override;
 
   private:
     Track &track;
     TrackLaneControl trackLaneControl;
     std::list<TrackListListener *> listeners;
 
-    void notifySelectionChanged(juce::Component *source);
+    void notifySelectionChanged();
 };

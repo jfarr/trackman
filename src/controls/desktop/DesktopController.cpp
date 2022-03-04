@@ -64,7 +64,7 @@ void DesktopController::undeleteTrack(Track *track) {
     mixerController.update();
 }
 
-void DesktopController::selectionChanged(Track &track, juce::Component *source) {
+void DesktopController::selectionChanged(Track &track) {
     trackList.setSelected(track);
     trackListController.repaint();
     mixerController.repaint();

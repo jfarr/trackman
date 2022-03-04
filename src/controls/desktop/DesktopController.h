@@ -30,7 +30,7 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
 
     //==============================================================================
     // TrackListListener
-    void selectionChanged(Track &track, juce::Component *source) override;
+    void selectionChanged(Track &track) override;
 
     //==============================================================================
     // MasterTrackListener

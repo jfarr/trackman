@@ -6,5 +6,5 @@
 
 class TrackListListener {
   public:
-    virtual void selectionChanged(Track &track, juce::Component *source) {}
+    virtual void selectionChanged(Track &track) {}
 };

@@ -71,7 +71,7 @@ void MixerController::levelChangeFinalized(Track &track, float previousLevel) {
     notifyLevelChangeFinalized(track, previousLevel);
 }
 
-void MixerController::selectionChanged(Track &track, juce::Component *source) { notifySelectionChanged(track, source); }
+void MixerController::selectionChanged(Track &track) { notifySelectionChanged(track); }
 
 void MixerController::addListener(TrackListListener *listener) {
     if (!listContains(listener, trackListListeners)) {
@@ -81,9 +81,9 @@ void MixerController::addListener(TrackListListener *listener) {
 
 void MixerController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
 
-void MixerController::notifySelectionChanged(Track &track, juce::Component *source) {
+void MixerController::notifySelectionChanged(Track &track) {
     for (TrackListListener *listener : trackListListeners) {
-        listener->selectionChanged(track, source);
+        listener->selectionChanged(track);
     }
 }
 

@@ -22,7 +22,7 @@ class TrackListController : public TrackListListener {
 
     //==============================================================================
     // TrackListListener
-    void selectionChanged(Track &track, juce::Component *source) override;
+    void selectionChanged(Track &track) override;
 
   private:
     TrackList &trackList;
@@ -31,5 +31,5 @@ class TrackListController : public TrackListListener {
     std::list<std::unique_ptr<TrackLaneController>> lanes;
     std::list<TrackListListener *> listeners;
 
-    void notifySelectionChanged(Track &track, juce::Component *source);
+    void notifySelectionChanged(Track &track);
 };

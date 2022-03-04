@@ -25,8 +25,8 @@ void TrackListController::repaint() {
     }
 }
 
-void TrackListController::selectionChanged(Track &track, juce::Component *source) {
-    notifySelectionChanged(track, source);
+void TrackListController::selectionChanged(Track &track) {
+    notifySelectionChanged(track);
 }
 
 void TrackListController::addListener(TrackListListener *listener) {
@@ -37,8 +37,8 @@ void TrackListController::addListener(TrackListListener *listener) {
 
 void TrackListController::removeListener(TrackListListener *listener) { listeners.remove(listener); }
 
-void TrackListController::notifySelectionChanged(Track &track, juce::Component *source) {
+void TrackListController::notifySelectionChanged(Track &track) {
     for (TrackListListener *listener : listeners) {
-        listener->selectionChanged(track, source);
+        listener->selectionChanged(track);
     }
 }
