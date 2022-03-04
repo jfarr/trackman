@@ -65,6 +65,9 @@ void TrackController::levelChanged(float newLevel) {
         gainSource->setGain(newLevel);
     }
 }
+//void TrackController::levelChangeFinalized(TrackControl &trackControl, float previousLevel) {
+//
+//}
 
 void TrackController::muteToggled() {
     muted = !muted;

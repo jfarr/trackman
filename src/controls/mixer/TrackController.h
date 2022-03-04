@@ -39,6 +39,7 @@ class TrackController : public FileListener, public TrackControlListener, public
     //==============================================================================
     // TrackControlListener
     void levelChanged(float newLevel) override;
+//    void levelChangeFinalized(TrackControl &trackControl, float previousLevel) override;
     void muteToggled() override;
 
     //==============================================================================

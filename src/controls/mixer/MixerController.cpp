@@ -22,6 +22,7 @@ void MixerController::update() {
             mixer.addSource(track.getSource(), false, track.getSampleRate(), 2);
         }
         auto control = new TrackControl(track);
+        control->addListener(this);
         auto controller = new TrackController(track, *control, formatManager);
         controller->setListener(this);
         controller->addListener(this);
