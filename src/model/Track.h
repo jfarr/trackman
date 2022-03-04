@@ -22,7 +22,7 @@ class Track {
     void setFile(juce::File newFile) { file = newFile; }
     void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate);
     void setLevel(float newLevel);
-    void setMuted(bool newMuted) { muted = newMuted; }
+    void setMuted(bool newMuted);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
 

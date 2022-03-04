@@ -81,6 +81,7 @@ void TrackController::levelChanged(float newLevel) {
 //}
 
 void TrackController::muteToggled() {
+    track.setMuted(!track.getMuted());
 //    muted = !muted;
 //    auto newLevel = (muted ? 0.0 : level);
 //    auto gainSource = (GainAudioSource *)gain.get();

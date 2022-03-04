@@ -23,3 +23,10 @@ void Track::setLevel(float newLevel) {
         gain->setGain(level);
     }
 }
+
+void Track::setMuted(bool newMuted) {
+    muted = newMuted;
+    if (gain != nullptr) {
+        gain->setGain(muted ? 0 : level);
+    }
+}
