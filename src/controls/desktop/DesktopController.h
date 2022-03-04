@@ -3,6 +3,7 @@
 #include "TrackControllerListener.h"
 #include "TrackListListener.h"
 #include "commands/CommandList.h"
+#include "controls/mixer/MasterTrackListener.h"
 #include "controls/mixer/MixerController.h"
 #include "controls/mixer/MixerPanel.h"
 #include "controls/mixer/TrackControlListener.h"

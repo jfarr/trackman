@@ -40,16 +40,11 @@ void MixerController::repaint() {
 }
 
 void MixerController::setMasterLevel(float newLevel) {
-    mixer.setMasterLevel(newLevel);
+    mixer.setMasterLevelGain(newLevel);
     mixerPanel.getMasterTrackControl().setLevel(newLevel);
 }
 
 void MixerController::setLevel(Track &track, float newLevel) {
-    //    trackList.eachTrack([&track](Track &t) {
-    //        if (&t == &track) {
-    //
-    //        }
-    //    });
     for (std::unique_ptr<TrackController> &trackController : tracks) {
         if (&trackController->getTrack() == &track) {
             trackController->setLevel(newLevel);
@@ -58,32 +53,23 @@ void MixerController::setLevel(Track &track, float newLevel) {
 }
 
 void MixerController::onSourceSet() {
-    //    if (prevSource != nullptr) {
-    //        mixer.removeSource(prevSource);
-    //    }
-    //    if (newSource != nullptr) {
-    //        mixer.addSource(newSource, deleteWhenRemoved, sourceSampleRateToCorrectFor);
-    //    }
     mixer.removeAllSources();
     trackList.eachTrack([this](Track &track) {
         if (track.getSource() != nullptr) {
             mixer.addSource(track.getGain(), false, track.getSampleRate(), 2);
         }
     });
-    //    update();
 }
 
 void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldLoop); }
 
-void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevel(newLevel); }
+void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevelGain(newLevel); }
 
 void MixerController::masterMuteToggled() { mixer.toggleMasterMute(); }
 
 void MixerController::levelChangeFinalized(Track &track, float previousLevel) {
     notifyLevelChangeFinalized(track, previousLevel);
 }
-
-// void MixerController::selectionChanged(TrackController *newSelected) {}
 
 void MixerController::selectionChanged(Track &track, juce::Component *source) { notifySelectionChanged(track, source); }
 

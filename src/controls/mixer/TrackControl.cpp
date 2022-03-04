@@ -10,8 +10,6 @@ TrackControl::TrackControl(Track &track) : track(track) {
 TrackControl::~TrackControl() {}
 
 void TrackControl::createControls() {
-    //    creating = true;
-    //    decibelSlider.onValueChange = nullptr;
     previousLevel = track.getLevelGain();
     decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevelGain()));
     decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
@@ -25,13 +23,10 @@ void TrackControl::createControls() {
     channelLabel.setText(track.getName(), juce::dontSendNotification);
     channelLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
     channelLabel.setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
-    //    channelLabel.setColour(
-    //        juce::Label::backgroundColourId, track.isSelected() ? juce::Colours::lightgrey : juce::Colours::grey);
     channelLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
 
     trackLabel.setText(track.getFile().getFileName(), juce::dontSendNotification);
     trackLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
-    //    trackLabel
 
     openButton.setButtonText("...");
     openButton.onClick = [this] { openButtonClicked(); };
@@ -41,21 +36,12 @@ void TrackControl::createControls() {
     addAndMakeVisible(trackLabel);
     addAndMakeVisible(channelLabel);
     addAndMakeVisible(openButton);
-    //    creating = false;
 }
 
 void TrackControl::update() {
-    //    removeChildComponent(&trackLabel);
     previousLevel = track.getLevelGain();
     decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevelGain()));
-    //    addAndMakeVisible(trackLabel);
 }
-
-// void TrackControl::setLevel(float level) {
-////    track.setLevel(level);
-//    previousLevel = level;
-//    decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
-//}
 
 void TrackControl::onSliderClick() { draggingSlider = true; }
 
@@ -65,13 +51,6 @@ void TrackControl::mouseUp(const juce::MouseEvent &event) {
         decibelSliderChanged();
     }
 }
-
-// void TrackControl::setSelected(bool newSelected) {
-//     //    selected = newSelected;
-//     channelLabel.setColour(
-//         juce::Label::backgroundColourId, newSelected ? juce::Colours::lightgrey : juce::Colours::grey);
-//     repaint();
-// }
 
 void TrackControl::paint(juce::Graphics &g) {
     auto bgColor = juce::Colour{0xff282828};
@@ -102,9 +81,6 @@ void TrackControl::resized() {
 }
 
 void TrackControl::decibelSliderChanged() {
-    //    if (creating) {
-    //        return;
-    //    }
     auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
     notifyLevelChanged(level);
     if (!draggingSlider && level != previousLevel) {

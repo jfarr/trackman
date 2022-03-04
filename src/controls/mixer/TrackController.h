@@ -14,24 +14,14 @@ class TrackController : public FileListener, public TrackControlListener, public
     TrackController(Track &track, TrackControl &trackControl, juce::AudioFormatManager &formatManager);
     ~TrackController();
 
-    //    void update();
-    void repaint();
+    Track &getTrack() const { return track; }
 
-    void setListener(class TrackSourceListener *newListener) { listener = newListener; }
-
-    Track &getTrack() { return track; }
-//    TrackControl &getTrackControl() { return trackControl; }
-
-    //    void setSelected(bool newSelected);
     void setLevel(float newLevel);
-//    void setVisible(bool newVisible) { visible = newVisible; }
-//    bool isVisible() const { return visible; }
-
-//    void addSource();
-    //    void removeSource();
+    void repaint();
 
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
+    void setListener(class TrackSourceListener *newListener) { listener = newListener; }
 
     //==============================================================================
     // FileListener
@@ -40,7 +30,6 @@ class TrackController : public FileListener, public TrackControlListener, public
     //==============================================================================
     // TrackControlListener
     void levelChanged(float newLevel) override;
-//    void levelChangeFinalized(TrackControl &trackControl, float previousLevel) override;
     void muteToggled() override;
 
     //==============================================================================
@@ -48,20 +37,12 @@ class TrackController : public FileListener, public TrackControlListener, public
     void mouseDown(const juce::MouseEvent &event) override;
 
   private:
-    juce::AudioFormatManager &formatManager;
     Track &track;
-//    std::shared_ptr<juce::PositionableAudioSource> gain;
-//    std::shared_ptr<juce::PositionableAudioSource> previousSource = nullptr;
-//    double sampleRate = 0;
-//    float level = juce::Decibels::decibelsToGain<float>(0.0);
-//    bool muted = false;
-    //    bool selected = false;
-//    bool visible = true;
-
     TrackControl &trackControl;
+    juce::AudioFormatManager &formatManager;
 
-    TrackSourceListener *listener = nullptr;
     std::list<TrackListListener *> listeners;
+    TrackSourceListener *listener = nullptr;
 
     void notifySelectionChanged();
 

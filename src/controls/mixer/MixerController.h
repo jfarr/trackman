@@ -8,9 +8,9 @@
 #include "TrackControlListener.h"
 #include "TrackController.h"
 #include "controls/common/TransportControl.h"
-//#include "controls/desktop/TrackControllerListener.h"
 #include "controls/desktop/TrackListListener.h"
 #include "controls/desktop/TrackSourceListener.h"
+#include "controls/mixer/MasterTrackListener.h"
 #include "model/Mixer.h"
 #include "model/TrackList.h"
 
@@ -18,9 +18,7 @@ class MixerController : public TrackListListener,
                         public TrackSourceListener,
                         public TransportControlListener,
                         public MasterTrackListener,
-                        public TrackControlListener //,
-                        //public TrackControllerListener
-{
+                        public TrackControlListener {
   public:
     MixerController(TrackList &trackList, juce::AudioFormatManager &formatManager);
     ~MixerController();
@@ -62,7 +60,7 @@ class MixerController : public TrackListListener,
 
     //==============================================================================
     // TrackControllerListener
-//    void selectionChanged(TrackController *newSelected) override;
+    //    void selectionChanged(TrackController *newSelected) override;
 
   private:
     TrackList &trackList;

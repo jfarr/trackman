@@ -2,14 +2,8 @@
 
 #include "JuceHeader.h"
 
+#include "MasterTrackListener.h"
 #include "controls/common/DecibelSlider.h"
-
-class MasterTrackListener {
-  public:
-    virtual void masterLevelChanged(float level) {}
-    virtual void masterLevelChangeFinalized(float previousLevel) {}
-    virtual void masterMuteToggled() {}
-};
 
 class MasterTrackControl : public juce::Component, public SliderListener {
   public:

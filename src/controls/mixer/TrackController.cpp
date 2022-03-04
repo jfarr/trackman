@@ -6,102 +6,35 @@ TrackController::TrackController(Track &track, TrackControl &trackControl, juce:
     trackControl.addListener(this);
     trackControl.setListener(this);
     trackControl.addMouseListener(this, true);
-//    trackLaneControl.addMouseListener(this, true);
 }
 
-TrackController::~TrackController() {
-//    if (previousSource != nullptr) {
-//        previousSource->releaseResources();
-//    }
-}
+TrackController::~TrackController() {}
 
-//void TrackController::update() {
-//    trackControl.update();
-//}
 void TrackController::setLevel(float newLevel) {
     track.setLevel(newLevel);
     trackControl.update();
 }
 
-void TrackController::repaint() {
-//    trackControl.update();
-    trackControl.repaint();
-}
+void TrackController::repaint() { trackControl.repaint(); }
 
 void TrackController::fileChosen(juce::File file) {
     if (listener == nullptr) {
         return;
     }
-
     auto *reader = formatManager.createReaderFor(file);
-
     if (reader != nullptr) {
-//        if (previousSource != nullptr) {
-//            previousSource->releaseResources();
-//        }
         auto newSource = new juce::AudioFormatReaderSource(reader, true);
         track.setSource(std::shared_ptr<juce::PositionableAudioSource>(newSource), reader->sampleRate);
         track.setFile(file);
         listener->onSourceSet();
-
-
-
-//        gain = std::shared_ptr<juce::PositionableAudioSource>(new GainAudioSource(newSource, true));
-//        sampleRate = reader->sampleRate;
-//        track.setSource(gain, reader->sampleRate);
-//        track.setFile(file);
-////        trackControl.update();
-////        listener->onSourceSet(gain, previousSource, false, reader->sampleRate);
-//        previousSource = gain;
     }
 }
-//
-//void TrackController::addSource() {
-//    if (previousSource != nullptr) {
-//        listener->onSourceSet(previousSource, nullptr, false, sampleRate);
-//    }
-//}
 
-//void TrackController::removeSource() {
-//    if (previousSource != nullptr) {
-//        listener->onSourceSet(nullptr, previousSource, false, 0);
-//    }
-//}
+void TrackController::levelChanged(float newLevel) { track.setLevel(newLevel); }
 
-void TrackController::levelChanged(float newLevel) {
-    track.setLevel(newLevel);
-//    level = newLevel;
-//    auto gainSource = (GainAudioSource *)gain.get();
-//    if (gainSource != nullptr) {
-//        gainSource->setGain(newLevel);
-//    }
-}
-//void TrackController::levelChangeFinalized(TrackControl &trackControl, float previousLevel) {
-//
-//}
+void TrackController::muteToggled() { track.toggleMute(); }
 
-void TrackController::muteToggled() {
-    track.setMuted(!track.getMuted());
-//    muted = !muted;
-//    auto newLevel = (muted ? 0.0 : level);
-//    auto gainSource = (GainAudioSource *)gain.get();
-//    if (gainSource != nullptr) {
-//        gainSource->setGain(newLevel);
-//    }
-}
-
-void TrackController::mouseDown(const juce::MouseEvent &event) {
-//    auto pos = event.getScreenPosition();
-//    if (trackControl.getScreenBounds().contains(pos)) {
-        notifySelectionChanged();
-//    }
-}
-//
-//void TrackController::setSelected(bool newSelected) {
-//    selected = newSelected;
-//    trackControl.setSelected(selected);
-////    trackLaneControl.setSelected(selected);
-//}
+void TrackController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }
 
 void TrackController::addListener(TrackListListener *listener) {
     if (!listContains(listener, listeners)) {

@@ -15,11 +15,6 @@ void Mixer::addSource(std::shared_ptr<juce::PositionableAudioSource> source, con
     mixerSource.addInputSource(source.get(), false, sourceSampleRateToCorrectFor, maxNumChannels);
 }
 
-void Mixer::removeSource(std::shared_ptr<juce::PositionableAudioSource> source) {
-    mixerSource.removeInputSource(source.get());
-    sources.remove(source);
-}
-
 void Mixer::removeAllSources() {
     for (std::shared_ptr<juce::PositionableAudioSource> &source : sources) {
         mixerSource.removeInputSource(source.get());
@@ -27,12 +22,14 @@ void Mixer::removeAllSources() {
     sources.clear();
 }
 
-void Mixer::setMasterLevel(float newLevel) { level = newLevel; }
+void Mixer::setMasterLevelGain(float newLevel) {
+    level = newLevel;
+    transportSource.setGain(newLevel);
+}
 
 void Mixer::toggleMasterMute() {
     muted = !muted;
-    auto newLevel = (muted ? 0.0 : level);
-    transportSource.setGain(newLevel);
+    transportSource.setGain((muted ? 0 : level));
 }
 
 void Mixer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {

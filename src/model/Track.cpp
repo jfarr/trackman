@@ -24,8 +24,8 @@ void Track::setLevel(float newLevel) {
     }
 }
 
-void Track::setMuted(bool newMuted) {
-    muted = newMuted;
+void Track::toggleMute() {
+    muted = !muted;
     if (gain != nullptr) {
         gain->setGain(muted ? 0 : level);
     }
