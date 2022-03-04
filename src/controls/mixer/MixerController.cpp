@@ -30,3 +30,7 @@ void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldL
 void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevel(newLevel); }
 
 void MixerController::masterMuteToggled() { mixer.toggleMasterMute(); }
+
+void MixerController::selectionChanged(Track &track, juce::Component *source) {
+
+}

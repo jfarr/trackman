@@ -3,11 +3,15 @@
 #include <JuceHeader.h>
 
 #include "MasterTrackControl.h"
-#include "controls/common/TransportControl.h"
-#include "model/Mixer.h"
 #include "MixerPanel.h"
+#include "controls/common/TransportControl.h"
+#include "controls/desktop/TrackListListener.h"
+#include "model/Mixer.h"
 
-class MixerController : public TrackSourceListener, public TransportControlListener, public MasterTrackListener {
+class MixerController : public TrackSourceListener,
+                        public TransportControlListener,
+                        public MasterTrackListener,
+                        public TrackListListener {
   public:
     MixerController(Mixer &mixer, MixerPanel &mixerPanel);
     ~MixerController();
@@ -16,8 +20,9 @@ class MixerController : public TrackSourceListener, public TransportControlListe
 
     //==============================================================================
     // TrackSourceListener
-    void onSourceSet(std::shared_ptr<juce::PositionableAudioSource> newSource, std::shared_ptr<juce::PositionableAudioSource> prevSource,
-        const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) override;
+    void onSourceSet(std::shared_ptr<juce::PositionableAudioSource> newSource,
+        std::shared_ptr<juce::PositionableAudioSource> prevSource, const bool deleteWhenRemoved,
+        double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2) override;
 
     //==============================================================================
     // TransportControlListener
@@ -27,6 +32,10 @@ class MixerController : public TrackSourceListener, public TransportControlListe
     // MasterTrackListener
     void masterLevelChanged(float level) override;
     void masterMuteToggled() override;
+
+    //==============================================================================
+    // TrackListListener
+    void selectionChanged(Track &track, juce::Component *source) override;
 
   private:
     Mixer &mixer;

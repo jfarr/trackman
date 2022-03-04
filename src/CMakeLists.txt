@@ -44,8 +44,6 @@ target_sources(Trackman PRIVATE
         controls/desktop/DesktopComponent.h
         controls/desktop/DesktopController.cpp
         controls/desktop/DesktopController.h
-        controls/desktop/TrackController.cpp
-        controls/desktop/TrackController.h
         controls/desktop/TrackControllerListener.h
         controls/desktop/TrackListListener.h
         controls/desktop/TrackSourceListener.h
@@ -57,6 +55,8 @@ target_sources(Trackman PRIVATE
         controls/mixer/MixerController.h
         controls/mixer/TrackControl.cpp
         controls/mixer/TrackControl.h
+        controls/mixer/TrackController.cpp
+        controls/mixer/TrackController.h
         controls/mixer/TrackControlListener.h
         controls/tracks/TrackLaneControl.cpp
         controls/tracks/TrackLaneControl.h

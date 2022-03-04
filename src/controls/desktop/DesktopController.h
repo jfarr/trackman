@@ -6,8 +6,10 @@
 #include "controls/mixer/MixerController.h"
 #include "controls/mixer/MixerPanel.h"
 #include "controls/mixer/TrackControlListener.h"
+#include "controls/mixer/TrackController.h"
 #include "controls/tracks/TrackListPanel.h"
 #include "model/TrackList.h"
+#include "controls/tracks/TrackListController.h"
 
 class DesktopController : public MixerPanelListener,
                           public MasterTrackListener,
@@ -18,7 +20,7 @@ class DesktopController : public MixerPanelListener,
         juce::AudioFormatManager &formatManager, Mixer &mixer, MixerPanel &mixerPanel, TrackListPanel &trackListPanel);
     ~DesktopController();
 
-    TrackList& getTrackList() { return trackList; }
+    TrackList &getTrackList() { return trackList; }
 
     bool canUndo() const;
     void undoLast();
@@ -53,6 +55,7 @@ class DesktopController : public MixerPanelListener,
     std::list<TrackController *> tracks;
     TrackController *selected = nullptr;
     MixerController mixerController;
+    TrackListController trackListController;
 
     juce::AudioFormatManager &formatManager;
     Mixer &mixer;

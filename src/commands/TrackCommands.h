@@ -2,7 +2,7 @@
 
 #include "Command.h"
 #include "controls/desktop/DesktopController.h"
-#include "controls/desktop/TrackController.h"
+#include "controls/mixer/TrackController.h"
 
 class AddTrackCommand : public Command {
   public:

@@ -2,12 +2,12 @@
 #include "commands/MixerCommands.h"
 #include "commands/TrackCommands.h"
 #include "common/listutil.h"
-#include "controls/desktop/TrackController.h"
+#include "controls/mixer/TrackController.h"
 
 DesktopController::DesktopController(
     juce::AudioFormatManager &formatManager, Mixer &mixer, MixerPanel &mixerPanel, TrackListPanel &trackListPanel)
-    : mixerController(mixer, mixerPanel), formatManager(formatManager), mixer(mixer), mixerPanel(mixerPanel),
-      trackListPanel(trackListPanel) {
+    : mixerController(mixer, mixerPanel), trackListController(trackList), formatManager(formatManager), mixer(mixer),
+      mixerPanel(mixerPanel), trackListPanel(trackListPanel) {
     mixerPanel.addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
 }
