@@ -73,7 +73,6 @@ void MasterTrackControl::decibelSliderChanged() {
 }
 
 void MasterTrackControl::muteButtonClicked() {
-    //    muted = !muted;
     notifyMuteToggled();
     muteButton.setColour(juce::TextButton::buttonColourId,
         mixer.getMasterMute() ? juce::Colours::red

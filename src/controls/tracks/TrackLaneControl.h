@@ -9,8 +9,6 @@ class TrackLaneControl : public juce::Component {
     TrackLaneControl(Track &track);
     ~TrackLaneControl();
 
-//    void setSelected(bool newSelected);
-
     //==============================================================================
     // Component
     void paint(juce::Graphics &g) override;
@@ -18,7 +16,6 @@ class TrackLaneControl : public juce::Component {
 
   private:
     Track &track;
-//    bool selected = false;
 
     juce::Label trackLabel;
 
