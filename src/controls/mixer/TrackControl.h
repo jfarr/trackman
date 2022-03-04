@@ -4,22 +4,15 @@
 
 #include "controls/common/DecibelSlider.h"
 #include "controls/common/FileChooserControl.h"
-
-class TrackControl;
-
-class TrackControlListener {
-  public:
-    virtual void levelChanged(float level) {}
-    virtual void levelChangeFinalized(TrackControl &trackControl, float previousLevel) {}
-    virtual void muteToggled() {}
-};
+#include "controls/mixer/TrackControlListener.h"
+#include "model/Track.h"
 
 class TrackControl : public juce::Component, public SliderListener {
   public:
-    TrackControl(juce::String trackName);
+    TrackControl(Track &track);
     ~TrackControl();
 
-    juce::String getTrackName() const { return trackName; }
+    juce::String getTrackName() const { return track.getName(); }
 
     void setLevel(float level);
     void setSelected(bool newSelected);
@@ -42,7 +35,9 @@ class TrackControl : public juce::Component, public SliderListener {
     void resized() override;
 
   private:
-    juce::String trackName;
+    Track &track;
+
+//    juce::String trackName;
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
     juce::Label trackLabel;

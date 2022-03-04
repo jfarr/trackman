@@ -2,7 +2,7 @@
 
 #include "common/listutil.h"
 
-TrackControl::TrackControl(juce::String trackName) : trackName(trackName) {
+TrackControl::TrackControl(Track &track) : track(track) {
     createControls();
     setSize(100, 100);
 }
@@ -19,7 +19,7 @@ void TrackControl::createControls() {
     muteButton.setTooltip("mute");
     muteButton.onClick = [this] { muteButtonClicked(); };
 
-    channelLabel.setText(trackName, juce::dontSendNotification);
+    channelLabel.setText(track.getName(), juce::dontSendNotification);
     channelLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
     channelLabel.setColour(juce::Label::backgroundColourId, selected ? juce::Colours::lightgrey : juce::Colours::grey);
     channelLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});

@@ -5,6 +5,7 @@
 #include "commands/CommandList.h"
 #include "controls/mixer/MixerController.h"
 #include "controls/mixer/MixerPanel.h"
+#include "controls/mixer/TrackControlListener.h"
 #include "controls/tracks/TrackListPanel.h"
 #include "model/TrackList.h"
 
