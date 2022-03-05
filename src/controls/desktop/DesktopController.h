@@ -32,6 +32,7 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
 
     void saveProject();
     void saveProjectAs();
+    void openProject();
 
     //==============================================================================
     // TrackListListener

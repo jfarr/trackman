@@ -1,3 +1,4 @@
+#include <fstream>
 #include <nlohmann/json.hpp>
 
 #include "Project.h"
@@ -13,4 +14,13 @@ std::string Project::to_json() {
         j["tracks"].push_back(t);
     });
     return j.dump();
+}
+
+void Project::from_json(std::string filename) {
+    std::ifstream s(filename);
+    json j;
+    s >> j;
+    std::cout << "gain: " << j["mixer"]["gain"];
+    mixer.setMasterLevelGain(j["mixer"]["gain"]);
+    mixer.setMasterMute(j["mixer"]["muted"]);
 }

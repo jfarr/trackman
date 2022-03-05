@@ -32,6 +32,11 @@ void Mixer::toggleMasterMute() {
     transportSource.setGain((muted ? 0 : level));
 }
 
+void Mixer::setMasterMute(bool newMuted) {
+    muted = newMuted;
+    transportSource.setGain((muted ? 0 : level));
+}
+
 void Mixer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
     transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }

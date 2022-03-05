@@ -10,8 +10,9 @@ MasterTrackControl::MasterTrackControl(Mixer &mixer) : mixer(mixer) {
 MasterTrackControl::~MasterTrackControl() {}
 
 void MasterTrackControl::createControls() {
+    previousLevel = mixer.getMasterLevelGain();
+    decibelSlider.setValue(juce::Decibels::gainToDecibels(mixer.getMasterLevelGain()));
     decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
-    decibelSlider.setValue(0.0);
     decibelSlider.addMouseListener(this, false);
     decibelSlider.setListener(this);
 
@@ -30,6 +31,8 @@ void MasterTrackControl::createControls() {
 }
 
 void MasterTrackControl::update() {
+    previousLevel = mixer.getMasterLevelGain();
+    decibelSlider.setValue(juce::Decibels::gainToDecibels(mixer.getMasterLevelGain()));
     muteButton.setColour(juce::TextButton::buttonColourId,
         mixer.isMasterMuted() ? juce::Colours::red
                               : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));

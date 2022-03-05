@@ -29,6 +29,7 @@ void MixerController::update() {
         tracks.push_back(std::unique_ptr<TrackController>(controller));
         mixerPanel.addTrack(control);
     });
+    mixerPanel.update();
     mixerPanel.resized();
 }
 

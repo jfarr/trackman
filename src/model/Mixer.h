@@ -21,6 +21,7 @@ class Mixer {
 
     void setMasterLevelGain(float newLevel);
     void toggleMasterMute();
+    void setMasterMute(bool newMuted);
     void setLooping(bool shouldLoop) { mixerSource.setLooping(shouldLoop); }
 
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate);

@@ -10,6 +10,7 @@ class CommandList {
 
     void pushCommand(Command *command);
     void undoLast();
+    void clear() { commands.clear(); }
     bool isEmpty() const { return commands.size() == 0; }
     juce::String getLastCommandName() const;
     Command *peek() const;

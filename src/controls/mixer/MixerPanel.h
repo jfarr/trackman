@@ -14,6 +14,7 @@ class MixerPanel : public juce::AudioAppComponent {
     ~MixerPanel();
 
     void clear();
+    void update();
     void addTrack(TrackControl *trackControl);
 
     TransportControl &getTransportControl() { return transportControl; }

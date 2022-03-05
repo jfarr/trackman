@@ -21,6 +21,10 @@ void MixerPanel::clear() {
     createControls();
 }
 
+void MixerPanel::update() {
+    masterTrackControl.update();
+}
+
 void MixerPanel::addTrack(TrackControl *trackControl) {
     tracks.push_back(std::unique_ptr<TrackControl>(trackControl));
     addAndMakeVisible(trackControl);

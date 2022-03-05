@@ -139,7 +139,30 @@ void DesktopController::saveProjectFile(juce::File file) {
     updateTitleBar();
 }
 
-void DesktopController::updateTitleBar() { mainWindow.setName(applicationName + (dirty ? " [modified]" : "")); }
+void DesktopController::openProject() {
+    chooser = std::make_unique<juce::FileChooser>("Load project...", juce::File{}, "*.trackman", true);
+    auto chooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
+
+    chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
+        auto file = fc.getResult();
+        if (file != juce::File{}) {
+            projectFile = file;
+            project.from_json(file.getFullPathName().toStdString());
+            trackListController.update();
+            mixerController.update();
+            commandList.clear();
+            saveCommand = nullptr;
+            dirty = false;
+            updateTitleBar();
+        }
+    });
+}
+
+void DesktopController::updateTitleBar() {
+    mainWindow.setName(
+        (projectFile != juce::File{} ? projectFile.getFileName() + (dirty ? " [modified]" : "") + " - " : "") +
+        applicationName);
+}
 
 void DesktopController::selectionChanged(Track &track) {
     trackList.setSelected(track);

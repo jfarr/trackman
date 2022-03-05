@@ -13,7 +13,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
   public:
     //==============================================================================
     /** A list of the commands that this menu responds to. */
-    enum CommandIDs { saveProject = 1, saveProjectAs, editUndo, newTrack, newAudioPlayer, deleteTrack };
+    enum CommandIDs { openProject = 1, saveProject, saveProjectAs, editUndo, newTrack, newAudioPlayer, deleteTrack };
 
     //==============================================================================
     DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager);
@@ -32,6 +32,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
         juce::PopupMenu menu;
 
         if (menuIndex == 0) {
+            menu.addCommandItem(&commandManager, CommandIDs::openProject);
             menu.addCommandItem(&commandManager, CommandIDs::saveProject);
             menu.addCommandItem(&commandManager, CommandIDs::saveProjectAs);
         } else if (menuIndex == 1) {
@@ -53,13 +54,17 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     ApplicationCommandTarget *getNextCommandTarget() override { return nullptr; }
 
     void getAllCommands(juce::Array<juce::CommandID> &c) override {
-        juce::Array<juce::CommandID> commands{CommandIDs::saveProject, CommandIDs::saveProjectAs, CommandIDs::editUndo,
+        juce::Array<juce::CommandID> commands{CommandIDs::openProject, CommandIDs::saveProject, CommandIDs::saveProjectAs, CommandIDs::editUndo,
             CommandIDs::newTrack, CommandIDs::newAudioPlayer, CommandIDs::deleteTrack};
         c.addArray(commands);
     }
 
     void getCommandInfo(juce::CommandID commandID, juce::ApplicationCommandInfo &result) override {
         switch (commandID) {
+        case CommandIDs::openProject:
+            result.setInfo("open project...", "Open a saved project", "Menu", 0);
+            result.addDefaultKeypress('o', juce::ModifierKeys::commandModifier);
+            break;
         case CommandIDs::saveProject:
             result.setInfo("save project", "Save the current project", "Menu", 0);
             result.addDefaultKeypress('s', juce::ModifierKeys::commandModifier);
@@ -97,6 +102,9 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
 
     bool perform(const InvocationInfo &info) override {
         switch (info.commandID) {
+        case CommandIDs::openProject:
+            desktopController.openProject();
+            break;
         case CommandIDs::saveProject:
             desktopController.saveProject();
             break;
