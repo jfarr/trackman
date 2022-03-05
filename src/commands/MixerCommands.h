@@ -21,7 +21,7 @@ class ChangeMasterVolumeCommand : public Command {
 class ToggleMasterMuteCommand : public Command {
   public:
     ToggleMasterMuteCommand(MixerController &mixerController)
-        : Command(juce::String(mixerController.getMixer().getMasterMute() ? "mute" : "unmute") + " master"), mixerController(mixerController) {}
+        : Command(juce::String(mixerController.getMixer().isMasterMuted() ? "mute" : "unmute") + " master"), mixerController(mixerController) {}
     ~ToggleMasterMuteCommand() {}
 
     void undo() override { mixerController.toggleMasterMute(); }
@@ -50,7 +50,7 @@ class ChangeTrackVolumeCommand : public Command {
 class ToggleMuteCommand : public Command {
   public:
     ToggleMuteCommand(MixerController &mixerController, Track &track)
-        : Command(juce::String(track.getMuted() ? "mute" : "unmute") + " " + track.getName()), mixerController(mixerController), track(track) {
+        : Command(juce::String(track.isMuted() ? "mute" : "unmute") + " " + track.getName()), mixerController(mixerController), track(track) {
     }
     ~ToggleMuteCommand() {}
 

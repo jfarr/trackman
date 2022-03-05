@@ -7,6 +7,7 @@
 #include "controls/mixer/TrackControlListener.h"
 #include "controls/tracks/TrackListController.h"
 #include "model/TrackList.h"
+#include "model/Project.h"
 
 class DesktopController : public MasterTrackListener, public TrackControlListener, public TrackListListener {
   public:
@@ -28,6 +29,8 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
     void deleteTrack(Track *track, bool purge);
     void undeleteTrack(Track *track);
 
+    void saveProject();
+
     //==============================================================================
     // TrackListListener
     void selectionChanged(Track &track) override;
@@ -47,6 +50,9 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
     TrackList trackList;
     MixerController mixerController;
     TrackListController trackListController;
+
+    Project project;
+    std::unique_ptr<juce::FileChooser> chooser;
 
     juce::AudioFormatManager &formatManager;
 };

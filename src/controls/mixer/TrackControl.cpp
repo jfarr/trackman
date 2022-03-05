@@ -19,7 +19,7 @@ void TrackControl::createControls() {
     muteButton.setButtonText("M");
     muteButton.setTooltip("mute");
     muteButton.setColour(juce::TextButton::buttonColourId,
-        track.getMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+        track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     muteButton.onClick = [this] { muteButtonClicked(); };
 
     channelLabel.setText(track.getName(), juce::dontSendNotification);
@@ -44,7 +44,7 @@ void TrackControl::update() {
     previousLevel = track.getLevelGain();
     decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevelGain()));
     muteButton.setColour(juce::TextButton::buttonColourId,
-        track.getMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+        track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
 void TrackControl::onSliderClick() { draggingSlider = true; }
@@ -96,7 +96,7 @@ void TrackControl::decibelSliderChanged() {
 void TrackControl::muteButtonClicked() {
     notifyMuteToggled();
     muteButton.setColour(juce::TextButton::buttonColourId,
-        track.getMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+        track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
 void TrackControl::openButtonClicked() {

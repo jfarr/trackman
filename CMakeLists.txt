@@ -38,6 +38,22 @@ if(WIN32 AND ${TARGET_BITNESS} EQUAL 32)
         )
 endif()
 
+##add_subdirectory("${CMAKE_SOURCE_DIR}/libs/json" ${CMAKE_BINARY_DIR}/json EXCLUDE_FROM_ALL)
+#set(JSON_BuildTests OFF CACHE INTERNAL "")
+#add_subdirectory("${CMAKE_SOURCE_DIR}/libs/json")
+#target_link_libraries(Trackman PRIVATE nlohmann_json::nlohmann_json)
+
+# add json library
+include(FetchContent)
+FetchContent_Declare(json
+        GIT_REPOSITORY https://github.com/nlohmann/json
+        GIT_TAG v3.10.5)
+FetchContent_GetProperties(json)
+if(NOT json_POPULATED)
+    FetchContent_Populate(json)
+    add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
 # add JUCE libraries
 if(NOT TRACKMAN_SYSTEM_JUCE)
   message(STATUS "Using JUCE from ${TRACKMAN_JUCE_LOCATION}")

@@ -31,7 +31,7 @@ void MasterTrackControl::createControls() {
 
 void MasterTrackControl::update() {
     muteButton.setColour(juce::TextButton::buttonColourId,
-        mixer.getMasterMute() ? juce::Colours::red
+        mixer.isMasterMuted() ? juce::Colours::red
                               : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
@@ -81,7 +81,7 @@ void MasterTrackControl::decibelSliderChanged() {
 void MasterTrackControl::muteButtonClicked() {
     notifyMuteToggled();
     muteButton.setColour(juce::TextButton::buttonColourId,
-        mixer.getMasterMute() ? juce::Colours::red
+        mixer.isMasterMuted() ? juce::Colours::red
                                    : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 

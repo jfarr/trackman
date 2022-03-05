@@ -4,7 +4,8 @@
 #include "common/listutil.h"
 
 DesktopController::DesktopController(juce::AudioFormatManager &formatManager)
-    : mixerController(trackList, formatManager), trackListController(trackList), formatManager(formatManager) {
+    : mixerController(trackList, formatManager), trackListController(trackList),
+      project(trackList, mixerController.getMixer()), formatManager(formatManager) {
     mixerController.addListener((TrackListListener *)this);
     mixerController.addListener((MasterTrackListener *)this);
     mixerController.addListener((TrackControlListener *)this);
@@ -72,6 +73,12 @@ void DesktopController::undeleteTrack(Track *track) {
     track->setDeleted(false);
     trackListController.update();
     mixerController.update();
+}
+
+void DesktopController::saveProject()
+{
+    std::string json = project.to_json();
+    std::cout << json;
 }
 
 void DesktopController::selectionChanged(Track &track) {

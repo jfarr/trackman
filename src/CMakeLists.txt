@@ -68,6 +68,8 @@ target_sources(Trackman PRIVATE
         controls/tracks/TrackListPanel.h
         model/Mixer.cpp
         model/Mixer.h
+        model/Project.cpp
+        model/Project.h
         model/Track.cpp
         model/Track.h
         model/TrackList.cpp
@@ -94,6 +96,7 @@ else ()
 endif ()
 
 target_link_libraries(Trackman PRIVATE
+        nlohmann_json::nlohmann_json
         juce::juce_audio_basics
         juce::juce_audio_devices
         juce::juce_audio_formats
