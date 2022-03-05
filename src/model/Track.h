@@ -21,6 +21,7 @@ class Track {
 
     void setFile(juce::File newFile) { file = newFile; }
     void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate);
+    void loadFile(juce::AudioFormatManager &formatManager, juce::File newFile);
     void setLevelGain(float newLevel);
     void toggleMute();
     void setMute(bool newMuted);

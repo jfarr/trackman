@@ -16,17 +16,17 @@ std::string Project::to_json() {
     return j.dump();
 }
 
-void Project::from_json(std::string filename) {
+void Project::from_json(juce::AudioFormatManager &formatManager, std::string filename) {
     std::ifstream s(filename);
     json j;
     s >> j;
-    std::cout << "gain: " << j["mixer"]["gain"];
     mixer.setMasterLevelGain(j["mixer"]["gain"]);
     mixer.setMasterMute(j["mixer"]["muted"]);
     trackList.clear();
     for (auto t : j["tracks"]) {
-        std::cout << t << '\n';
         auto track = trackList.addTrack(t["name"]);
+        track->setFile(t["file"]);
+        track->loadFile(formatManager, t["file"]);
         track->setLevelGain(t["gain"]);
         track->setMute(t["muted"]);
     }

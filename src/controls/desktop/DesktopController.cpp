@@ -147,7 +147,7 @@ void DesktopController::openProject() {
         auto file = fc.getResult();
         if (file != juce::File{}) {
             projectFile = file;
-            project.from_json(file.getFullPathName().toStdString());
+            project.from_json(formatManager, file.getFullPathName().toStdString());
             trackListController.update();
             mixerController.update();
             commandList.clear();

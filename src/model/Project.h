@@ -9,7 +9,7 @@ class Project {
     ~Project() {}
 
     std::string to_json();
-    void from_json(std::string filename);
+    void from_json(juce::AudioFormatManager &formatManager, std::string filename);
 
   private:
     TrackList &trackList;
