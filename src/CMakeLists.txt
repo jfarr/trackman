@@ -34,6 +34,8 @@ target_sources(Trackman PRIVATE
         controls/common/DecibelSlider.h
         controls/common/FileChooserControl.cpp
         controls/common/FileChooserControl.h
+        controls/common/PositionOverlay.cpp
+        controls/common/PositionOverlay.h
         controls/common/ThumbnailComponent.cpp
         controls/common/ThumbnailComponent.h
         controls/common/TransportControl.cpp

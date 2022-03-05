@@ -1,8 +1,10 @@
 #include "TrackListController.h"
 #include "common/listutil.h"
 
-TrackListController::TrackListController(TrackList &trackList, juce::AudioFormatManager &formatManager)
-    : trackList(trackList), trackListPanel(trackList, trackListViewport, formatManager), formatManager(formatManager) {
+TrackListController::TrackListController(
+    TrackList &trackList, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
+    : trackList(trackList), trackListPanel(trackList, trackListViewport, transport, formatManager),
+      formatManager(formatManager) {
     trackListViewport.setSize(800, 350);
     trackListViewport.setScrollBarsShown(true, true);
     trackListViewport.setViewedComponent(&trackListPanel, false);

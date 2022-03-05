@@ -1,12 +1,17 @@
 #include "TrackListPanel.h"
 
-TrackListPanel::TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioFormatManager &formatManager)
-    : trackList(trackList), viewport(viewport), formatManager(formatManager) {}
+TrackListPanel::TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
+    juce::AudioFormatManager &formatManager)
+    : trackList(trackList), viewport(viewport), positionOverlay(transport), formatManager(formatManager) {
+
+    addAndMakeVisible(positionOverlay);
+}
 
 TrackListPanel::~TrackListPanel() {}
 
 void TrackListPanel::update() {
     removeAllChildren();
+    addAndMakeVisible(positionOverlay);
     for (TrackLaneControl *lane : lanes) {
         addAndMakeVisible(lane);
     }
@@ -54,13 +59,21 @@ void TrackListPanel::paint(juce::Graphics &g) {
 }
 
 void TrackListPanel::resized() {
-    auto area = getLocalBounds().withWidth(getTrackLaneWidth());
+    auto leftPanelWidth = 25;
+    auto area = juce::Rectangle(getTrackLaneWidth(), getTrackLaneHeight());
     for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(lane->getHeight()));
     }
+    positionOverlay.setBounds(getLocalBounds().withTrimmedLeft(leftPanelWidth));
 }
 
+
 int TrackListPanel::getTrackLaneWidth() const {
-    auto trackWidth = (int)(trackList.getTotalLength() * scale);
+    int trackWidth = trackList.getTotalLength() * scale;
     return std::max(trackWidth, viewport.getWidth());
+}
+
+int TrackListPanel::getTrackLaneHeight() const {
+    int trackHeight = lanes.size() > 0 ? lanes.size() * lanes.back()->getHeight() : 0;
+    return std::max(trackHeight, viewport.getHeight());
 }

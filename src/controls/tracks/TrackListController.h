@@ -9,7 +9,8 @@
 
 class TrackListController : public TrackListListener {
   public:
-    TrackListController(TrackList &trackList, juce::AudioFormatManager &formatManager);
+    TrackListController(
+        TrackList &trackList, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
     ~TrackListController() {}
 
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
@@ -21,7 +22,7 @@ class TrackListController : public TrackListListener {
     void fileDragEnter(const juce::StringArray &files, int x, int y);
     void fileDragMove(const juce::StringArray &files, int x, int y);
     void fileDragExit(const juce::StringArray &files);
-    void filesDropped (const juce::StringArray& files, int x, int y);
+    void filesDropped(const juce::StringArray &files, int x, int y);
 
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);

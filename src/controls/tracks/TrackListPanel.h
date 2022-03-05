@@ -2,6 +2,7 @@
 
 #include "JuceHeader.h"
 #include "TrackLaneControl.h"
+#include "controls/common/PositionOverlay.h"
 #include "model/Track.h"
 #include "model/TrackList.h"
 
@@ -10,20 +11,22 @@ class DropBox : public juce::Component {
     DropBox() { setSize(200, 85); }
     ~DropBox() {}
 
-    void setSource(std::unique_ptr<juce::AudioFormatReaderSource>& newSource) {source = std::move(newSource); }
+    void setSource(std::unique_ptr<juce::AudioFormatReaderSource> &newSource) { source = std::move(newSource); }
 
     void paint(juce::Graphics &g) override {
         g.fillAll(juce::Colours::dimgrey);
         g.setColour(juce::Colours::grey);
         g.drawRect(0, 0, getWidth(), getHeight());
     }
+
   private:
     std::unique_ptr<juce::AudioFormatReaderSource> source;
 };
 
 class TrackListPanel : public juce::Component {
   public:
-    TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioFormatManager &formatManager);
+    TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
+        juce::AudioFormatManager &formatManager);
     ~TrackListPanel();
 
     Track *getTrackAtPos(int x, int y);
@@ -38,7 +41,7 @@ class TrackListPanel : public juce::Component {
     void fileDragEnter(const juce::StringArray &files, int x, int y);
     void fileDragMove(const juce::StringArray &files, int x, int y);
     void fileDragExit(const juce::StringArray &files);
-    void filesDropped (const juce::StringArray& files, int x, int y);
+    void filesDropped(const juce::StringArray &files, int x, int y);
 
     //==============================================================================
     // Component
@@ -48,6 +51,7 @@ class TrackListPanel : public juce::Component {
   private:
     TrackList &trackList;
     juce::Viewport &viewport;
+    PositionOverlay positionOverlay;
     juce::AudioFormatManager &formatManager;
     std::list<TrackLaneControl *> lanes;
     float scale = 75;
@@ -55,6 +59,7 @@ class TrackListPanel : public juce::Component {
     DropBox dropBox;
 
     int getTrackLaneWidth() const;
+    int getTrackLaneHeight() const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListPanel)
 };
