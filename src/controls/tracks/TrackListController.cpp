@@ -2,9 +2,9 @@
 #include "common/listutil.h"
 
 TrackListController::TrackListController(
-    TrackList &trackList, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
+    TrackList &trackList, juce::AudioTransportSource &transport, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
     : trackList(trackList), transport(transport), trackListPanel(trackList, trackListViewport, transport, formatManager),
-      formatManager(formatManager) {
+      deviceManager(deviceManager), formatManager(formatManager) {
     trackListViewport.setSize(800, 350);
     trackListViewport.setScrollBarsShown(true, true);
     trackListViewport.setViewedComponent(&trackListPanel, false);
@@ -52,10 +52,11 @@ void TrackListController::filesDropped(const juce::StringArray &files, int x, in
             double offset = width / 2;
             double startPos = std::max((x - offset - leftPanelWidth), 0.0);
             double endPos = startPos + width;
-            selected->addSample(files[0], startPos / scale, endPos / scale, length, reader->sampleRate);
+            selected->addSample(deviceManager, formatManager, files[0], startPos / scale, endPos / scale, length, reader->sampleRate);
         }
         selectionChanged(*selected);
         updateLane(*selected);
+        listener->onSourceSet();
     }
     trackListPanel.filesDropped(files, x, y);
 }

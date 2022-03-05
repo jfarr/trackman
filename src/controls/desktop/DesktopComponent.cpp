@@ -68,22 +68,18 @@ void DesktopComponent::resized() {
 bool DesktopComponent::isInterestedInFileDrag(const juce::StringArray &files) { return true; }
 
 void DesktopComponent::fileDragEnter(const juce::StringArray &files, int x, int y) {
-    std::cout << "drag enter: " << x << ", " << y << " " << files.joinIntoString(",").toStdString() << "\n";
     notifyFileDragEnter(files, x, y);
 }
 
 void DesktopComponent::fileDragMove(const juce::StringArray &files, int x, int y) {
-    std::cout << "drag enter: " << x << ", " << y  << "\n";
     notifyFileDragMove(files, x, y);
 }
 
 void DesktopComponent::fileDragExit(const juce::StringArray &files) {
-    std::cout << "drag exit: " << files.joinIntoString(",").toStdString() << "\n";
     notifyFileDragExit(files);
 }
 
 void DesktopComponent::filesDropped(const juce::StringArray &files, int x, int y) {
-    std::cout << "files dropped: " << files.joinIntoString(",").toStdString() << "\n";
     notifyFilesDropped(files, x, y);
 }
 

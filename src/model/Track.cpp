@@ -9,10 +9,13 @@ Track::~Track() {
 }
 
 juce::int64 Track::getTotalLength() const {
-    return (source == nullptr | sampleRate == 0) ? 0 : source->getTotalLength() / sampleRate;
+    return (source == nullptr || sampleRate == 0) ? 0 : source->getTotalLength() / sampleRate;
 }
 
 void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate) {
+    if (source == newSource) {
+        return;
+    }
     if (source != nullptr) {
         source->releaseResources();
     }
@@ -45,6 +48,22 @@ void Track::loadSamples(juce::AudioDeviceManager& deviceManager, juce::AudioForm
     setSource(mixer, deviceManager.getAudioDeviceSetup().sampleRate);
 }
 
+Sample *Track::addSample(juce::AudioDeviceManager& deviceManager, juce::AudioFormatManager &formatManager, juce::File file, double startPos, double endPos, double length, double sampleRate) {
+    samples.push_back(std::make_unique<Sample>(file, startPos, endPos, length, sampleRate));
+    auto sample = &(*samples.back());
+    sample->loadFile(formatManager);
+    if (mixer == nullptr) {
+        mixer = std::make_shared<PositionableMixingAudioSource>();
+    }
+    mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+    setSource(mixer, deviceManager.getAudioDeviceSetup().sampleRate);
+    return &(*samples.back());
+}
+
+void Track::eachSample(std::function<void(Sample &sample)> f) {
+    std::for_each(samples.begin(), samples.end(), [&f](std::unique_ptr<Sample> &sample) { f(*sample); });
+}
+
 void Track::setLevelGain(float newLevel) {
     level = newLevel;
     if (gain != nullptr) {
@@ -69,13 +88,4 @@ void Track::setMute(bool newMuted) {
 void Track::setDeleted(bool newDeleted) {
     deleted = newDeleted;
     selected = false;
-}
-
-Sample *Track::addSample(juce::File file, double startPos, double endPos, double length, double sampleRate) {
-    samples.push_back(std::make_unique<Sample>(file, startPos, endPos, length, sampleRate));
-    return &(*samples.back());
-}
-
-void Track::eachSample(std::function<void(Sample &sample)> f) {
-    std::for_each(samples.begin(), samples.end(), [&f](std::unique_ptr<Sample> &sample) { f(*sample); });
 }

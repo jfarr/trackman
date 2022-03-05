@@ -66,8 +66,6 @@ void TrackListPanel::resized() {
 
 int TrackListPanel::getTrackLaneWidth() const {
     int trackWidth = trackList.getTotalLength() * scale;
-    std::cout << "trackWidth: " << trackWidth << "\n";
-    std::cout << "viewport: " << viewport.getWidth() << "\n";
     return std::max(trackWidth, viewport.getWidth());
 }
 

@@ -5,13 +5,15 @@
 
 DesktopController::DesktopController(juce::DocumentWindow &mainWindow, juce::AudioFormatManager &formatManager)
     : mixerController(trackList, formatManager),
-      trackListController(trackList, mixerController.getMixer().getTransportSource(), formatManager),
+      trackListController(trackList, mixerController.getMixer().getTransportSource(),
+          mixerController.getMixerPanel().getDeviceManager(), formatManager),
       project(trackList, mixerController.getMixer()), mainWindow(mainWindow), applicationName(mainWindow.getName()),
       formatManager(formatManager) {
     mixerController.addListener((TrackListListener *)this);
     mixerController.addListener((MasterTrackListener *)this);
     mixerController.addListener((TrackControlListener *)this);
     trackListController.addListener(this);
+    trackListController.setListener(&mixerController);
 }
 
 DesktopController::~DesktopController() {}

@@ -6,11 +6,12 @@
 #include "TrackListPanel.h"
 #include "controls/desktop/TrackListListener.h"
 #include "model/TrackList.h"
+#include "controls/desktop/TrackSourceListener.h"
 
 class TrackListController : public TrackListListener {
   public:
     TrackListController(
-        TrackList &trackList, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
+        TrackList &trackList, juce::AudioTransportSource &transport, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     ~TrackListController() {}
 
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
@@ -26,6 +27,7 @@ class TrackListController : public TrackListListener {
 
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
+    void setListener(class TrackSourceListener *newListener) { listener = newListener; }
 
     //==============================================================================
     // TrackListListener
@@ -39,6 +41,8 @@ class TrackListController : public TrackListListener {
     float scale = 75;
     std::list<std::unique_ptr<TrackLaneController>> lanes;
     std::list<TrackListListener *> listeners;
+    TrackSourceListener *listener = nullptr;
+    juce::AudioDeviceManager &deviceManager;
     juce::AudioFormatManager &formatManager;
 
     void notifySelectionChanged(Track &track);

@@ -26,16 +26,16 @@ class Track {
     void setFile(juce::File newFile) { file = newFile; }
     void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate);
     void loadFile(juce::AudioFormatManager &formatManager, juce::File newFile);
-    void loadSamples(juce::AudioDeviceManager& deviceManager, juce::AudioFormatManager &formatManager);
+    void loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
+    Sample *addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, juce::File file,
+        double startPos, double endPos, double length, double sampleRate);
+    void eachSample(std::function<void(Sample &sample)> f);
 
     void setLevelGain(float newLevel);
     void toggleMute();
     void setMute(bool newMuted);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted);
-
-    Sample *addSample(juce::File file, double startPos, double endPos, double length, double sampleRate);
-    void eachSample(std::function<void(Sample &sample)> f);
 
   private:
     juce::String name;

@@ -38,8 +38,8 @@ void Project::from_json(
         track->setLevelGain(track_json["gain"]);
         track->setMute(track_json["muted"]);
         for (auto sample_json : track_json["samples"]) {
-            track->addSample(sample_json["file"], sample_json["startPos"], sample_json["endPos"], sample_json["length"],
-                sample_json["sampleRate"]);
+            track->addSample(deviceManager, formatManager, sample_json["file"], sample_json["startPos"],
+                sample_json["endPos"], sample_json["length"], sample_json["sampleRate"]);
         }
         track->loadSamples(deviceManager, formatManager);
     }
