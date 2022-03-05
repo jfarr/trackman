@@ -49,3 +49,8 @@ void Track::setMute(bool newMuted) {
         gain->setGain(muted ? 0 : level);
     }
 }
+
+void Track::setDeleted(bool newDeleted) {
+    deleted = newDeleted;
+    selected = false;
+}

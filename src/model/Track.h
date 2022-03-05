@@ -26,7 +26,7 @@ class Track {
     void toggleMute();
     void setMute(bool newMuted);
     void setSelected(bool newSelected) { selected = newSelected; }
-    void setDeleted(bool newDeleted) { deleted = newDeleted; }
+    void setDeleted(bool newDeleted);
 
   private:
     juce::String name;
