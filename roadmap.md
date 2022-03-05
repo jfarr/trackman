@@ -1,7 +1,5 @@
 # Roadmap
 
-- Delete tracks / undo delete
-- Undo mute / unmute
 - Save / load tracks
 - Drop audio file thumbnails on track lanes
 - Play back track lanes
