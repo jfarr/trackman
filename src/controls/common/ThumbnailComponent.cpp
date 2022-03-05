@@ -11,10 +11,11 @@ void ThumbnailComponent::setSource(const juce::File &file) { thumbnail.setSource
 
 void ThumbnailComponent::paint(juce::Graphics &g) {
     juce::Rectangle<int> thumbnailBounds = getLocalBounds();
-    if (thumbnail.getNumChannels() == 0)
+    if (thumbnail.getNumChannels() == 0) {
         paintIfNoFileLoaded(g, thumbnailBounds);
-    else
+    } else {
         paintIfFileLoaded(g, thumbnailBounds);
+    }
 }
 
 void ThumbnailComponent::paintIfNoFileLoaded(juce::Graphics &g, const juce::Rectangle<int> &thumbnailBounds) {

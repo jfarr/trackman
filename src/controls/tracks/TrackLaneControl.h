@@ -26,7 +26,7 @@ class TrackLaneControl : public juce::Component {
 
     juce::Label trackLabel;
     std::list<SampleThumbnail *> thumbnails;
-    float scale = 25;
+    float scale = 75;
 
     void createControls();
 

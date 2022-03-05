@@ -1,7 +1,7 @@
 #include "TrackLaneController.h"
 #include "common/listutil.h"
 
-TrackLaneController::TrackLaneController(Track &track) : track(track), trackLaneControl(track) {
+TrackLaneController::TrackLaneController(Track &track, juce::AudioFormatManager &formatManager) : track(track), trackLaneControl(track), formatManager(formatManager) {
     trackLaneControl.addMouseListener(this, true);
 }
 
@@ -9,7 +9,7 @@ void TrackLaneController::update() {
     thumbnails.clear();
     trackLaneControl.clear();
     track.eachSample([this](Sample &sample) {
-        thumbnails.push_back(std::make_unique<SampleThumbnail>(sample));
+        thumbnails.push_back(std::make_unique<SampleThumbnail>(sample, formatManager));
         trackLaneControl.addThumbnail(thumbnails.back().get());
     });
     trackLaneControl.update();

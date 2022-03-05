@@ -1,7 +1,7 @@
 #include "TrackListPanel.h"
 
-TrackListPanel::TrackListPanel(TrackList &trackList, juce::Viewport &viewport)
-    : trackList(trackList), viewport(viewport) {}
+TrackListPanel::TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioFormatManager &formatManager)
+    : trackList(trackList), viewport(viewport), formatManager(formatManager) {}
 
 TrackListPanel::~TrackListPanel() {}
 
@@ -14,9 +14,13 @@ void TrackListPanel::update() {
 }
 
 void TrackListPanel::fileDragEnter(const juce::StringArray &files, int x, int y) {
+    auto *reader = formatManager.createReaderFor(juce::File(files[0]));
+    auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
+    auto length = newSource->getTotalLength() / reader->sampleRate;
+    auto width = length * scale;
     addAndMakeVisible(dropBox);
     auto bounds = dropBox.getLocalBounds();
-    dropBox.setBounds(bounds.withCentre(juce::Point(x, y)));
+    dropBox.setBounds(bounds.withWidth(width).withCentre(juce::Point(x, y)));
 }
 
 void TrackListPanel::fileDragMove(const juce::StringArray &files, int x, int y) {
@@ -26,9 +30,7 @@ void TrackListPanel::fileDragMove(const juce::StringArray &files, int x, int y) 
 
 void TrackListPanel::fileDragExit(const juce::StringArray &files) { removeChildComponent(&dropBox); }
 
-void TrackListPanel::filesDropped(const juce::StringArray &files, int x, int y) {
-    removeChildComponent(&dropBox);
-}
+void TrackListPanel::filesDropped(const juce::StringArray &files, int x, int y) { removeChildComponent(&dropBox); }
 
 Track *TrackListPanel::getTrackAtPos(int x, int y) {
     for (TrackLaneControl *lane : lanes) {

@@ -1,10 +1,13 @@
 # Roadmap
 
 - Drop audio file thumbnails on track lanes
+- display filename in thumbnails
 - Play back track lanes
 - Track lane position overlay
-- time elapsed strip in track lane panel
-- display filename in track lane
-- Fix track names / numbering
+- Time elapsed strip in track lane panel
+- Move sample thumbnails
 - Resize sample thumbnails
-- level meters
+- Level meters
+- Fix track names / numbering
+- Shared sample sources
+- Zoom track lanes

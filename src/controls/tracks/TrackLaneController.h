@@ -8,7 +8,7 @@
 
 class TrackLaneController : public juce::MouseListener, public TrackListListener {
   public:
-    TrackLaneController(Track &track);
+    TrackLaneController(Track &track, juce::AudioFormatManager &formatManager);
     ~TrackLaneController() {}
 
     Track &getTrack() { return track; }
@@ -33,6 +33,7 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
     TrackLaneControl trackLaneControl;
     std::list<std::unique_ptr<SampleThumbnail>> thumbnails;
     std::list<TrackListListener *> listeners;
+    juce::AudioFormatManager &formatManager;
 
     void notifySelectionChanged();
 

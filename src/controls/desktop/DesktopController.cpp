@@ -4,7 +4,7 @@
 #include "common/listutil.h"
 
 DesktopController::DesktopController(juce::DocumentWindow &mainWindow, juce::AudioFormatManager &formatManager)
-    : mixerController(trackList, formatManager), trackListController(trackList),
+    : mixerController(trackList, formatManager), trackListController(trackList, formatManager),
       project(trackList, mixerController.getMixer()), mainWindow(mainWindow), applicationName(mainWindow.getName()),
       formatManager(formatManager) {
     mixerController.addListener((TrackListListener *)this);

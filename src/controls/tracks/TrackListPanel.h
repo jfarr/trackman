@@ -10,16 +10,20 @@ class DropBox : public juce::Component {
     DropBox() { setSize(200, 85); }
     ~DropBox() {}
 
+    void setSource(std::unique_ptr<juce::AudioFormatReaderSource>& newSource) {source = std::move(newSource); }
+
     void paint(juce::Graphics &g) override {
         g.fillAll(juce::Colours::dimgrey);
         g.setColour(juce::Colours::grey);
         g.drawRect(0, 0, getWidth(), getHeight());
     }
+  private:
+    std::unique_ptr<juce::AudioFormatReaderSource> source;
 };
 
 class TrackListPanel : public juce::Component {
   public:
-    TrackListPanel(TrackList &trackList, juce::Viewport &viewport);
+    TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioFormatManager &formatManager);
     ~TrackListPanel();
 
     Track *getTrackAtPos(int x, int y);
@@ -44,8 +48,9 @@ class TrackListPanel : public juce::Component {
   private:
     TrackList &trackList;
     juce::Viewport &viewport;
+    juce::AudioFormatManager &formatManager;
     std::list<TrackLaneControl *> lanes;
-    float scale = 25;
+    float scale = 75;
 
     DropBox dropBox;
 

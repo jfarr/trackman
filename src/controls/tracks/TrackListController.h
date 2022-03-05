@@ -9,7 +9,7 @@
 
 class TrackListController : public TrackListListener {
   public:
-    TrackListController(TrackList &trackList);
+    TrackListController(TrackList &trackList, juce::AudioFormatManager &formatManager);
     ~TrackListController() {}
 
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
@@ -34,9 +34,10 @@ class TrackListController : public TrackListListener {
     TrackList &trackList;
     TrackListPanel trackListPanel;
     juce::Viewport trackListViewport;
-    float scale = 25;
+    float scale = 75;
     std::list<std::unique_ptr<TrackLaneController>> lanes;
     std::list<TrackListListener *> listeners;
+    juce::AudioFormatManager &formatManager;
 
     void notifySelectionChanged(Track &track);
     void updateLane(Track &track);

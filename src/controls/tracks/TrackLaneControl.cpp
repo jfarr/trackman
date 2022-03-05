@@ -13,9 +13,7 @@ void TrackLaneControl::createControls() {
     addAndMakeVisible(trackLabel);
 }
 
-void TrackLaneControl::addThumbnail(SampleThumbnail *thumbnail) {
-    thumbnails.push_back(thumbnail);
-}
+void TrackLaneControl::addThumbnail(SampleThumbnail *thumbnail) { thumbnails.push_back(thumbnail); }
 
 void TrackLaneControl::update() {
     removeAllChildren();
@@ -43,6 +41,7 @@ void TrackLaneControl::resized() {
     trackLabel.setBounds(area.removeFromTop(labelHeight).reduced(margin));
     for (SampleThumbnail *thumbnail : thumbnails) {
         auto x = thumbnail->getSample().getStartPos() * scale;
-        thumbnail->setBounds(x + leftPanelWidth, area.getY(), thumbnail->getWidth(), thumbnail->getHeight());
+        thumbnail->setBounds(
+            x + leftPanelWidth, area.getY(), thumbnail->getSample().getLength() * scale, thumbnail->getHeight());
     }
 }

@@ -3,10 +3,11 @@
 #include <JuceHeader.h>
 
 #include "model/Sample.h"
+#include "controls/common/ThumbnailComponent.h"
 
 class SampleThumbnail : public juce::Component {
   public:
-    SampleThumbnail(Sample &sample);
+    SampleThumbnail(Sample &sample, juce::AudioFormatManager &formatManager);
     ~SampleThumbnail() {}
 
     Sample &getSample() { return sample; }
@@ -18,4 +19,8 @@ class SampleThumbnail : public juce::Component {
 
   private:
     Sample &sample;
+    juce::Label filenameLabel;
+    ThumbnailComponent thumbnail;
+
+    void createControls();
 };
