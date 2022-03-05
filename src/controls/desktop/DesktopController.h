@@ -53,6 +53,9 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
 
     Project project;
     std::unique_ptr<juce::FileChooser> chooser;
+    juce::File projectFile;
 
     juce::AudioFormatManager &formatManager;
+
+    void saveProjectAs(juce::File file);
 };

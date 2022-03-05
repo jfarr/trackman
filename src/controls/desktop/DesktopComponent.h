@@ -60,7 +60,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     void getCommandInfo(juce::CommandID commandID, juce::ApplicationCommandInfo &result) override {
         switch (commandID) {
         case CommandIDs::saveProject:
-            result.setInfo("save project...", "Save the current project", "Menu", 0);
+            result.setInfo("save project", "Save the current project", "Menu", 0);
             result.addDefaultKeypress('s', juce::ModifierKeys::commandModifier);
             break;
         case CommandIDs::editUndo:

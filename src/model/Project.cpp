@@ -12,5 +12,5 @@ std::string Project::to_json() {
             {"gain", track.getLevelGain()}, {"muted", track.isMuted()}};
         j["tracks"].push_back(t);
     });
-    return "project:" + j.dump() + "\n";
+    return j.dump();
 }

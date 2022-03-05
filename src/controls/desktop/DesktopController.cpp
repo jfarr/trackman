@@ -75,10 +75,44 @@ void DesktopController::undeleteTrack(Track *track) {
     mixerController.update();
 }
 
-void DesktopController::saveProject()
-{
+void DesktopController::saveProject() {
+    if (projectFile != juce::File{}) {
+        saveProjectAs(projectFile);
+    } else {
+        chooser = std::make_unique<juce::FileChooser>("Save project as...", juce::File{}, "*.trackman", true);
+        auto chooserFlags = juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles;
+
+        chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
+            auto file = fc.getResult();
+            if (file != juce::File{}) {
+                projectFile = file;
+                saveProjectAs(file);
+            }
+        });
+    }
+}
+
+void DesktopController::saveProjectAs(juce::File file) {
     std::string json = project.to_json();
-    std::cout << json;
+    juce::TemporaryFile tempFile(file);
+    juce::FileOutputStream output(tempFile.getFile());
+
+    if (!output.openedOk()) {
+        DBG("FileOutputStream didn't open correctly ...");
+        // ... some other error handling
+        return;
+    }
+
+    output.writeText(juce::String(json), false, false, nullptr);
+    output.flush();
+
+    if (output.getStatus().failed()) {
+        DBG("An error occurred in the FileOutputStream");
+        // ... some other error handling
+        return;
+    }
+
+    tempFile.overwriteTargetFileWithTemporary();
 }
 
 void DesktopController::selectionChanged(Track &track) {

@@ -31,7 +31,7 @@ void FileChooserControl::resized() {
 }
 
 void FileChooserControl::openButtonClicked() {
-    chooser = std::make_unique<juce::FileChooser>("Select a file to play...", selectedFile, "*.wav");
+    chooser = std::make_unique<juce::FileChooser>("Select a file to play...", selectedFile, "*.wav", true);
     auto chooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
 
     chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {

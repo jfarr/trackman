@@ -38,11 +38,6 @@ if(WIN32 AND ${TARGET_BITNESS} EQUAL 32)
         )
 endif()
 
-##add_subdirectory("${CMAKE_SOURCE_DIR}/libs/json" ${CMAKE_BINARY_DIR}/json EXCLUDE_FROM_ALL)
-#set(JSON_BuildTests OFF CACHE INTERNAL "")
-#add_subdirectory("${CMAKE_SOURCE_DIR}/libs/json")
-#target_link_libraries(Trackman PRIVATE nlohmann_json::nlohmann_json)
-
 # add json library
 include(FetchContent)
 FetchContent_Declare(json
