@@ -6,11 +6,12 @@
 #include "controls/mixer/MixerController.h"
 #include "controls/mixer/TrackControlListener.h"
 #include "controls/tracks/TrackListController.h"
+#include "model/Project.h"
 #include "model/TrackList.h"
 
 class DesktopController : public MasterTrackListener, public TrackControlListener, public TrackListListener {
   public:
-    DesktopController(juce::AudioFormatManager &formatManager);
+    DesktopController(juce::DocumentWindow& mainWindow, juce::AudioFormatManager &formatManager);
     ~DesktopController();
 
     TrackList &getTrackList() { return trackList; }
@@ -20,6 +21,7 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
     bool canUndo() const;
     void undoLast();
     juce::String getLastCommandName() const { return commandList.getLastCommandName(); }
+    bool hasSelection() const { return trackList.hasSelection(); }
 
     void addNewTrack();
     void deleteSelectedTrack();
@@ -27,6 +29,9 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
     Track *addTrack(juce::String name);
     void deleteTrack(Track *track, bool purge);
     void undeleteTrack(Track *track);
+
+    void saveProject();
+    void saveProjectAs();
 
     //==============================================================================
     // TrackListListener
@@ -48,5 +53,16 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
     MixerController mixerController;
     TrackListController trackListController;
 
+    Project project;
+    std::unique_ptr<juce::FileChooser> chooser;
+    juce::File projectFile;
+    bool dirty = false;
+    Command *saveCommand = nullptr;
+    juce::DocumentWindow &mainWindow;
+    juce::String applicationName;
+
     juce::AudioFormatManager &formatManager;
+
+    void saveProjectFile(juce::File file);
+    void updateTitleBar();
 };

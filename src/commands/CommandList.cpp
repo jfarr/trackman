@@ -24,3 +24,10 @@ juce::String CommandList::getLastCommandName() const {
     }
     return commands.back()->getName();
 }
+
+Command *CommandList::peek() const {
+    if (commands.size() == 0) {
+        return nullptr;
+    }
+    return commands.back().get();
+}

@@ -15,7 +15,7 @@ class Track {
     std::shared_ptr<GainAudioSource> getGain() const { return gain; }
     double getSampleRate() const { return sampleRate; }
     float getLevelGain() const { return level; }
-    bool getMuted() const { return muted; }
+    bool isMuted() const { return muted; }
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
 

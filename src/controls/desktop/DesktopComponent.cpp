@@ -1,7 +1,7 @@
 #include "DesktopComponent.h"
 
 DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), desktopController(formatManager),
+    : formatManager(formatManager), desktopController(*parentWindow, formatManager),
       trackListViewport(desktopController.getTrackListController().getViewport()),
       mixerPanel(desktopController.getMixerController().getMixerPanel()) {
     addAndMakeVisible(trackListViewport);
