@@ -7,7 +7,7 @@
 
 class TrackLaneControl : public juce::Component, private juce::Timer {
   public:
-    TrackLaneControl(Track &track, juce::AudioTransportSource &transportSource);
+    TrackLaneControl(Track &track, juce::AudioTransportSource &transport);
     ~TrackLaneControl();
 
     Track &getTrack() { return track; }
@@ -23,7 +23,7 @@ class TrackLaneControl : public juce::Component, private juce::Timer {
 
   private:
     Track &track;
-    juce::AudioTransportSource &transportSource;
+    juce::AudioTransportSource &transport;
 
     juce::Label trackLabel;
     std::list<SampleThumbnail *> thumbnails;

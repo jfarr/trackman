@@ -7,7 +7,7 @@
 
 class SampleThumbnail : public juce::Component {
   public:
-    SampleThumbnail(Sample &sample, juce::AudioFormatManager &formatManager);
+    SampleThumbnail(Sample &sample, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
     ~SampleThumbnail() {}
 
     Sample &getSample() { return sample; }
@@ -19,8 +19,13 @@ class SampleThumbnail : public juce::Component {
 
   private:
     Sample &sample;
+    juce::AudioTransportSource &transport;
     juce::Label filenameLabel;
-    ThumbnailComponent thumbnail;
+//    ThumbnailComponent thumbnail;
+    // TODO: make singleton
+    juce::AudioThumbnailCache thumbnailCache;
+    juce::AudioThumbnail thumbnail;
+    float scale = 75;
 
     void createControls();
 };

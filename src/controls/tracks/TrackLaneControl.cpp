@@ -1,7 +1,7 @@
 #include "TrackLaneControl.h"
 
-TrackLaneControl::TrackLaneControl(Track &track, juce::AudioTransportSource &transportSource)
-    : track(track), transportSource(transportSource) {
+TrackLaneControl::TrackLaneControl(Track &track, juce::AudioTransportSource &transport)
+    : track(track), transport(transport) {
     createControls();
     setSize(800, 100);
     startTimer(20);
@@ -33,10 +33,10 @@ void TrackLaneControl::paint(juce::Graphics &g) {
     g.fillRect(0, getHeight() - 1, getWidth(), 1);
     g.fillRect(leftPanelWidth, 0, 1, getHeight());
 
-    auto duration = (float)transportSource.getLengthInSeconds();
+    auto duration = (float)transport.getLengthInSeconds();
 
     if (duration > 0.0) {
-        auto audioPosition = (float)transportSource.getCurrentPosition();
+        auto audioPosition = (float)transport.getCurrentPosition();
         auto drawPosition = audioPosition * scale + leftPanelWidth;
 
         g.setColour(juce::Colours::yellowgreen);
