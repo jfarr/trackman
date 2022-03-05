@@ -40,10 +40,12 @@ void TrackListController::fileDragExit(const juce::StringArray &files) { trackLi
 void TrackListController::filesDropped(const juce::StringArray &files, int x, int y) {
     Track *selected = trackListPanel.getTrackAtPos(x, y);
     if (selected != nullptr) {
-        double offset = trackListPanel.getDropBox().getWidth() / 2;
-        double startPos = (x - offset) / scale;
-        double endPos = (x + offset) / scale;
-        selected->addSample(files[0], startPos, endPos, 0, 0);
+        auto leftPanelWidth = 25;
+        double width = trackListPanel.getDropBox().getWidth();
+        double offset = width / 2;
+        double startPos = std::max((x - offset - leftPanelWidth), 0.0);
+        double endPos = startPos + width;
+        selected->addSample(files[0], startPos / scale, endPos / scale, 0, 0);
         selectionChanged(*selected);
         updateLane(*selected);
     }

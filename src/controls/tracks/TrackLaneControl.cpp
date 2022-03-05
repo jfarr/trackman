@@ -43,6 +43,6 @@ void TrackLaneControl::resized() {
     trackLabel.setBounds(area.removeFromTop(labelHeight).reduced(margin));
     for (SampleThumbnail *thumbnail : thumbnails) {
         auto x = thumbnail->getSample().getStartPos() * scale;
-        thumbnail->setBounds(x, area.getY(), thumbnail->getWidth(), thumbnail->getHeight());
+        thumbnail->setBounds(x + leftPanelWidth, area.getY(), thumbnail->getWidth(), thumbnail->getHeight());
     }
 }
