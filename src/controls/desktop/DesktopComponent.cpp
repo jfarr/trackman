@@ -58,4 +58,25 @@ void DesktopComponent::resized() {
     auto area = getLocalBounds();
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getHeight()));
     trackListViewport.setBounds(area);
+    desktopController.resize();
+}
+
+bool DesktopComponent::isInterestedInFileDrag (const juce::StringArray& files) {
+    return true;
+}
+
+void DesktopComponent::fileDragEnter (const juce::StringArray& files, int x, int y) {
+    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
+}
+
+void DesktopComponent::fileDragMove (const juce::StringArray& files, int x, int y) {
+
+}
+
+void DesktopComponent::fileDragExit (const juce::StringArray& files) {
+    std::cout << "drag exit: " << files.joinIntoString(",").toStdString() << "\n";
+}
+
+void DesktopComponent::filesDropped (const juce::StringArray& files, int x, int y) {
+    std::cout << "files dropped: " << files.joinIntoString(",").toStdString() << "\n";
 }

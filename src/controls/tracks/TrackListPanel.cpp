@@ -1,6 +1,9 @@
 #include "TrackListPanel.h"
 
-TrackListPanel::TrackListPanel(TrackList &trackList) : trackList(trackList) { setSize(1200, 0); }
+TrackListPanel::TrackListPanel(TrackList &trackList, juce::Viewport &viewport)
+    : trackList(trackList), viewport(viewport) {
+//    setSize(getTrackLaneWidth(), 0);
+}
 
 TrackListPanel::~TrackListPanel() {}
 
@@ -9,8 +12,12 @@ void TrackListPanel::update() {
     for (TrackLaneControl *lane : lanes) {
         addAndMakeVisible(lane);
     }
+    resize();
+}
+
+void TrackListPanel::resize() {
     if (!lanes.empty()) {
-        setSize(getWidth(), lanes.size() * lanes.back()->getHeight());
+        setSize(getTrackLaneWidth(), lanes.size() * lanes.back()->getHeight());
     }
     resized();
 }
@@ -20,8 +27,13 @@ void TrackListPanel::paint(juce::Graphics &g) {
 }
 
 void TrackListPanel::resized() {
-    auto area = getLocalBounds();
+    auto area = getLocalBounds().withWidth(getTrackLaneWidth());
     for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(lane->getHeight()));
     }
+}
+
+int TrackListPanel::getTrackLaneWidth() const {
+    auto trackWidth = (int)(trackList.getTotalLength() * scale);
+    return std::max(trackWidth, viewport.getWidth());
 }

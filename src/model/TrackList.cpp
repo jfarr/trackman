@@ -28,6 +28,15 @@ bool TrackList::hasSelection() const {
     return false;
 }
 
+juce::int64 TrackList::getTotalLength() const {
+    juce::int64 total = 0;
+    for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
+        auto length = (*iter)->getTotalLength();
+        total = std::max(total, length);
+    }
+    return total;
+}
+
 void TrackList::setSelected(Track &selected) {
     eachTrack([&selected](Track &track) { track.setSelected(&track == &selected); });
 }

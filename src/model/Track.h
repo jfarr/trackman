@@ -13,6 +13,7 @@ class Track {
     juce::File getFile() const { return file; }
     std::shared_ptr<juce::PositionableAudioSource> getSource() const { return source; }
     std::shared_ptr<GainAudioSource> getGain() const { return gain; }
+    juce::int64 getTotalLength() const { return source == nullptr ? 0 : source->getTotalLength(); }
     double getSampleRate() const { return sampleRate; }
     float getLevelGain() const { return level; }
     bool isMuted() const { return muted; }

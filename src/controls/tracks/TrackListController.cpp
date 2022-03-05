@@ -1,10 +1,11 @@
 #include "TrackListController.h"
 #include "common/listutil.h"
 
-TrackListController::TrackListController(TrackList &trackList) : trackList(trackList), trackListPanel(trackList) {
+TrackListController::TrackListController(TrackList &trackList) : trackList(trackList), trackListPanel(trackList, trackListViewport) {
     trackListViewport.setSize(800, 350);
     trackListViewport.setScrollBarsShown(true, true);
     trackListViewport.setViewedComponent(&trackListPanel, false);
+    trackListPanel.resized();
 }
 
 void TrackListController::update() {

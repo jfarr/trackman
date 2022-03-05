@@ -9,6 +9,7 @@
 #include "model/Project.h"
 #include "model/TrackList.h"
 
+// TODO: consider using juce::FileBasedDocument
 class DesktopController : public MasterTrackListener, public TrackControlListener, public TrackListListener {
   public:
     DesktopController(juce::DocumentWindow& mainWindow, juce::AudioFormatManager &formatManager);
@@ -22,6 +23,8 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
     void undoLast();
     juce::String getLastCommandName() const { return commandList.getLastCommandName(); }
     bool hasSelection() const { return trackList.hasSelection(); }
+
+    void resize();
 
     void addNewTrack();
     void deleteSelectedTrack();

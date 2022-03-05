@@ -9,7 +9,10 @@
 #include "controls/tracks/TrackListPanel.h"
 #include "model/Mixer.h"
 
-class DesktopComponent : public juce::Component, public juce::ApplicationCommandTarget, public juce::MenuBarModel {
+class DesktopComponent : public juce::Component,
+                         public juce::ApplicationCommandTarget,
+                         public juce::MenuBarModel,
+                         public juce::FileDragAndDropTarget {
   public:
     //==============================================================================
     /** A list of the commands that this menu responds to. */
@@ -23,6 +26,14 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     // Component
     void paint(juce::Graphics &g) override;
     void resized() override;
+
+    //==============================================================================
+    // FileDragAndDropTarget
+    bool isInterestedInFileDrag(const juce::StringArray &files) override;
+    void fileDragEnter(const juce::StringArray &files, int x, int y) override;
+    void fileDragMove(const juce::StringArray &files, int x, int y) override;
+    void fileDragExit(const juce::StringArray &files) override;
+    void filesDropped(const juce::StringArray &files, int x, int y) override;
 
     //==============================================================================
     // MenuBarModel
@@ -54,8 +65,9 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     ApplicationCommandTarget *getNextCommandTarget() override { return nullptr; }
 
     void getAllCommands(juce::Array<juce::CommandID> &c) override {
-        juce::Array<juce::CommandID> commands{CommandIDs::openProject, CommandIDs::saveProject, CommandIDs::saveProjectAs, CommandIDs::editUndo,
-            CommandIDs::newTrack, CommandIDs::newAudioPlayer, CommandIDs::deleteTrack};
+        juce::Array<juce::CommandID> commands{CommandIDs::openProject, CommandIDs::saveProject,
+            CommandIDs::saveProjectAs, CommandIDs::editUndo, CommandIDs::newTrack, CommandIDs::newAudioPlayer,
+            CommandIDs::deleteTrack};
         c.addArray(commands);
     }
 

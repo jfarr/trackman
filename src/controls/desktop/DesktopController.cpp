@@ -51,6 +51,10 @@ void DesktopController::muteToggled(Track &track) {
     updateTitleBar();
 }
 
+void DesktopController::resize() {
+    getTrackListController().getTrackListPanel().resize();
+}
+
 void DesktopController::addNewTrack() {
     juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), trackList.size() + 1);
     Command *command = new AddTrackCommand(*this, name);

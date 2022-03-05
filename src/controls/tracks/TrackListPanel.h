@@ -7,10 +7,11 @@
 
 class TrackListPanel : public juce::Component {
   public:
-    TrackListPanel(TrackList &trackList);
+    TrackListPanel(TrackList &trackList, juce::Viewport &viewport);
     ~TrackListPanel();
 
     void addLane(TrackLaneControl* lane) { lanes.push_back(lane); }
+    void resize();
     void clear() { lanes.clear(); }
 
     void update();
@@ -22,5 +23,9 @@ class TrackListPanel : public juce::Component {
 
   private:
     TrackList &trackList;
+    juce::Viewport &viewport;
     std::list<TrackLaneControl *> lanes;
+    float scale = 25;
+
+    int getTrackLaneWidth() const;
 };

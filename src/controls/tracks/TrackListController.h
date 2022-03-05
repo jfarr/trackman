@@ -12,6 +12,7 @@ class TrackListController : public TrackListListener {
     TrackListController(TrackList &trackList);
     ~TrackListController() {}
 
+    TrackListPanel &getTrackListPanel() { return trackListPanel; }
     juce::Component &getViewport() { return trackListViewport; }
 
     void update();
@@ -28,6 +29,7 @@ class TrackListController : public TrackListListener {
     TrackList &trackList;
     TrackListPanel trackListPanel;
     juce::Viewport trackListViewport;
+    float scale = 25;
     std::list<std::unique_ptr<TrackLaneController>> lanes;
     std::list<TrackListListener *> listeners;
 
