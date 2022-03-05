@@ -40,6 +40,7 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
     //==============================================================================
     // TrackControlListener
     void levelChangeFinalized(Track &track, float previousLevel) override;
+    void muteToggled(Track &track) override;
 
   private:
     CommandList commandList;

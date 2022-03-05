@@ -43,6 +43,8 @@ void TrackControl::createControls() {
 void TrackControl::update() {
     previousLevel = track.getLevelGain();
     decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevelGain()));
+    muteButton.setColour(juce::TextButton::buttonColourId,
+        track.getMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
 void TrackControl::onSliderClick() { draggingSlider = true; }
@@ -112,7 +114,7 @@ void TrackControl::openButtonClicked() {
 }
 
 void TrackControl::addListener(TrackControlListener *listener) {
-    if (!listContains(listener, listeners))
+    if (!listContains(listeners, listener))
         listeners.push_front(listener);
 }
 
@@ -132,6 +134,6 @@ void TrackControl::notifyLevelChangeFinalized(float previousLevel) {
 
 void TrackControl::notifyMuteToggled() {
     for (TrackControlListener *listener : listeners) {
-        listener->muteToggled();
+        listener->muteToggled(track);
     }
 }

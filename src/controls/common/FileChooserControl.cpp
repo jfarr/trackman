@@ -51,7 +51,7 @@ void FileChooserControl::notifyFileChosen(juce::File file) {
 }
 
 void FileChooserControl::addListener(FileListener *listener) {
-    if (!listContains(listener, listeners)) {
+    if (!listContains(listeners, listener)) {
         listeners.push_front(listener);
     }
 }

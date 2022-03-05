@@ -12,7 +12,7 @@ void TrackLaneController::mouseDown(const juce::MouseEvent &event) { notifySelec
 void TrackLaneController::selectionChanged(Track &track) { notifySelectionChanged(); }
 
 void TrackLaneController::addListener(TrackListListener *listener) {
-    if (!listContains(listener, listeners)) {
+    if (!listContains(listeners, listener)) {
         listeners.push_front(listener);
     }
 }

@@ -86,7 +86,7 @@ void MasterTrackControl::muteButtonClicked() {
 }
 
 void MasterTrackControl::addListener(MasterTrackListener *listener) {
-    if (!listContains(listener, listeners))
+    if (!listContains(listeners, listener))
         listeners.push_front(listener);
 }
 

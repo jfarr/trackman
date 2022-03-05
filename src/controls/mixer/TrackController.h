@@ -17,6 +17,7 @@ class TrackController : public FileListener, public TrackControlListener, public
     Track &getTrack() const { return track; }
 
     void setLevel(float newLevel);
+    void toggleMute(Track &track);
     void repaint();
 
     void addListener(TrackListListener *listener);
@@ -30,7 +31,7 @@ class TrackController : public FileListener, public TrackControlListener, public
     //==============================================================================
     // TrackControlListener
     void levelChanged(float newLevel) override;
-    void muteToggled() override;
+    void muteToggled(Track &track) override;
 
     //==============================================================================
     // MouseListener
