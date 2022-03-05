@@ -8,6 +8,10 @@ Track::~Track() {
     }
 }
 
+juce::int64 Track::getTotalLength() const {
+    return (source == nullptr | sampleRate == 0) ? 0 : source->getTotalLength() / sampleRate;
+}
+
 void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate) {
     if (source != nullptr) {
         source->releaseResources();
@@ -29,7 +33,7 @@ void Track::loadFile(juce::AudioFormatManager &formatManager, juce::File newFile
     }
 }
 
-void Track::loadSamples(juce::AudioFormatManager &formatManager) {
+void Track::loadSamples(juce::AudioDeviceManager& deviceManager, juce::AudioFormatManager &formatManager) {
     if (samples.size() == 0) {
         return;
     }
@@ -38,7 +42,7 @@ void Track::loadSamples(juce::AudioFormatManager &formatManager) {
         sample->loadFile(formatManager);
         mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
     }
-    setSource(mixer, 0.0);
+    setSource(mixer, deviceManager.getAudioDeviceSetup().sampleRate);
 }
 
 void Track::setLevelGain(float newLevel) {

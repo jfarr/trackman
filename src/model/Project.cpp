@@ -23,7 +23,8 @@ std::string Project::to_json() {
     return project_json.dump();
 }
 
-void Project::from_json(juce::AudioFormatManager &formatManager, std::string filename) {
+void Project::from_json(
+    juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, std::string filename) {
     std::ifstream s(filename);
     json project_json;
     s >> project_json;
@@ -40,6 +41,6 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
             track->addSample(sample_json["file"], sample_json["startPos"], sample_json["endPos"], sample_json["length"],
                 sample_json["sampleRate"]);
         }
-        track->loadSamples(formatManager);
+        track->loadSamples(deviceManager, formatManager);
     }
 }

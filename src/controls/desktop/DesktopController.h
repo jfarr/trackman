@@ -58,9 +58,9 @@ class DesktopController : public MasterTrackListener,
     //==============================================================================
     // FileDragDropTarget
     void fileDragEnter(const juce::StringArray &files, int x, int y) override;
-    void fileDragMove (const juce::StringArray& files, int x, int y) override;
-    void fileDragExit (const juce::StringArray& files) override;
-    void filesDropped (const juce::StringArray& files, int x, int y) override;
+    void fileDragMove(const juce::StringArray &files, int x, int y) override;
+    void fileDragExit(const juce::StringArray &files) override;
+    void filesDropped(const juce::StringArray &files, int x, int y) override;
 
   private:
     CommandList commandList;

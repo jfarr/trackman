@@ -51,7 +51,6 @@ class TrackListPanel : public juce::Component {
   private:
     TrackList &trackList;
     juce::Viewport &viewport;
-    PositionOverlay positionOverlay;
     juce::AudioFormatManager &formatManager;
     std::list<TrackLaneControl *> lanes;
     float scale = 75;

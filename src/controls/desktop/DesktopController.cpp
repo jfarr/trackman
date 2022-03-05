@@ -4,7 +4,8 @@
 #include "common/listutil.h"
 
 DesktopController::DesktopController(juce::DocumentWindow &mainWindow, juce::AudioFormatManager &formatManager)
-    : mixerController(trackList, formatManager), trackListController(trackList, mixerController.getMixer().getTransportSource(), formatManager),
+    : mixerController(trackList, formatManager),
+      trackListController(trackList, mixerController.getMixer().getTransportSource(), formatManager),
       project(trackList, mixerController.getMixer()), mainWindow(mainWindow), applicationName(mainWindow.getName()),
       formatManager(formatManager) {
     mixerController.addListener((TrackListListener *)this);
@@ -149,7 +150,8 @@ void DesktopController::openProject() {
         auto file = fc.getResult();
         if (file != juce::File{}) {
             projectFile = file;
-            project.from_json(formatManager, file.getFullPathName().toStdString());
+            project.from_json(mixerController.getMixerPanel().getDeviceManager(), formatManager,
+                file.getFullPathName().toStdString());
             trackListController.update();
             mixerController.update();
             commandList.clear();

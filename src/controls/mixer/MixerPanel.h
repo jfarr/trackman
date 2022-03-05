@@ -13,6 +13,8 @@ class MixerPanel : public juce::AudioAppComponent {
     MixerPanel(TrackList &trackList, Mixer &mixer);
     ~MixerPanel();
 
+    juce::AudioDeviceManager& getDeviceManager() const { return deviceManager; };
+
     void clear();
     void update();
     void addTrack(TrackControl *trackControl);

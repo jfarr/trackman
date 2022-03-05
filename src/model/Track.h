@@ -16,7 +16,7 @@ class Track {
     juce::File getFile() const { return file; }
     std::shared_ptr<juce::PositionableAudioSource> getSource() const { return source; }
     std::shared_ptr<GainAudioSource> getGain() const { return gain; }
-    juce::int64 getTotalLength() const { return source == nullptr ? 0 : source->getTotalLength(); }
+    juce::int64 getTotalLength() const;
     double getSampleRate() const { return sampleRate; }
     float getLevelGain() const { return level; }
     bool isMuted() const { return muted; }
@@ -26,7 +26,7 @@ class Track {
     void setFile(juce::File newFile) { file = newFile; }
     void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate);
     void loadFile(juce::AudioFormatManager &formatManager, juce::File newFile);
-    void loadSamples(juce::AudioFormatManager &formatManager);
+    void loadSamples(juce::AudioDeviceManager& deviceManager, juce::AudioFormatManager &formatManager);
 
     void setLevelGain(float newLevel);
     void toggleMute();
