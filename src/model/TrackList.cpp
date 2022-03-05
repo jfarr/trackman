@@ -19,6 +19,15 @@ void TrackList::removeTrack(Track *track) {
     }
 }
 
+bool TrackList::hasSelection() const {
+    for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
+        if ((*iter)->isSelected() && !(*iter)->isDeleted()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void TrackList::setSelected(Track &selected) {
     eachTrack([&selected](Track &track) { track.setSelected(&track == &selected); });
 }

@@ -21,6 +21,7 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
     bool canUndo() const;
     void undoLast();
     juce::String getLastCommandName() const { return commandList.getLastCommandName(); }
+    bool hasSelection() const { return trackList.hasSelection(); }
 
     void addNewTrack();
     void deleteSelectedTrack();

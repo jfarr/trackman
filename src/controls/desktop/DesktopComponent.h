@@ -88,6 +88,7 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
             result.setInfo("delete", "Delete the selected track", "Menu", 0);
             result.addDefaultKeypress(juce::KeyPress::backspaceKey, juce::ModifierKeys::noModifiers);
             result.addDefaultKeypress(juce::KeyPress::deleteKey, juce::ModifierKeys::noModifiers);
+            result.setActive(desktopController.hasSelection());
             break;
         default:
             break;
