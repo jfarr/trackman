@@ -14,8 +14,8 @@ std::string Project::to_json() {
             {"muted", track.isMuted()}};
         track.eachSample([&track_json](Sample &sample) {
             json sample_json = {{"file", sample.getFile().getFullPathName().toStdString()},
-                {"startPos", sample.getStartPos()}, {"endPos", sample.getEndPos()},
-                {"length", sample.getLength()}, {"sampleRate", sample.getSampleRate()}};
+                {"startPos", sample.getStartPos()}, {"endPos", sample.getEndPos()}, {"length", sample.getLength()},
+                {"sampleRate", sample.getSampleRate()}};
             track_json["samples"].push_back(sample_json);
         });
         project_json["tracks"].push_back(track_json);
@@ -25,16 +25,21 @@ std::string Project::to_json() {
 
 void Project::from_json(juce::AudioFormatManager &formatManager, std::string filename) {
     std::ifstream s(filename);
-    json j;
-    s >> j;
-    mixer.setMasterLevelGain(j["mixer"]["gain"]);
-    mixer.setMasterMute(j["mixer"]["muted"]);
+    json project_json;
+    s >> project_json;
+    mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
+    mixer.setMasterMute(project_json["mixer"]["muted"]);
     trackList.clear();
-    for (auto t : j["tracks"]) {
-        auto track = trackList.addTrack(t["name"]);
-        track->setFile(t["file"]);
-        track->loadFile(formatManager, t["file"]);
-        track->setLevelGain(t["gain"]);
-        track->setMute(t["muted"]);
+    for (auto track_json : project_json["tracks"]) {
+        auto track = trackList.addTrack(track_json["name"]);
+        track->setFile(track_json["file"]);
+        track->loadFile(formatManager, track_json["file"]);
+        track->setLevelGain(track_json["gain"]);
+        track->setMute(track_json["muted"]);
+        for (auto sample_json : track_json["samples"]) {
+            track->addSample(sample_json["file"], sample_json["startPos"], sample_json["endPos"], sample_json["length"],
+                sample_json["sampleRate"]);
+        }
+        track->loadSamples(formatManager);
     }
 }

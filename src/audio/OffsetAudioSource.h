@@ -4,7 +4,7 @@
 
 class OffsetAudioSource : public juce::PositionableAudioSource {
   public:
-    OffsetAudioSource(PositionableAudioSource &source, juce::int64 offsetSeconds);
+    OffsetAudioSource(PositionableAudioSource &source, double offsetSeconds, double sampleRate);
     ~OffsetAudioSource();
 
     //==============================================================================
@@ -23,5 +23,5 @@ class OffsetAudioSource : public juce::PositionableAudioSource {
 
   private:
     PositionableAudioSource &source;
-    juce::int64 offsetSeconds;
+    juce::int64 offsetSamples;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "audio/OffsetAudioSource.h"
 
 class Sample {
   public:
@@ -14,10 +15,15 @@ class Sample {
     double getLength() const { return length; }
     double getSampleRate() const { return sampleRate; }
 
+    void loadFile(juce::AudioFormatManager &formatManager);
+    juce::PositionableAudioSource *getSource() { return offsetSource.get(); }
+
   private:
     juce::File file;
     double startPos;
     double endPos;
     double length;
     double sampleRate;
+    std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
+    std::unique_ptr<OffsetAudioSource> offsetSource;
 };

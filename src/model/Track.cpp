@@ -14,8 +14,7 @@ void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, 
     }
     source = newSource;
     sampleRate = newSampleRate;
-    offset = std::make_shared<OffsetAudioSource>(*newSource.get(), 2.0 * sampleRate);
-    gain = std::shared_ptr<GainAudioSource>(new GainAudioSource(offset.get(), false));
+    gain = std::shared_ptr<GainAudioSource>(new GainAudioSource(newSource.get(), false));
 }
 
 void Track::loadFile(juce::AudioFormatManager &formatManager, juce::File newFile) {
@@ -28,6 +27,18 @@ void Track::loadFile(juce::AudioFormatManager &formatManager, juce::File newFile
         setSource(std::shared_ptr<juce::PositionableAudioSource>(newSource), reader->sampleRate);
         setFile(file);
     }
+}
+
+void Track::loadSamples(juce::AudioFormatManager &formatManager) {
+    if (samples.size() == 0) {
+        return;
+    }
+    mixer = std::make_shared<PositionableMixingAudioSource>();
+    for (std::unique_ptr<Sample> &sample : samples) {
+        sample->loadFile(formatManager);
+        mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+    }
+    setSource(mixer, 0.0);
 }
 
 void Track::setLevelGain(float newLevel) {
