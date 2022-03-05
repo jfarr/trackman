@@ -17,7 +17,7 @@ void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, 
     gain = std::shared_ptr<GainAudioSource>(new GainAudioSource(newSource.get(), false));
 }
 
-void Track::setLevel(float newLevel) {
+void Track::setLevelGain(float newLevel) {
     level = newLevel;
     if (gain != nullptr) {
         gain->setGain(level);
@@ -26,6 +26,13 @@ void Track::setLevel(float newLevel) {
 
 void Track::toggleMute() {
     muted = !muted;
+    if (gain != nullptr) {
+        gain->setGain(muted ? 0 : level);
+    }
+}
+
+void Track::setMute(bool newMuted) {
+    muted = newMuted;
     if (gain != nullptr) {
         gain->setGain(muted ? 0 : level);
     }

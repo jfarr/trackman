@@ -13,6 +13,7 @@ class TrackList {
     int size() const { return tracks.size(); }
     bool hasSelection() const;
 
+    void clear() { tracks.clear(); }
     void setSelected(Track &selected);
 
     void eachTrack(std::function<void(Track &track)> f);
