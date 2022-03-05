@@ -44,6 +44,7 @@ target_sources(Trackman PRIVATE
         controls/desktop/DesktopComponent.h
         controls/desktop/DesktopController.cpp
         controls/desktop/DesktopController.h
+        controls/desktop/FileDragDropTarget.h
         controls/desktop/TrackListListener.h
         controls/desktop/TrackSourceListener.h
         controls/mixer/MasterTrackControl.cpp

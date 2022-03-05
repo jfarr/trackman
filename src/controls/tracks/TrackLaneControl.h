@@ -9,6 +9,8 @@ class TrackLaneControl : public juce::Component {
     TrackLaneControl(Track &track);
     ~TrackLaneControl();
 
+    Track &getTrack() { return track; }
+
     //==============================================================================
     // Component
     void paint(juce::Graphics &g) override;

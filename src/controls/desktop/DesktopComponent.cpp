@@ -1,9 +1,13 @@
 #include "DesktopComponent.h"
+#include "common/listutil.h"
 
 DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager)
     : formatManager(formatManager), desktopController(*parentWindow, formatManager),
       trackListViewport(desktopController.getTrackListController().getViewport()),
       mixerPanel(desktopController.getMixerController().getMixerPanel()) {
+
+    addListener(&desktopController);
+
     addAndMakeVisible(trackListViewport);
     addAndMakeVisible(mixerPanel);
 
@@ -61,22 +65,56 @@ void DesktopComponent::resized() {
     desktopController.resize();
 }
 
-bool DesktopComponent::isInterestedInFileDrag (const juce::StringArray& files) {
-    return true;
+bool DesktopComponent::isInterestedInFileDrag(const juce::StringArray &files) { return true; }
+
+void DesktopComponent::fileDragEnter(const juce::StringArray &files, int x, int y) {
+    std::cout << "drag enter: " << x << ", " << y << " " << files.joinIntoString(",").toStdString() << "\n";
+    notifyFileDragEnter(files, x, y);
 }
 
-void DesktopComponent::fileDragEnter (const juce::StringArray& files, int x, int y) {
-    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
+void DesktopComponent::fileDragMove(const juce::StringArray &files, int x, int y) {
+    std::cout << "drag enter: " << x << ", " << y  << "\n";
+    notifyFileDragMove(files, x, y);
 }
 
-void DesktopComponent::fileDragMove (const juce::StringArray& files, int x, int y) {
-
-}
-
-void DesktopComponent::fileDragExit (const juce::StringArray& files) {
+void DesktopComponent::fileDragExit(const juce::StringArray &files) {
     std::cout << "drag exit: " << files.joinIntoString(",").toStdString() << "\n";
+    notifyFileDragExit(files);
 }
 
-void DesktopComponent::filesDropped (const juce::StringArray& files, int x, int y) {
+void DesktopComponent::filesDropped(const juce::StringArray &files, int x, int y) {
     std::cout << "files dropped: " << files.joinIntoString(",").toStdString() << "\n";
+    notifyFilesDropped(files, x, y);
+}
+
+void DesktopComponent::addListener(FileDragDropTarget *listener) {
+    if (!listContains(listeners, listener)) {
+        listeners.push_front(listener);
+    }
+}
+
+void DesktopComponent::removeListener(FileDragDropTarget *listener) { listeners.remove(listener); }
+
+void DesktopComponent::notifyFileDragEnter(const juce::StringArray &files, int x, int y) {
+    for (FileDragDropTarget *listener : listeners) {
+        listener->fileDragEnter(files, x, y);
+    }
+}
+
+void DesktopComponent::notifyFileDragMove(const juce::StringArray &files, int x, int y) {
+    for (FileDragDropTarget *listener : listeners) {
+        listener->fileDragMove(files, x, y);
+    }
+}
+
+void DesktopComponent::notifyFileDragExit(const juce::StringArray &files) {
+    for (FileDragDropTarget *listener : listeners) {
+        listener->fileDragExit(files);
+    }
+}
+
+void DesktopComponent::notifyFilesDropped(const juce::StringArray &files, int x, int y) {
+    for (FileDragDropTarget *listener : listeners) {
+        listener->filesDropped(files, x, y);
+    }
 }

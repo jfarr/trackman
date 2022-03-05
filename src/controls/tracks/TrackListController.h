@@ -18,6 +18,11 @@ class TrackListController : public TrackListListener {
     void update();
     void repaint();
 
+    void fileDragEnter(const juce::StringArray &files, int x, int y);
+    void fileDragMove(const juce::StringArray &files, int x, int y);
+    void fileDragExit(const juce::StringArray &files);
+    void filesDropped (const juce::StringArray& files, int x, int y);
+
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
 
@@ -34,4 +39,6 @@ class TrackListController : public TrackListListener {
     std::list<TrackListListener *> listeners;
 
     void notifySelectionChanged(Track &track);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListController)
 };

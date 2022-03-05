@@ -1,7 +1,8 @@
 #include "TrackListController.h"
 #include "common/listutil.h"
 
-TrackListController::TrackListController(TrackList &trackList) : trackList(trackList), trackListPanel(trackList, trackListViewport) {
+TrackListController::TrackListController(TrackList &trackList)
+    : trackList(trackList), trackListPanel(trackList, trackListViewport) {
     trackListViewport.setSize(800, 350);
     trackListViewport.setScrollBarsShown(true, true);
     trackListViewport.setViewedComponent(&trackListPanel, false);
@@ -26,9 +27,25 @@ void TrackListController::repaint() {
     }
 }
 
-void TrackListController::selectionChanged(Track &track) {
-    notifySelectionChanged(track);
+void TrackListController::fileDragEnter(const juce::StringArray &files, int x, int y) {
+    trackListPanel.fileDragEnter(files, x, y);
 }
+
+void TrackListController::fileDragMove(const juce::StringArray &files, int x, int y) {
+    trackListPanel.fileDragMove(files, x, y);
+}
+
+void TrackListController::fileDragExit(const juce::StringArray &files) { trackListPanel.fileDragExit(files); }
+
+void TrackListController::filesDropped(const juce::StringArray &files, int x, int y) {
+    Track *selected = trackListPanel.getTrackAtPos(x, y);
+    if (selected != nullptr) {
+        selectionChanged(*selected);
+    }
+    trackListPanel.filesDropped(files, x, y);
+}
+
+void TrackListController::selectionChanged(Track &track) { notifySelectionChanged(track); }
 
 void TrackListController::addListener(TrackListListener *listener) {
     if (!listContains(listeners, listener)) {

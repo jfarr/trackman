@@ -1,9 +1,10 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
 
 #include "ChildWindow.h"
 #include "DesktopController.h"
+#include "FileDragDropTarget.h"
 #include "controls/AudioPlayer.h"
 #include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
@@ -21,6 +22,9 @@ class DesktopComponent : public juce::Component,
     //==============================================================================
     DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager);
     ~DesktopComponent() override;
+
+    void addListener(FileDragDropTarget *listener);
+    void removeListener(FileDragDropTarget *listener);
 
     //==============================================================================
     // Component
@@ -145,6 +149,7 @@ class DesktopComponent : public juce::Component,
     DesktopController desktopController;
     juce::Component &trackListViewport;
     juce::Component &mixerPanel;
+    std::list<FileDragDropTarget *> listeners;
 
     juce::ApplicationCommandManager commandManager;
     juce::MenuBarComponent menuBar;
@@ -158,6 +163,11 @@ class DesktopComponent : public juce::Component,
 
     void createChildWindow(const juce::String &name, juce::Component *component);
     void closeAllWindows();
+
+    void notifyFileDragEnter(const juce::StringArray &files, int x, int y);
+    void notifyFileDragMove(const juce::StringArray &files, int x, int y);
+    void notifyFileDragExit(const juce::StringArray &files);
+    void notifyFilesDropped(const juce::StringArray &files, int x, int y);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DesktopComponent)
 };

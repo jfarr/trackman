@@ -32,4 +32,6 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
     std::list<TrackListListener *> listeners;
 
     void notifySelectionChanged();
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackLaneController)
 };

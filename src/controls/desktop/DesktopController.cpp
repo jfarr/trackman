@@ -51,9 +51,7 @@ void DesktopController::muteToggled(Track &track) {
     updateTitleBar();
 }
 
-void DesktopController::resize() {
-    getTrackListController().getTrackListPanel().resize();
-}
+void DesktopController::resize() { getTrackListController().getTrackListPanel().resize(); }
 
 void DesktopController::addNewTrack() {
     juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), trackList.size() + 1);
@@ -172,4 +170,24 @@ void DesktopController::selectionChanged(Track &track) {
     trackList.setSelected(track);
     trackListController.repaint();
     mixerController.repaint();
+}
+
+void DesktopController::fileDragEnter(const juce::StringArray &files, int x, int y) {
+    //    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
+    trackListController.fileDragEnter(files, x, y);
+}
+
+void DesktopController::fileDragMove(const juce::StringArray &files, int x, int y) {
+    //    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
+    trackListController.fileDragMove(files, x, y);
+}
+
+void DesktopController::fileDragExit(const juce::StringArray &files) {
+    //    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
+    trackListController.fileDragExit(files);
+}
+
+void DesktopController::filesDropped(const juce::StringArray &files, int x, int y) {
+    //    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
+    trackListController.filesDropped(files, x, y);
 }

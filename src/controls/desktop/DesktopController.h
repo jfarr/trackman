@@ -1,5 +1,6 @@
 #pragma once
 
+#include "FileDragDropTarget.h"
 #include "TrackListListener.h"
 #include "commands/CommandList.h"
 #include "controls/mixer/MasterTrackListener.h"
@@ -10,9 +11,12 @@
 #include "model/TrackList.h"
 
 // TODO: consider using juce::FileBasedDocument
-class DesktopController : public MasterTrackListener, public TrackControlListener, public TrackListListener {
+class DesktopController : public MasterTrackListener,
+                          public TrackControlListener,
+                          public TrackListListener,
+                          public FileDragDropTarget {
   public:
-    DesktopController(juce::DocumentWindow& mainWindow, juce::AudioFormatManager &formatManager);
+    DesktopController(juce::DocumentWindow &mainWindow, juce::AudioFormatManager &formatManager);
     ~DesktopController();
 
     TrackList &getTrackList() { return trackList; }
@@ -51,6 +55,13 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
     void levelChangeFinalized(Track &track, float previousLevel) override;
     void muteToggled(Track &track) override;
 
+    //==============================================================================
+    // FileDragDropTarget
+    void fileDragEnter(const juce::StringArray &files, int x, int y) override;
+    void fileDragMove (const juce::StringArray& files, int x, int y) override;
+    void fileDragExit (const juce::StringArray& files) override;
+    void filesDropped (const juce::StringArray& files, int x, int y) override;
+
   private:
     CommandList commandList;
     TrackList trackList;
@@ -69,4 +80,6 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
 
     void saveProjectFile(juce::File file);
     void updateTitleBar();
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DesktopController)
 };
