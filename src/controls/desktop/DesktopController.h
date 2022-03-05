@@ -6,12 +6,12 @@
 #include "controls/mixer/MixerController.h"
 #include "controls/mixer/TrackControlListener.h"
 #include "controls/tracks/TrackListController.h"
-#include "model/TrackList.h"
 #include "model/Project.h"
+#include "model/TrackList.h"
 
 class DesktopController : public MasterTrackListener, public TrackControlListener, public TrackListListener {
   public:
-    DesktopController(juce::AudioFormatManager &formatManager);
+    DesktopController(juce::DocumentWindow& mainWindow, juce::AudioFormatManager &formatManager);
     ~DesktopController();
 
     TrackList &getTrackList() { return trackList; }
@@ -30,6 +30,7 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
     void undeleteTrack(Track *track);
 
     void saveProject();
+    void saveProjectAs();
 
     //==============================================================================
     // TrackListListener
@@ -54,8 +55,13 @@ class DesktopController : public MasterTrackListener, public TrackControlListene
     Project project;
     std::unique_ptr<juce::FileChooser> chooser;
     juce::File projectFile;
+    bool dirty = false;
+    Command *saveCommand = nullptr;
+    juce::DocumentWindow &mainWindow;
+    juce::String applicationName;
 
     juce::AudioFormatManager &formatManager;
 
-    void saveProjectAs(juce::File file);
+    void saveProjectFile(juce::File file);
+    void updateTitleBar();
 };

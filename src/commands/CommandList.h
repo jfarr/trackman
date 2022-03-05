@@ -12,6 +12,7 @@ class CommandList {
     void undoLast();
     bool isEmpty() const { return commands.size() == 0; }
     juce::String getLastCommandName() const;
+    Command *peek() const;
 
   private:
     std::list<std::unique_ptr<Command>> commands;
