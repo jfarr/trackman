@@ -18,6 +18,18 @@ class ChangeMasterVolumeCommand : public Command {
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChangeMasterVolumeCommand)
 };
 
+class ToggleMasterMuteCommand : public Command {
+  public:
+    ToggleMasterMuteCommand(MixerController &mixerController)
+        : Command(juce::String(mixerController.getMixer().getMasterMute() ? "mute" : "unmute") + " master"), mixerController(mixerController) {}
+    ~ToggleMasterMuteCommand() {}
+
+    void undo() override { mixerController.toggleMasterMute(); }
+
+  private:
+    MixerController &mixerController;
+};
+
 class ChangeTrackVolumeCommand : public Command {
   public:
     ChangeTrackVolumeCommand(MixerController &mixerController, Track &track, float previousLevel)
@@ -33,4 +45,18 @@ class ChangeTrackVolumeCommand : public Command {
     float previousLevel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChangeTrackVolumeCommand)
+};
+
+class ToggleMuteCommand : public Command {
+  public:
+    ToggleMuteCommand(MixerController &mixerController, Track &track)
+        : Command(juce::String(track.getMuted() ? "mute" : "unmute") + " " + track.getName()), mixerController(mixerController), track(track) {
+    }
+    ~ToggleMuteCommand() {}
+
+    void undo() override { mixerController.toggleMute(track); }
+
+  private:
+    MixerController &mixerController;
+    Track &track;
 };

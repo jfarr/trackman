@@ -186,7 +186,7 @@ void TransportControl::startButtonClicked() { transportSource.setPosition(0.0); 
 void TransportControl::loopButtonClicked() { notifyLoopingChanged(loopingToggle.getToggleState()); }
 
 void TransportControl::addListener(TransportControlListener *listener) {
-    if (!listContains(listener, listeners)) {
+    if (!listContains(listeners, listener)) {
         listeners.push_front(listener);
     }
 }

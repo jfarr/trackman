@@ -15,6 +15,11 @@ void TrackController::setLevel(float newLevel) {
     trackControl.update();
 }
 
+void TrackController::toggleMute(Track &track) {
+    track.toggleMute();
+    trackControl.update();
+}
+
 void TrackController::repaint() { trackControl.repaint(); }
 
 void TrackController::fileChosen(juce::File file) {
@@ -32,12 +37,12 @@ void TrackController::fileChosen(juce::File file) {
 
 void TrackController::levelChanged(float newLevel) { track.setLevel(newLevel); }
 
-void TrackController::muteToggled() { track.toggleMute(); }
+void TrackController::muteToggled(Track &track) { track.toggleMute(); }
 
 void TrackController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }
 
 void TrackController::addListener(TrackListListener *listener) {
-    if (!listContains(listener, listeners)) {
+    if (!listContains(listeners, listener)) {
         listeners.push_front(listener);
     }
 }

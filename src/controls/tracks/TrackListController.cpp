@@ -30,7 +30,7 @@ void TrackListController::selectionChanged(Track &track) {
 }
 
 void TrackListController::addListener(TrackListListener *listener) {
-    if (!listContains(listener, listeners)) {
+    if (!listContains(listeners, listener)) {
         listeners.push_front(listener);
     }
 }

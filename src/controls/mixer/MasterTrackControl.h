@@ -11,6 +11,8 @@ class MasterTrackControl : public juce::Component, public SliderListener {
     MasterTrackControl(Mixer &mixer);
     ~MasterTrackControl();
 
+    void update();
+
     void setLevel(float level);
 
     void addListener(MasterTrackListener *listener);

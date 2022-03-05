@@ -5,8 +5,8 @@
 
 DesktopController::DesktopController(juce::AudioFormatManager &formatManager)
     : mixerController(trackList, formatManager), trackListController(trackList), formatManager(formatManager) {
-    mixerController.getMixerPanel().getMasterTrackControl().addListener(this);
     mixerController.addListener((TrackListListener *)this);
+    mixerController.addListener((MasterTrackListener *)this);
     mixerController.addListener((TrackControlListener *)this);
     trackListController.addListener(this);
 }
@@ -22,8 +22,18 @@ void DesktopController::masterLevelChangeFinalized(float previousLevel) {
     commandList.pushCommand(command);
 }
 
+void DesktopController::masterMuteToggled() {
+    Command *command = new ToggleMasterMuteCommand(mixerController);
+    commandList.pushCommand(command);
+}
+
 void DesktopController::levelChangeFinalized(Track &track, float previousLevel) {
     Command *command = new ChangeTrackVolumeCommand(mixerController, track, previousLevel);
+    commandList.pushCommand(command);
+}
+
+void DesktopController::muteToggled(Track &track) {
+    Command *command = new ToggleMuteCommand(mixerController, track);
     commandList.pushCommand(command);
 }
 
