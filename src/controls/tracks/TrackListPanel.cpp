@@ -26,7 +26,9 @@ void TrackListPanel::fileDragMove(const juce::StringArray &files, int x, int y) 
 
 void TrackListPanel::fileDragExit(const juce::StringArray &files) { removeChildComponent(&dropBox); }
 
-void TrackListPanel::filesDropped(const juce::StringArray &files, int x, int y) { removeChildComponent(&dropBox); }
+void TrackListPanel::filesDropped(const juce::StringArray &files, int x, int y) {
+    removeChildComponent(&dropBox);
+}
 
 Track *TrackListPanel::getTrackAtPos(int x, int y) {
     for (TrackLaneControl *lane : lanes) {

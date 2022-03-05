@@ -59,6 +59,8 @@ target_sources(Trackman PRIVATE
         controls/mixer/TrackController.cpp
         controls/mixer/TrackController.h
         controls/mixer/TrackControlListener.h
+        controls/tracks/SampleThumbnail.cpp
+        controls/tracks/SampleThumbnail.h
         controls/tracks/TrackLaneControl.cpp
         controls/tracks/TrackLaneControl.h
         controls/tracks/TrackLaneController.cpp

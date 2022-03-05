@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 
+#include "SampleThumbnail.h"
 #include "model/Track.h"
 
 class TrackLaneControl : public juce::Component {
@@ -10,6 +11,10 @@ class TrackLaneControl : public juce::Component {
     ~TrackLaneControl();
 
     Track &getTrack() { return track; }
+
+    void addThumbnail(SampleThumbnail *thumbnail);
+    void clear() { thumbnails.clear(); }
+    void update();
 
     //==============================================================================
     // Component
@@ -20,6 +25,8 @@ class TrackLaneControl : public juce::Component {
     Track &track;
 
     juce::Label trackLabel;
+    std::list<SampleThumbnail *> thumbnails;
+    float scale = 25;
 
     void createControls();
 

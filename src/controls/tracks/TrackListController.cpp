@@ -45,8 +45,25 @@ void TrackListController::filesDropped(const juce::StringArray &files, int x, in
         double endPos = (x + offset) / scale;
         selected->addSample(files[0], startPos, endPos, 0, 0);
         selectionChanged(*selected);
+        updateLane(*selected);
     }
     trackListPanel.filesDropped(files, x, y);
+}
+
+void TrackListController::updateLane(Track &track) {
+    TrackLaneController *lane = getLane(track);
+    if (lane != nullptr) {
+        lane->update();
+    }
+}
+
+TrackLaneController *TrackListController::getLane(Track &track) {
+    for (std::unique_ptr<TrackLaneController> &lane : lanes) {
+        if (&lane->getTrack() == &track) {
+            return lane.get();
+        }
+    }
+    return nullptr;
 }
 
 void TrackListController::selectionChanged(Track &track) { notifySelectionChanged(track); }

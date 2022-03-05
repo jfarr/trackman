@@ -7,7 +7,7 @@
 
 class DropBox : public juce::Component {
   public:
-    DropBox() { setSize(200, 80); }
+    DropBox() { setSize(200, 85); }
     ~DropBox() {}
 
     void paint(juce::Graphics &g) override {

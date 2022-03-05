@@ -39,6 +39,8 @@ class TrackListController : public TrackListListener {
     std::list<TrackListListener *> listeners;
 
     void notifySelectionChanged(Track &track);
+    void updateLane(Track &track);
+    TrackLaneController *getLane(Track &track);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListController)
 };

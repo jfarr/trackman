@@ -13,6 +13,19 @@ void TrackLaneControl::createControls() {
     addAndMakeVisible(trackLabel);
 }
 
+void TrackLaneControl::addThumbnail(SampleThumbnail *thumbnail) {
+    thumbnails.push_back(thumbnail);
+}
+
+void TrackLaneControl::update() {
+    removeAllChildren();
+    addAndMakeVisible(trackLabel);
+    for (SampleThumbnail *thumbnail : thumbnails) {
+        addAndMakeVisible(thumbnail);
+    }
+    resized();
+}
+
 void TrackLaneControl::paint(juce::Graphics &g) {
     auto leftPanelWidth = 25;
     g.fillAll(track.isSelected() ? juce::Colour{0xff3f5f5f} : juce::Colours::darkslategrey);
@@ -28,4 +41,8 @@ void TrackLaneControl::resized() {
     auto margin = 2;
     area.removeFromLeft(leftPanelWidth);
     trackLabel.setBounds(area.removeFromTop(labelHeight).reduced(margin));
+    for (SampleThumbnail *thumbnail : thumbnails) {
+        auto x = thumbnail->getSample().getStartPos() * scale;
+        thumbnail->setBounds(x, area.getY(), thumbnail->getWidth(), thumbnail->getHeight());
+    }
 }

@@ -6,4 +6,5 @@
 - time elapsed strip in track lane panel
 - display filename in track lane
 - Fix track names / numbering
+- Resize sample thumbnails
 - level meters

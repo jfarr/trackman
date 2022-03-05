@@ -5,6 +5,16 @@ TrackLaneController::TrackLaneController(Track &track) : track(track), trackLane
     trackLaneControl.addMouseListener(this, true);
 }
 
+void TrackLaneController::update() {
+    thumbnails.clear();
+    trackLaneControl.clear();
+    track.eachSample([this](Sample &sample) {
+        thumbnails.push_back(std::make_unique<SampleThumbnail>(sample));
+        trackLaneControl.addThumbnail(thumbnails.back().get());
+    });
+    trackLaneControl.update();
+}
+
 void TrackLaneController::repaint() { trackLaneControl.repaint(); }
 
 void TrackLaneController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }

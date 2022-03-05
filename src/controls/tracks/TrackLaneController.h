@@ -11,8 +11,10 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
     TrackLaneController(Track &track);
     ~TrackLaneController() {}
 
+    Track &getTrack() { return track; }
     TrackLaneControl &getTrackLaneControl() { return trackLaneControl; }
 
+    void update();
     void repaint();
 
     void addListener(TrackListListener *listener);
@@ -29,6 +31,7 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
   private:
     Track &track;
     TrackLaneControl trackLaneControl;
+    std::list<std::unique_ptr<SampleThumbnail>> thumbnails;
     std::list<TrackListListener *> listeners;
 
     void notifySelectionChanged();
