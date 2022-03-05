@@ -14,8 +14,10 @@ target_sources(Trackman PRIVATE
         JuceHeader.h
         Main.cpp
         common/listutil.h
-        audio/GainAudioSource.h
         audio/GainAudioSource.cpp
+        audio/GainAudioSource.h
+        audio/OffsetAudioSource.cpp
+        audio/OffsetAudioSource.h
         audio/PositionableAudioSourceAdapter.h
         audio/PositionableMixingAudioSource.cpp
         audio/PositionableMixingAudioSource.h

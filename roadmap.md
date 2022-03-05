@@ -1,7 +1,5 @@
 # Roadmap
 
-- Drop audio file thumbnails on track lanes
-- display filename in thumbnails
 - Play back track lanes
 - Track lane position overlay
 - Time elapsed strip in track lane panel

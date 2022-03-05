@@ -4,6 +4,7 @@
 
 #include "Sample.h"
 #include "audio/GainAudioSource.h"
+#include "audio/OffsetAudioSource.h"
 
 class Track {
   public:
@@ -38,6 +39,7 @@ class Track {
     juce::File file;
     std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
     std::shared_ptr<GainAudioSource> gain;
+    std::shared_ptr<OffsetAudioSource> offset;
     double sampleRate = 0;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;

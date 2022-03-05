@@ -14,7 +14,8 @@ void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, 
     }
     source = newSource;
     sampleRate = newSampleRate;
-    gain = std::shared_ptr<GainAudioSource>(new GainAudioSource(newSource.get(), false));
+    offset = std::make_shared<OffsetAudioSource>(*newSource.get(), 2.0 * sampleRate);
+    gain = std::shared_ptr<GainAudioSource>(new GainAudioSource(offset.get(), false));
 }
 
 void Track::loadFile(juce::AudioFormatManager &formatManager, juce::File newFile) {

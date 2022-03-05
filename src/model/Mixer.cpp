@@ -12,7 +12,9 @@ Mixer::~Mixer() {
 void Mixer::addSource(std::shared_ptr<juce::PositionableAudioSource> source, const bool deleteWhenRemoved,
     double sourceSampleRateToCorrectFor, int maxNumChannels) {
     sources.push_back(source);
+    auto pos = transportSource.getCurrentPosition();
     mixerSource.addInputSource(source.get(), false, sourceSampleRateToCorrectFor, maxNumChannels);
+    transportSource.setPosition(pos);
 }
 
 void Mixer::removeAllSources() {
