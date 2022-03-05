@@ -40,6 +40,10 @@ void TrackListController::fileDragExit(const juce::StringArray &files) { trackLi
 void TrackListController::filesDropped(const juce::StringArray &files, int x, int y) {
     Track *selected = trackListPanel.getTrackAtPos(x, y);
     if (selected != nullptr) {
+        double offset = trackListPanel.getDropBox().getWidth() / 2;
+        double startPos = (x - offset) / scale;
+        double endPos = (x + offset) / scale;
+        selected->addSample(files[0], startPos, endPos, 0, 0);
         selectionChanged(*selected);
     }
     trackListPanel.filesDropped(files, x, y);

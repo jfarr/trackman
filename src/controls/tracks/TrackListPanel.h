@@ -23,6 +23,7 @@ class TrackListPanel : public juce::Component {
     ~TrackListPanel();
 
     Track *getTrackAtPos(int x, int y);
+    DropBox &getDropBox() { return dropBox; }
 
     void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
     void resize();

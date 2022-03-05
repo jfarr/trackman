@@ -54,3 +54,12 @@ void Track::setDeleted(bool newDeleted) {
     deleted = newDeleted;
     selected = false;
 }
+
+Sample *Track::addSample(juce::File file, double startPos, double endPos, double length, double sampleRate) {
+    samples.push_back(std::make_unique<Sample>(file, startPos, endPos, length, sampleRate));
+    return &(*samples.back());
+}
+
+void Track::eachSample(std::function<void(Sample &sample)> f) {
+    std::for_each(samples.begin(), samples.end(), [&f](std::unique_ptr<Sample> &sample) { f(*sample); });
+}

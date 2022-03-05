@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 
+#include "Sample.h"
 #include "audio/GainAudioSource.h"
 
 class Track {
@@ -29,6 +30,9 @@ class Track {
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted);
 
+    Sample *addSample(juce::File file, double startPos, double endPos, double length, double sampleRate);
+    void eachSample(std::function<void(Sample &sample)> f);
+
   private:
     juce::String name;
     juce::File file;
@@ -39,6 +43,7 @@ class Track {
     bool muted = false;
     bool selected = false;
     bool deleted = false;
+    std::list<std::unique_ptr<Sample>> samples;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
 };

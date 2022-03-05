@@ -71,6 +71,8 @@ target_sources(Trackman PRIVATE
         model/Mixer.h
         model/Project.cpp
         model/Project.h
+        model/Sample.cpp
+        model/Sample.h
         model/Track.cpp
         model/Track.h
         model/TrackList.cpp

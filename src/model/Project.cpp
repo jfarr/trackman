@@ -6,14 +6,21 @@
 using json = nlohmann::json;
 
 std::string Project::to_json() {
-    json j = {{"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
-    j["tracks"] = json::array();
-    trackList.eachTrack([&j](Track &track) {
-        json t = {{"name", track.getName().toStdString()}, {"file", track.getFile().getFullPathName().toStdString()},
-            {"gain", track.getLevelGain()}, {"muted", track.isMuted()}};
-        j["tracks"].push_back(t);
+    json project_json = {{"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
+    project_json["tracks"] = json::array();
+    trackList.eachTrack([&project_json](Track &track) {
+        json track_json = {{"name", track.getName().toStdString()},
+            {"file", track.getFile().getFullPathName().toStdString()}, {"gain", track.getLevelGain()},
+            {"muted", track.isMuted()}};
+        track.eachSample([&track_json](Sample &sample) {
+            json sample_json = {{"file", sample.getFile().getFullPathName().toStdString()},
+                {"startPos", sample.getStartPos()}, {"endPos", sample.getEndPos()},
+                {"length", sample.getLength()}, {"sampleRate", sample.getSampleRate()}};
+            track_json["samples"].push_back(sample_json);
+        });
+        project_json["tracks"].push_back(track_json);
     });
-    return j.dump();
+    return project_json.dump();
 }
 
 void Project::from_json(juce::AudioFormatManager &formatManager, std::string filename) {
