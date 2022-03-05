@@ -1,8 +1,10 @@
 #include "TrackLaneControl.h"
 
-TrackLaneControl::TrackLaneControl(Track &track) : track(track) {
+TrackLaneControl::TrackLaneControl(Track &track, juce::AudioTransportSource &transportSource)
+    : track(track), transportSource(transportSource) {
     createControls();
     setSize(800, 100);
+    startTimer(20);
 }
 
 TrackLaneControl::~TrackLaneControl() {}
@@ -30,6 +32,16 @@ void TrackLaneControl::paint(juce::Graphics &g) {
     g.setColour(juce::Colours::slategrey);
     g.fillRect(0, getHeight() - 1, getWidth(), 1);
     g.fillRect(leftPanelWidth, 0, 1, getHeight());
+
+    auto duration = (float)transportSource.getLengthInSeconds();
+
+    if (duration > 0.0) {
+        auto audioPosition = (float)transportSource.getCurrentPosition();
+        auto drawPosition = audioPosition * scale + leftPanelWidth;
+
+        g.setColour(juce::Colours::yellowgreen);
+        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 2.0f);
+    }
 }
 
 void TrackLaneControl::resized() {

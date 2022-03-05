@@ -5,9 +5,9 @@
 #include "SampleThumbnail.h"
 #include "model/Track.h"
 
-class TrackLaneControl : public juce::Component {
+class TrackLaneControl : public juce::Component, private juce::Timer {
   public:
-    TrackLaneControl(Track &track);
+    TrackLaneControl(Track &track, juce::AudioTransportSource &transportSource);
     ~TrackLaneControl();
 
     Track &getTrack() { return track; }
@@ -23,12 +23,14 @@ class TrackLaneControl : public juce::Component {
 
   private:
     Track &track;
+    juce::AudioTransportSource &transportSource;
 
     juce::Label trackLabel;
     std::list<SampleThumbnail *> thumbnails;
     float scale = 75;
 
     void createControls();
+    void timerCallback() override { repaint(); }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackLaneControl)
 };

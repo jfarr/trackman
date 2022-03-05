@@ -33,6 +33,7 @@ class TrackListController : public TrackListListener {
 
   private:
     TrackList &trackList;
+    juce::AudioTransportSource &transport;
     TrackListPanel trackListPanel;
     juce::Viewport trackListViewport;
     float scale = 75;

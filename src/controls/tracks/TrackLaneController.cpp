@@ -1,7 +1,7 @@
 #include "TrackLaneController.h"
 #include "common/listutil.h"
 
-TrackLaneController::TrackLaneController(Track &track, juce::AudioFormatManager &formatManager) : track(track), trackLaneControl(track), formatManager(formatManager) {
+TrackLaneController::TrackLaneController(Track &track, juce::AudioTransportSource &transportSource, juce::AudioFormatManager &formatManager) : track(track), trackLaneControl(track, transportSource), formatManager(formatManager) {
     trackLaneControl.addMouseListener(this, true);
 }
 

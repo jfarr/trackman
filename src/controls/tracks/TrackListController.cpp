@@ -3,7 +3,7 @@
 
 TrackListController::TrackListController(
     TrackList &trackList, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
-    : trackList(trackList), trackListPanel(trackList, trackListViewport, transport, formatManager),
+    : trackList(trackList), transport(transport), trackListPanel(trackList, trackListViewport, transport, formatManager),
       formatManager(formatManager) {
     trackListViewport.setSize(800, 350);
     trackListViewport.setScrollBarsShown(true, true);
@@ -15,7 +15,7 @@ void TrackListController::update() {
     lanes.clear();
     trackListPanel.clear();
     trackList.eachTrack([this](Track &track) {
-        auto lane = new TrackLaneController(track, formatManager);
+        auto lane = new TrackLaneController(track, transport, formatManager);
         lane->addListener(this);
         lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
         trackListPanel.addLane(&lane->getTrackLaneControl());
