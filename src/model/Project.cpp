@@ -23,4 +23,11 @@ void Project::from_json(std::string filename) {
     std::cout << "gain: " << j["mixer"]["gain"];
     mixer.setMasterLevelGain(j["mixer"]["gain"]);
     mixer.setMasterMute(j["mixer"]["muted"]);
+    trackList.clear();
+    for (auto t : j["tracks"]) {
+        std::cout << t << '\n';
+        auto track = trackList.addTrack(t["name"]);
+        track->setLevelGain(t["gain"]);
+        track->setMute(t["muted"]);
+    }
 }

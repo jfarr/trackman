@@ -11,7 +11,7 @@ TrackController::TrackController(Track &track, TrackControl &trackControl, juce:
 TrackController::~TrackController() {}
 
 void TrackController::setLevel(float newLevel) {
-    track.setLevel(newLevel);
+    track.setLevelGain(newLevel);
     trackControl.update();
 }
 
@@ -35,7 +35,7 @@ void TrackController::fileChosen(juce::File file) {
     }
 }
 
-void TrackController::levelChanged(float newLevel) { track.setLevel(newLevel); }
+void TrackController::levelChanged(float newLevel) { track.setLevelGain(newLevel); }
 
 void TrackController::muteToggled(Track &track) { track.toggleMute(); }
 
