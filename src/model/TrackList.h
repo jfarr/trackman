@@ -12,6 +12,7 @@ class TrackList {
 
     int size() const { return tracks.size(); }
     bool hasSelection() const;
+    Track *getSelected() const;
     double getTotalLengthSeconds() const;
 
     void eachTrack(std::function<void(Track &track)> f);
@@ -19,6 +20,7 @@ class TrackList {
     void clear() { tracks.clear(); }
     void setSelected(Track &selected);
     void selectSample(Sample &selected);
+    Sample *getSelectedSample() const;
 
   private:
     std::list<std::unique_ptr<Track>> tracks;

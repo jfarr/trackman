@@ -29,6 +29,7 @@ class Track {
     void loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     Sample *addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, juce::File file,
         double startPos, double endPos, double length, double sampleRate);
+    Sample *getSelected() const;
     void eachSample(std::function<void(Sample &sample)> f);
 
     void setLevelGain(float newLevel);

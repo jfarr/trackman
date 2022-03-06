@@ -67,15 +67,31 @@ void DesktopController::addNewTrack() {
     updateTitleBar();
 }
 
-void DesktopController::deleteSelectedTrack() {
-    trackList.eachTrack([this](Track &track) {
-        if (track.isSelected()) {
-            Command *command = new DeleteTrackCommand(*this, &track);
-            commandList.pushCommand(command);
-            dirty = true;
-            updateTitleBar();
-        }
-    });
+void DesktopController::deleteSelected() {
+    Sample *sample = trackList.getSelectedSample();
+    if (sample != nullptr) {
+        Command *command = new DeleteSampleCommand(trackListController, *sample);
+        commandList.pushCommand(command);
+        dirty = true;
+        updateTitleBar();
+        return;
+    }
+    Track *selected = trackList.getSelected();
+    if (selected != nullptr) {
+        Command *command = new DeleteTrackCommand(*this, selected);
+        commandList.pushCommand(command);
+        dirty = true;
+        updateTitleBar();
+    }
+}
+
+juce::String DesktopController::getSelectionType() const {
+    if (trackList.getSelectedSample() != nullptr) {
+        return "sample";
+    } else if (trackList.getSelected() != nullptr) {
+        return "track";
+    }
+    return "";
 }
 
 void DesktopController::sampleAdded(Track &track, juce::File file, int pos) {

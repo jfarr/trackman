@@ -28,6 +28,15 @@ bool TrackList::hasSelection() const {
     return false;
 }
 
+Track *TrackList::getSelected() const {
+    for (std::unique_ptr<Track> const &track : tracks) {
+        if (!track->isDeleted() && track->isSelected()) {
+            return track.get();
+        }
+    }
+    return nullptr;
+}
+
 double TrackList::getTotalLengthSeconds() const {
     double total = 0;
     for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
@@ -38,11 +47,11 @@ double TrackList::getTotalLengthSeconds() const {
 }
 
 void TrackList::eachTrack(std::function<void(Track &track)> f) {
-    std::for_each(tracks.begin(), tracks.end(), [&f](std::unique_ptr<Track> &track) {
+    for (std::unique_ptr<Track> &track : tracks) {
         if (!track->isDeleted()) {
             f(*track);
         }
-    });
+    }
 }
 
 void TrackList::setSelected(Track &selected) {
@@ -51,4 +60,16 @@ void TrackList::setSelected(Track &selected) {
 
 void TrackList::selectSample(Sample &selected) {
     eachTrack([&selected](Track &track) { track.selectSample(selected); });
+}
+
+Sample *TrackList::getSelectedSample() const {
+    for (std::unique_ptr<Track> const &track : tracks) {
+        if (!track->isDeleted() && track->isSelected()) {
+            Sample *selected = track->getSelected();
+            if (selected != nullptr) {
+                return selected;
+            }
+        }
+    }
+    return nullptr;
 }

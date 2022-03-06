@@ -63,12 +63,21 @@ Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFor
     return &(*samples.back());
 }
 
+Sample *Track::getSelected() const {
+    for (std::unique_ptr<Sample> const &sample : samples) {
+        if (!sample->isDeleted() && sample->isSelected()) {
+            return sample.get();
+        }
+    }
+    return nullptr;
+}
+
 void Track::eachSample(std::function<void(Sample &sample)> f) {
-    std::for_each(samples.begin(), samples.end(), [&f](std::unique_ptr<Sample> &sample) {
+    for (std::unique_ptr<Sample> &sample : samples) {
         if (!(*sample).isDeleted()) {
             f(*sample);
         }
-    });
+    }
 }
 
 void Track::setLevelGain(float newLevel) {
@@ -98,7 +107,5 @@ void Track::setDeleted(bool newDeleted) {
 }
 
 void Track::selectSample(Sample &selected) {
-    eachSample([&selected](Sample &sample) {
-        sample.setSelected(&sample == &selected);
-    } );
+    eachSample([&selected](Sample &sample) { sample.setSelected(&sample == &selected); });
 }

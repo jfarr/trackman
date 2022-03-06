@@ -17,7 +17,7 @@ class DesktopComponent : public juce::AudioAppComponent,
   public:
     //==============================================================================
     /** A list of the commands that this menu responds to. */
-    enum CommandIDs { openProject = 1, saveProject, saveProjectAs, editUndo, newTrack, newAudioPlayer, deleteTrack };
+    enum CommandIDs { openProject = 1, saveProject, saveProjectAs, editUndo, newTrack, newAudioPlayer, deleteTrackSelection };
 
     //==============================================================================
     DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager);
@@ -62,7 +62,7 @@ class DesktopComponent : public juce::AudioAppComponent,
             menu.addCommandItem(&commandManager, CommandIDs::newTrack);
             menu.addCommandItem(&commandManager, CommandIDs::newAudioPlayer);
         } else if (menuIndex == 3) {
-            menu.addCommandItem(&commandManager, CommandIDs::deleteTrack);
+            menu.addCommandItem(&commandManager, CommandIDs::deleteTrackSelection);
         }
 
         return menu;
@@ -77,7 +77,7 @@ class DesktopComponent : public juce::AudioAppComponent,
     void getAllCommands(juce::Array<juce::CommandID> &c) override {
         juce::Array<juce::CommandID> commands{CommandIDs::openProject, CommandIDs::saveProject,
             CommandIDs::saveProjectAs, CommandIDs::editUndo, CommandIDs::newTrack, CommandIDs::newAudioPlayer,
-            CommandIDs::deleteTrack};
+            CommandIDs::deleteTrackSelection};
         c.addArray(commands);
     }
 
@@ -111,8 +111,8 @@ class DesktopComponent : public juce::AudioAppComponent,
             result.setInfo("audioplayer", "Create a new audioplayer component", "Menu", 0);
             result.addDefaultKeypress('p', juce::ModifierKeys::shiftModifier);
             break;
-        case CommandIDs::deleteTrack:
-            result.setInfo("delete", "Delete the selected track", "Menu", 0);
+        case CommandIDs::deleteTrackSelection:
+            result.setInfo("delete " + desktopController.getSelectionType(), "Delete the selected " + desktopController.getSelectionType(), "Menu", 0);
             result.addDefaultKeypress(juce::KeyPress::backspaceKey, juce::ModifierKeys::noModifiers);
             result.addDefaultKeypress(juce::KeyPress::deleteKey, juce::ModifierKeys::noModifiers);
             result.setActive(desktopController.hasSelection());
@@ -142,8 +142,8 @@ class DesktopComponent : public juce::AudioAppComponent,
         case CommandIDs::newAudioPlayer:
             createChildWindow("audioplayer", new AudioPlayer(formatManager));
             break;
-        case CommandIDs::deleteTrack:
-            desktopController.deleteSelectedTrack();
+        case CommandIDs::deleteTrackSelection:
+            desktopController.deleteSelected();
             break;
         default:
             return false;

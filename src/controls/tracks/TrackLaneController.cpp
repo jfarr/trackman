@@ -9,7 +9,7 @@ void TrackLaneController::update() {
     thumbnails.clear();
     trackLaneControl.clear();
     track.eachSample([this](Sample &sample) {
-        thumbnails.push_back(std::make_unique<SampleThumbnail>(sample, transport, formatManager));
+        thumbnails.push_back(std::make_unique<SampleThumbnail>(track, sample, transport, formatManager));
         thumbnails.back()->addListener(this);
         trackLaneControl.addThumbnail(thumbnails.back().get());
     });

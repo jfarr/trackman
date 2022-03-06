@@ -18,8 +18,8 @@ void TrackListController::update() {
     trackListPanel.clear();
     trackList.eachTrack([this](Track &track) {
         auto lane = new TrackLaneController(track, transport, formatManager);
-        lane->addListener((TrackListListener *) this);
-        lane->addListener((SampleListener *) this);
+        lane->addListener((TrackListListener *)this);
+        lane->addListener((SampleListener *)this);
         lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
         trackListPanel.addLane(&lane->getTrackLaneControl());
         lane->update();
@@ -106,11 +106,12 @@ void TrackListController::updateLanes() {
     }
 }
 
-void TrackListController::selectionChanged(Track &track) { notifySelectionChanged(track); }
-
-void TrackListController::sampleSelected(Sample &sample) {
-    trackList.selectSample(sample);
+void TrackListController::selectionChanged(Track &track) {
+    notifySelectionChanged(track);
+    updateLanes();
 }
+
+void TrackListController::sampleSelected(Sample &sample) { trackList.selectSample(sample); }
 
 void TrackListController::sampleMoved(Sample &sample, juce::Point<int> pos) {
     auto length = sample.getLength();
@@ -122,9 +123,7 @@ void TrackListController::sampleMoved(Sample &sample, juce::Point<int> pos) {
     trackListPanel.resize();
 }
 
-void TrackListController::dragEnded() {
-    updateLanes();
-}
+void TrackListController::dragEnded() { updateLanes(); }
 
 void TrackListController::addListener(TrackListListener *listener) {
     if (!listContains(trackListListeners, listener)) {

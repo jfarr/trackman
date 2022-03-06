@@ -8,7 +8,7 @@
 
 class SampleThumbnail : public juce::Component {
   public:
-    SampleThumbnail(Sample &sample, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
+    SampleThumbnail(Track &track, Sample &sample, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
     ~SampleThumbnail() {}
 
     Sample &getSample() { return sample; }
@@ -24,6 +24,7 @@ class SampleThumbnail : public juce::Component {
     void mouseDown(const juce::MouseEvent &event) override;
 
   private:
+    Track &track;
     Sample &sample;
     juce::AudioTransportSource &transport;
     juce::Label filenameLabel;

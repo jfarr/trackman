@@ -28,12 +28,13 @@ class DesktopController : public MasterTrackListener,
     bool canUndo() const;
     void undoLast();
     juce::String getLastCommandName() const { return commandList.getLastCommandName(); }
-    bool hasSelection() const { return trackList.hasSelection(); }
+    bool hasSelection() const { return getSelectionType() != ""; }
 
     void resize();
 
     void addNewTrack();
-    void deleteSelectedTrack();
+    void deleteSelected();
+    juce::String getSelectionType() const;
 
     Track *addTrack(juce::String name);
     void deleteTrack(Track *track, bool purge);
