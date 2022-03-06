@@ -5,7 +5,7 @@ SampleThumbnail::SampleThumbnail(
     : sample(sample), transport(transport), thumbnailCache(5), thumbnail(512, formatManager, thumbnailCache) {
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     createControls();
-    setSize(200, 85);
+    setSize(200, 81);
 }
 
 void SampleThumbnail::createControls() {

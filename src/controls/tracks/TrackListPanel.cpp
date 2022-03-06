@@ -5,6 +5,7 @@ TrackListPanel::TrackListPanel(TrackList &trackList, juce::Viewport &viewport, j
     juce::AudioFormatManager &formatManager)
     : trackList(trackList), viewport(viewport), transport(transport), formatManager(formatManager) {
     createControls();
+    resize();
     startTimer(20);
 }
 
@@ -66,13 +67,9 @@ void TrackListPanel::dragOperationStarted(const DragAndDropTarget::SourceDetails
 
 void TrackListPanel::resize() {
     auto topStripWidth = 20;
-    if (!lanes.empty()) {
-        setSize(getTrackLaneWidth(), getTrackLaneWidth());
-        for (TrackLaneControl *lane : lanes) {
-            lane->resized();
-        }
-    } else {
-        setSize(getTrackLaneWidth(), topStripWidth);
+    setSize(getTrackLaneWidth(), getTrackLaneWidth());
+    for (TrackLaneControl *lane : lanes) {
+        lane->resized();
     }
     resized();
 }
@@ -90,6 +87,9 @@ void TrackListPanel::paint(juce::Graphics &g) {
         g.setColour(juce::Colour{0xff282828});
         g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
     }
+
+    g.setColour(juce::Colours::lightgrey);
+    g.drawLine(leftPanelWidth, 0, leftPanelWidth, (float)getHeight(), 1.0f);
 }
 
 void TrackListPanel::resized() {

@@ -36,4 +36,33 @@ void TimeMeter::paint(juce::Graphics &g) {
         g.drawRect(x, y, 1, thirdTickHeight, 1);
         i++;
     }
+
+    auto margin = 4;
+    auto arrowHeight = 8.0;
+    auto arrowWidth = 18.0;
+
+    float audioPosition = 0.0;
+        auto drawPosition = audioPosition * scale + leftPanelWidth;
+
+    g.setColour(juce::Colours::lightgrey);
+    g.drawLine(drawPosition, margin, drawPosition, (float)getHeight(), 1.0f);
+
+    auto a = juce::Point<float>(drawPosition - arrowWidth / 2, margin);
+    auto b = juce::Point<float>(drawPosition + arrowWidth / 2, margin);
+    auto c = juce::Point<float>(drawPosition, margin + arrowHeight);
+    juce::Path path;
+    path.addTriangle(a, b, c);
+    g.setColour(juce::Colours::lightgrey);
+    g.fillPath(path);
+
+    arrowWidth *= 0.8;
+    arrowHeight *= 0.8;
+    margin += arrowHeight * 0.2;
+    a = juce::Point<float>(drawPosition - arrowWidth / 2, margin);
+    b = juce::Point<float>(drawPosition + arrowWidth / 2, margin);
+    c = juce::Point<float>(drawPosition, margin + arrowHeight);
+    juce::Path path2;
+    path2.addTriangle(a, b, c);
+    g.setColour(juce::Colours::steelblue);
+    g.fillPath(path2);
 }
