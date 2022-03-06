@@ -1,6 +1,6 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
 
 class ThumbnailComponent : public juce::Component, public juce::ChangeListener {
   public:
@@ -24,19 +24,4 @@ class ThumbnailComponent : public juce::Component, public juce::ChangeListener {
     void paintIfNoFileLoaded(juce::Graphics &g, const juce::Rectangle<int> &thumbnailBounds);
     void paintIfFileLoaded(juce::Graphics &g, const juce::Rectangle<int> &thumbnailBounds);
     void thumbnailChanged();
-};
-
-class PositionOverlay : public juce::Component, private juce::Timer {
-  public:
-    PositionOverlay(juce::AudioTransportSource &transportSource);
-
-    void paint(juce::Graphics &g) override;
-    void mouseDown(const juce::MouseEvent &event) override;
-
-  private:
-    void timerCallback() override;
-
-    juce::AudioTransportSource &transportSource;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PositionOverlay)
 };

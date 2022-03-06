@@ -8,7 +8,7 @@
 #include "model/Mixer.h"
 #include "model/TrackList.h"
 
-class MixerPanel : public juce::AudioAppComponent {
+class MixerPanel : public juce::Component {
   public:
     MixerPanel(TrackList &trackList, Mixer &mixer);
     ~MixerPanel();
@@ -19,12 +19,6 @@ class MixerPanel : public juce::AudioAppComponent {
 
     TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
-
-    //==============================================================================
-    // AudioAppComponent
-    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
-    void releaseResources() override;
 
     //==============================================================================
     // Component

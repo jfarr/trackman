@@ -8,11 +8,13 @@
 
 class TrackLaneController : public juce::MouseListener, public TrackListListener {
   public:
-    TrackLaneController(Track &track);
+    TrackLaneController(Track &track, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
     ~TrackLaneController() {}
 
+    Track &getTrack() { return track; }
     TrackLaneControl &getTrackLaneControl() { return trackLaneControl; }
 
+    void update();
     void repaint();
 
     void addListener(TrackListListener *listener);
@@ -28,8 +30,13 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
 
   private:
     Track &track;
+    juce::AudioTransportSource &transport;
     TrackLaneControl trackLaneControl;
+    std::list<std::unique_ptr<SampleThumbnail>> thumbnails;
     std::list<TrackListListener *> listeners;
+    juce::AudioFormatManager &formatManager;
 
     void notifySelectionChanged();
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackLaneController)
 };

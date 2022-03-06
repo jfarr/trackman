@@ -2,8 +2,8 @@
 #include "common/listutil.h"
 #include "controls/mixer/TrackController.h"
 
-MixerController::MixerController(TrackList &trackList, juce::AudioFormatManager &formatManager)
-    : trackList(trackList), mixerPanel(trackList, mixer), formatManager(formatManager) {
+MixerController::MixerController(TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager)
+    : trackList(trackList), mixer(mixer), mixerPanel(trackList, mixer), formatManager(formatManager) {
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
 }
@@ -19,7 +19,7 @@ void MixerController::update() {
     mixer.removeAllSources();
     trackList.eachTrack([this](Track &track) {
         if (track.getSource() != nullptr) {
-            mixer.addSource(track.getGain(), false, track.getSampleRate(), 2);
+            mixer.addSource(track.getGain(), track.getSampleRate(), 2);
         }
         auto control = new TrackControl(track);
         control->addListener(this);
@@ -70,7 +70,7 @@ void MixerController::onSourceSet() {
     mixer.removeAllSources();
     trackList.eachTrack([this](Track &track) {
         if (track.getSource() != nullptr) {
-            mixer.addSource(track.getGain(), false, track.getSampleRate(), 2);
+            mixer.addSource(track.getGain(), track.getSampleRate(), 2);
         }
     });
 }

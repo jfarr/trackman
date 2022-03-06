@@ -11,10 +11,11 @@ void ThumbnailComponent::setSource(const juce::File &file) { thumbnail.setSource
 
 void ThumbnailComponent::paint(juce::Graphics &g) {
     juce::Rectangle<int> thumbnailBounds = getLocalBounds();
-    if (thumbnail.getNumChannels() == 0)
+    if (thumbnail.getNumChannels() == 0) {
         paintIfNoFileLoaded(g, thumbnailBounds);
-    else
+    } else {
         paintIfFileLoaded(g, thumbnailBounds);
+    }
 }
 
 void ThumbnailComponent::paintIfNoFileLoaded(juce::Graphics &g, const juce::Rectangle<int> &thumbnailBounds) {
@@ -42,34 +43,3 @@ void ThumbnailComponent::changeListenerCallback(juce::ChangeBroadcaster *source)
 }
 
 void ThumbnailComponent::thumbnailChanged() { repaint(); }
-
-//==============================================================================
-
-PositionOverlay::PositionOverlay(juce::AudioTransportSource &transportSource) : transportSource(transportSource) {
-    startTimer(20);
-}
-
-void PositionOverlay::paint(juce::Graphics &g) {
-    auto duration = (float)transportSource.getLengthInSeconds();
-
-    if (duration > 0.0) {
-        auto audioPosition = (float)transportSource.getCurrentPosition();
-        auto drawPosition = (audioPosition / duration) * (float)getWidth();
-
-        g.setColour(juce::Colours::yellowgreen);
-        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 2.0f);
-    }
-}
-
-void PositionOverlay::mouseDown(const juce::MouseEvent &event) {
-    auto duration = transportSource.getLengthInSeconds();
-
-    if (duration > 0.0) {
-        auto clickPosition = event.position.x;
-        auto audioPosition = (clickPosition / (float)getWidth()) * duration;
-
-        transportSource.setPosition(audioPosition);
-    }
-}
-
-void PositionOverlay::timerCallback() { repaint(); }

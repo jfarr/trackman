@@ -1,15 +1,19 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
 
 #include "ChildWindow.h"
 #include "DesktopController.h"
+#include "FileDragDropTarget.h"
 #include "controls/AudioPlayer.h"
 #include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
 #include "model/Mixer.h"
 
-class DesktopComponent : public juce::Component, public juce::ApplicationCommandTarget, public juce::MenuBarModel {
+class DesktopComponent : public juce::AudioAppComponent,
+                         public juce::ApplicationCommandTarget,
+                         public juce::MenuBarModel,
+                         public juce::FileDragAndDropTarget {
   public:
     //==============================================================================
     /** A list of the commands that this menu responds to. */
@@ -19,10 +23,27 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager);
     ~DesktopComponent() override;
 
+    void addListener(FileDragDropTarget *listener);
+    void removeListener(FileDragDropTarget *listener);
+
     //==============================================================================
     // Component
     void paint(juce::Graphics &g) override;
     void resized() override;
+
+    //==============================================================================
+    // AudioAppComponent
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void releaseResources() override;
+
+    //==============================================================================
+    // FileDragAndDropTarget
+    bool isInterestedInFileDrag(const juce::StringArray &files) override;
+    void fileDragEnter(const juce::StringArray &files, int x, int y) override;
+    void fileDragMove(const juce::StringArray &files, int x, int y) override;
+    void fileDragExit(const juce::StringArray &files) override;
+    void filesDropped(const juce::StringArray &files, int x, int y) override;
 
     //==============================================================================
     // MenuBarModel
@@ -54,8 +75,9 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     ApplicationCommandTarget *getNextCommandTarget() override { return nullptr; }
 
     void getAllCommands(juce::Array<juce::CommandID> &c) override {
-        juce::Array<juce::CommandID> commands{CommandIDs::openProject, CommandIDs::saveProject, CommandIDs::saveProjectAs, CommandIDs::editUndo,
-            CommandIDs::newTrack, CommandIDs::newAudioPlayer, CommandIDs::deleteTrack};
+        juce::Array<juce::CommandID> commands{CommandIDs::openProject, CommandIDs::saveProject,
+            CommandIDs::saveProjectAs, CommandIDs::editUndo, CommandIDs::newTrack, CommandIDs::newAudioPlayer,
+            CommandIDs::deleteTrack};
         c.addArray(commands);
     }
 
@@ -133,6 +155,8 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
     DesktopController desktopController;
     juce::Component &trackListViewport;
     juce::Component &mixerPanel;
+    Mixer &mixer;
+    std::list<FileDragDropTarget *> listeners;
 
     juce::ApplicationCommandManager commandManager;
     juce::MenuBarComponent menuBar;
@@ -146,6 +170,11 @@ class DesktopComponent : public juce::Component, public juce::ApplicationCommand
 
     void createChildWindow(const juce::String &name, juce::Component *component);
     void closeAllWindows();
+
+    void notifyFileDragEnter(const juce::StringArray &files, int x, int y);
+    void notifyFileDragMove(const juce::StringArray &files, int x, int y);
+    void notifyFileDragExit(const juce::StringArray &files);
+    void notifyFilesDropped(const juce::StringArray &files, int x, int y);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DesktopComponent)
 };

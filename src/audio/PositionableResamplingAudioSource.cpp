@@ -1,8 +1,8 @@
 #include "PositionableResamplingAudioSource.h"
 
 PositionableResamplingAudioSource::PositionableResamplingAudioSource(juce::PositionableAudioSource *source,
-    const bool deleteWhenRemoved, double sourceSampleRateToCorrectFor, int maxNumChannels)
-    : source(source), resamplerSource(source, false, maxNumChannels), sourceSampleRate(sourceSampleRateToCorrectFor),
+    const bool deleteWhenRemoved, double sampleRate, double sourceSampleRateToCorrectFor, int maxNumChannels)
+    : source(source), resamplerSource(source, false, maxNumChannels), sampleRate(sampleRate), sourceSampleRate(sourceSampleRateToCorrectFor),
       deleteWhenRemoved(deleteWhenRemoved) {}
 
 PositionableResamplingAudioSource::~PositionableResamplingAudioSource() {

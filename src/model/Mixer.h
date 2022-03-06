@@ -7,7 +7,7 @@
 
 class Mixer {
   public:
-    Mixer();
+    Mixer(double sampleRate);
     ~Mixer();
 
     float getMasterLevelGain() const { return level; }
@@ -15,8 +15,8 @@ class Mixer {
 
     juce::AudioTransportSource &getTransportSource() { return transportSource; }
 
-    void addSource(std::shared_ptr<juce::PositionableAudioSource> source, const bool deleteWhenRemoved,
-        double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2);
+    void addSource(std::shared_ptr<juce::PositionableAudioSource> source, double sourceSampleRateToCorrectFor = 0.0,
+        int maxNumChannels = 2);
     void removeAllSources();
 
     void setMasterLevelGain(float newLevel);

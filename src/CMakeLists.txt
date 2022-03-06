@@ -14,8 +14,10 @@ target_sources(Trackman PRIVATE
         JuceHeader.h
         Main.cpp
         common/listutil.h
-        audio/GainAudioSource.h
         audio/GainAudioSource.cpp
+        audio/GainAudioSource.h
+        audio/OffsetAudioSource.cpp
+        audio/OffsetAudioSource.h
         audio/PositionableAudioSourceAdapter.h
         audio/PositionableMixingAudioSource.cpp
         audio/PositionableMixingAudioSource.h
@@ -34,6 +36,8 @@ target_sources(Trackman PRIVATE
         controls/common/DecibelSlider.h
         controls/common/FileChooserControl.cpp
         controls/common/FileChooserControl.h
+        controls/common/PositionOverlay.cpp
+        controls/common/PositionOverlay.h
         controls/common/ThumbnailComponent.cpp
         controls/common/ThumbnailComponent.h
         controls/common/TransportControl.cpp
@@ -44,6 +48,7 @@ target_sources(Trackman PRIVATE
         controls/desktop/DesktopComponent.h
         controls/desktop/DesktopController.cpp
         controls/desktop/DesktopController.h
+        controls/desktop/FileDragDropTarget.h
         controls/desktop/TrackListListener.h
         controls/desktop/TrackSourceListener.h
         controls/mixer/MasterTrackControl.cpp
@@ -58,6 +63,8 @@ target_sources(Trackman PRIVATE
         controls/mixer/TrackController.cpp
         controls/mixer/TrackController.h
         controls/mixer/TrackControlListener.h
+        controls/tracks/SampleThumbnail.cpp
+        controls/tracks/SampleThumbnail.h
         controls/tracks/TrackLaneControl.cpp
         controls/tracks/TrackLaneControl.h
         controls/tracks/TrackLaneController.cpp
@@ -70,6 +77,8 @@ target_sources(Trackman PRIVATE
         model/Mixer.h
         model/Project.cpp
         model/Project.h
+        model/Sample.cpp
+        model/Sample.h
         model/Track.cpp
         model/Track.h
         model/TrackList.cpp

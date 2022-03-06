@@ -3,14 +3,17 @@
 #include "commands/TrackListCommands.h"
 #include "common/listutil.h"
 
-DesktopController::DesktopController(juce::DocumentWindow &mainWindow, juce::AudioFormatManager &formatManager)
-    : mixerController(trackList, formatManager), trackListController(trackList),
-      project(trackList, mixerController.getMixer()), mainWindow(mainWindow), applicationName(mainWindow.getName()),
-      formatManager(formatManager) {
+DesktopController::DesktopController(
+    juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
+    : mixer(deviceManager.getAudioDeviceSetup().sampleRate), mixerController(trackList, mixer, formatManager),
+      trackListController(trackList, mixerController.getMixer().getTransportSource(), deviceManager, formatManager),
+      project(trackList, mixer), mainWindow(mainWindow), applicationName(mainWindow.getName()),
+      deviceManager(deviceManager), formatManager(formatManager) {
     mixerController.addListener((TrackListListener *)this);
     mixerController.addListener((MasterTrackListener *)this);
     mixerController.addListener((TrackControlListener *)this);
     trackListController.addListener(this);
+    trackListController.setListener(&mixerController);
 }
 
 DesktopController::~DesktopController() {}
@@ -50,6 +53,8 @@ void DesktopController::muteToggled(Track &track) {
     dirty = true;
     updateTitleBar();
 }
+
+void DesktopController::resize() { getTrackListController().getTrackListPanel().resize(); }
 
 void DesktopController::addNewTrack() {
     juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), trackList.size() + 1);
@@ -147,7 +152,7 @@ void DesktopController::openProject() {
         auto file = fc.getResult();
         if (file != juce::File{}) {
             projectFile = file;
-            project.from_json(formatManager, file.getFullPathName().toStdString());
+            project.from_json(deviceManager, formatManager, file.getFullPathName().toStdString());
             trackListController.update();
             mixerController.update();
             commandList.clear();
@@ -168,4 +173,24 @@ void DesktopController::selectionChanged(Track &track) {
     trackList.setSelected(track);
     trackListController.repaint();
     mixerController.repaint();
+}
+
+void DesktopController::fileDragEnter(const juce::StringArray &files, int x, int y) {
+    //    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
+    trackListController.fileDragEnter(files, x, y);
+}
+
+void DesktopController::fileDragMove(const juce::StringArray &files, int x, int y) {
+    //    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
+    trackListController.fileDragMove(files, x, y);
+}
+
+void DesktopController::fileDragExit(const juce::StringArray &files) {
+    //    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
+    trackListController.fileDragExit(files);
+}
+
+void DesktopController::filesDropped(const juce::StringArray &files, int x, int y) {
+    //    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
+    trackListController.filesDropped(files, x, y);
 }
