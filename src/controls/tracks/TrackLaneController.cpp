@@ -10,6 +10,7 @@ void TrackLaneController::update() {
     trackLaneControl.clear();
     track.eachSample([this](Sample &sample) {
         thumbnails.push_back(std::make_unique<SampleThumbnail>(sample, transport, formatManager));
+        thumbnails.back()->addListener(this);
         trackLaneControl.addThumbnail(thumbnails.back().get());
     });
     trackLaneControl.update();
@@ -21,16 +22,34 @@ void TrackLaneController::mouseDown(const juce::MouseEvent &event) { notifySelec
 
 void TrackLaneController::selectionChanged(Track &track) { notifySelectionChanged(); }
 
+void TrackLaneController::sampleSelected(Sample &sample)  {
+    notifySampleSelected(sample);
+}
+
 void TrackLaneController::addListener(TrackListListener *listener) {
-    if (!listContains(listeners, listener)) {
-        listeners.push_front(listener);
+    if (!listContains(trackListListeners, listener)) {
+        trackListListeners.push_front(listener);
     }
 }
 
-void TrackLaneController::removeListener(TrackListListener *listener) { listeners.remove(listener); }
+void TrackLaneController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
 
 void TrackLaneController::notifySelectionChanged() {
-    for (TrackListListener *listener : listeners) {
+    for (TrackListListener *listener : trackListListeners) {
         listener->selectionChanged(track);
+    }
+}
+
+void TrackLaneController::addListener(SampleListener *listener) {
+    if (!listContains(sampleListeners, listener)) {
+        sampleListeners.push_front(listener);
+    }
+}
+
+void TrackLaneController::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
+
+void TrackLaneController::notifySampleSelected(Sample &sample) {
+    for (SampleListener *listener : sampleListeners) {
+        listener->sampleSelected(sample);
     }
 }

@@ -1,4 +1,5 @@
 #include "SampleThumbnail.h"
+#include "common/listutil.h"
 
 SampleThumbnail::SampleThumbnail(
     Sample &sample, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
@@ -31,7 +32,7 @@ void SampleThumbnail::paintWithoutOverlay(juce::Graphics &g) {
     auto area = getLocalBounds();
     auto margin = 3;
 
-    g.fillAll(juce::Colours::dimgrey);
+    g.fillAll(sample.isSelected() ? juce::Colours::lightgrey : juce::Colours::dimgrey);
     g.setColour(juce::Colours::grey);
     g.drawRect(0, 0, getWidth(), getHeight());
 
@@ -68,5 +69,24 @@ void SampleThumbnail::mouseDrag(const juce::MouseEvent &event) {
     auto pos = juce::Point<int>(-event.getPosition().getX(), -event.getPosition().getY());
     if (container != nullptr) {
         container->startDragging("clip", this, *getImage(), false, &pos);
+    }
+}
+
+void SampleThumbnail::mouseDown(const juce::MouseEvent &event) {
+    Component::mouseDown(event);
+    notifySampleSelected(sample);
+}
+
+void SampleThumbnail::addListener(SampleListener *listener) {
+    if (!listContains(sampleListeners, listener)) {
+        sampleListeners.push_front(listener);
+    }
+}
+
+void SampleThumbnail::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
+
+void SampleThumbnail::notifySampleSelected(Sample &selected) {
+    for (SampleListener *listener : sampleListeners) {
+        listener->sampleSelected(selected);
     }
 }

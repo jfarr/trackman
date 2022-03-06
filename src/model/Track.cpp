@@ -96,3 +96,9 @@ void Track::setDeleted(bool newDeleted) {
     deleted = newDeleted;
     selected = false;
 }
+
+void Track::selectSample(Sample &selected) {
+    eachSample([&selected](Sample &sample) {
+        sample.setSelected(&sample == &selected);
+    } );
+}
