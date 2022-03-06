@@ -76,7 +76,7 @@ void DesktopComponent::paint(juce::Graphics &g) {
 
 void DesktopComponent::resized() {
     auto area = getLocalBounds();
-    mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getHeight()));
+    mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
     trackListViewport.setBounds(area);
     desktopController.resize();
 }

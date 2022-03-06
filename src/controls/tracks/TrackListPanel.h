@@ -1,12 +1,12 @@
 #pragma once
 
 #include "JuceHeader.h"
+#include "SampleListener.h"
 #include "TrackLaneControl.h"
 #include "controls/common/PositionOverlay.h"
 #include "controls/common/TimeMeter.h"
 #include "model/Track.h"
 #include "model/TrackList.h"
-#include "SampleListener.h"
 
 class DropBox : public juce::Component {
   public:
@@ -52,6 +52,7 @@ class TrackListPanel : public juce::Component, public juce::DragAndDropContainer
     // DragAndDropTarget
     bool isInterestedInDragSource(const SourceDetails &dragSourceDetails) override { return true; }
     void itemDropped(const SourceDetails &dragSourceDetails) override;
+    void dragOperationStarted(const DragAndDropTarget::SourceDetails & dragSourceDetails) override;
 
     //==============================================================================
     // Component
@@ -67,6 +68,7 @@ class TrackListPanel : public juce::Component, public juce::DragAndDropContainer
 
     TimeMeter timeMeter;
     DropBox dropBox;
+    int dragSourceOffset;
 
     std::list<SampleListener *> listeners;
 
@@ -74,7 +76,7 @@ class TrackListPanel : public juce::Component, public juce::DragAndDropContainer
     int getTrackLaneWidth() const;
     int getTrackLaneHeight() const;
 
-    void notifySampleDropped(SampleThumbnail * thumbnail, juce::Point<int> pos);
+    void notifySampleDropped(SampleThumbnail *thumbnail, juce::Point<int> pos);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListPanel)
 };
