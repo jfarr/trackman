@@ -3,8 +3,10 @@
 
 TrackListPanel::TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
     juce::AudioFormatManager &formatManager)
-    : trackList(trackList), viewport(viewport), formatManager(formatManager) {
+    : trackList(trackList), viewport(viewport), transport(transport), formatManager(formatManager) {
     createControls();
+    resize();
+    startTimer(20);
 }
 
 TrackListPanel::~TrackListPanel() {}
@@ -65,19 +67,29 @@ void TrackListPanel::dragOperationStarted(const DragAndDropTarget::SourceDetails
 
 void TrackListPanel::resize() {
     auto topStripWidth = 20;
-    if (!lanes.empty()) {
-        setSize(getTrackLaneWidth(), lanes.size() * lanes.back()->getHeight() + topStripWidth);
-        for (TrackLaneControl *lane : lanes) {
-            lane->resized();
-        }
-    } else {
-        setSize(getTrackLaneWidth(), topStripWidth);
+    setSize(getTrackLaneWidth(), getTrackLaneWidth());
+    for (TrackLaneControl *lane : lanes) {
+        lane->resized();
     }
     resized();
 }
 
 void TrackListPanel::paint(juce::Graphics &g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+
+    auto leftPanelWidth = 25;
+    auto duration = (float)transport.getLengthInSeconds();
+
+    if (duration > 0.0) {
+        auto audioPosition = (float)transport.getCurrentPosition();
+        auto drawPosition = audioPosition * scale + leftPanelWidth;
+
+        g.setColour(juce::Colour{0xff282828});
+        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
+    }
+
+    g.setColour(juce::Colours::lightgrey);
+    g.drawLine(leftPanelWidth, 0, leftPanelWidth, (float)getHeight(), 1.0f);
 }
 
 void TrackListPanel::resized() {
@@ -96,8 +108,8 @@ int TrackListPanel::getTrackLaneWidth() const {
 }
 
 int TrackListPanel::getTrackLaneHeight() const {
-    int trackHeight = lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() : 0;
     auto topStripWidth = 20;
+    int trackHeight = lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() : 0;
     return std::max(trackHeight + topStripWidth, viewport.getHeight());
 }
 
