@@ -3,12 +3,16 @@
 TrackListPanel::TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
     juce::AudioFormatManager &formatManager)
     : trackList(trackList), viewport(viewport), formatManager(formatManager) {
+    createControls();
 }
 
 TrackListPanel::~TrackListPanel() {}
 
+void TrackListPanel::createControls() { addAndMakeVisible(timeMeter); }
+
 void TrackListPanel::update() {
     removeAllChildren();
+    addAndMakeVisible(timeMeter);
     for (TrackLaneControl *lane : lanes) {
         addAndMakeVisible(lane);
     }
@@ -45,8 +49,11 @@ Track *TrackListPanel::getTrackAtPos(int x, int y) {
 }
 
 void TrackListPanel::resize() {
+    auto topStripWidth = 20;
     if (!lanes.empty()) {
-        setSize(getTrackLaneWidth(), lanes.size() * lanes.back()->getHeight());
+        setSize(getTrackLaneWidth(), lanes.size() * lanes.back()->getHeight() + topStripWidth);
+    } else {
+        setSize(getTrackLaneWidth(), topStripWidth);
     }
     resized();
 }
@@ -56,13 +63,13 @@ void TrackListPanel::paint(juce::Graphics &g) {
 }
 
 void TrackListPanel::resized() {
-    auto leftPanelWidth = 25;
+    auto topStripWidth = 20;
     auto area = juce::Rectangle(getTrackLaneWidth(), getTrackLaneHeight());
+    timeMeter.setBounds(area.removeFromTop(topStripWidth));
     for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(lane->getHeight()));
     }
 }
-
 
 int TrackListPanel::getTrackLaneWidth() const {
     int trackWidth = trackList.getTotalLength() * scale;

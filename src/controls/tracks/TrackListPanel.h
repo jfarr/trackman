@@ -3,6 +3,7 @@
 #include "JuceHeader.h"
 #include "TrackLaneControl.h"
 #include "controls/common/PositionOverlay.h"
+#include "controls/common/TimeMeter.h"
 #include "model/Track.h"
 #include "model/TrackList.h"
 
@@ -55,8 +56,10 @@ class TrackListPanel : public juce::Component {
     std::list<TrackLaneControl *> lanes;
     float scale = 75;
 
+    TimeMeter timeMeter;
     DropBox dropBox;
 
+    void createControls();
     int getTrackLaneWidth() const;
     int getTrackLaneHeight() const;
 

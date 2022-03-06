@@ -40,6 +40,8 @@ target_sources(Trackman PRIVATE
         controls/common/PositionOverlay.h
         controls/common/ThumbnailComponent.cpp
         controls/common/ThumbnailComponent.h
+        controls/common/TimeMeter.cpp
+        controls/common/TimeMeter.h
         controls/common/TransportControl.cpp
         controls/common/TransportControl.h
         controls/desktop/ChildWindow.cpp
