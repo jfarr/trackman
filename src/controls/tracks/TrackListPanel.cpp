@@ -63,6 +63,11 @@ void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
 
 void TrackListPanel::dragOperationStarted(const DragAndDropTarget::SourceDetails &dragSourceDetails) {
     dragSourceOffset = dragSourceDetails.sourceComponent->getWidth() / 2 - dragSourceDetails.localPosition.getX();
+    dragSourceDetails.sourceComponent->getParentComponent()->removeChildComponent(dragSourceDetails.sourceComponent);
+}
+
+void TrackListPanel::dragOperationEnded(const DragAndDropTarget::SourceDetails &dragSourceDetails) {
+    notifyDragEnded();
 }
 
 void TrackListPanel::resize() {
@@ -124,5 +129,11 @@ void TrackListPanel::removeListener(SampleListener *listener) { listeners.remove
 void TrackListPanel::notifySampleDropped(SampleThumbnail *thumbnail, juce::Point<int> pos) {
     for (SampleListener *listener : listeners) {
         listener->sampleMoved(thumbnail->getSample(), pos);
+    }
+}
+
+void TrackListPanel::notifyDragEnded() {
+    for (SampleListener *listener : listeners) {
+        listener->dragEnded();
     }
 }

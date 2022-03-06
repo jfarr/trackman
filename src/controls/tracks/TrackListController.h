@@ -42,6 +42,7 @@ class TrackListController : public TrackListListener, SampleListener {
     //==============================================================================
     // SampleListener
     void sampleMoved(Sample &sample, juce::Point<int> pos) override;
+    void dragEnded() override;
 
   private:
     TrackList &trackList;
@@ -61,6 +62,7 @@ class TrackListController : public TrackListListener, SampleListener {
 
     void updateLane(Track &track);
     TrackLaneController *getLane(Track &track);
+    void updateLanes();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListController)
 };

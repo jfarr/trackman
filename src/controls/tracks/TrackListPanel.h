@@ -55,7 +55,11 @@ class TrackListPanel : public juce::Component,
     // DragAndDropTarget
     bool isInterestedInDragSource(const SourceDetails &dragSourceDetails) override { return true; }
     void itemDropped(const SourceDetails &dragSourceDetails) override;
+
+    //==============================================================================
+    // DragAndDropContainer
     void dragOperationStarted(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
+    void dragOperationEnded (const DragAndDropTarget::SourceDetails& dragSourceDetails) override;
 
     //==============================================================================
     // Component
@@ -81,6 +85,7 @@ class TrackListPanel : public juce::Component,
     int getTrackLaneHeight() const;
 
     void notifySampleDropped(SampleThumbnail *thumbnail, juce::Point<int> pos);
+    void notifyDragEnded();
 
     //==============================================================================
     // Timer

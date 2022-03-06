@@ -12,12 +12,11 @@ class SampleThumbnail : public juce::Component {
 
     Sample &getSample() { return sample; }
 
-    void mouseDrag(const juce::MouseEvent &event) override;
-
     //==============================================================================
     // Component
     void paint(juce::Graphics &g) override;
     void resized() override;
+    void mouseDrag(const juce::MouseEvent &event) override;
 
   private:
     Sample &sample;

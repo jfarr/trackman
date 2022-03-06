@@ -91,12 +91,18 @@ void TrackListController::updateLane(Track &track) {
 }
 
 TrackLaneController *TrackListController::getLane(Track &track) {
-    for (std::unique_ptr<TrackLaneController> &lane : lanes) {
+    for (auto &lane : lanes) {
         if (&lane->getTrack() == &track) {
             return lane.get();
         }
     }
     return nullptr;
+}
+
+void TrackListController::updateLanes() {
+    for (auto &lane : lanes) {
+        lane->update();
+    }
 }
 
 void TrackListController::selectionChanged(Track &track) { notifySelectionChanged(track); }
@@ -109,6 +115,10 @@ void TrackListController::sampleMoved(Sample &sample, juce::Point<int> pos) {
     double startPos = std::max((pos.getX() - offset - leftPanelWidth), 0.0);
     sample.setPosition(startPos / scale);
     trackListPanel.resize();
+}
+
+void TrackListController::dragEnded() {
+    updateLanes();
 }
 
 void TrackListController::addListener(TrackListListener *listener) {
