@@ -13,7 +13,7 @@ class MixerPanel : public juce::Component {
     MixerPanel(TrackList &trackList, Mixer &mixer);
     ~MixerPanel();
 
-    int getPreferredHeight() const { return std::max(getHeight(), 250); }
+    int getPreferredHeight() const { return std::max(getHeight(), 280); }
 
     void clear();
     void update();

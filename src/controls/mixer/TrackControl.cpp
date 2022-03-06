@@ -58,24 +58,30 @@ void TrackControl::mouseUp(const juce::MouseEvent &event) {
 
 void TrackControl::paint(juce::Graphics &g) {
     auto bgColor = juce::Colour{0xff282828};
-    auto labelHeight = 20;
+    auto buttonsHeight = 30;
+    auto labelHeight = 25;
     g.fillAll(bgColor);
     g.setColour(track.isSelected() ? juce::Colours::lightgrey : juce::Colours::grey);
-    g.fillRect(0, 0, getWidth(), labelHeight);
+    g.fillRect(0, 0, getWidth(), buttonsHeight + labelHeight);
     g.fillRect(0, getHeight() - labelHeight, getWidth(), labelHeight);
     g.setColour(juce::Colours::black);
     g.fillRect(getWidth() - 1, 0, 1, getHeight());
     g.setColour(bgColor);
     g.fillRect(getWidth() - 1, 0, 0, getHeight());
+    g.setColour(juce::Colours::dimgrey);
+    g.fillRect(0, buttonsHeight - 1, getWidth() - 1, 1);
+    g.setColour(bgColor);
+    g.fillRect(0, buttonsHeight, getWidth() - 1, 1);
 }
 
 void TrackControl::resized() {
     auto area = getLocalBounds();
     auto sliderWidth = 75;
     auto buttonSize = 25;
-    auto labelHeight = 20;
+    auto buttonsHeight = 30;
+    auto labelHeight = 25;
     auto margin = 3;
-    area.removeFromTop(labelHeight + margin);
+    area.removeFromTop(buttonsHeight + labelHeight + margin);
     channelLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
     trackLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
     decibelSlider.setBounds(area.removeFromLeft(sliderWidth));

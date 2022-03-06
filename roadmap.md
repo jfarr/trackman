@@ -12,3 +12,4 @@
 - Zoom track lanes
 - Drop multiple files
 - Prompt for save
+- Mixer horizontal scroll

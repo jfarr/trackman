@@ -58,14 +58,19 @@ void MasterTrackControl::paint(juce::Graphics &g) {
     g.fillRect(getWidth() - 1, 0, 1, getHeight());
     g.setColour(juce::Colour{0xff282828});
     g.fillRect(getWidth() - 1, 0, 0, getHeight());
+    auto buttonsHeight = 30;
+    g.setColour(juce::Colours::lightgrey);
+    g.fillRect(0, 0, getWidth(), buttonsHeight);
 }
 
 void MasterTrackControl::resized() {
     auto area = getLocalBounds();
+    auto buttonsHeight = 30;
+    auto labelHeight = 25;
     auto sliderWidth = 75;
     auto buttonSize = 25;
-    auto labelHeight = 20;
     auto margin = 3;
+    area.removeFromTop(buttonsHeight + margin);
     channelLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
     decibelSlider.setBounds(area.removeFromLeft(sliderWidth).reduced(margin));
     auto buttonArea = area.removeFromLeft(buttonSize);

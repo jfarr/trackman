@@ -67,7 +67,7 @@ void TrackListPanel::dragOperationStarted(const DragAndDropTarget::SourceDetails
 
 void TrackListPanel::resize() {
     auto topStripWidth = 20;
-    setSize(getTrackLaneWidth(), getTrackLaneWidth());
+    setSize(getTrackLaneWidth(), getTrackLaneHeight());
     for (TrackLaneControl *lane : lanes) {
         lane->resized();
     }
@@ -94,7 +94,7 @@ void TrackListPanel::paint(juce::Graphics &g) {
 
 void TrackListPanel::resized() {
     auto topStripWidth = 20;
-    auto area = juce::Rectangle(getTrackLaneWidth(), getTrackLaneHeight());
+    auto area = getLocalBounds();
     timeMeter.setBounds(area.removeFromTop(topStripWidth));
     for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(lane->getHeight()));
@@ -104,7 +104,7 @@ void TrackListPanel::resized() {
 int TrackListPanel::getTrackLaneWidth() const {
     int trackWidth = trackList.getTotalLengthSeconds() * scale;
     auto leftPanelWidth = 25;
-    return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
+    return std::max(trackWidth + leftPanelWidth, viewport.getWidth() - 10);
 }
 
 int TrackListPanel::getTrackLaneHeight() const {

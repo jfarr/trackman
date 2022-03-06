@@ -11,6 +11,8 @@ class MasterTrackControl : public juce::Component, public SliderListener {
     MasterTrackControl(Mixer &mixer);
     ~MasterTrackControl();
 
+    int getPreferredWidth() const { return std::max(getWidth(), 100); }
+
     void update();
 
     void setLevel(float level);
