@@ -6,8 +6,12 @@ OffsetAudioSource::OffsetAudioSource(PositionableAudioSource &source, double off
 OffsetAudioSource::~OffsetAudioSource() {}
 
 void OffsetAudioSource::setOffsetSeconds(double offsetSeconds) {
-    const juce::ScopedLock lock (mutex);
-    offsetSamples = offsetSeconds * sampleRate;
+    auto currentPos = getNextReadPosition();
+    if (true) {
+        const juce::ScopedLock lock(mutex);
+        offsetSamples = offsetSeconds * sampleRate;
+    }
+    setNextReadPosition(currentPos);
 }
 
 void OffsetAudioSource::prepareToPlay(int blockSize, double sampleRate) { source.prepareToPlay(blockSize, sampleRate); }

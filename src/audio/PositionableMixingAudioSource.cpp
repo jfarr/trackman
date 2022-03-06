@@ -50,14 +50,14 @@ void PositionableMixingAudioSource::releaseResources() { mixer.releaseResources(
 
 void PositionableMixingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &info) {
     juce::int64 currentPos = getNextReadPosition();
-    if (currentPos > length) {
+    if (currentPos > getTotalLength()) {
         setNextReadPosition(currentPos);
     }
     mixer.getNextAudioBlock(info);
 }
 
 void PositionableMixingAudioSource::setNextReadPosition(juce::int64 newPosition) {
-    newPosition = looping ? newPosition % length : newPosition;
+    newPosition = looping ? newPosition % getTotalLength() : newPosition;
     for (int i = inputs.size(); --i >= 0;) {
         inputs.getUnchecked(i)->setNextReadPosition(newPosition);
     }
