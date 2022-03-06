@@ -8,9 +8,7 @@ Track::~Track() {
     }
 }
 
-double Track::getSampleRate() const {
-    return source == mixer ? 0.0 : sampleRate;
-}
+double Track::getSampleRate() const { return source == mixer ? 0.0 : sampleRate; }
 
 double Track::getTotalLengthSeconds() const {
     return (source == nullptr || sampleRate == 0) ? 0 : source->getTotalLength() / sampleRate;
@@ -40,7 +38,7 @@ void Track::loadFile(juce::AudioFormatManager &formatManager, juce::File newFile
     }
 }
 
-void Track::loadSamples(juce::AudioDeviceManager& deviceManager, juce::AudioFormatManager &formatManager) {
+void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {
     if (samples.size() == 0) {
         return;
     }
@@ -52,7 +50,8 @@ void Track::loadSamples(juce::AudioDeviceManager& deviceManager, juce::AudioForm
     setSource(mixer, deviceManager.getAudioDeviceSetup().sampleRate);
 }
 
-Sample *Track::addSample(juce::AudioDeviceManager& deviceManager, juce::AudioFormatManager &formatManager, juce::File file, double startPos, double endPos, double length, double sampleRate) {
+Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager,
+    juce::File file, double startPos, double endPos, double length, double sampleRate) {
     samples.push_back(std::make_unique<Sample>(file, startPos, endPos, length, sampleRate));
     auto sample = &(*samples.back());
     sample->loadFile(formatManager);
@@ -65,7 +64,11 @@ Sample *Track::addSample(juce::AudioDeviceManager& deviceManager, juce::AudioFor
 }
 
 void Track::eachSample(std::function<void(Sample &sample)> f) {
-    std::for_each(samples.begin(), samples.end(), [&f](std::unique_ptr<Sample> &sample) { f(*sample); });
+    std::for_each(samples.begin(), samples.end(), [&f](std::unique_ptr<Sample> &sample) {
+        if (!(*sample).isDeleted()) {
+            f(*sample);
+        }
+    });
 }
 
 void Track::setLevelGain(float newLevel) {

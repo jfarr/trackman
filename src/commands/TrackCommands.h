@@ -12,14 +12,15 @@ class AddSampleCommand : public Command {
         : Command("add sample"), controller(controller), track(track), file(file), pos(pos) {}
     ~AddSampleCommand() override {}
 
-    virtual void execute() override { controller.addSample(track, file, pos); }
-    void undo() override {}
+    virtual void execute() override { sample = controller.addSample(track, file, pos); }
+    void undo() override { controller.deleteSample(track, sample); }
 
   private:
     TrackListController &controller;
     Track &track;
     juce::File file;
     int pos;
+    Sample *sample;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AddSampleCommand)
 };

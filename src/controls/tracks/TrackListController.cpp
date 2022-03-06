@@ -50,7 +50,7 @@ void TrackListController::filesDropped(const juce::StringArray &files, int x, in
     trackListPanel.filesDropped(files, x, y);
 }
 
-void TrackListController::addSample(Track &track, juce::File file, int pos) {
+Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
     auto *reader = formatManager.createReaderFor(juce::File(file));
     if (reader != nullptr) {
         auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
@@ -60,9 +60,24 @@ void TrackListController::addSample(Track &track, juce::File file, int pos) {
         double offset = width / 2;
         double startPos = std::max((pos - offset - leftPanelWidth), 0.0);
         double endPos = startPos + width;
-        track.addSample(deviceManager, formatManager, file, startPos, endPos / scale, length, reader->sampleRate);
+        auto sample = track.addSample(deviceManager, formatManager, file, startPos, endPos / scale, length, reader->sampleRate);
         selectionChanged(track);
         updateLane(track);
+        if (listener != nullptr) {
+            listener->onSourceSet();
+        }
+        return sample;
+    }
+    return nullptr;
+}
+
+void TrackListController::deleteSample(Track &track, Sample *sample) {
+    if (sample == nullptr) {
+        return;
+    }
+    sample->setDeleted(true);
+    updateLane(track);
+    if (listener != nullptr) {
         listener->onSourceSet();
     }
 }
