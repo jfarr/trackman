@@ -50,8 +50,8 @@ void SampleThumbnail::paintOverlay(juce::Graphics &g) {
         if (audioPosition >= sample.getStartPos() && audioPosition <= sample.getEndPos()) {
             auto samplePos = audioPosition - sample.getStartPos();
             auto drawPosition = samplePos * scale;
-            g.setColour(juce::Colours::yellowgreen);
-            g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 2.0f);
+            g.setColour(juce::Colour{0xff282828});
+            g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
         }
     }
 }

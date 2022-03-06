@@ -5,7 +5,7 @@
 #include "SampleThumbnail.h"
 #include "model/Track.h"
 
-class TrackLaneControl : public juce::Component, private juce::Timer {
+class TrackLaneControl : public juce::Component {
   public:
     TrackLaneControl(Track &track, juce::AudioTransportSource &transport);
     ~TrackLaneControl();
@@ -31,7 +31,6 @@ class TrackLaneControl : public juce::Component, private juce::Timer {
     float scale = 75;
 
     void createControls();
-    void timerCallback() override { repaint(); }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackLaneControl)
 };

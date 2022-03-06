@@ -4,7 +4,6 @@ TrackLaneControl::TrackLaneControl(Track &track, juce::AudioTransportSource &tra
     : track(track), transport(transport) {
     createControls();
     setSize(800, 100);
-    startTimer(20);
 }
 
 TrackLaneControl::~TrackLaneControl() {}
@@ -39,8 +38,8 @@ void TrackLaneControl::paint(juce::Graphics &g) {
         auto audioPosition = (float)transport.getCurrentPosition();
         auto drawPosition = audioPosition * scale + leftPanelWidth;
 
-        g.setColour(juce::Colours::yellowgreen);
-        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 2.0f);
+        g.setColour(juce::Colour{0xff282828});
+        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
     }
 }
 

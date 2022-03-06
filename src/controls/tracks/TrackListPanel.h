@@ -1,6 +1,7 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
+
 #include "SampleListener.h"
 #include "TrackLaneControl.h"
 #include "controls/common/PositionOverlay.h"
@@ -25,7 +26,10 @@ class DropBox : public juce::Component {
     std::unique_ptr<juce::AudioFormatReaderSource> source;
 };
 
-class TrackListPanel : public juce::Component, public juce::DragAndDropContainer, public juce::DragAndDropTarget {
+class TrackListPanel : public juce::Component,
+                       public juce::DragAndDropContainer,
+                       public juce::DragAndDropTarget,
+                       private juce::Timer {
   public:
     TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
         juce::AudioFormatManager &formatManager);
@@ -51,7 +55,7 @@ class TrackListPanel : public juce::Component, public juce::DragAndDropContainer
     // DragAndDropTarget
     bool isInterestedInDragSource(const SourceDetails &dragSourceDetails) override { return true; }
     void itemDropped(const SourceDetails &dragSourceDetails) override;
-    void dragOperationStarted(const DragAndDropTarget::SourceDetails & dragSourceDetails) override;
+    void dragOperationStarted(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
 
     //==============================================================================
     // Component
@@ -61,6 +65,7 @@ class TrackListPanel : public juce::Component, public juce::DragAndDropContainer
   private:
     TrackList &trackList;
     juce::Viewport &viewport;
+    juce::AudioTransportSource &transport;
     juce::AudioFormatManager &formatManager;
     std::list<TrackLaneControl *> lanes;
     float scale = 75;
@@ -76,6 +81,10 @@ class TrackListPanel : public juce::Component, public juce::DragAndDropContainer
     int getTrackLaneHeight() const;
 
     void notifySampleDropped(SampleThumbnail *thumbnail, juce::Point<int> pos);
+
+    //==============================================================================
+    // Timer
+    void timerCallback() override { repaint(); }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListPanel)
 };
