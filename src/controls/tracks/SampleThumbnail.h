@@ -2,8 +2,8 @@
 
 #include <JuceHeader.h>
 
-#include "model/Sample.h"
 #include "controls/common/ThumbnailComponent.h"
+#include "model/Sample.h"
 
 class SampleThumbnail : public juce::Component {
   public:
@@ -11,6 +11,8 @@ class SampleThumbnail : public juce::Component {
     ~SampleThumbnail() {}
 
     Sample &getSample() { return sample; }
+
+    void mouseDrag(const juce::MouseEvent &event) override;
 
     //==============================================================================
     // Component

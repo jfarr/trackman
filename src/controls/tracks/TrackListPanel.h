@@ -24,14 +24,14 @@ class DropBox : public juce::Component {
     std::unique_ptr<juce::AudioFormatReaderSource> source;
 };
 
-class TrackListPanel : public juce::Component {
+class TrackListPanel : public juce::Component, public juce::DragAndDropContainer {
   public:
     TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
         juce::AudioFormatManager &formatManager);
     ~TrackListPanel();
 
     Track *getTrackAtPos(int x, int y);
-    DropBox &getDropBox() { return dropBox; }
+    //    DropBox &getDropBox() { return dropBox; }
 
     void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
     void resize();

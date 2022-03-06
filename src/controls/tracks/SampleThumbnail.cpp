@@ -53,3 +53,10 @@ void SampleThumbnail::resized() {
     auto margin = 2;
     filenameLabel.setBounds(area.removeFromTop(labelHeight).reduced(margin));
 }
+
+void SampleThumbnail::mouseDrag(const juce::MouseEvent &event) {
+    auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
+    if (container != nullptr) {
+        container->startDragging("clip", this);
+    }
+}
