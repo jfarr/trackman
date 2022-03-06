@@ -16,10 +16,10 @@ class DesktopController : public MasterTrackListener,
                           public TrackListListener,
                           public FileDragDropTarget {
   public:
-    DesktopController(juce::DocumentWindow &mainWindow, juce::AudioFormatManager &formatManager);
+    DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     ~DesktopController();
 
-    TrackList &getTrackList() { return trackList; }
+    Mixer &getMixer() { return mixer; }
     MixerController &getMixerController() { return mixerController; }
     TrackListController &getTrackListController() { return trackListController; }
 
@@ -64,7 +64,9 @@ class DesktopController : public MasterTrackListener,
 
   private:
     CommandList commandList;
+    // TODO: move trackList and mixer inside project
     TrackList trackList;
+    Mixer mixer;
     MixerController mixerController;
     TrackListController trackListController;
 
@@ -76,6 +78,7 @@ class DesktopController : public MasterTrackListener,
     juce::DocumentWindow &mainWindow;
     juce::String applicationName;
 
+    juce::AudioDeviceManager &deviceManager;
     juce::AudioFormatManager &formatManager;
 
     void saveProjectFile(juce::File file);

@@ -4,7 +4,7 @@
 
 class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   public:
-    PositionableMixingAudioSource();
+    PositionableMixingAudioSource(double sampleRate);
     ~PositionableMixingAudioSource() override;
 
     void addInputSource(PositionableAudioSource *newInput, const bool deleteWhenRemoved,
@@ -29,8 +29,9 @@ class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   private:
     juce::MixerAudioSource mixer;
     juce::Array<PositionableAudioSource *> inputs;
-    juce::int64 length;
-    bool looping;
+    double sampleRate;
+    juce::int64 length = 0;
+    bool looping = false;
 
     void updateLength();
 

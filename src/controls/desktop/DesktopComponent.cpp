@@ -2,9 +2,11 @@
 #include "common/listutil.h"
 
 DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), desktopController(*parentWindow, formatManager),
+    : formatManager(formatManager), desktopController(*parentWindow, deviceManager, formatManager),
       trackListViewport(desktopController.getTrackListController().getViewport()),
-      mixerPanel(desktopController.getMixerController().getMixerPanel()) {
+      mixerPanel(desktopController.getMixerController().getMixerPanel()), mixer(desktopController.getMixer()) {
+
+    setAudioChannels(0, 2);
 
     addListener(&desktopController);
 
@@ -34,6 +36,7 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::Aud
 }
 
 DesktopComponent::~DesktopComponent() {
+    shutdownAudio();
     closeAllWindows();
 
 #if JUCE_MAC
@@ -54,6 +57,19 @@ void DesktopComponent::closeAllWindows() {
 
     windows.clear();
 }
+
+//==============================================================================
+void DesktopComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
+    mixer.prepareToPlay(samplesPerBlockExpected, sampleRate);
+}
+
+void DesktopComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+    mixer.getNextAudioBlock(bufferToFill);
+}
+
+void DesktopComponent::releaseResources() { mixer.releaseResources(); }
+
+//==============================================================================
 void DesktopComponent::paint(juce::Graphics &g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
@@ -65,24 +81,18 @@ void DesktopComponent::resized() {
     desktopController.resize();
 }
 
+//==============================================================================
 bool DesktopComponent::isInterestedInFileDrag(const juce::StringArray &files) { return true; }
 
-void DesktopComponent::fileDragEnter(const juce::StringArray &files, int x, int y) {
-    notifyFileDragEnter(files, x, y);
-}
+void DesktopComponent::fileDragEnter(const juce::StringArray &files, int x, int y) { notifyFileDragEnter(files, x, y); }
 
-void DesktopComponent::fileDragMove(const juce::StringArray &files, int x, int y) {
-    notifyFileDragMove(files, x, y);
-}
+void DesktopComponent::fileDragMove(const juce::StringArray &files, int x, int y) { notifyFileDragMove(files, x, y); }
 
-void DesktopComponent::fileDragExit(const juce::StringArray &files) {
-    notifyFileDragExit(files);
-}
+void DesktopComponent::fileDragExit(const juce::StringArray &files) { notifyFileDragExit(files); }
 
-void DesktopComponent::filesDropped(const juce::StringArray &files, int x, int y) {
-    notifyFilesDropped(files, x, y);
-}
+void DesktopComponent::filesDropped(const juce::StringArray &files, int x, int y) { notifyFilesDropped(files, x, y); }
 
+//==============================================================================
 void DesktopComponent::addListener(FileDragDropTarget *listener) {
     if (!listContains(listeners, listener)) {
         listeners.push_front(listener);

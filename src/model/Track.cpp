@@ -8,6 +8,10 @@ Track::~Track() {
     }
 }
 
+double Track::getSampleRate() const {
+    return source == mixer ? 0.0 : sampleRate;
+}
+
 juce::int64 Track::getTotalLength() const {
     return (source == nullptr || sampleRate == 0) ? 0 : source->getTotalLength() / sampleRate;
 }
@@ -40,7 +44,7 @@ void Track::loadSamples(juce::AudioDeviceManager& deviceManager, juce::AudioForm
     if (samples.size() == 0) {
         return;
     }
-    mixer = std::make_shared<PositionableMixingAudioSource>();
+    mixer = std::make_shared<PositionableMixingAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
     for (std::unique_ptr<Sample> &sample : samples) {
         sample->loadFile(formatManager);
         mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
@@ -53,7 +57,7 @@ Sample *Track::addSample(juce::AudioDeviceManager& deviceManager, juce::AudioFor
     auto sample = &(*samples.back());
     sample->loadFile(formatManager);
     if (mixer == nullptr) {
-        mixer = std::make_shared<PositionableMixingAudioSource>();
+        mixer = std::make_shared<PositionableMixingAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
     }
     mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
     setSource(mixer, deviceManager.getAudioDeviceSetup().sampleRate);

@@ -10,7 +10,7 @@
 #include "controls/tracks/TrackListPanel.h"
 #include "model/Mixer.h"
 
-class DesktopComponent : public juce::Component,
+class DesktopComponent : public juce::AudioAppComponent,
                          public juce::ApplicationCommandTarget,
                          public juce::MenuBarModel,
                          public juce::FileDragAndDropTarget {
@@ -30,6 +30,12 @@ class DesktopComponent : public juce::Component,
     // Component
     void paint(juce::Graphics &g) override;
     void resized() override;
+
+    //==============================================================================
+    // AudioAppComponent
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void releaseResources() override;
 
     //==============================================================================
     // FileDragAndDropTarget
@@ -149,6 +155,7 @@ class DesktopComponent : public juce::Component,
     DesktopController desktopController;
     juce::Component &trackListViewport;
     juce::Component &mixerPanel;
+    Mixer &mixer;
     std::list<FileDragDropTarget *> listeners;
 
     juce::ApplicationCommandManager commandManager;

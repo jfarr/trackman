@@ -3,12 +3,11 @@
 
 MixerPanel::MixerPanel(TrackList &trackList, Mixer &mixer)
     : masterTrackControl(mixer), trackList(trackList), mixer(mixer), transportControl(mixer.getTransportSource()) {
-    setAudioChannels(0, 2);
     createControls();
     setSize(800, 250);
 }
 
-MixerPanel::~MixerPanel() { shutdownAudio(); }
+MixerPanel::~MixerPanel() {}
 
 void MixerPanel::createControls() {
     addAndMakeVisible(transportControl);
@@ -21,26 +20,11 @@ void MixerPanel::clear() {
     createControls();
 }
 
-void MixerPanel::update() {
-    masterTrackControl.update();
-}
+void MixerPanel::update() { masterTrackControl.update(); }
 
 void MixerPanel::addTrack(TrackControl *trackControl) {
     tracks.push_back(std::unique_ptr<TrackControl>(trackControl));
     addAndMakeVisible(trackControl);
-}
-
-//==============================================================================
-void MixerPanel::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
-    mixer.prepareToPlay(samplesPerBlockExpected, sampleRate);
-}
-
-void MixerPanel::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    mixer.getNextAudioBlock(bufferToFill);
-}
-
-void MixerPanel::releaseResources() {
-    mixer.releaseResources();
 }
 
 //==============================================================================

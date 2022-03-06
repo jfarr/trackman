@@ -20,7 +20,7 @@ class MixerController : public TrackListListener,
                         public MasterTrackListener,
                         public TrackControlListener {
   public:
-    MixerController(TrackList &trackList, juce::AudioFormatManager &formatManager);
+    MixerController(TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager);
     ~MixerController();
 
     MixerPanel &getMixerPanel() { return mixerPanel; }
@@ -67,7 +67,7 @@ class MixerController : public TrackListListener,
 
   private:
     TrackList &trackList;
-    Mixer mixer;
+    Mixer &mixer;
     MixerPanel mixerPanel;
     std::list<std::unique_ptr<TrackController>> tracks;
     juce::AudioFormatManager &formatManager;
