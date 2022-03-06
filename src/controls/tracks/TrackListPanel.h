@@ -6,6 +6,7 @@
 #include "controls/common/TimeMeter.h"
 #include "model/Track.h"
 #include "model/TrackList.h"
+#include "SampleListener.h"
 
 class DropBox : public juce::Component {
   public:
@@ -44,6 +45,9 @@ class TrackListPanel : public juce::Component, public juce::DragAndDropContainer
     void fileDragExit(const juce::StringArray &files);
     void filesDropped(const juce::StringArray &files, int x, int y);
 
+    void addListener(SampleListener *listener);
+    void removeListener(SampleListener *listener);
+
     //==============================================================================
     // DragAndDropTarget
     bool isInterestedInDragSource(const SourceDetails &dragSourceDetails) override { return true; }
@@ -67,9 +71,13 @@ class TrackListPanel : public juce::Component, public juce::DragAndDropContainer
     TimeMeter timeMeter;
     DropBox dropBox;
 
+    std::list<SampleListener *> listeners;
+
     void createControls();
     int getTrackLaneWidth() const;
     int getTrackLaneHeight() const;
+
+    void notifySampleDropped(SampleThumbnail * thumbnail, juce::Point<int> pos);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListPanel)
 };

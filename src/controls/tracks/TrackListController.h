@@ -5,13 +5,13 @@
 #include "TrackLaneController.h"
 #include "TrackListPanel.h"
 #include "controls/desktop/TrackListListener.h"
-#include "model/TrackList.h"
 #include "controls/desktop/TrackSourceListener.h"
+#include "model/TrackList.h"
 
-class TrackListController : public TrackListListener {
+class TrackListController : public TrackListListener, SampleListener {
   public:
-    TrackListController(
-        TrackList &trackList, juce::AudioTransportSource &transport, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
+    TrackListController(TrackList &trackList, juce::AudioTransportSource &transport,
+        juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     ~TrackListController() {}
 
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
@@ -32,6 +32,10 @@ class TrackListController : public TrackListListener {
     //==============================================================================
     // TrackListListener
     void selectionChanged(Track &track) override;
+
+    //==============================================================================
+    // SampleListener
+    void sampleDropped(SampleThumbnail * thumbnail, juce::Point<int> pos) override;
 
   private:
     TrackList &trackList;

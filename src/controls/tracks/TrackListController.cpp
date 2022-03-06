@@ -1,13 +1,15 @@
 #include "TrackListController.h"
 #include "common/listutil.h"
 
-TrackListController::TrackListController(
-    TrackList &trackList, juce::AudioTransportSource &transport, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
-    : trackList(trackList), transport(transport), trackListPanel(trackList, trackListViewport, transport, formatManager),
-      deviceManager(deviceManager), formatManager(formatManager) {
+TrackListController::TrackListController(TrackList &trackList, juce::AudioTransportSource &transport,
+    juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
+    : trackList(trackList), transport(transport),
+      trackListPanel(trackList, trackListViewport, transport, formatManager), deviceManager(deviceManager),
+      formatManager(formatManager) {
     trackListViewport.setSize(800, 350);
     trackListViewport.setScrollBarsShown(true, true);
     trackListViewport.setViewedComponent(&trackListPanel, false);
+    trackListPanel.addListener(this);
     trackListPanel.resized();
 }
 
@@ -52,7 +54,8 @@ void TrackListController::filesDropped(const juce::StringArray &files, int x, in
             double offset = width / 2;
             double startPos = std::max((x - offset - leftPanelWidth), 0.0);
             double endPos = startPos + width;
-            selected->addSample(deviceManager, formatManager, files[0], startPos / scale, endPos / scale, length, reader->sampleRate);
+            selected->addSample(
+                deviceManager, formatManager, files[0], startPos / scale, endPos / scale, length, reader->sampleRate);
         }
         selectionChanged(*selected);
         updateLane(*selected);
@@ -78,6 +81,16 @@ TrackLaneController *TrackListController::getLane(Track &track) {
 }
 
 void TrackListController::selectionChanged(Track &track) { notifySelectionChanged(track); }
+
+void TrackListController::sampleDropped(SampleThumbnail *thumbnail, juce::Point<int> pos) {
+    auto length = thumbnail->getSample().getLength();
+    auto width = length * scale;
+    auto leftPanelWidth = 25;
+    double offset = width / 2;
+    double startPos = std::max((pos.getX() - offset - leftPanelWidth), 0.0);
+    thumbnail->getSample().setPosition(startPos / scale);
+    trackListPanel.resize();
+}
 
 void TrackListController::addListener(TrackListListener *listener) {
     if (!listContains(listeners, listener)) {
