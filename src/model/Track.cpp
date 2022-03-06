@@ -12,7 +12,7 @@ double Track::getSampleRate() const {
     return source == mixer ? 0.0 : sampleRate;
 }
 
-juce::int64 Track::getTotalLength() const {
+double Track::getTotalLengthSeconds() const {
     return (source == nullptr || sampleRate == 0) ? 0 : source->getTotalLength() / sampleRate;
 }
 

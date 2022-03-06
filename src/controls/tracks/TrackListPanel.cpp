@@ -1,4 +1,5 @@
 #include "TrackListPanel.h"
+#include "common/listutil.h"
 
 TrackListPanel::TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
     juce::AudioFormatManager &formatManager)
@@ -48,10 +49,27 @@ Track *TrackListPanel::getTrackAtPos(int x, int y) {
     return nullptr;
 }
 
+void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
+    auto *thumbnail = dynamic_cast<SampleThumbnail *>(dragSourceDetails.sourceComponent.get());
+    if (thumbnail == nullptr) {
+        return;
+    }
+    auto pos = juce::Point<int>(
+        dragSourceDetails.localPosition.getX() + dragSourceOffset, dragSourceDetails.localPosition.getY());
+    notifySampleDropped(thumbnail, pos);
+}
+
+void TrackListPanel::dragOperationStarted(const DragAndDropTarget::SourceDetails &dragSourceDetails) {
+    dragSourceOffset = dragSourceDetails.sourceComponent->getWidth() / 2 - dragSourceDetails.localPosition.getX();
+}
+
 void TrackListPanel::resize() {
     auto topStripWidth = 20;
     if (!lanes.empty()) {
         setSize(getTrackLaneWidth(), lanes.size() * lanes.back()->getHeight() + topStripWidth);
+        for (TrackLaneControl *lane : lanes) {
+            lane->resized();
+        }
     } else {
         setSize(getTrackLaneWidth(), topStripWidth);
     }
@@ -72,11 +90,27 @@ void TrackListPanel::resized() {
 }
 
 int TrackListPanel::getTrackLaneWidth() const {
-    int trackWidth = trackList.getTotalLength() * scale;
-    return std::max(trackWidth, viewport.getWidth());
+    int trackWidth = trackList.getTotalLengthSeconds() * scale;
+    auto leftPanelWidth = 25;
+    return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
 }
 
 int TrackListPanel::getTrackLaneHeight() const {
-    int trackHeight = lanes.size() > 0 ? lanes.size() * lanes.back()->getHeight() : 0;
-    return std::max(trackHeight, viewport.getHeight());
+    int trackHeight = lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() : 0;
+    auto topStripWidth = 20;
+    return std::max(trackHeight + topStripWidth, viewport.getHeight());
+}
+
+void TrackListPanel::addListener(SampleListener *listener) {
+    if (!listContains(listeners, listener)) {
+        listeners.push_front(listener);
+    }
+}
+
+void TrackListPanel::removeListener(SampleListener *listener) { listeners.remove(listener); }
+
+void TrackListPanel::notifySampleDropped(SampleThumbnail *thumbnail, juce::Point<int> pos) {
+    for (SampleListener *listener : listeners) {
+        listener->sampleDropped(thumbnail, pos);
+    }
 }

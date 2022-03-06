@@ -176,21 +176,15 @@ void DesktopController::selectionChanged(Track &track) {
 }
 
 void DesktopController::fileDragEnter(const juce::StringArray &files, int x, int y) {
-    //    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
     trackListController.fileDragEnter(files, x, y);
 }
 
 void DesktopController::fileDragMove(const juce::StringArray &files, int x, int y) {
-    //    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
     trackListController.fileDragMove(files, x, y);
 }
 
-void DesktopController::fileDragExit(const juce::StringArray &files) {
-    //    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
-    trackListController.fileDragExit(files);
-}
+void DesktopController::fileDragExit(const juce::StringArray &files) { trackListController.fileDragExit(files); }
 
 void DesktopController::filesDropped(const juce::StringArray &files, int x, int y) {
-    //    std::cout << "drag enter: " << files.joinIntoString(",").toStdString() << "\n";
     trackListController.filesDropped(files, x, y);
 }

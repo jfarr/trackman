@@ -30,10 +30,7 @@ class PositionableMixingAudioSource : public juce::PositionableAudioSource {
     juce::MixerAudioSource mixer;
     juce::Array<PositionableAudioSource *> inputs;
     double sampleRate;
-    juce::int64 length = 0;
     bool looping = false;
-
-    void updateLength();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PositionableMixingAudioSource)
 };

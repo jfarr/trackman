@@ -11,6 +11,7 @@ class TrackLaneControl : public juce::Component, private juce::Timer {
     ~TrackLaneControl();
 
     Track &getTrack() { return track; }
+    int getPreferredHeight() const { return std::max(getHeight(), 100); }
 
     void addThumbnail(SampleThumbnail *thumbnail);
     void clear() { thumbnails.clear(); }

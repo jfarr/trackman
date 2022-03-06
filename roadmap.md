@@ -1,8 +1,7 @@
 # Roadmap
 
-- Time elapsed strip in track lane panel
 - Undo drop sample
-- Move sample thumbnails
+- Select samples
 - Resize sample thumbnails
 - Undo move / resize
 - Delete samples / undo delete

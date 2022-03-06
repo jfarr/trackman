@@ -1,6 +1,7 @@
 #pragma once
 
 #include "JuceHeader.h"
+#include "SampleListener.h"
 #include "TrackLaneControl.h"
 #include "controls/common/PositionOverlay.h"
 #include "controls/common/TimeMeter.h"
@@ -24,14 +25,13 @@ class DropBox : public juce::Component {
     std::unique_ptr<juce::AudioFormatReaderSource> source;
 };
 
-class TrackListPanel : public juce::Component {
+class TrackListPanel : public juce::Component, public juce::DragAndDropContainer, public juce::DragAndDropTarget {
   public:
     TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
         juce::AudioFormatManager &formatManager);
     ~TrackListPanel();
 
     Track *getTrackAtPos(int x, int y);
-    DropBox &getDropBox() { return dropBox; }
 
     void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
     void resize();
@@ -43,6 +43,15 @@ class TrackListPanel : public juce::Component {
     void fileDragMove(const juce::StringArray &files, int x, int y);
     void fileDragExit(const juce::StringArray &files);
     void filesDropped(const juce::StringArray &files, int x, int y);
+
+    void addListener(SampleListener *listener);
+    void removeListener(SampleListener *listener);
+
+    //==============================================================================
+    // DragAndDropTarget
+    bool isInterestedInDragSource(const SourceDetails &dragSourceDetails) override { return true; }
+    void itemDropped(const SourceDetails &dragSourceDetails) override;
+    void dragOperationStarted(const DragAndDropTarget::SourceDetails & dragSourceDetails) override;
 
     //==============================================================================
     // Component
@@ -58,10 +67,15 @@ class TrackListPanel : public juce::Component {
 
     TimeMeter timeMeter;
     DropBox dropBox;
+    int dragSourceOffset;
+
+    std::list<SampleListener *> listeners;
 
     void createControls();
     int getTrackLaneWidth() const;
     int getTrackLaneHeight() const;
+
+    void notifySampleDropped(SampleThumbnail *thumbnail, juce::Point<int> pos);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListPanel)
 };

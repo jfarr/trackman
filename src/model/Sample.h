@@ -18,6 +18,8 @@ class Sample {
     void loadFile(juce::AudioFormatManager &formatManager);
     juce::PositionableAudioSource *getSource() { return offsetSource.get(); }
 
+    void setPosition(double pos);
+
   private:
     juce::File file;
     double startPos;

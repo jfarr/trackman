@@ -7,6 +7,8 @@ class OffsetAudioSource : public juce::PositionableAudioSource {
     OffsetAudioSource(PositionableAudioSource &source, double offsetSeconds, double sampleRate);
     ~OffsetAudioSource();
 
+    void setOffsetSeconds(double offsetSeconds);
+
     //==============================================================================
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;
@@ -24,4 +26,7 @@ class OffsetAudioSource : public juce::PositionableAudioSource {
   private:
     PositionableAudioSource &source;
     juce::int64 offsetSamples;
+    double sampleRate;
+
+    juce::CriticalSection mutex;
 };

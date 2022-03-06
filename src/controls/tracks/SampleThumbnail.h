@@ -2,8 +2,8 @@
 
 #include <JuceHeader.h>
 
-#include "model/Sample.h"
 #include "controls/common/ThumbnailComponent.h"
+#include "model/Sample.h"
 
 class SampleThumbnail : public juce::Component {
   public:
@@ -11,6 +11,8 @@ class SampleThumbnail : public juce::Component {
     ~SampleThumbnail() {}
 
     Sample &getSample() { return sample; }
+
+    void mouseDrag(const juce::MouseEvent &event) override;
 
     //==============================================================================
     // Component
@@ -24,7 +26,12 @@ class SampleThumbnail : public juce::Component {
     // TODO: make thumbnailCache a singleton
     juce::AudioThumbnailCache thumbnailCache;
     juce::AudioThumbnail thumbnail;
+    std::unique_ptr<juce::Image> image;
+    std::unique_ptr<juce::ScaledImage> scaledImage;
     float scale = 75;
 
     void createControls();
+    void paintWithoutOverlay(juce::Graphics &g);
+    void paintOverlay(juce::Graphics &g);
+    juce::ScaledImage *getImage();
 };

@@ -7,3 +7,9 @@ void Sample::loadFile(juce::AudioFormatManager &formatManager) {
         offsetSource.reset(new OffsetAudioSource(*fileSource, startPos, sampleRate));
     }
 }
+
+void Sample::setPosition(double pos) {
+    startPos = pos;
+    endPos = startPos + length;
+    offsetSource->setOffsetSeconds(startPos);
+}

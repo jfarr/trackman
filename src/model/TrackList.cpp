@@ -28,10 +28,10 @@ bool TrackList::hasSelection() const {
     return false;
 }
 
-juce::int64 TrackList::getTotalLength() const {
-    juce::int64 total = 0;
+double TrackList::getTotalLengthSeconds() const {
+    double total = 0;
     for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
-        auto length = (*iter)->getTotalLength();
+        double length = (*iter)->getTotalLengthSeconds();
         total = std::max(total, length);
     }
     return total;
