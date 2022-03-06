@@ -21,8 +21,7 @@ class SampleThumbnail : public juce::Component {
     Sample &sample;
     juce::AudioTransportSource &transport;
     juce::Label filenameLabel;
-//    ThumbnailComponent thumbnail;
-    // TODO: make singleton
+    // TODO: make thumbnailCache a singleton
     juce::AudioThumbnailCache thumbnailCache;
     juce::AudioThumbnail thumbnail;
     float scale = 75;

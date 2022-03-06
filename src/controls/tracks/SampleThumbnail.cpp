@@ -12,7 +12,6 @@ void SampleThumbnail::createControls() {
     filenameLabel.setText(sample.getFile().getFileName(), juce::dontSendNotification);
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     addAndMakeVisible(filenameLabel);
-//    addAndMakeVisible(thumbnail);
 }
 
 void SampleThumbnail::paint(juce::Graphics &g) {
@@ -53,5 +52,4 @@ void SampleThumbnail::resized() {
     auto labelHeight = 18;
     auto margin = 2;
     filenameLabel.setBounds(area.removeFromTop(labelHeight).reduced(margin));
-//    thumbnail.setBounds(area.reduced(margin));
 }
