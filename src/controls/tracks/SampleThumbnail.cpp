@@ -14,6 +14,14 @@ void SampleThumbnail::createControls() {
     addAndMakeVisible(filenameLabel);
 }
 
+juce::ScaledImage *SampleThumbnail::getImage() {
+    image = std::make_unique<juce::Image>(juce::Image::ARGB, getWidth(), getHeight(), false);
+    juce::Graphics g(*image);
+    paintWithoutOverlay(g);
+    scaledImage = std::make_unique<juce::ScaledImage>(*image);
+    return scaledImage.get();
+}
+
 void SampleThumbnail::paint(juce::Graphics &g) {
     paintWithoutOverlay(g);
     paintOverlay(g);
@@ -58,6 +66,6 @@ void SampleThumbnail::resized() {
 void SampleThumbnail::mouseDrag(const juce::MouseEvent &event) {
     auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
     if (container != nullptr) {
-        container->startDragging("clip", this);
+        container->startDragging("clip", this, *getImage());
     }
 }
