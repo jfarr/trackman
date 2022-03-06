@@ -6,6 +6,7 @@
 #include "TrackListPanel.h"
 #include "controls/desktop/TrackListListener.h"
 #include "controls/desktop/TrackSourceListener.h"
+#include "controls/tracks/SampleListener.h"
 #include "model/TrackList.h"
 
 class TrackListController : public TrackListListener, SampleListener {
@@ -17,6 +18,8 @@ class TrackListController : public TrackListListener, SampleListener {
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
     juce::Component &getViewport() { return trackListViewport; }
 
+    void addSample(Track &track, juce::File file, int pos);
+
     void update();
     void repaint();
 
@@ -27,6 +30,8 @@ class TrackListController : public TrackListListener, SampleListener {
 
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
+    void addListener(SampleListener *listener);
+    void removeListener(SampleListener *listener);
     void setListener(class TrackSourceListener *newListener) { listener = newListener; }
 
     //==============================================================================
@@ -35,7 +40,7 @@ class TrackListController : public TrackListListener, SampleListener {
 
     //==============================================================================
     // SampleListener
-    void sampleDropped(SampleThumbnail * thumbnail, juce::Point<int> pos) override;
+    void sampleMoved(Sample &sample, juce::Point<int> pos) override;
 
   private:
     TrackList &trackList;
@@ -44,12 +49,15 @@ class TrackListController : public TrackListListener, SampleListener {
     juce::Viewport trackListViewport;
     float scale = 75;
     std::list<std::unique_ptr<TrackLaneController>> lanes;
-    std::list<TrackListListener *> listeners;
+    std::list<TrackListListener *> trackListListeners;
+    std::list<SampleListener *> sampleListeners;
     TrackSourceListener *listener = nullptr;
     juce::AudioDeviceManager &deviceManager;
     juce::AudioFormatManager &formatManager;
 
     void notifySelectionChanged(Track &track);
+    void notifySampleAdded(Track &track, juce::File file, int pos);
+
     void updateLane(Track &track);
     TrackLaneController *getLane(Track &track);
 

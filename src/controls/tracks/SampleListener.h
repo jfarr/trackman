@@ -1,8 +1,10 @@
 #pragma once
 
-#include "SampleThumbnail.h"
+#include "model/Sample.h"
+#include "model/Track.h"
 
 class SampleListener {
   public:
-    virtual void sampleDropped(SampleThumbnail * thumbnail, juce::Point<int> pos) = 0;
+    virtual void sampleAdded(Track &track, juce::File file, int pos) {}
+    virtual void sampleMoved(Sample &sample, juce::Point<int> pos) {}
 };

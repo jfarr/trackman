@@ -1,5 +1,7 @@
 #pragma once
 
+#include <JuceHeader.h>
+
 #include "Command.h"
 #include "controls/desktop/DesktopController.h"
 #include "controls/mixer/TrackController.h"

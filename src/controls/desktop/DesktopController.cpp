@@ -1,5 +1,6 @@
 #include "DesktopController.h"
 #include "commands/MixerCommands.h"
+#include "commands/TrackCommands.h"
 #include "commands/TrackListCommands.h"
 #include "common/listutil.h"
 
@@ -12,7 +13,8 @@ DesktopController::DesktopController(
     mixerController.addListener((TrackListListener *)this);
     mixerController.addListener((MasterTrackListener *)this);
     mixerController.addListener((TrackControlListener *)this);
-    trackListController.addListener(this);
+    trackListController.addListener((TrackListListener *)this);
+    trackListController.addListener((SampleListener *)this);
     trackListController.setListener(&mixerController);
 }
 
@@ -73,6 +75,13 @@ void DesktopController::deleteSelectedTrack() {
             updateTitleBar();
         }
     });
+}
+
+void DesktopController::sampleAdded(Track &track, juce::File file, int pos) {
+    Command *command = new AddSampleCommand(trackListController, track, file, pos);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
 }
 
 Track *DesktopController::addTrack(juce::String name) {

@@ -45,23 +45,26 @@ void TrackListController::fileDragExit(const juce::StringArray &files) { trackLi
 void TrackListController::filesDropped(const juce::StringArray &files, int x, int y) {
     Track *selected = trackListPanel.getTrackAtPos(x, y);
     if (selected != nullptr) {
-        auto *reader = formatManager.createReaderFor(juce::File(files[0]));
-        if (reader != nullptr) {
-            auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
-            auto length = newSource->getTotalLength() / reader->sampleRate;
-            auto width = length * scale;
-            auto leftPanelWidth = 25;
-            double offset = width / 2;
-            double startPos = std::max((x - offset - leftPanelWidth), 0.0);
-            double endPos = startPos + width;
-            selected->addSample(
-                deviceManager, formatManager, files[0], startPos / scale, endPos / scale, length, reader->sampleRate);
-        }
+        notifySampleAdded(*selected, juce::File(files[0]), x);
         selectionChanged(*selected);
         updateLane(*selected);
         listener->onSourceSet();
     }
     trackListPanel.filesDropped(files, x, y);
+}
+
+void TrackListController::addSample(Track &track, juce::File file, int pos) {
+    auto *reader = formatManager.createReaderFor(juce::File(file));
+    if (reader != nullptr) {
+        auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
+        auto length = newSource->getTotalLength() / reader->sampleRate;
+        auto width = length * scale;
+        auto leftPanelWidth = 25;
+        double offset = width / 2;
+        double startPos = std::max((pos - offset - leftPanelWidth), 0.0);
+        double endPos = startPos + width;
+        track.addSample(deviceManager, formatManager, file, startPos, endPos / scale, length, reader->sampleRate);
+    }
 }
 
 void TrackListController::updateLane(Track &track) {
@@ -82,26 +85,40 @@ TrackLaneController *TrackListController::getLane(Track &track) {
 
 void TrackListController::selectionChanged(Track &track) { notifySelectionChanged(track); }
 
-void TrackListController::sampleDropped(SampleThumbnail *thumbnail, juce::Point<int> pos) {
-    auto length = thumbnail->getSample().getLength();
+void TrackListController::sampleMoved(Sample &sample, juce::Point<int> pos) {
+    auto length = sample.getLength();
     auto width = length * scale;
     auto leftPanelWidth = 25;
     double offset = width / 2;
     double startPos = std::max((pos.getX() - offset - leftPanelWidth), 0.0);
-    thumbnail->getSample().setPosition(startPos / scale);
+    sample.setPosition(startPos / scale);
     trackListPanel.resize();
 }
 
 void TrackListController::addListener(TrackListListener *listener) {
-    if (!listContains(listeners, listener)) {
-        listeners.push_front(listener);
+    if (!listContains(trackListListeners, listener)) {
+        trackListListeners.push_front(listener);
     }
 }
 
-void TrackListController::removeListener(TrackListListener *listener) { listeners.remove(listener); }
+void TrackListController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
 
 void TrackListController::notifySelectionChanged(Track &track) {
-    for (TrackListListener *listener : listeners) {
+    for (TrackListListener *listener : trackListListeners) {
         listener->selectionChanged(track);
+    }
+}
+
+void TrackListController::addListener(SampleListener *listener) {
+    if (!listContains(sampleListeners, listener)) {
+        sampleListeners.push_front(listener);
+    }
+}
+
+void TrackListController::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
+
+void TrackListController::notifySampleAdded(Track &track, juce::File file, int pos) {
+    for (SampleListener *listener : sampleListeners) {
+        listener->sampleAdded(track, file, pos);
     }
 }
