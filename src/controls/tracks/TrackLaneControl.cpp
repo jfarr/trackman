@@ -57,20 +57,3 @@ void TrackLaneControl::resized() {
             x + leftPanelWidth, area.getY(), thumbnail->getSample().getLength() * scale, thumbnail->getHeight());
     }
 }
-
-void TrackLaneControl::itemDragEnter (const SourceDetails& dragSourceDetails) {
-
-}
-
-void TrackLaneControl::itemDragMove (const SourceDetails& dragSourceDetails){
-
-}
-
-void TrackLaneControl::itemDragExit (const SourceDetails& dragSourceDetails){
-
-}
-
-void TrackLaneControl::itemDropped (const SourceDetails& dragSourceDetails){
-
-}
-

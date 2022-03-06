@@ -24,7 +24,7 @@ class DropBox : public juce::Component {
     std::unique_ptr<juce::AudioFormatReaderSource> source;
 };
 
-class TrackListPanel : public juce::Component, public juce::DragAndDropContainer {
+class TrackListPanel : public juce::Component, public juce::DragAndDropContainer, public juce::DragAndDropTarget {
   public:
     TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
         juce::AudioFormatManager &formatManager);
@@ -43,6 +43,14 @@ class TrackListPanel : public juce::Component, public juce::DragAndDropContainer
     void fileDragMove(const juce::StringArray &files, int x, int y);
     void fileDragExit(const juce::StringArray &files);
     void filesDropped(const juce::StringArray &files, int x, int y);
+
+    //==============================================================================
+    // DragAndDropTarget
+    bool isInterestedInDragSource(const SourceDetails &dragSourceDetails) override { return true; }
+    void itemDragEnter(const SourceDetails &dragSourceDetails) override;
+    void itemDragMove(const SourceDetails &dragSourceDetails) override;
+    void itemDragExit(const SourceDetails &dragSourceDetails) override;
+    void itemDropped(const SourceDetails &dragSourceDetails) override;
 
     //==============================================================================
     // Component

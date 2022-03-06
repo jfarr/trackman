@@ -12,7 +12,7 @@ class TrackList {
 
     int size() const { return tracks.size(); }
     bool hasSelection() const;
-    juce::int64 getTotalLength() const;
+    double getTotalLengthSeconds() const;
 
     void clear() { tracks.clear(); }
     void setSelected(Track &selected);

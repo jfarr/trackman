@@ -1,9 +1,14 @@
 #include "OffsetAudioSource.h"
 
 OffsetAudioSource::OffsetAudioSource(PositionableAudioSource &source, double offsetSeconds, double sampleRate)
-    : source(source), offsetSamples(offsetSeconds * sampleRate) {}
+    : source(source), sampleRate(sampleRate), offsetSamples(offsetSeconds * sampleRate) {}
 
 OffsetAudioSource::~OffsetAudioSource() {}
+
+void OffsetAudioSource::setOffsetSeconds(double offsetSeconds) {
+    const juce::ScopedLock lock (mutex);
+    offsetSamples = offsetSeconds * sampleRate;
+}
 
 void OffsetAudioSource::prepareToPlay(int blockSize, double sampleRate) { source.prepareToPlay(blockSize, sampleRate); }
 
@@ -14,12 +19,19 @@ void OffsetAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &bu
 }
 
 void OffsetAudioSource::setNextReadPosition(juce::int64 newPosition) {
+    const juce::ScopedLock lock (mutex);
     source.setNextReadPosition(newPosition - offsetSamples);
 }
 
-juce::int64 OffsetAudioSource::getNextReadPosition() const { return source.getNextReadPosition() + offsetSamples; }
+juce::int64 OffsetAudioSource::getNextReadPosition() const {
+    const juce::ScopedLock lock (mutex);
+    return source.getNextReadPosition() + offsetSamples;
+}
 
-juce::int64 OffsetAudioSource::getTotalLength() const { return source.getTotalLength() + offsetSamples; }
+juce::int64 OffsetAudioSource::getTotalLength() const {
+    const juce::ScopedLock lock (mutex);
+    return source.getTotalLength() + offsetSamples;
+}
 
 bool OffsetAudioSource::isLooping() const { return false; }
 
