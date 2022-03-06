@@ -6,7 +6,7 @@
 #include "controls/desktop/TrackListListener.h"
 #include "model/Track.h"
 
-class TrackLaneController : public juce::MouseListener, public TrackListListener {
+class TrackLaneController : public juce::MouseListener, public TrackListListener, SampleListener {
   public:
     TrackLaneController(Track &track, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
     ~TrackLaneController() {}
@@ -19,6 +19,8 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
 
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
+    void addListener(SampleListener *listener);
+    void removeListener(SampleListener *listener);
 
     //==============================================================================
     // MouseListener
@@ -28,15 +30,21 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
     // TrackListListener
     void selectionChanged(Track &track) override;
 
+    //==============================================================================
+    // SampleListener
+    void sampleSelected(Sample &sample) override;
+
   private:
     Track &track;
     juce::AudioTransportSource &transport;
     TrackLaneControl trackLaneControl;
     std::list<std::unique_ptr<SampleThumbnail>> thumbnails;
-    std::list<TrackListListener *> listeners;
+    std::list<TrackListListener *> trackListListeners;
+    std::list<SampleListener *> sampleListeners;
     juce::AudioFormatManager &formatManager;
 
     void notifySelectionChanged();
+    void notifySampleSelected(Sample &sample);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackLaneController)
 };

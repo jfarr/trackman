@@ -14,10 +14,11 @@ class TrackList {
     bool hasSelection() const;
     double getTotalLengthSeconds() const;
 
+    void eachTrack(std::function<void(Track &track)> f);
+
     void clear() { tracks.clear(); }
     void setSelected(Track &selected);
-
-    void eachTrack(std::function<void(Track &track)> f);
+    void selectSample(Sample &selected);
 
   private:
     std::list<std::unique_ptr<Track>> tracks;

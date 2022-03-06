@@ -4,6 +4,7 @@
 
 #include "controls/common/ThumbnailComponent.h"
 #include "model/Sample.h"
+#include "SampleListener.h"
 
 class SampleThumbnail : public juce::Component {
   public:
@@ -12,11 +13,15 @@ class SampleThumbnail : public juce::Component {
 
     Sample &getSample() { return sample; }
 
+    void addListener(SampleListener *listener);
+    void removeListener(SampleListener *listener);
+
     //==============================================================================
     // Component
     void paint(juce::Graphics &g) override;
     void resized() override;
     void mouseDrag(const juce::MouseEvent &event) override;
+    void mouseDown(const juce::MouseEvent &event) override;
 
   private:
     Sample &sample;
@@ -28,9 +33,12 @@ class SampleThumbnail : public juce::Component {
     std::unique_ptr<juce::Image> image;
     std::unique_ptr<juce::ScaledImage> scaledImage;
     float scale = 75;
+    std::list<SampleListener *> sampleListeners;
 
     void createControls();
     void paintWithoutOverlay(juce::Graphics &g);
     void paintOverlay(juce::Graphics &g);
     juce::ScaledImage *getImage();
+
+    void notifySampleSelected(Sample &selected);
 };

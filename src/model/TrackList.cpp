@@ -37,14 +37,18 @@ double TrackList::getTotalLengthSeconds() const {
     return total;
 }
 
-void TrackList::setSelected(Track &selected) {
-    eachTrack([&selected](Track &track) { track.setSelected(&track == &selected); });
-}
-
 void TrackList::eachTrack(std::function<void(Track &track)> f) {
     std::for_each(tracks.begin(), tracks.end(), [&f](std::unique_ptr<Track> &track) {
         if (!track->isDeleted()) {
             f(*track);
         }
     });
+}
+
+void TrackList::setSelected(Track &selected) {
+    eachTrack([&selected](Track &track) { track.setSelected(&track == &selected); });
+}
+
+void TrackList::selectSample(Sample &selected) {
+    eachTrack([&selected](Track &track) { track.selectSample(selected); });
 }
