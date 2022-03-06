@@ -1,6 +1,5 @@
 # Roadmap
 
-- Undo drop sample
 - Select samples
 - Resize sample thumbnails
 - Undo move / resize
