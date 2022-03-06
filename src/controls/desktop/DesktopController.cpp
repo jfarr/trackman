@@ -16,6 +16,7 @@ DesktopController::DesktopController(
     trackListController.addListener((TrackListListener *)this);
     trackListController.addListener((SampleListener *)this);
     trackListController.setListener(&mixerController);
+    updateTitleBar();
 }
 
 DesktopController::~DesktopController() {}
@@ -174,8 +175,8 @@ void DesktopController::openProject() {
 
 void DesktopController::updateTitleBar() {
     mainWindow.setName(
-        (projectFile != juce::File{} ? projectFile.getFileName() + (dirty ? " [modified]" : "") + " - " : "") +
-        applicationName);
+        (projectFile != juce::File{} ? projectFile.getFileNameWithoutExtension() + (dirty ? " [modified]" : "") : "[untitled]") +
+        " - " + applicationName);
 }
 
 void DesktopController::selectionChanged(Track &track) {

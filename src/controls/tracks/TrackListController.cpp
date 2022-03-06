@@ -46,9 +46,6 @@ void TrackListController::filesDropped(const juce::StringArray &files, int x, in
     Track *selected = trackListPanel.getTrackAtPos(x, y);
     if (selected != nullptr) {
         notifySampleAdded(*selected, juce::File(files[0]), x);
-        selectionChanged(*selected);
-        updateLane(*selected);
-        listener->onSourceSet();
     }
     trackListPanel.filesDropped(files, x, y);
 }
@@ -64,6 +61,9 @@ void TrackListController::addSample(Track &track, juce::File file, int pos) {
         double startPos = std::max((pos - offset - leftPanelWidth), 0.0);
         double endPos = startPos + width;
         track.addSample(deviceManager, formatManager, file, startPos, endPos / scale, length, reader->sampleRate);
+        selectionChanged(track);
+        updateLane(track);
+        listener->onSourceSet();
     }
 }
 
