@@ -51,9 +51,6 @@ class TrackListPanel : public juce::Component, public juce::DragAndDropContainer
     //==============================================================================
     // DragAndDropTarget
     bool isInterestedInDragSource(const SourceDetails &dragSourceDetails) override { return true; }
-    void itemDragEnter(const SourceDetails &dragSourceDetails) override;
-    void itemDragMove(const SourceDetails &dragSourceDetails) override;
-    void itemDragExit(const SourceDetails &dragSourceDetails) override;
     void itemDropped(const SourceDetails &dragSourceDetails) override;
 
     //==============================================================================

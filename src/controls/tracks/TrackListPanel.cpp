@@ -49,28 +49,12 @@ Track *TrackListPanel::getTrackAtPos(int x, int y) {
     return nullptr;
 }
 
-void TrackListPanel::itemDragEnter(const SourceDetails &dragSourceDetails) { std::cout << "drag enter\n"; }
-
-void TrackListPanel::itemDragMove(const SourceDetails &dragSourceDetails) { std::cout << "drag move\n"; }
-
-void TrackListPanel::itemDragExit(const SourceDetails &dragSourceDetails) {}
-
 void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
     auto *thumbnail = dynamic_cast<SampleThumbnail *>(dragSourceDetails.sourceComponent.get());
     if (thumbnail == nullptr) {
         return;
     }
-//    auto length = thumbnail->getSample().getLength();
-//    auto width = length * scale;
-//    auto leftPanelWidth = 25;
-//    double offset = width / 2;
-//    double startPos = std::max((dragSourceDetails.localPosition.getX() - offset - leftPanelWidth), 0.0);
-//    thumbnail->getSample().setPosition(startPos / scale);
-//    for (TrackLaneControl *lane : lanes) {
-//        lane->resized();
-//    }
     notifySampleDropped(thumbnail, dragSourceDetails.localPosition);
-//    resize();
 }
 
 void TrackListPanel::resize() {

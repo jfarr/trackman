@@ -65,7 +65,8 @@ void SampleThumbnail::resized() {
 
 void SampleThumbnail::mouseDrag(const juce::MouseEvent &event) {
     auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
+    auto pos = juce::Point<int>(-event.getPosition().getX(), -event.getPosition().getY());
     if (container != nullptr) {
-        container->startDragging("clip", this, *getImage());
+        container->startDragging("clip", this, *getImage(), false, &pos);
     }
 }
