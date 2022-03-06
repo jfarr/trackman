@@ -15,6 +15,11 @@ void SampleThumbnail::createControls() {
 }
 
 void SampleThumbnail::paint(juce::Graphics &g) {
+    paintWithoutOverlay(g);
+    paintOverlay(g);
+}
+
+void SampleThumbnail::paintWithoutOverlay(juce::Graphics &g) {
     auto area = getLocalBounds();
     auto margin = 3;
 
@@ -23,17 +28,13 @@ void SampleThumbnail::paint(juce::Graphics &g) {
     g.drawRect(0, 0, getWidth(), getHeight());
 
     auto thumbnailBounds = area.reduced(margin);
-
     g.setColour(juce::Colours::darkgrey);
     g.fillRect(thumbnailBounds);
-
     g.setColour(juce::Colours::green);
+    thumbnail.drawChannels(g, thumbnailBounds, 0.0, thumbnail.getTotalLength(), 1.0f);
+}
 
-    thumbnail.drawChannels(g, thumbnailBounds,
-        0.0,                        // start time
-        thumbnail.getTotalLength(), // end time
-        1.0f);                      // vertical zoom
-
+void SampleThumbnail::paintOverlay(juce::Graphics &g) {
     auto duration = (float)transport.getLengthInSeconds();
 
     if (duration > 0.0) {

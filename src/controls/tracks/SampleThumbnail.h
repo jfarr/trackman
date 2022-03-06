@@ -13,6 +13,7 @@ class SampleThumbnail : public juce::Component {
     Sample &getSample() { return sample; }
 
     void mouseDrag(const juce::MouseEvent &event) override;
+    void paintWithoutOverlay(juce::Graphics &g);
 
     //==============================================================================
     // Component
@@ -29,4 +30,5 @@ class SampleThumbnail : public juce::Component {
     float scale = 75;
 
     void createControls();
+    void paintOverlay(juce::Graphics &g);
 };
