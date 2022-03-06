@@ -31,7 +31,7 @@ bool TrackList::hasSelection() const {
 double TrackList::getTotalLengthSeconds() const {
     double total = 0;
     for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
-        double length = (*iter)->getTotalLength();
+        double length = (*iter)->getTotalLengthSeconds();
         total = std::max(total, length);
     }
     return total;

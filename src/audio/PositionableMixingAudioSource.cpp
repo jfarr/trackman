@@ -15,7 +15,6 @@ void PositionableMixingAudioSource::addInputSource(PositionableAudioSource *inpu
         mixer.addInputSource(input, deleteWhenRemoved);
     }
     inputs.add(input);
-    updateLength();
 }
 
 void PositionableMixingAudioSource::removeInputSource(PositionableAudioSource *input) {
@@ -34,7 +33,6 @@ void PositionableMixingAudioSource::removeInputSource(PositionableAudioSource *i
         if (index >= 0) {
             inputs.remove(index);
         }
-        updateLength();
     }
 }
 
@@ -74,17 +72,15 @@ juce::int64 PositionableMixingAudioSource::getNextReadPosition() const {
     return nextPos;
 }
 
-juce::int64 PositionableMixingAudioSource::getTotalLength() const { return length; }
-
-void PositionableMixingAudioSource::updateLength() {
-    juce::int64 newLength = 0;
+juce::int64 PositionableMixingAudioSource::getTotalLength() const {
+    juce::int64 totalLength = 0;
     for (int i = inputs.size(); --i >= 0;) {
         auto inputLength = inputs.getUnchecked(i)->getTotalLength();
-        if (inputLength > newLength) {
-            newLength = inputLength;
+        if (inputLength > totalLength) {
+            totalLength = inputLength;
         }
     }
-    length = newLength;
+    return totalLength;
 }
 
 bool PositionableMixingAudioSource::isLooping() const { return looping; }
