@@ -111,6 +111,6 @@ void TrackListPanel::removeListener(SampleListener *listener) { listeners.remove
 
 void TrackListPanel::notifySampleDropped(SampleThumbnail *thumbnail, juce::Point<int> pos) {
     for (SampleListener *listener : listeners) {
-        listener->sampleDropped(thumbnail, pos);
+        listener->sampleMoved(thumbnail->getSample(), pos);
     }
 }

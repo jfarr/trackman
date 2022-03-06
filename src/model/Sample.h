@@ -14,11 +14,13 @@ class Sample {
     double getEndPos() const { return endPos; }
     double getLength() const { return length; }
     double getSampleRate() const { return sampleRate; }
+    bool isDeleted() const { return deleted; }
 
     void loadFile(juce::AudioFormatManager &formatManager);
     juce::PositionableAudioSource *getSource() { return offsetSource.get(); }
 
     void setPosition(double pos);
+    void setDeleted(bool newDeleted) { deleted = newDeleted; }
 
   private:
     juce::File file;
@@ -28,4 +30,5 @@ class Sample {
     double sampleRate;
     std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
     std::unique_ptr<OffsetAudioSource> offsetSource;
+    bool deleted = false;
 };
