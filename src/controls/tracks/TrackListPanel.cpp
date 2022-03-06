@@ -104,7 +104,7 @@ void TrackListPanel::resized() {
 int TrackListPanel::getTrackLaneWidth() const {
     int trackWidth = trackList.getTotalLengthSeconds() * scale;
     auto leftPanelWidth = 25;
-    return std::max(trackWidth + leftPanelWidth, viewport.getWidth() - 10);
+    return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
 }
 
 int TrackListPanel::getTrackLaneHeight() const {

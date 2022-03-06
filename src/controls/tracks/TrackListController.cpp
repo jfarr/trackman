@@ -60,7 +60,8 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
         double offset = width / 2;
         double startPos = std::max((pos - offset - leftPanelWidth), 0.0);
         double endPos = startPos + width;
-        auto sample = track.addSample(deviceManager, formatManager, file, startPos, endPos / scale, length, reader->sampleRate);
+        auto sample = track.addSample(
+            deviceManager, formatManager, file, startPos / scale, endPos / scale, length, reader->sampleRate);
         selectionChanged(track);
         updateLane(track);
         if (listener != nullptr) {
