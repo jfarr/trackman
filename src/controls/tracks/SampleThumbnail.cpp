@@ -75,7 +75,7 @@ void SampleThumbnail::mouseDrag(const juce::MouseEvent &event) {
 
 void SampleThumbnail::mouseDown(const juce::MouseEvent &event) {
     Component::mouseDown(event);
-    notifySampleSelected(sample);
+    notifySampleSelected(track, sample);
 }
 
 void SampleThumbnail::addListener(SampleListener *listener) {
@@ -86,8 +86,8 @@ void SampleThumbnail::addListener(SampleListener *listener) {
 
 void SampleThumbnail::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
 
-void SampleThumbnail::notifySampleSelected(Sample &selected) {
+void SampleThumbnail::notifySampleSelected(Track &track, Sample &selected) {
     for (SampleListener *listener : sampleListeners) {
-        listener->sampleSelected(selected);
+        listener->sampleSelected(track, selected);
     }
 }

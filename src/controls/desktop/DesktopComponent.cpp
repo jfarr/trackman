@@ -39,6 +39,8 @@ DesktopComponent::~DesktopComponent() {
     shutdownAudio();
     closeAllWindows();
 
+    removeListener(&desktopController);
+
 #if JUCE_MAC
     juce::MenuBarModel::setMacMainMenu(nullptr);
 #endif

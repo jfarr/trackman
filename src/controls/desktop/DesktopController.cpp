@@ -19,7 +19,15 @@ DesktopController::DesktopController(
     updateTitleBar();
 }
 
-DesktopController::~DesktopController() {}
+DesktopController::~DesktopController() {
+    mixerController.removeListener((TrackListListener *)this);
+    mixerController.removeListener((MasterTrackListener *)this);
+    mixerController.removeListener((TrackControlListener *)this);
+    trackListController.removeListener((TrackListListener *)this);
+    trackListController.removeListener((SampleListener *)this);
+    trackListController.setListener(nullptr);
+
+}
 
 bool DesktopController::canUndo() const { return !commandList.isEmpty(); }
 

@@ -13,7 +13,7 @@ class TrackListController : public TrackListListener, SampleListener {
   public:
     TrackListController(TrackList &trackList, juce::AudioTransportSource &transport,
         juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
-    ~TrackListController() {}
+    ~TrackListController();
 
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
     juce::Component &getViewport() { return trackListViewport; }
@@ -41,7 +41,7 @@ class TrackListController : public TrackListListener, SampleListener {
 
     //==============================================================================
     // SampleListener
-    void sampleSelected(Sample &sample) override;
+    void sampleSelected(Track &track, Sample &sample) override;
     void sampleMoved(Sample &sample, juce::Point<int> pos) override;
     void dragEnded() override;
 
@@ -52,9 +52,13 @@ class TrackListController : public TrackListListener, SampleListener {
     juce::Viewport trackListViewport;
     float scale = 75;
     std::list<std::unique_ptr<TrackLaneController>> lanes;
+    Track *selected = nullptr;
+    bool selectingSample = false;
+
     std::list<TrackListListener *> trackListListeners;
     std::list<SampleListener *> sampleListeners;
     TrackSourceListener *listener = nullptr;
+
     juce::AudioDeviceManager &deviceManager;
     juce::AudioFormatManager &formatManager;
 

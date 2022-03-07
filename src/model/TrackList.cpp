@@ -58,7 +58,7 @@ void TrackList::setSelected(Track &selected) {
     eachTrack([&selected](Track &track) { track.setSelected(&track == &selected); });
 }
 
-void TrackList::selectSample(Sample &selected) {
+void TrackList::selectSample(Sample *selected) {
     eachTrack([&selected](Track &track) { track.selectSample(selected); });
 }
 

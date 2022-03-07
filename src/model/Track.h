@@ -37,7 +37,7 @@ class Track {
     void setMute(bool newMuted);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted);
-    void selectSample(Sample &selected);
+    void selectSample(Sample *selected);
 
   private:
     juce::String name;

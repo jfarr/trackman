@@ -13,7 +13,13 @@ TrackListController::TrackListController(TrackList &trackList, juce::AudioTransp
     trackListPanel.resized();
 }
 
+TrackListController::~TrackListController() { trackListPanel.removeListener(this); }
+
 void TrackListController::update() {
+    for (std::unique_ptr<TrackLaneController> &lane : lanes) {
+        lane->removeListener((TrackListListener *)this);
+        lane->removeListener((SampleListener *)this);
+    }
     lanes.clear();
     trackListPanel.clear();
     trackList.eachTrack([this](Track &track) {
@@ -107,11 +113,21 @@ void TrackListController::updateLanes() {
 }
 
 void TrackListController::selectionChanged(Track &track) {
-    notifySelectionChanged(track);
-    updateLanes();
+    if (!selectingSample) {
+        trackList.selectSample(nullptr);
+    }
+    selectingSample = false;
+    if (&track != selected) {
+        selected = &track;
+        notifySelectionChanged(track);
+        updateLanes();
+    }
 }
 
-void TrackListController::sampleSelected(Sample &sample) { trackList.selectSample(sample); }
+void TrackListController::sampleSelected(Track &track, Sample &sample) {
+    selectingSample = true;
+    trackList.selectSample(&sample);
+}
 
 void TrackListController::sampleMoved(Sample &sample, juce::Point<int> pos) {
     auto length = sample.getLength();

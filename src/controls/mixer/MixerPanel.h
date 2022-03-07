@@ -21,6 +21,7 @@ class MixerPanel : public juce::Component {
 
     TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
+    void eachTrack(std::function<void(TrackControl &)> f);
 
     //==============================================================================
     // Component

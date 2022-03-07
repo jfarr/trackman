@@ -19,7 +19,7 @@ class TrackList {
 
     void clear() { tracks.clear(); }
     void setSelected(Track &selected);
-    void selectSample(Sample &selected);
+    void selectSample(Sample *selected);
     Sample *getSelectedSample() const;
 
   private:

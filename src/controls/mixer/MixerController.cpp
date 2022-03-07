@@ -14,6 +14,13 @@ MixerController::~MixerController() {
 }
 
 void MixerController::update() {
+    mixerPanel.eachTrack([this] (TrackControl &track) {
+        track.removeListener(this);
+    });
+    for (std::unique_ptr<TrackController> &track : tracks) {
+        track->removeListener(this);
+        track->setListener(nullptr);
+    }
     tracks.clear();
     mixerPanel.clear();
     mixer.removeAllSources();

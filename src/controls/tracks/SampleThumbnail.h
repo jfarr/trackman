@@ -41,5 +41,5 @@ class SampleThumbnail : public juce::Component {
     void paintOverlay(juce::Graphics &g);
     juce::ScaledImage *getImage();
 
-    void notifySampleSelected(Sample &selected);
+    void notifySampleSelected(Track &track, Sample &selected);
 };
