@@ -19,7 +19,6 @@ void MixerController::update() {
     });
     for (std::unique_ptr<TrackController> &track : tracks) {
         track->removeListener(this);
-        track->setListener(nullptr);
     }
     tracks.clear();
     mixerPanel.clear();
@@ -31,7 +30,6 @@ void MixerController::update() {
         auto control = new TrackControl(track);
         control->addListener(this);
         auto controller = new TrackController(track, *control, formatManager);
-        controller->setListener(this);
         controller->addListener(this);
         tracks.push_back(std::unique_ptr<TrackController>(controller));
         mixerPanel.addTrack(control);
