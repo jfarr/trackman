@@ -67,5 +67,23 @@ endif()
 
 add_subdirectory(libs)
 add_subdirectory(src)
+#add_subdirectory(libs/ff_meters)
+
+target_sources(Trackman PRIVATE
+        libs/ff_meters/ff_meters.h
+        libs/ff_meters/ff_meters.cpp
+        libs/ff_meters/LevelMeter/LevelMeter.h
+        libs/ff_meters/LevelMeter/LevelMeterSource.h
+        libs/ff_meters/LookAndFeel/LevelMeterLookAndFeel.h
+        libs/ff_meters/LookAndFeel/LevelMeterLookAndFeelMethods.h
+        libs/ff_meters/LookAndFeel/SoundFieldLookAndFeelMethods.h
+        libs/ff_meters/Visualisers/OutlineBuffer.h
+        libs/ff_meters/Visualisers/StereoFieldBuffer.h
+        libs/ff_meters/Visualisers/StereoFieldComponent.h
+        )
+
+target_include_directories(Trackman PRIVATE
+        libs/ff_meters
+        )
 
 target_include_directories(Trackman PUBLIC "${PROJECT_BINARY_DIR}")

@@ -1,7 +1,11 @@
 #include "PositionableMixingAudioSource.h"
 #include "PositionableResamplingAudioSource.h"
 
-PositionableMixingAudioSource::PositionableMixingAudioSource(double sampleRate) : sampleRate(sampleRate) {}
+PositionableMixingAudioSource::PositionableMixingAudioSource(double sampleRate) : sampleRate(sampleRate) {
+    auto refreshRateHz = 30;
+    auto blockSize = 512;
+    meterSource.resize(2, refreshRateHz * 0.001f * sampleRate / blockSize);
+}
 
 PositionableMixingAudioSource::~PositionableMixingAudioSource() { removeAllInputs(); }
 
@@ -42,9 +46,12 @@ void PositionableMixingAudioSource::removeAllInputs() {
     mixer.removeAllInputs();
 }
 
-void PositionableMixingAudioSource::prepareToPlay(int samplesPerBlockExpected, double newSampleRate) {
+void PositionableMixingAudioSource::prepareToPlay(int blockSize, double newSampleRate) {
+    DBG("PositionableMixingAudioSource::prepareToPlay - blocksize: " << blockSize << " sample rate: " << newSampleRate);
     sampleRate = newSampleRate;
-    mixer.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    mixer.prepareToPlay(blockSize, sampleRate);
+    auto refreshRateHz = 30;
+    meterSource.resize(2, refreshRateHz * 0.001f * sampleRate / blockSize);
 }
 
 void PositionableMixingAudioSource::releaseResources() { mixer.releaseResources(); }
@@ -55,6 +62,7 @@ void PositionableMixingAudioSource::getNextAudioBlock(const juce::AudioSourceCha
         setNextReadPosition(currentPos);
     }
     mixer.getNextAudioBlock(info);
+    meterSource.measureBlock(*info.buffer);
 }
 
 void PositionableMixingAudioSource::setNextReadPosition(juce::int64 newPosition) {

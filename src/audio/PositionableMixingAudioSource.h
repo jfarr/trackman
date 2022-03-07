@@ -1,11 +1,14 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
+#include <ff_meters.h>
 
 class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   public:
     PositionableMixingAudioSource(double sampleRate);
     ~PositionableMixingAudioSource() override;
+
+    foleys::LevelMeterSource &getMeterSource() { return meterSource; }
 
     void addInputSource(PositionableAudioSource *newInput, const bool deleteWhenRemoved,
         double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2);
@@ -14,7 +17,7 @@ class PositionableMixingAudioSource : public juce::PositionableAudioSource {
 
     //==============================================================================
     // AudioSource
-    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    void prepareToPlay(int blockSize, double sampleRate) override;
     void releaseResources() override;
     void getNextAudioBlock(const juce::AudioSourceChannelInfo &info) override;
 
@@ -28,6 +31,7 @@ class PositionableMixingAudioSource : public juce::PositionableAudioSource {
 
   private:
     juce::MixerAudioSource mixer;
+    foleys::LevelMeterSource meterSource;
     juce::Array<PositionableAudioSource *> inputs;
     double sampleRate;
     bool looping = false;
