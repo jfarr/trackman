@@ -31,6 +31,7 @@ void TrackListController::update() {
         lane->update();
     });
     trackListPanel.update();
+    trackList.adjustTrackLengths();
 }
 
 void TrackListController::repaint() {
