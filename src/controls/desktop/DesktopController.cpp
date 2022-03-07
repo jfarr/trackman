@@ -194,7 +194,6 @@ void DesktopController::openProject() {
             saveCommand = nullptr;
             dirty = false;
             updateTitleBar();
-            mixerController.getMixerPanel().getLevelMeter().repaint();
         }
     });
 }

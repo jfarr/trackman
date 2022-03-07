@@ -4,7 +4,7 @@
 
 TrackControl::TrackControl(Track &track) : track(track) {
     createControls();
-    setSize(100, 100);
+    setSize(getPreferredWidth(), 100);
 }
 
 TrackControl::~TrackControl() {}
@@ -72,7 +72,7 @@ void TrackControl::paint(juce::Graphics &g) {
 
 void TrackControl::resized() {
     auto area = getLocalBounds();
-    auto sliderWidth = 75;
+    auto sliderWidth = 45;
     auto buttonSize = 25;
     auto buttonsHeight = 30;
     auto labelHeight = 25;

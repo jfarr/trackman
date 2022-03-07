@@ -22,7 +22,6 @@ class MixerPanel : public juce::Component {
 
     TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
-    foleys::LevelMeter &getLevelMeter() { return levelMeter; }
     void eachTrack(std::function<void(TrackControl &)> f);
 
     //==============================================================================
@@ -37,7 +36,6 @@ class MixerPanel : public juce::Component {
 
     TrackList &trackList;
     Mixer &mixer;
-    foleys::LevelMeter levelMeter;
 
     void createControls();
 

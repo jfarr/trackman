@@ -1,9 +1,9 @@
 #include "MixerPanel.h"
 #include "common/listutil.h"
 
-MixerPanel::MixerPanel(TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource& meterSource)
-    : masterTrackControl(mixer), trackList(trackList), mixer(mixer), transportControl(mixer.getTransportSource()) {
-    levelMeter.setMeterSource(&meterSource);
+MixerPanel::MixerPanel(TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource)
+    : masterTrackControl(mixer, meterSource), trackList(trackList), mixer(mixer),
+      transportControl(mixer.getTransportSource()) {
     createControls();
     setSize(800, 280);
 }
@@ -11,7 +11,6 @@ MixerPanel::MixerPanel(TrackList &trackList, Mixer &mixer, foleys::LevelMeterSou
 MixerPanel::~MixerPanel() {}
 
 void MixerPanel::createControls() {
-    addAndMakeVisible(levelMeter);
     addAndMakeVisible(transportControl);
     addAndMakeVisible(masterTrackControl);
 }
@@ -52,7 +51,6 @@ void MixerPanel::resized() {
     auto transportMargin = 5;
     transportControl.setBounds(area.removeFromTop(buttonHeight).reduced(transportMargin));
     area.removeFromTop(1);
-    levelMeter.setBounds(area.removeFromLeft(150));
     masterTrackControl.setBounds(area.removeFromLeft(masterTrackControl.getPreferredWidth()));
     for (auto &track : tracks) {
         track->setBounds(area.removeFromLeft(track->getPreferredWidth()));
