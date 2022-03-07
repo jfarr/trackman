@@ -1,6 +1,5 @@
 # Roadmap
 
-- Delete samples / undo delete
 - Resize sample thumbnails
 - Undo move / resize
 - Move samples between lanes
