@@ -8,6 +8,7 @@ class OffsetAudioSource : public juce::PositionableAudioSource {
     ~OffsetAudioSource();
 
     void setOffsetSeconds(double offsetSeconds);
+    void setMinLength(juce::int64 newLength);
 
     //==============================================================================
     // AudioSource
@@ -27,6 +28,7 @@ class OffsetAudioSource : public juce::PositionableAudioSource {
     PositionableAudioSource &source;
     juce::int64 offsetSamples;
     double sampleRate;
+    juce::int64 minLength;
 
     juce::CriticalSection mutex;
 };

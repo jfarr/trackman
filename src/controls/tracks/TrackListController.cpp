@@ -69,6 +69,7 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
         double endPos = startPos + width;
         auto sample = track.addSample(
             deviceManager, formatManager, file, startPos / scale, endPos / scale, length, reader->sampleRate);
+        trackList.adjustTrackLengths();
         selectionChanged(track);
         updateLane(track);
         if (listener != nullptr) {
@@ -91,6 +92,7 @@ void TrackListController::deleteSample(Track &track, Sample *sample) {
     }
     pos = std::max(pos, transport.getLengthInSeconds());
     transport.setPosition(pos);
+    trackList.adjustTrackLengths();
 }
 
 void TrackListController::undeleteSample(Track &track, Sample *sample) {
@@ -104,6 +106,7 @@ void TrackListController::undeleteSample(Track &track, Sample *sample) {
         listener->onSourceSet();
     }
     transport.setPosition(pos);
+    trackList.adjustTrackLengths();
 }
 
 void TrackListController::updateLane(Track &track) {

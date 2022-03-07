@@ -37,6 +37,15 @@ Track *TrackList::getSelected() const {
     return nullptr;
 }
 
+juce::int64 TrackList::getTotalLength() const {
+    juce::int64 total = 0;
+    for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
+        juce::int64 length = (*iter)->getTotalLength();
+        total = std::max(total, length);
+    }
+    return total;
+}
+
 double TrackList::getTotalLengthSeconds() const {
     double total = 0;
     for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
@@ -44,6 +53,12 @@ double TrackList::getTotalLengthSeconds() const {
         total = std::max(total, length);
     }
     return total;
+}
+
+void TrackList::adjustTrackLengths() {
+    auto len = getTotalLengthSeconds();
+    DBG("TrackList::adjustTrackLengths: " << len);
+    eachTrack([len](Track &track) { track.adjustSampleLengthSecs(len); });
 }
 
 void TrackList::eachTrack(std::function<void(Track &track)> f) {

@@ -15,6 +15,7 @@ class Track {
     juce::String getName() const { return name; }
     std::shared_ptr<juce::PositionableAudioSource> getSource() const { return source; }
     std::shared_ptr<GainAudioSource> getGain() const { return gain; }
+    juce::int64 getTotalLength() const;
     double getTotalLengthSeconds() const;
     double getSampleRate() const;
     float getLevelGain() const { return level; }
@@ -23,6 +24,7 @@ class Track {
     bool isDeleted() const { return deleted; }
 
     void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate);
+    void adjustSampleLengthSecs(double newLen);
     void loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     Sample *addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, juce::File file,
         double startPos, double endPos, double length, double sampleRate);

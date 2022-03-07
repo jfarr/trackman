@@ -13,14 +13,16 @@ class TrackList {
     int size() const { return tracks.size(); }
     bool hasSelection() const;
     Track *getSelected() const;
+    Sample *getSelectedSample() const;
+    juce::int64 getTotalLength() const;
     double getTotalLengthSeconds() const;
 
     void eachTrack(std::function<void(Track &track)> f);
 
     void clear() { tracks.clear(); }
+    void adjustTrackLengths();
     void setSelected(Track &selected);
     void selectSample(Sample *selected);
-    Sample *getSelectedSample() const;
 
   private:
     std::list<std::unique_ptr<Track>> tracks;
