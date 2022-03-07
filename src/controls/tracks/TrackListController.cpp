@@ -91,9 +91,9 @@ void TrackListController::deleteSample(Track &track, Sample *sample) {
     if (listener != nullptr) {
         listener->onSourceSet();
     }
+    trackList.adjustTrackLengths();
     pos = std::max(pos, transport.getLengthInSeconds());
     transport.setPosition(pos);
-    trackList.adjustTrackLengths();
 }
 
 void TrackListController::undeleteSample(Track &track, Sample *sample) {

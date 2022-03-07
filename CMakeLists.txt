@@ -67,7 +67,6 @@ endif()
 
 add_subdirectory(libs)
 add_subdirectory(src)
-#add_subdirectory(libs/ff_meters)
 
 target_sources(Trackman PRIVATE
         libs/ff_meters/ff_meters.h
