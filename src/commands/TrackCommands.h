@@ -27,14 +27,15 @@ class AddSampleCommand : public Command {
 
 class DeleteSampleCommand : public Command {
   public:
-    DeleteSampleCommand(TrackListController &controller, Sample &sample)
-        : Command("delete sample"), controller(controller), sample(sample) {}
+    DeleteSampleCommand(TrackListController &controller, Track &track, Sample &sample)
+        : Command("delete sample"), controller(controller), track(track), sample(sample) {}
     ~DeleteSampleCommand() {}
 
-    virtual void execute() override { }
-    void undo() override { }
+    virtual void execute() override { controller.deleteSample(track, &sample); }
+    void undo() override {}
 
   private:
     TrackListController &controller;
+    Track &track;
     Sample &sample;
 };

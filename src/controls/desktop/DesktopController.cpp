@@ -76,9 +76,10 @@ void DesktopController::addNewTrack() {
 }
 
 void DesktopController::deleteSelected() {
+    Track *track = trackList.getSelected();
     Sample *sample = trackList.getSelectedSample();
-    if (sample != nullptr) {
-        Command *command = new DeleteSampleCommand(trackListController, *sample);
+    if (track != nullptr && sample != nullptr) {
+        Command *command = new DeleteSampleCommand(trackListController, *track, *sample);
         commandList.pushCommand(command);
         dirty = true;
         updateTitleBar();
