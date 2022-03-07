@@ -3,7 +3,7 @@
 #include "JuceHeader.h"
 
 class CustomLookAndFeel : public juce::LookAndFeel_V4 {
-    juce::Label* createSliderTextBox (juce::Slider& slider) override {
+    juce::Label *createSliderTextBox(juce::Slider &slider) override {
         auto l = LookAndFeel_V4::createSliderTextBox(slider);
         l->setFont(l->getFont().withHeight(8));
         return l;
@@ -24,6 +24,7 @@ class DecibelSlider : public juce::Slider {
         setTextBoxStyle(juce::Slider::TextBoxAbove, false, 35, 11);
         setSkewFactorFromMidPoint(-10.0);
     }
+    ~DecibelSlider() { setLookAndFeel(nullptr); }
 
     void setListener(SliderListener *newListener) { listener = newListener; }
 
