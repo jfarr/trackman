@@ -26,18 +26,6 @@ void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, 
     gain = std::shared_ptr<GainAudioSource>(new GainAudioSource(newSource.get(), false));
 }
 
-void Track::loadFile(juce::AudioFormatManager &formatManager, juce::File newFile) {
-    if (newFile == juce::File{}) {
-        return;
-    }
-    auto *reader = formatManager.createReaderFor(newFile);
-    if (reader != nullptr) {
-        auto newSource = new juce::AudioFormatReaderSource(reader, true);
-        setSource(std::shared_ptr<juce::PositionableAudioSource>(newSource), reader->sampleRate);
-        setFile(file);
-    }
-}
-
 void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {
     if (samples.size() == 0) {
         return;

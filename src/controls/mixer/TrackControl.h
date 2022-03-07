@@ -16,8 +16,6 @@ class TrackControl : public juce::Component, public SliderListener {
 
     void update();
 
-    void setListener(class FileListener *newListener) { listener = newListener; }
-
     void addListener(TrackControlListener *listener);
     void removeListener(TrackControlListener *listener);
 
@@ -52,11 +50,6 @@ class TrackControl : public juce::Component, public SliderListener {
     void notifyLevelChanged(float level);
     void notifyLevelChangeFinalized(float previousLevel);
     void notifyMuteToggled();
-
-    std::unique_ptr<juce::FileChooser> chooser;
-    juce::TextButton openButton;
-    void openButtonClicked();
-    FileListener *listener = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackControl)
 };

@@ -27,17 +27,13 @@ void TrackControl::createControls() {
     channelLabel.setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
     channelLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
 
-    trackLabel.setText(track.getFile().getFileName(), juce::dontSendNotification);
+    trackLabel.setText("" /*track.getName()*/, juce::dontSendNotification);
     trackLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
-
-    openButton.setButtonText("...");
-    openButton.onClick = [this] { openButtonClicked(); };
 
     addAndMakeVisible(decibelSlider);
     addAndMakeVisible(muteButton);
     addAndMakeVisible(trackLabel);
     addAndMakeVisible(channelLabel);
-    addAndMakeVisible(openButton);
 }
 
 void TrackControl::update() {
@@ -87,7 +83,6 @@ void TrackControl::resized() {
     decibelSlider.setBounds(area.removeFromLeft(sliderWidth));
     auto buttonArea = area.removeFromLeft(buttonSize);
     muteButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
-    openButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
 }
 
 void TrackControl::decibelSliderChanged() {
@@ -103,20 +98,6 @@ void TrackControl::muteButtonClicked() {
     notifyMuteToggled();
     muteButton.setColour(juce::TextButton::buttonColourId,
         track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-}
-
-void TrackControl::openButtonClicked() {
-    chooser = std::make_unique<juce::FileChooser>("Select a file to play...", juce::File{}, "*.wav");
-    auto chooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
-
-    chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
-        auto file = fc.getResult();
-
-        if (listener != nullptr && file != juce::File{}) {
-            trackLabel.setText(file.getFileName(), juce::dontSendNotification);
-            listener->fileChosen(file);
-        }
-    });
 }
 
 void TrackControl::addListener(TrackControlListener *listener) {

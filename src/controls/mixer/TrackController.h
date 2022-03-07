@@ -9,7 +9,7 @@
 #include "controls/tracks/TrackLaneControl.h"
 #include "model/Track.h"
 
-class TrackController : public FileListener, public TrackControlListener, public juce::MouseListener {
+class TrackController : public TrackControlListener, public juce::MouseListener {
   public:
     TrackController(Track &track, TrackControl &trackControl, juce::AudioFormatManager &formatManager);
     ~TrackController();
@@ -22,11 +22,6 @@ class TrackController : public FileListener, public TrackControlListener, public
 
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
-    void setListener(class TrackSourceListener *newListener) { listener = newListener; }
-
-    //==============================================================================
-    // FileListener
-    void fileChosen(juce::File file) override;
 
     //==============================================================================
     // TrackControlListener
@@ -43,7 +38,6 @@ class TrackController : public FileListener, public TrackControlListener, public
     juce::AudioFormatManager &formatManager;
 
     std::list<TrackListListener *> listeners;
-    TrackSourceListener *listener = nullptr;
 
     void notifySelectionChanged();
 

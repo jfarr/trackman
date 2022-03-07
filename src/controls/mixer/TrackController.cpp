@@ -4,7 +4,6 @@
 TrackController::TrackController(Track &track, TrackControl &trackControl, juce::AudioFormatManager &formatManager)
     : formatManager(formatManager), track(track), trackControl(trackControl) {
     trackControl.addListener(this);
-    trackControl.setListener(this);
     trackControl.addMouseListener(this, true);
 }
 
@@ -25,19 +24,6 @@ void TrackController::toggleMute(Track &track) {
 }
 
 void TrackController::repaint() { trackControl.repaint(); }
-
-void TrackController::fileChosen(juce::File file) {
-    if (listener == nullptr) {
-        return;
-    }
-    auto *reader = formatManager.createReaderFor(file);
-    if (reader != nullptr) {
-        auto newSource = new juce::AudioFormatReaderSource(reader, true);
-        track.setSource(std::shared_ptr<juce::PositionableAudioSource>(newSource), reader->sampleRate);
-        track.setFile(file);
-        listener->onSourceSet();
-    }
-}
 
 void TrackController::levelChanged(float newLevel) { track.setLevelGain(newLevel); }
 
