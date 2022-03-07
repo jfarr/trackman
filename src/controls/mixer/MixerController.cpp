@@ -74,6 +74,7 @@ void MixerController::toggleMute(Track &track) {
 void MixerController::onSourceSet() {
     mixer.removeAllSources();
     trackList.eachTrack([this](Track &track) {
+        DBG("MixerController::onSourceSet - add track source: " << track.getName());
         if (track.getSource() != nullptr) {
             mixer.addSource(track.getGain(), track.getSampleRate(), 2);
         }

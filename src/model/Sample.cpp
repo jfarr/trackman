@@ -8,6 +8,13 @@ void Sample::loadFile(juce::AudioFormatManager &formatManager) {
     }
 }
 
+void Sample::setMinLengthSecs(double newLength) {
+    if (offsetSource == nullptr) {
+        return;
+    }
+    offsetSource->setMinLength(newLength * sampleRate);
+}
+
 void Sample::setPosition(double pos) {
     startPos = pos;
     endPos = startPos + length;

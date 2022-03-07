@@ -20,6 +20,7 @@ class Sample {
     void loadFile(juce::AudioFormatManager &formatManager);
     juce::PositionableAudioSource *getSource() { return offsetSource.get(); }
 
+    void setMinLengthSecs(double newLength);
     void setPosition(double pos);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
