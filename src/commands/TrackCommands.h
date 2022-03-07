@@ -32,7 +32,7 @@ class DeleteSampleCommand : public Command {
     ~DeleteSampleCommand() {}
 
     virtual void execute() override { controller.deleteSample(track, &sample); }
-    void undo() override {}
+    void undo() override { controller.undeleteSample(track, &sample); }
 
   private:
     TrackListController &controller;

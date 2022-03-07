@@ -80,14 +80,30 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
 }
 
 void TrackListController::deleteSample(Track &track, Sample *sample) {
+    auto pos =  transport.getCurrentPosition();
     if (sample == nullptr) {
         return;
     }
-    sample->setDeleted(true);
+    track.deleteSample(sample);
     updateLane(track);
     if (listener != nullptr) {
         listener->onSourceSet();
     }
+    pos = std::max(pos, transport.getLengthInSeconds());
+    transport.setPosition(pos);
+}
+
+void TrackListController::undeleteSample(Track &track, Sample *sample) {
+    auto pos =  transport.getCurrentPosition();
+    if (sample == nullptr) {
+        return;
+    }
+    track.undeleteSample(sample);
+    updateLane(track);
+    if (listener != nullptr) {
+        listener->onSourceSet();
+    }
+    transport.setPosition(pos);
 }
 
 void TrackListController::updateLane(Track &track) {

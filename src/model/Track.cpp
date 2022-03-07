@@ -109,3 +109,19 @@ void Track::setDeleted(bool newDeleted) {
 void Track::selectSample(Sample *selected) {
     eachSample([&selected](Sample &sample) { sample.setSelected(&sample == selected); });
 }
+
+void Track::deleteSample(Sample *sample) {
+    if (sample == nullptr) {
+        return;
+    }
+    sample->setDeleted(true);
+    mixer->removeInputSource(sample->getSource());
+}
+
+void Track::undeleteSample(Sample *sample) {
+    if (sample == nullptr) {
+        return;
+    }
+    sample->setDeleted(false);
+    mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+}

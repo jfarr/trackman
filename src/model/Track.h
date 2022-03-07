@@ -38,6 +38,8 @@ class Track {
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted);
     void selectSample(Sample *selected);
+    void deleteSample(Sample *sample);
+    void undeleteSample(Sample *sample);
 
   private:
     juce::String name;
