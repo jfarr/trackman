@@ -8,7 +8,11 @@ TrackController::TrackController(Track &track, TrackControl &trackControl, juce:
     trackControl.addMouseListener(this, true);
 }
 
-TrackController::~TrackController() {}
+TrackController::~TrackController() {
+    trackControl.removeListener(this);
+    trackControl.removeListener(this);
+    trackControl.removeMouseListener(this);
+}
 
 void TrackController::setLevel(float newLevel) {
     track.setLevelGain(newLevel);

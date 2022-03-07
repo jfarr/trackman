@@ -27,6 +27,12 @@ void MixerPanel::addTrack(TrackControl *trackControl) {
     addAndMakeVisible(trackControl);
 }
 
+void MixerPanel::eachTrack(std::function<void(TrackControl &)> f) {
+    for (std::unique_ptr<TrackControl> &track : tracks) {
+        f(*track);
+    }
+}
+
 //==============================================================================
 void MixerPanel::paint(juce::Graphics &g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));

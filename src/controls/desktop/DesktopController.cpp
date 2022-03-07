@@ -19,7 +19,15 @@ DesktopController::DesktopController(
     updateTitleBar();
 }
 
-DesktopController::~DesktopController() {}
+DesktopController::~DesktopController() {
+    mixerController.removeListener((TrackListListener *)this);
+    mixerController.removeListener((MasterTrackListener *)this);
+    mixerController.removeListener((TrackControlListener *)this);
+    trackListController.removeListener((TrackListListener *)this);
+    trackListController.removeListener((SampleListener *)this);
+    trackListController.setListener(nullptr);
+
+}
 
 bool DesktopController::canUndo() const { return !commandList.isEmpty(); }
 
@@ -67,15 +75,32 @@ void DesktopController::addNewTrack() {
     updateTitleBar();
 }
 
-void DesktopController::deleteSelectedTrack() {
-    trackList.eachTrack([this](Track &track) {
-        if (track.isSelected()) {
-            Command *command = new DeleteTrackCommand(*this, &track);
-            commandList.pushCommand(command);
-            dirty = true;
-            updateTitleBar();
-        }
-    });
+void DesktopController::deleteSelected() {
+    Track *track = trackList.getSelected();
+    Sample *sample = trackList.getSelectedSample();
+    if (track != nullptr && sample != nullptr) {
+        Command *command = new DeleteSampleCommand(trackListController, *track, *sample);
+        commandList.pushCommand(command);
+        dirty = true;
+        updateTitleBar();
+        return;
+    }
+    Track *selected = trackList.getSelected();
+    if (selected != nullptr) {
+        Command *command = new DeleteTrackCommand(*this, selected);
+        commandList.pushCommand(command);
+        dirty = true;
+        updateTitleBar();
+    }
+}
+
+juce::String DesktopController::getSelectionType() const {
+    if (trackList.getSelectedSample() != nullptr) {
+        return "sample";
+    } else if (trackList.getSelected() != nullptr) {
+        return "track";
+    }
+    return "";
 }
 
 void DesktopController::sampleAdded(Track &track, juce::File file, int pos) {

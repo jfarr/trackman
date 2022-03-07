@@ -29,6 +29,7 @@ class Track {
     void loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     Sample *addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, juce::File file,
         double startPos, double endPos, double length, double sampleRate);
+    Sample *getSelected() const;
     void eachSample(std::function<void(Sample &sample)> f);
 
     void setLevelGain(float newLevel);
@@ -36,7 +37,9 @@ class Track {
     void setMute(bool newMuted);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted);
-    void selectSample(Sample &selected);
+    void selectSample(Sample *selected);
+    void deleteSample(Sample *sample);
+    void undeleteSample(Sample *sample);
 
   private:
     juce::String name;

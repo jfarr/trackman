@@ -2,8 +2,9 @@
 #include "common/listutil.h"
 
 SampleThumbnail::SampleThumbnail(
-    Sample &sample, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
-    : sample(sample), transport(transport), thumbnailCache(5), thumbnail(512, formatManager, thumbnailCache) {
+    Track &track, Sample &sample, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
+    : track(track), sample(sample), transport(transport), thumbnailCache(5),
+      thumbnail(512, formatManager, thumbnailCache) {
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     createControls();
     setSize(200, 81);
@@ -32,7 +33,7 @@ void SampleThumbnail::paintWithoutOverlay(juce::Graphics &g) {
     auto area = getLocalBounds();
     auto margin = 3;
 
-    g.fillAll(sample.isSelected() ? juce::Colours::lightgrey : juce::Colours::dimgrey);
+    g.fillAll(track.isSelected() && sample.isSelected() ? juce::Colours::lightgrey : juce::Colours::dimgrey);
     g.setColour(juce::Colours::grey);
     g.drawRect(0, 0, getWidth(), getHeight());
 
@@ -74,7 +75,7 @@ void SampleThumbnail::mouseDrag(const juce::MouseEvent &event) {
 
 void SampleThumbnail::mouseDown(const juce::MouseEvent &event) {
     Component::mouseDown(event);
-    notifySampleSelected(sample);
+    notifySampleSelected(track, sample);
 }
 
 void SampleThumbnail::addListener(SampleListener *listener) {
@@ -85,8 +86,8 @@ void SampleThumbnail::addListener(SampleListener *listener) {
 
 void SampleThumbnail::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
 
-void SampleThumbnail::notifySampleSelected(Sample &selected) {
+void SampleThumbnail::notifySampleSelected(Track &track, Sample &selected) {
     for (SampleListener *listener : sampleListeners) {
-        listener->sampleSelected(selected);
+        listener->sampleSelected(track, selected);
     }
 }

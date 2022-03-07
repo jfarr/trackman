@@ -13,13 +13,19 @@ TrackListController::TrackListController(TrackList &trackList, juce::AudioTransp
     trackListPanel.resized();
 }
 
+TrackListController::~TrackListController() { trackListPanel.removeListener(this); }
+
 void TrackListController::update() {
+    for (std::unique_ptr<TrackLaneController> &lane : lanes) {
+        lane->removeListener((TrackListListener *)this);
+        lane->removeListener((SampleListener *)this);
+    }
     lanes.clear();
     trackListPanel.clear();
     trackList.eachTrack([this](Track &track) {
         auto lane = new TrackLaneController(track, transport, formatManager);
-        lane->addListener((TrackListListener *) this);
-        lane->addListener((SampleListener *) this);
+        lane->addListener((TrackListListener *)this);
+        lane->addListener((SampleListener *)this);
         lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
         trackListPanel.addLane(&lane->getTrackLaneControl());
         lane->update();
@@ -74,14 +80,30 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
 }
 
 void TrackListController::deleteSample(Track &track, Sample *sample) {
+    auto pos =  transport.getCurrentPosition();
     if (sample == nullptr) {
         return;
     }
-    sample->setDeleted(true);
+    track.deleteSample(sample);
     updateLane(track);
     if (listener != nullptr) {
         listener->onSourceSet();
     }
+    pos = std::max(pos, transport.getLengthInSeconds());
+    transport.setPosition(pos);
+}
+
+void TrackListController::undeleteSample(Track &track, Sample *sample) {
+    auto pos =  transport.getCurrentPosition();
+    if (sample == nullptr) {
+        return;
+    }
+    track.undeleteSample(sample);
+    updateLane(track);
+    if (listener != nullptr) {
+        listener->onSourceSet();
+    }
+    transport.setPosition(pos);
 }
 
 void TrackListController::updateLane(Track &track) {
@@ -106,10 +128,21 @@ void TrackListController::updateLanes() {
     }
 }
 
-void TrackListController::selectionChanged(Track &track) { notifySelectionChanged(track); }
+void TrackListController::selectionChanged(Track &track) {
+    if (!selectingSample) {
+        trackList.selectSample(nullptr);
+    }
+    selectingSample = false;
+    if (&track != selected) {
+        selected = &track;
+        notifySelectionChanged(track);
+        updateLanes();
+    }
+}
 
-void TrackListController::sampleSelected(Sample &sample) {
-    trackList.selectSample(sample);
+void TrackListController::sampleSelected(Track &track, Sample &sample) {
+    selectingSample = true;
+    trackList.selectSample(&sample);
 }
 
 void TrackListController::sampleMoved(Sample &sample, juce::Point<int> pos) {
@@ -122,9 +155,7 @@ void TrackListController::sampleMoved(Sample &sample, juce::Point<int> pos) {
     trackListPanel.resize();
 }
 
-void TrackListController::dragEnded() {
-    updateLanes();
-}
+void TrackListController::dragEnded() { updateLanes(); }
 
 void TrackListController::addListener(TrackListListener *listener) {
     if (!listContains(trackListListeners, listener)) {

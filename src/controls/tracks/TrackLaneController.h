@@ -32,7 +32,7 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
 
     //==============================================================================
     // SampleListener
-    void sampleSelected(Sample &sample) override;
+    void sampleSelected(Track &track, Sample &sample) override;
 
   private:
     Track &track;
@@ -44,7 +44,7 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
     juce::AudioFormatManager &formatManager;
 
     void notifySelectionChanged();
-    void notifySampleSelected(Sample &sample);
+    void notifySampleSelected(Track &track, Sample &sample);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackLaneController)
 };
