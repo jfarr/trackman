@@ -14,6 +14,12 @@ void SampleThumbnail::createControls() {
     filenameLabel.setText(sample.getFile().getFileName(), juce::dontSendNotification);
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     addAndMakeVisible(filenameLabel);
+    if (sample.getSource() == nullptr) {
+        missingFileLabel.setText("no file", juce::dontSendNotification);
+        missingFileLabel.setFont(missingFileLabel.getFont().withHeight(10));
+        missingFileLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
+        addAndMakeVisible(missingFileLabel);
+    }
 }
 
 juce::ScaledImage *SampleThumbnail::getImage() {
@@ -65,6 +71,9 @@ void SampleThumbnail::resized() {
     auto labelHeight = 18;
     auto margin = 2;
     filenameLabel.setBounds(area.removeFromTop(labelHeight).reduced(margin));
+    if (sample.getSource() == nullptr) {
+        missingFileLabel.centreWithSize(40, 15);
+    }
 }
 
 void SampleThumbnail::mouseDrag(const juce::MouseEvent &event) {

@@ -7,6 +7,7 @@ PositionableMixingAudioSource::~PositionableMixingAudioSource() { removeAllInput
 
 void PositionableMixingAudioSource::addInputSource(PositionableAudioSource *input, const bool deleteWhenRemoved,
     double sourceSampleRateToCorrectFor, int maxNumChannels) {
+    jassert (input != nullptr);
     if (sourceSampleRateToCorrectFor > 0) {
         input = new PositionableResamplingAudioSource(
             input, deleteWhenRemoved, sampleRate, sourceSampleRateToCorrectFor, maxNumChannels);

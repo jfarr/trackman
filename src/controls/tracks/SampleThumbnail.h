@@ -28,6 +28,7 @@ class SampleThumbnail : public juce::Component {
     Sample &sample;
     juce::AudioTransportSource &transport;
     juce::Label filenameLabel;
+    juce::Label missingFileLabel;
     // TODO: make thumbnailCache a singleton
     juce::AudioThumbnailCache thumbnailCache;
     juce::AudioThumbnail thumbnail;
