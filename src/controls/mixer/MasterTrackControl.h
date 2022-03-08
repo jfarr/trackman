@@ -6,6 +6,7 @@
 #include "MasterTrackListener.h"
 #include "controls/common/DecibelSlider.h"
 #include "model/Mixer.h"
+#include "MasterLevelMeterLookAndFeel.h"
 
 class MasterTrackControl : public juce::Component, public SliderListener {
   public:
@@ -39,6 +40,7 @@ class MasterTrackControl : public juce::Component, public SliderListener {
     juce::TextButton muteButton;
     juce::Label channelLabel;
     foleys::LevelMeter levelMeter;
+    MasterLevelMeterLookAndFeel levelMeterLookAndFeel;
 
     Mixer &mixer;
     bool draggingSlider = false;

@@ -5,11 +5,14 @@
 MasterTrackControl::MasterTrackControl(Mixer &mixer, foleys::LevelMeterSource &meterSource)
     : mixer(mixer), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
     levelMeter.setMeterSource(&meterSource);
+    levelMeter.setLookAndFeel(&levelMeterLookAndFeel);
     createControls();
     setSize(getPreferredWidth(), 100);
 }
 
-MasterTrackControl::~MasterTrackControl() {}
+MasterTrackControl::~MasterTrackControl() {
+    levelMeter.setLookAndFeel(nullptr);
+}
 
 void MasterTrackControl::createControls() {
     previousLevel = mixer.getMasterLevelGain();
