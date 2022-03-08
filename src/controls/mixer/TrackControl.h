@@ -13,7 +13,7 @@ class TrackControl : public juce::Component, public SliderListener {
     TrackControl(Track &track);
     ~TrackControl();
 
-    int getPreferredWidth() const { return std::max(getWidth(), 145); }
+    int getPreferredWidth() const { return std::max(getWidth(), 105); }
 
     void update();
 

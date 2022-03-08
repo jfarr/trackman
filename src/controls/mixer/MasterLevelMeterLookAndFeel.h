@@ -97,19 +97,17 @@ class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
         const auto infinity = meterType & foleys::LevelMeter::Reduction ? -30.0f : -100.0f;
 
         g.setColour(juce::Colours::grey);
-        if (meterType & foleys::LevelMeter::Minimal) {
-            const auto h = (bounds.getHeight() - 2.0f) * 0.1f;
-            for (int i = 0; i < 11; ++i) {
-                g.drawHorizontalLine(juce::roundToInt(bounds.getY() + i * h + 1), bounds.getX() + 4, bounds.getRight());
-            }
-            if (h > 10 && bounds.getWidth() > 20) {
-                // don't print tiny numbers
-                g.setFont(h * 0.5f);
-                for (int i = 0; i < 10; ++i) {
-                    g.drawFittedText(juce::String(i * 0.1 * infinity), juce::roundToInt(bounds.getX()),
-                        juce::roundToInt(bounds.getY() + i * h + 2), juce::roundToInt(bounds.getWidth()),
-                        juce::roundToInt(h * 0.6f), juce::Justification::centredTop, 1);
-                }
+        const auto h = (bounds.getHeight() - 2.0f) * 0.1f;
+        for (int i = 0; i < 11; ++i) {
+            g.drawHorizontalLine(juce::roundToInt(bounds.getY() + i * h + 1), bounds.getX() + 4, bounds.getRight());
+        }
+        if (h > 10 && bounds.getWidth() > 20) {
+            // don't print tiny numbers
+            g.setFont(h * 0.5f);
+            for (int i = 0; i < 10; ++i) {
+                g.drawFittedText(juce::String(i * 0.1 * infinity), juce::roundToInt(bounds.getX()),
+                    juce::roundToInt(bounds.getY() + i * h + 2), juce::roundToInt(bounds.getWidth()),
+                    juce::roundToInt(h * 0.6f), juce::Justification::centredTop, 1);
             }
         }
     }
@@ -167,12 +165,13 @@ class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
             floorf(bounds.getRight()) - (ceilf(bounds.getX() + 2.0f)),
             floorf(bounds.getBottom()) - (ceilf(bounds.getY()) + 2.0f));
 
+        float alpha = 0.7;
         if (verticalGradient.getNumColours() < 2) {
-            verticalGradient = juce::ColourGradient(findColour(foleys::LevelMeter::lmMeterGradientLowColour),
-                floored.getX(), floored.getBottom(), findColour(foleys::LevelMeter::lmMeterGradientMaxColour),
+            verticalGradient = juce::ColourGradient(findColour(foleys::LevelMeter::lmMeterGradientLowColour).withAlpha(alpha),
+                floored.getX(), floored.getBottom(), findColour(foleys::LevelMeter::lmMeterGradientMaxColour).withAlpha(alpha),
                 floored.getX(), floored.getY(), false);
-            verticalGradient.addColour(0.5f, findColour(foleys::LevelMeter::lmMeterGradientLowColour));
-            verticalGradient.addColour(0.75f, findColour(foleys::LevelMeter::lmMeterGradientMidColour));
+            verticalGradient.addColour(0.5f, findColour(foleys::LevelMeter::lmMeterGradientLowColour).withAlpha(alpha));
+            verticalGradient.addColour(0.75f, findColour(foleys::LevelMeter::lmMeterGradientMidColour).withAlpha(alpha));
         }
         g.setGradientFill(verticalGradient);
         g.fillRect(floored.withTop(floored.getY() + rmsDb * floored.getHeight() / infinity));

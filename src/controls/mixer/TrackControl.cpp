@@ -82,7 +82,7 @@ void TrackControl::paint(juce::Graphics &g) {
 void TrackControl::resized() {
     auto area = getLocalBounds();
     auto sliderWidth = 45;
-    auto meterWidth = 75;
+    auto meterWidth = 35;
     auto buttonSize = 25;
     auto buttonsHeight = 30;
     auto labelHeight = 25;

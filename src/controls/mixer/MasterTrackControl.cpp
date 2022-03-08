@@ -68,6 +68,8 @@ void MasterTrackControl::paint(juce::Graphics &g) {
     auto buttonsHeight = 30;
     g.setColour(juce::Colours::lightgrey);
     g.fillRect(0, 0, getWidth(), buttonsHeight);
+    g.setColour(juce::Colours::dimgrey);
+    g.fillRect(0, buttonsHeight - 1, getWidth(), 1);
 }
 
 void MasterTrackControl::resized() {
