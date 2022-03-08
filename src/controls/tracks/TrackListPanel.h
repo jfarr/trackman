@@ -6,6 +6,7 @@
 #include "TrackLaneControl.h"
 #include "controls/common/PositionOverlay.h"
 #include "controls/common/TimeMeter.h"
+#include "controls/desktop/TrackListListener.h"
 #include "model/Track.h"
 #include "model/TrackList.h"
 
@@ -50,6 +51,8 @@ class TrackListPanel : public juce::Component,
 
     void addListener(SampleListener *listener);
     void removeListener(SampleListener *listener);
+    void addListener(TrackListListener *listener);
+    void removeListener(TrackListListener *listener);
 
     //==============================================================================
     // DragAndDropTarget
@@ -59,12 +62,13 @@ class TrackListPanel : public juce::Component,
     //==============================================================================
     // DragAndDropContainer
     void dragOperationStarted(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-    void dragOperationEnded (const DragAndDropTarget::SourceDetails& dragSourceDetails) override;
+    void dragOperationEnded(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
 
     //==============================================================================
     // Component
     void paint(juce::Graphics &g) override;
     void resized() override;
+    void mouseDown(const juce::MouseEvent &event) override;
 
   private:
     TrackList &trackList;
@@ -78,7 +82,8 @@ class TrackListPanel : public juce::Component,
     DropBox dropBox;
     int dragSourceOffset;
 
-    std::list<SampleListener *> listeners;
+    std::list<SampleListener *> sampleListeners;
+    std::list<TrackListListener *> trackListListeners;
 
     void createControls();
     int getTrackLaneWidth() const;
@@ -86,6 +91,7 @@ class TrackListPanel : public juce::Component,
 
     void notifySampleDropped(SampleThumbnail *thumbnail, juce::Point<int> pos);
     void notifyDragEnded();
+    void notifySelectionChanged();
 
     //==============================================================================
     // Timer

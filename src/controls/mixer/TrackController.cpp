@@ -41,6 +41,6 @@ void TrackController::removeListener(TrackListListener *listener) { listeners.re
 
 void TrackController::notifySelectionChanged() {
     for (TrackListListener *listener : listeners) {
-        listener->selectionChanged(track);
+        listener->selectionChanged(&track);
     }
 }

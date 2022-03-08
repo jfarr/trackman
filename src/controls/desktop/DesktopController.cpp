@@ -211,7 +211,7 @@ void DesktopController::updateTitleBar() {
         " - " + applicationName);
 }
 
-void DesktopController::selectionChanged(Track &track) {
+void DesktopController::selectionChanged(Track *track) {
     trackList.setSelected(track);
     trackListController.repaint();
     mixerController.repaint();

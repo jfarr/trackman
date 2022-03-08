@@ -106,6 +106,11 @@ void TrackListPanel::resized() {
     }
 }
 
+void TrackListPanel::mouseDown(const juce::MouseEvent &event) {
+    Component::mouseDown(event);
+    notifySelectionChanged();
+}
+
 int TrackListPanel::getTrackLaneWidth() const {
     int trackWidth = trackList.getTotalLengthSeconds() * scale;
     auto leftPanelWidth = 25;
@@ -119,21 +124,36 @@ int TrackListPanel::getTrackLaneHeight() const {
 }
 
 void TrackListPanel::addListener(SampleListener *listener) {
-    if (!listContains(listeners, listener)) {
-        listeners.push_front(listener);
+    if (!listContains(sampleListeners, listener)) {
+        sampleListeners.push_front(listener);
     }
 }
 
-void TrackListPanel::removeListener(SampleListener *listener) { listeners.remove(listener); }
+void TrackListPanel::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
 
 void TrackListPanel::notifySampleDropped(SampleThumbnail *thumbnail, juce::Point<int> pos) {
-    for (SampleListener *listener : listeners) {
+    for (SampleListener *listener : sampleListeners) {
         listener->sampleMoved(thumbnail->getSample(), pos);
     }
 }
 
 void TrackListPanel::notifyDragEnded() {
-    for (SampleListener *listener : listeners) {
+    for (SampleListener *listener : sampleListeners) {
         listener->dragEnded();
     }
 }
+
+void TrackListPanel::addListener(TrackListListener *listener) {
+    if (!listContains(trackListListeners, listener)) {
+        trackListListeners.push_front(listener);
+    }
+}
+
+void TrackListPanel::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
+
+void TrackListPanel::notifySelectionChanged() {
+    for (TrackListListener *listener : trackListListeners) {
+        listener->selectionChanged(nullptr);
+    }
+}
+
