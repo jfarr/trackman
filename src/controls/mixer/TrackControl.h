@@ -2,6 +2,7 @@
 
 #include "JuceHeader.h"
 
+#include "LevelMeterLookAndFeel.h"
 #include "controls/common/DecibelSlider.h"
 #include "controls/common/FileChooserControl.h"
 #include "controls/mixer/TrackControlListener.h"
@@ -12,7 +13,7 @@ class TrackControl : public juce::Component, public SliderListener {
     TrackControl(Track &track);
     ~TrackControl();
 
-    int getPreferredWidth() const { return std::max(getWidth(), 70); }
+    int getPreferredWidth() const { return std::max(getWidth(), 105); }
 
     void update();
 
@@ -39,6 +40,8 @@ class TrackControl : public juce::Component, public SliderListener {
     juce::TextButton muteButton;
     juce::Label trackLabel;
     juce::Label channelLabel;
+    LevelMeterLookAndFeel levelMeterLookAndFeel;
+    foleys::LevelMeter levelMeter;
 
     bool draggingSlider = false;
     float previousLevel = juce::Decibels::decibelsToGain<float>(0.0);

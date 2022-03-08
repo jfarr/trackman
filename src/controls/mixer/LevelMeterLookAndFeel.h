@@ -2,10 +2,10 @@
 
 #include <ff_meters.h>
 
-class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
+class LevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
   public:
-    MasterLevelMeterLookAndFeel() {}
-    ~MasterLevelMeterLookAndFeel() {}
+    LevelMeterLookAndFeel() {}
+    ~LevelMeterLookAndFeel() {}
 
     juce::Rectangle<float> drawBackground(
         juce::Graphics &g, foleys::LevelMeter::MeterFlags meterType, juce::Rectangle<float> bounds) override {
@@ -26,9 +26,8 @@ class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
     juce::Rectangle<float> getMeterBarBounds(
         juce::Rectangle<float> bounds, foleys::LevelMeter::MeterFlags meterType) const override {
         const auto top = bounds.getY() + bounds.getWidth() * 0.5f;
-        const auto bottom = (meterType & foleys::LevelMeter::MaxNumber)
-                                ? bounds.getBottom() - bounds.getWidth()
-                                : bounds.getBottom();
+        const auto bottom =
+            (meterType & foleys::LevelMeter::MaxNumber) ? bounds.getBottom() - bounds.getWidth() : bounds.getBottom();
         return juce::Rectangle<float>(bounds.getX(), top, bounds.getWidth(), bottom - top);
     }
 
@@ -40,10 +39,10 @@ class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
         const juce::Rectangle<float> innerBounds = getMeterInnerBounds(bounds, meterType);
         const int numChannels = source->getNumChannels();
         if (meterType & foleys::LevelMeter::Minimal) {
-            const float width = innerBounds.getWidth() / (2 * numChannels - 1) * 0.75;
+            const float width = innerBounds.getWidth() / numChannels;
             juce::Rectangle<float> meter = innerBounds.withWidth(width);
             for (int channel = 0; channel < numChannels; ++channel) {
-                meter.setX(width * 1.5 * channel * 2);
+                meter.setX(width * channel);
                 {
                     juce::Rectangle<float> meterBarBounds = getMeterBarBounds(meter, meterType);
                     drawMeterBar(g, meterType, getMeterBarBounds(meter, meterType), source->getRMSLevel(channel),
@@ -62,52 +61,48 @@ class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
                     meterType);
                 if (!maxNum.isEmpty())
                     drawMaxNumber(g, meterType, maxNum, source->getMaxOverallLevel(channel));
-                if (channel < numChannels - 1) {
-                    meter.setX(width * (channel * 2 + 1));
-                    juce::Rectangle<float> ticks = getMeterTickmarksBounds(meter, meterType).withWidth(width * 1.5);
-                    if (!ticks.isEmpty())
-                        drawTickMarks(g, meterType, ticks);
-                }
             }
+            juce::Rectangle<float> ticks = getMeterTickmarksBounds(meter.withX(0).withWidth(meter.getWidth() * numChannels), meterType);
+            if (!ticks.isEmpty())
+                drawTickMarks(g, meterType, ticks);
         }
     }
 
     void drawMeterBarsBackground(juce::Graphics &g, foleys::LevelMeter::MeterFlags meterType,
         juce::Rectangle<float> bounds, int numChannels, int fixedNumChannels) override {
         const juce::Rectangle<float> innerBounds = getMeterInnerBounds(bounds, meterType);
-        const float width = innerBounds.getWidth() / (2 * numChannels - 1) * 0.75;
+        const float width = innerBounds.getWidth() / numChannels;
         juce::Rectangle<float> meter = innerBounds.withWidth(width);
         for (int channel = 0; channel < numChannels; ++channel) {
-            meter.setX(width * 1.5 * channel * 2);
+            meter.setX(width * channel);
             drawMeterBarBackground(g, meterType, getMeterBarBounds(meter, meterType));
             juce::Rectangle<float> clip = getMeterClipIndicatorBounds(meter, meterType);
             if (!clip.isEmpty())
                 drawClipIndicatorBackground(g, meterType, clip);
-            if (channel < numChannels - 1) {
-                meter.setX(width * (channel * 2 + 1));
-                juce::Rectangle<float> ticks = getMeterTickmarksBounds(meter, meterType).withWidth(width * 1.5);
-                if (!ticks.isEmpty())
-                    drawTickMarks(g, meterType, ticks);
-            }
         }
+        juce::Rectangle<float> ticks = getMeterTickmarksBounds(meter.withX(0).withWidth(meter.getWidth() * numChannels), meterType);
+        if (!ticks.isEmpty())
+            drawTickMarks(g, meterType, ticks);
     }
 
     void drawTickMarks(
         juce::Graphics &g, foleys::LevelMeter::MeterFlags meterType, juce::Rectangle<float> bounds) override {
         const auto infinity = meterType & foleys::LevelMeter::Reduction ? -30.0f : -100.0f;
 
-        g.setColour(juce::Colours::grey);
-        const auto h = (bounds.getHeight() - 2.0f) * 0.1f;
-        for (int i = 0; i < 11; ++i) {
-            g.drawHorizontalLine(juce::roundToInt(bounds.getY() + i * h + 1), bounds.getX() + 4, bounds.getRight());
-        }
-        if (h > 10 && bounds.getWidth() > 20) {
-            // don't print tiny numbers
-            g.setFont(h * 0.5f);
-            for (int i = 0; i < 10; ++i) {
-                g.drawFittedText(juce::String(i * 0.1 * infinity), juce::roundToInt(bounds.getX()),
-                    juce::roundToInt(bounds.getY() + i * h + 2), juce::roundToInt(bounds.getWidth()),
-                    juce::roundToInt(h * 0.6f), juce::Justification::centredTop, 1);
+        g.setColour(juce::Colour{0xff282828});
+        if (meterType & foleys::LevelMeter::Minimal) {
+            const auto h = (bounds.getHeight() - 2.0f) * 0.1f;
+            for (int i = 0; i < 11; ++i) {
+                g.drawHorizontalLine(juce::roundToInt(bounds.getY() + i * h + 1), bounds.getX() + 2, bounds.getRight() - 2);
+            }
+            if (h > 9 && bounds.getWidth() > 20) {
+                // don't print tiny numbers
+                g.setFont(h * 0.5f);
+                for (int i = 0; i < 10; ++i) {
+                    g.drawFittedText(juce::String(i * 0.1 * infinity), juce::roundToInt(bounds.getX()),
+                        juce::roundToInt(bounds.getY() + i * h + 2), juce::roundToInt(bounds.getWidth()),
+                        juce::roundToInt(h * 0.6f), juce::Justification::centredTop, 1);
+                }
             }
         }
     }
@@ -167,11 +162,13 @@ class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
 
         float alpha = 0.7;
         if (verticalGradient.getNumColours() < 2) {
-            verticalGradient = juce::ColourGradient(findColour(foleys::LevelMeter::lmMeterGradientLowColour).withAlpha(alpha),
-                floored.getX(), floored.getBottom(), findColour(foleys::LevelMeter::lmMeterGradientMaxColour).withAlpha(alpha),
+            verticalGradient = juce::ColourGradient(
+                findColour(foleys::LevelMeter::lmMeterGradientLowColour).withAlpha(alpha), floored.getX(),
+                floored.getBottom(), findColour(foleys::LevelMeter::lmMeterGradientMaxColour).withAlpha(alpha),
                 floored.getX(), floored.getY(), false);
             verticalGradient.addColour(0.5f, findColour(foleys::LevelMeter::lmMeterGradientLowColour).withAlpha(alpha));
-            verticalGradient.addColour(0.75f, findColour(foleys::LevelMeter::lmMeterGradientMidColour).withAlpha(alpha));
+            verticalGradient.addColour(
+                0.75f, findColour(foleys::LevelMeter::lmMeterGradientMidColour).withAlpha(alpha));
         }
         g.setGradientFill(verticalGradient);
         g.fillRect(floored.withTop(floored.getY() + rmsDb * floored.getHeight() / infinity));
@@ -194,5 +191,5 @@ class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
     juce::ColourGradient horizontalGradient;
     juce::ColourGradient verticalGradient;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MasterLevelMeterLookAndFeel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LevelMeterLookAndFeel)
 };

@@ -2,12 +2,14 @@
 
 #include "common/listutil.h"
 
-TrackControl::TrackControl(Track &track) : track(track) {
+TrackControl::TrackControl(Track &track) : track(track), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
     createControls();
     setSize(getPreferredWidth(), 100);
 }
 
-TrackControl::~TrackControl() {}
+TrackControl::~TrackControl() {
+    levelMeter.setLookAndFeel(nullptr);
+}
 
 void TrackControl::createControls() {
     previousLevel = track.getLevelGain();
@@ -30,10 +32,17 @@ void TrackControl::createControls() {
     trackLabel.setText("" /*track.getName()*/, juce::dontSendNotification);
     trackLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
 
+    levelMeter.setLookAndFeel(&levelMeterLookAndFeel);
+    levelMeter.setFixedNumChannels(2);
+    if (track.getMeterSource() != nullptr) {
+        levelMeter.setMeterSource(track.getMeterSource());
+    }
+
     addAndMakeVisible(decibelSlider);
     addAndMakeVisible(muteButton);
     addAndMakeVisible(trackLabel);
     addAndMakeVisible(channelLabel);
+    addAndMakeVisible(levelMeter);
 }
 
 void TrackControl::update() {
@@ -73,6 +82,7 @@ void TrackControl::paint(juce::Graphics &g) {
 void TrackControl::resized() {
     auto area = getLocalBounds();
     auto sliderWidth = 45;
+    auto meterWidth = 35;
     auto buttonSize = 25;
     auto buttonsHeight = 30;
     auto labelHeight = 25;
@@ -80,6 +90,7 @@ void TrackControl::resized() {
     area.removeFromTop(buttonsHeight + labelHeight + margin);
     channelLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
     trackLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
+    levelMeter.setBounds(area.removeFromLeft(meterWidth).reduced(5));
     decibelSlider.setBounds(area.removeFromLeft(sliderWidth));
     auto buttonArea = area.removeFromLeft(buttonSize);
     muteButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));

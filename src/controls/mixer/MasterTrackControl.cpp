@@ -5,7 +5,6 @@
 MasterTrackControl::MasterTrackControl(Mixer &mixer, foleys::LevelMeterSource &meterSource)
     : mixer(mixer), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
     levelMeter.setMeterSource(&meterSource);
-    levelMeter.setLookAndFeel(&levelMeterLookAndFeel);
     createControls();
     setSize(getPreferredWidth(), 100);
 }
@@ -29,6 +28,8 @@ void MasterTrackControl::createControls() {
     channelLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
     channelLabel.setColour(
         juce::Label::backgroundColourId, getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+
+    levelMeter.setLookAndFeel(&levelMeterLookAndFeel);
 
     addAndMakeVisible(decibelSlider);
     addAndMakeVisible(muteButton);
@@ -67,6 +68,8 @@ void MasterTrackControl::paint(juce::Graphics &g) {
     auto buttonsHeight = 30;
     g.setColour(juce::Colours::lightgrey);
     g.fillRect(0, 0, getWidth(), buttonsHeight);
+    g.setColour(juce::Colours::dimgrey);
+    g.fillRect(0, buttonsHeight - 1, getWidth(), 1);
 }
 
 void MasterTrackControl::resized() {

@@ -14,6 +14,7 @@
 - Mixer horizontal scroll
 - Click outside tracks to deselect all
 - Dropping a sample automatically creates a new track
+- Solo tracks
 
 ## Long Term
 
@@ -25,5 +26,6 @@
 - Oscillator
 - LFO
 - Filter
+- EQ
 - VST Plugins
 - Skins
