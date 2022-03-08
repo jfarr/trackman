@@ -3,7 +3,8 @@
 #include "controls/mixer/TrackController.h"
 
 MixerController::MixerController(TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager)
-    : trackList(trackList), mixer(mixer), mixerPanel(trackList, mixer, mixer.getMeterSource()), formatManager(formatManager) {
+    : trackList(trackList), mixer(mixer), mixerPanel(trackList, mixer, mixer.getMeterSource()),
+      formatManager(formatManager) {
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
 }
@@ -14,9 +15,7 @@ MixerController::~MixerController() {
 }
 
 void MixerController::update() {
-    mixerPanel.eachTrack([this] (TrackControl &track) {
-        track.removeListener(this);
-    });
+    mixerPanel.eachTrack([this](TrackControl &track) { track.removeListener(this); });
     for (std::unique_ptr<TrackController> &track : tracks) {
         track->removeListener(this);
     }
@@ -85,6 +84,10 @@ void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldL
 
 void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevelGain(newLevel); }
 
+void MixerController::masterLevelChangeFinalized(float previousLevel) {
+    notifyMasterLevelChangeFinalized(previousLevel);
+}
+
 void MixerController::masterMuteToggled() {
     mixer.toggleMasterMute();
     notifyMasterMuteToggled();
@@ -123,6 +126,12 @@ void MixerController::removeListener(MasterTrackListener *listener) { masterTrac
 void MixerController::notifyMasterMuteToggled() {
     for (MasterTrackListener *listener : masterTrackListeners) {
         listener->masterMuteToggled();
+    }
+}
+
+void MixerController::notifyMasterLevelChangeFinalized(float previousLevel) {
+    for (MasterTrackListener *listener : masterTrackListeners) {
+        listener->masterLevelChangeFinalized(previousLevel);
     }
 }
 
