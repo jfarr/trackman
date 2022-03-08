@@ -26,7 +26,6 @@ DesktopController::~DesktopController() {
     trackListController.removeListener((TrackListListener *)this);
     trackListController.removeListener((SampleListener *)this);
     trackListController.setListener(nullptr);
-
 }
 
 bool DesktopController::canUndo() const { return !commandList.isEmpty(); }
@@ -132,11 +131,12 @@ void DesktopController::undeleteTrack(Track *track) {
 }
 
 Sample *DesktopController::addSample(Track &track, juce::File file, int pos) {
-    return trackListController.addSample(track, file, pos);
+    Sample *sample = trackListController.addSample(track, file, pos);
+    mixerController.update();
+    return sample;
 }
-void DesktopController::deleteSample(Track &track, Sample *sample) {
-    trackListController.deleteSample(track, sample);
-}
+
+void DesktopController::deleteSample(Track &track, Sample *sample) { trackListController.deleteSample(track, sample); }
 
 void DesktopController::saveProject() {
     if (projectFile != juce::File{}) {
@@ -206,7 +206,8 @@ void DesktopController::openProject() {
 
 void DesktopController::updateTitleBar() {
     mainWindow.setName(
-        (projectFile != juce::File{} ? projectFile.getFileNameWithoutExtension() + (dirty ? " [modified]" : "") : "[untitled]") +
+        (projectFile != juce::File{} ? projectFile.getFileNameWithoutExtension() + (dirty ? " [modified]" : "")
+                                     : "[untitled]") +
         " - " + applicationName);
 }
 

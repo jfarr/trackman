@@ -48,6 +48,7 @@ void TrackControl::update() {
     decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevelGain()));
     muteButton.setColour(juce::TextButton::buttonColourId,
         track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    trackNameLabel.setText(track.getName(), juce::dontSendNotification);
     trackNumberLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
 }
 
