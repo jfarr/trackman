@@ -31,7 +31,8 @@ void Project::from_json(
     mixer.setMasterMute(project_json["mixer"]["muted"]);
     trackList.clear();
     for (auto track_json : project_json["tracks"]) {
-        auto track = trackList.addTrack(track_json["name"]);
+        auto track = trackList.addTrack();
+        track->setName(track_json["name"]);
         track->setLevelGain(track_json["gain"]);
         track->setMute(track_json["muted"]);
         for (auto sample_json : track_json["samples"]) {

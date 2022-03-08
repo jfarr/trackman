@@ -7,9 +7,7 @@ TrackControl::TrackControl(Track &track) : track(track), levelMeter(foleys::Leve
     setSize(getPreferredWidth(), 100);
 }
 
-TrackControl::~TrackControl() {
-    levelMeter.setLookAndFeel(nullptr);
-}
+TrackControl::~TrackControl() { levelMeter.setLookAndFeel(nullptr); }
 
 void TrackControl::createControls() {
     previousLevel = track.getLevelGain();
@@ -24,13 +22,13 @@ void TrackControl::createControls() {
         track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     muteButton.onClick = [this] { muteButtonClicked(); };
 
-    channelLabel.setText(track.getName(), juce::dontSendNotification);
-    channelLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
-    channelLabel.setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
-    channelLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
+    trackNameLabel.setText(track.getName(), juce::dontSendNotification);
+    trackNameLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
 
-    trackLabel.setText("" /*track.getName()*/, juce::dontSendNotification);
-    trackLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
+    trackNumberLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
+    trackNumberLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
+    trackNumberLabel.setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
+    trackNumberLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
 
     levelMeter.setLookAndFeel(&levelMeterLookAndFeel);
     levelMeter.setFixedNumChannels(2);
@@ -40,8 +38,8 @@ void TrackControl::createControls() {
 
     addAndMakeVisible(decibelSlider);
     addAndMakeVisible(muteButton);
-    addAndMakeVisible(trackLabel);
-    addAndMakeVisible(channelLabel);
+    addAndMakeVisible(trackNameLabel);
+    addAndMakeVisible(trackNumberLabel);
     addAndMakeVisible(levelMeter);
 }
 
@@ -50,6 +48,7 @@ void TrackControl::update() {
     decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevelGain()));
     muteButton.setColour(juce::TextButton::buttonColourId,
         track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    trackNumberLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
 }
 
 void TrackControl::onSliderClick() { draggingSlider = true; }
@@ -88,8 +87,8 @@ void TrackControl::resized() {
     auto labelHeight = 25;
     auto margin = 3;
     area.removeFromTop(buttonsHeight + labelHeight + margin);
-    channelLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
-    trackLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
+    trackNumberLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
+    trackNameLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
     levelMeter.setBounds(area.removeFromLeft(meterWidth).reduced(5));
     decibelSlider.setBounds(area.removeFromLeft(sliderWidth));
     auto buttonArea = area.removeFromLeft(buttonSize);

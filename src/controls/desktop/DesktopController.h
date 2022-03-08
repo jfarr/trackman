@@ -36,7 +36,7 @@ class DesktopController : public MasterTrackListener,
     void deleteSelected();
     juce::String getSelectionType() const;
 
-    Track *addTrack(juce::String name);
+    Track *addTrack();
     void deleteTrack(Track *track, bool purge);
     void undeleteTrack(Track *track);
     int getTrackListSize() const { return trackListController.getTrackListSize(); }

@@ -68,8 +68,7 @@ void DesktopController::muteToggled(Track &track) {
 void DesktopController::resize() { getTrackListController().getTrackListPanel().resize(); }
 
 void DesktopController::addNewTrack() {
-    juce::String name = juce::String("Track ") + juce::String::formatted(juce::String("%d"), trackList.size() + 1);
-    Command *command = new AddTrackCommand(*this, name);
+    Command *command = new AddTrackCommand(*this);
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
@@ -110,15 +109,15 @@ void DesktopController::sampleAdded(Track *track, juce::File file, int pos) {
     updateTitleBar();
 }
 
-Track *DesktopController::addTrack(juce::String name) {
-    auto track = trackList.addTrack(name);
+Track *DesktopController::addTrack() {
+    auto track = trackList.addTrack();
     trackListController.update();
     mixerController.update();
     return track;
 }
 
 void DesktopController::deleteTrack(Track *track, bool purge) {
-    track->setDeleted(true);
+    trackList.deleteTrack(track);
     trackListController.update();
     mixerController.update();
     if (purge) {
@@ -127,7 +126,7 @@ void DesktopController::deleteTrack(Track *track, bool purge) {
 }
 
 void DesktopController::undeleteTrack(Track *track) {
-    track->setDeleted(false);
+    trackList.undeleteTrack(track);
     trackListController.update();
     mixerController.update();
 }

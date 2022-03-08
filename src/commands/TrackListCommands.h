@@ -9,16 +9,15 @@
 
 class AddTrackCommand : public Command {
   public:
-    AddTrackCommand(DesktopController &controller, juce::String name)
-        : Command("add track"), controller(controller), name(name) {}
+    AddTrackCommand(DesktopController &controller)
+        : Command("add track"), controller(controller) {}
     ~AddTrackCommand() override {}
 
-    void execute() override { track = controller.addTrack(name); }
+    void execute() override { track = controller.addTrack(); }
     void undo() override { controller.deleteTrack(track, true); }
 
   private:
     DesktopController &controller;
-    juce::String name;
     Track *track;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AddTrackCommand)

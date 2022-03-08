@@ -14,9 +14,7 @@ class AddSampleCommand : public Command {
 
     void execute() override {
         if (track == nullptr) {
-            juce::String name = juce::String("Track ") +
-                                juce::String::formatted(juce::String("%d"), desktopController.getTrackListSize() + 1);
-            newTrack = desktopController.addTrack(name);
+            newTrack = desktopController.addTrack();
             track = newTrack;
         }
         sample = desktopController.addSample(*track, file, pos);
