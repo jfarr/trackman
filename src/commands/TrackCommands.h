@@ -8,16 +8,30 @@
 
 class AddSampleCommand : public Command {
   public:
-    AddSampleCommand(TrackListController &controller, Track &track, juce::File file, int pos)
-        : Command("add sample"), controller(controller), track(track), file(file), pos(pos) {}
+    AddSampleCommand(DesktopController &desktopController, Track *track, juce::File file, int pos)
+        : Command("add sample"), desktopController(desktopController), track(track), file(file), pos(pos) {}
     ~AddSampleCommand() override {}
 
-    void execute() override { sample = controller.addSample(track, file, pos); }
-    void undo() override { controller.deleteSample(track, sample); }
+    void execute() override {
+        if (track == nullptr) {
+            juce::String name = juce::String("Track ") +
+                                juce::String::formatted(juce::String("%d"), desktopController.getTrackListSize() + 1);
+            newTrack = desktopController.addTrack(name);
+            track = newTrack;
+        }
+        sample = desktopController.addSample(*track, file, pos);
+    }
+    void undo() override {
+        desktopController.deleteSample(*track, sample);
+        if (newTrack != nullptr) {
+            desktopController.deleteTrack(newTrack, true);
+        }
+    }
 
   private:
-    TrackListController &controller;
-    Track &track;
+    DesktopController &desktopController;
+    Track *track;
+    Track *newTrack;
     juce::File file;
     int pos;
     Sample *sample;

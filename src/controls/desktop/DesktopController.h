@@ -39,6 +39,10 @@ class DesktopController : public MasterTrackListener,
     Track *addTrack(juce::String name);
     void deleteTrack(Track *track, bool purge);
     void undeleteTrack(Track *track);
+    int getTrackListSize() const { return trackListController.getTrackListSize(); }
+
+    Sample *addSample(Track &track, juce::File file, int pos);
+    void deleteSample(Track &track, Sample *sample);
 
     void saveProject();
     void saveProjectAs();
@@ -60,7 +64,7 @@ class DesktopController : public MasterTrackListener,
 
     //==============================================================================
     // SampleListener
-    void sampleAdded(Track &track, juce::File file, int pos) override;
+    void sampleAdded(Track *track, juce::File file, int pos) override;
 
     //==============================================================================
     // FileDragDropTarget
