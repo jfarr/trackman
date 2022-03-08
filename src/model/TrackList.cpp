@@ -19,15 +19,6 @@ void TrackList::removeTrack(Track *track) {
     }
 }
 
-bool TrackList::hasSelection() const {
-    for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
-        if ((*iter)->isSelected() && !(*iter)->isDeleted()) {
-            return true;
-        }
-    }
-    return false;
-}
-
 Track *TrackList::getSelected() const {
     for (std::unique_ptr<Track> const &track : tracks) {
         if (!track->isDeleted() && track->isSelected()) {
@@ -37,20 +28,13 @@ Track *TrackList::getSelected() const {
     return nullptr;
 }
 
-juce::int64 TrackList::getTotalLength() const {
-    juce::int64 total = 0;
-    for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
-        juce::int64 length = (*iter)->getTotalLength();
-        total = std::max(total, length);
-    }
-    return total;
-}
-
 double TrackList::getTotalLengthSeconds() const {
     double total = 0;
     for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
-        double length = (*iter)->getTotalLengthSeconds();
-        total = std::max(total, length);
+        if (!(*iter)->isDeleted()) {
+            double length = (*iter)->getTotalLengthSeconds();
+            total = std::max(total, length);
+        }
     }
     return total;
 }

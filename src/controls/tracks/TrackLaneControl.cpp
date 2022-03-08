@@ -59,6 +59,6 @@ void TrackLaneControl::resized() {
     for (SampleThumbnail *thumbnail : thumbnails) {
         auto x = thumbnail->getSample().getStartPos() * scale;
         thumbnail->setBounds(
-            x + leftPanelWidth, area.getY(), thumbnail->getSample().getLength() * scale, thumbnail->getHeight());
+            x + leftPanelWidth, area.getY(), thumbnail->getSample().getOriginalLengthSecs() * scale, thumbnail->getHeight());
     }
 }

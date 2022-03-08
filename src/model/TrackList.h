@@ -11,10 +11,8 @@ class TrackList {
     void removeTrack(Track *track);
 
     int size() const { return tracks.size(); }
-    bool hasSelection() const;
     Track *getSelected() const;
     Sample *getSelectedSample() const;
-    juce::int64 getTotalLength() const;
     double getTotalLengthSeconds() const;
 
     void eachTrack(std::function<void(Track &track)> f);

@@ -15,7 +15,6 @@ class Track {
     juce::String getName() const { return name; }
     std::shared_ptr<juce::PositionableAudioSource> getSource() const { return source; }
     std::shared_ptr<GainAudioSource> getGain() const { return gain; }
-    juce::int64 getTotalLength() const;
     double getTotalLengthSeconds() const;
     double getSampleRate() const;
     float getLevelGain() const { return level; }
