@@ -2,10 +2,10 @@
 
 #include <ff_meters.h>
 
-class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
+class LevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
   public:
-    MasterLevelMeterLookAndFeel() {}
-    ~MasterLevelMeterLookAndFeel() {}
+    LevelMeterLookAndFeel() {}
+    ~LevelMeterLookAndFeel() {}
 
     juce::Rectangle<float> drawBackground(
         juce::Graphics &g, foleys::LevelMeter::MeterFlags meterType, juce::Rectangle<float> bounds) override {
@@ -26,9 +26,8 @@ class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
     juce::Rectangle<float> getMeterBarBounds(
         juce::Rectangle<float> bounds, foleys::LevelMeter::MeterFlags meterType) const override {
         const auto top = bounds.getY() + bounds.getWidth() * 0.5f;
-        const auto bottom = (meterType & foleys::LevelMeter::MaxNumber)
-                                ? bounds.getBottom() - bounds.getWidth()
-                                : bounds.getBottom();
+        const auto bottom =
+            (meterType & foleys::LevelMeter::MaxNumber) ? bounds.getBottom() - bounds.getWidth() : bounds.getBottom();
         return juce::Rectangle<float>(bounds.getX(), top, bounds.getWidth(), bottom - top);
     }
 
@@ -195,5 +194,5 @@ class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
     juce::ColourGradient horizontalGradient;
     juce::ColourGradient verticalGradient;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MasterLevelMeterLookAndFeel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LevelMeterLookAndFeel)
 };

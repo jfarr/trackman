@@ -39,8 +39,8 @@ class MasterTrackControl : public juce::Component, public SliderListener {
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
     juce::Label channelLabel;
-    foleys::LevelMeter levelMeter;
     MasterLevelMeterLookAndFeel levelMeterLookAndFeel;
+    foleys::LevelMeter levelMeter;
 
     Mixer &mixer;
     bool draggingSlider = false;

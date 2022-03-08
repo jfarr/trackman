@@ -56,6 +56,7 @@ target_sources(Trackman PRIVATE
         controls/desktop/FileDragDropTarget.h
         controls/desktop/TrackListListener.h
         controls/desktop/TrackSourceListener.h
+        controls/mixer/LevelMeterLookAndFeel.h
         controls/mixer/MasterLevelMeterLookAndFeel.h
         controls/mixer/MasterTrackControl.cpp
         controls/mixer/MasterTrackControl.h
