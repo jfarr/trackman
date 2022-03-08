@@ -2,8 +2,9 @@
 
 ## Design
 
-- Views own child views
+- Views own static child views
 - Controllers can reference views
+- Controllers can own dynamic child views
 - Views can't reference controllers
   - Use callbacks to send messages from views to controllers
 - Views are only referenced by one controller
