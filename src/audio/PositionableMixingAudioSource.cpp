@@ -1,14 +1,13 @@
 #include "PositionableMixingAudioSource.h"
 #include "PositionableResamplingAudioSource.h"
 
-PositionableMixingAudioSource::PositionableMixingAudioSource(double sampleRate) : sampleRate(sampleRate) {
-}
+PositionableMixingAudioSource::PositionableMixingAudioSource(double sampleRate) : sampleRate(sampleRate) {}
 
 PositionableMixingAudioSource::~PositionableMixingAudioSource() { removeAllInputs(); }
 
 void PositionableMixingAudioSource::addInputSource(PositionableAudioSource *input, const bool deleteWhenRemoved,
     double sourceSampleRateToCorrectFor, int maxNumChannels) {
-    jassert (input != nullptr);
+    jassert(input != nullptr);
     if (sourceSampleRateToCorrectFor > 0) {
         input = new PositionableResamplingAudioSource(
             input, deleteWhenRemoved, sampleRate, sourceSampleRateToCorrectFor, maxNumChannels);
