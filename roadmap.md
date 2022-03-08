@@ -1,5 +1,6 @@
 # Roadmap
 
+## Short-Term
 - Level meters
 - Resize sample thumbnails
 - Undo move / resize
@@ -13,3 +14,16 @@
 - Mixer horizontal scroll
 - Click outside tracks to deselect all
 - Dropping a sample automatically creates a new track
+
+## Long Term
+
+- Midi note roll
+  - Notes
+  - CV
+- Automation events
+- Sequencer
+- Oscillator
+- LFO
+- Filter
+- VST Plugins
+- Skins
