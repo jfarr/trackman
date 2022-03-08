@@ -12,7 +12,7 @@ class Sample {
     juce::File getFile() const { return file; }
     double getStartPos() const { return startPos; }
     double getEndPos() const { return endPos; }
-    double getLength() const { return length; }
+    double getOriginalLengthSecs() const { return length; }
     double getSampleRate() const { return sampleRate; }
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }

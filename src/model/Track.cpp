@@ -10,9 +10,15 @@ Track::~Track() {
 
 double Track::getSampleRate() const { return source == mixer ? 0.0 : sampleRate; }
 
-juce::int64 Track::getTotalLength() const { return source == nullptr ? 0 : source->getTotalLength(); }
-
-double Track::getTotalLengthSeconds() const { return sampleRate == 0 ? 0 : getTotalLength() / sampleRate; }
+double Track::getTotalLengthSeconds() const {
+    double len = 0;
+    for (std::unique_ptr<Sample> const &sample : samples) {
+        if (!sample->isDeleted()) {
+            len = std::max(len, sample->getEndPos());
+        }
+    }
+    return len;
+}
 
 void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate) {
     DBG("Track::setSource - set track source: " << getName());
