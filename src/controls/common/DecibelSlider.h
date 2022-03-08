@@ -21,7 +21,7 @@ class DecibelSlider : public juce::Slider {
         setLookAndFeel(&lf);
         setSliderStyle(juce::Slider::LinearVertical);
         setRange(-100, 12);
-        setTextBoxStyle(juce::Slider::TextBoxAbove, false, 35, 11);
+        setTextBoxStyle(juce::Slider::TextBoxAbove, false, 35, 13);
         setSkewFactorFromMidPoint(-10.0);
     }
     ~DecibelSlider() { setLookAndFeel(nullptr); }
