@@ -52,9 +52,7 @@ void TrackListController::fileDragExit(const juce::StringArray &files) { trackLi
 
 void TrackListController::filesDropped(const juce::StringArray &files, int x, int y) {
     Track *selected = trackListPanel.getTrackAtPos(x, y);
-    if (selected != nullptr) {
-        notifySampleAdded(*selected, juce::File(files[0]), x);
-    }
+    notifySampleAdded(selected, juce::File(files[0]), x);
     trackListPanel.filesDropped(files, x, y);
 }
 
@@ -94,6 +92,7 @@ void TrackListController::deleteSample(Track &track, Sample *sample) {
     trackList.adjustTrackLengths();
     pos = std::max(pos, transport.getLengthInSeconds());
     transport.setPosition(pos);
+    // delete new track
 }
 
 void TrackListController::undeleteSample(Track &track, Sample *sample) {
@@ -184,7 +183,7 @@ void TrackListController::addListener(SampleListener *listener) {
 
 void TrackListController::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
 
-void TrackListController::notifySampleAdded(Track &track, juce::File file, int pos) {
+void TrackListController::notifySampleAdded(Track *track, juce::File file, int pos) {
     for (SampleListener *listener : sampleListeners) {
         listener->sampleAdded(track, file, pos);
     }

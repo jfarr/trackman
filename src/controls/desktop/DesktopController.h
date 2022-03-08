@@ -60,7 +60,7 @@ class DesktopController : public MasterTrackListener,
 
     //==============================================================================
     // SampleListener
-    void sampleAdded(Track &track, juce::File file, int pos) override;
+    void sampleAdded(Track *track, juce::File file, int pos) override;
 
     //==============================================================================
     // FileDragDropTarget

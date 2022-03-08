@@ -103,8 +103,8 @@ juce::String DesktopController::getSelectionType() const {
     return "";
 }
 
-void DesktopController::sampleAdded(Track &track, juce::File file, int pos) {
-    Command *command = new AddSampleCommand(trackListController, track, file, pos);
+void DesktopController::sampleAdded(Track *track, juce::File file, int pos) {
+    Command *command = new AddSampleCommand(*this, trackListController, track, file, pos);
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();

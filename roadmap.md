@@ -1,7 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Dropping a sample automatically creates a new track
 - Click outside tracks to deselect all
 - Solo tracks
 - Resize sample thumbnails
@@ -16,6 +15,7 @@
 
 ## Long Term
 
+- GPL license
 - Midi note roll
   - Notes
   - CV

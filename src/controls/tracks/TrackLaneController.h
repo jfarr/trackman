@@ -6,7 +6,7 @@
 #include "controls/desktop/TrackListListener.h"
 #include "model/Track.h"
 
-class TrackLaneController : public juce::MouseListener, public TrackListListener, SampleListener {
+class TrackLaneController : public juce::MouseListener, public TrackListListener, public SampleListener {
   public:
     TrackLaneController(Track &track, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
     ~TrackLaneController() {}
