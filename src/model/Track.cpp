@@ -13,7 +13,7 @@ double Track::getSampleRate() const { return source == mixer ? 0.0 : sampleRate;
 double Track::getTotalLengthSeconds() const {
     double len = 0;
     for (std::unique_ptr<Sample> const &sample : samples) {
-        if (!sample->isDeleted()) {
+        if (!sample->isDeleted() && sample->getSource() != nullptr) {
             len = std::max(len, sample->getEndPos());
         }
     }
@@ -40,7 +40,9 @@ void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioForm
     mixer = std::make_shared<PositionableMixingAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
     for (std::unique_ptr<Sample> &sample : samples) {
         sample->loadFile(formatManager);
-        mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+        if (sample->getSource() != nullptr) {
+            mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+        }
     }
     setSource(mixer, deviceManager.getAudioDeviceSetup().sampleRate);
 }
@@ -53,7 +55,9 @@ Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFor
     if (mixer == nullptr) {
         mixer = std::make_shared<PositionableMixingAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
     }
-    mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+    if (sample->getSource() != nullptr) {
+        mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+    }
     setSource(mixer, deviceManager.getAudioDeviceSetup().sampleRate);
     return &(*samples.back());
 }
