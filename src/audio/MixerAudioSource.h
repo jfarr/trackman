@@ -5,7 +5,7 @@
 
 class MixerAudioSource : public PositionableMixingAudioSource, public MeteredAudioSource {
   public:
-    MixerAudioSource(double sampleRate) : MeteredAudioSource(sampleRate) {}
+    MixerAudioSource(double sampleRate) : PositionableMixingAudioSource(sampleRate), MeteredAudioSource(sampleRate) {}
     ~MixerAudioSource() {}
 
     //==============================================================================

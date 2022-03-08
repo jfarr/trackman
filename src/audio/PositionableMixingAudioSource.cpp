@@ -1,7 +1,7 @@
 #include "PositionableMixingAudioSource.h"
 #include "PositionableResamplingAudioSource.h"
 
-PositionableMixingAudioSource::PositionableMixingAudioSource() {
+PositionableMixingAudioSource::PositionableMixingAudioSource(double sampleRate) : sampleRate(sampleRate) {
 }
 
 PositionableMixingAudioSource::~PositionableMixingAudioSource() { removeAllInputs(); }

@@ -5,7 +5,7 @@
 
 class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   public:
-    PositionableMixingAudioSource();
+    PositionableMixingAudioSource(double sampleRate);
     ~PositionableMixingAudioSource() override;
 
     void addInputSource(PositionableAudioSource *newInput, const bool deleteWhenRemoved,
@@ -30,7 +30,7 @@ class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   private:
     juce::MixerAudioSource mixer;
     juce::Array<PositionableAudioSource *> inputs;
-    double sampleRate = 0;
+    double sampleRate;
     bool looping = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PositionableMixingAudioSource)
