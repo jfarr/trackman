@@ -1,4 +1,5 @@
 #include "Track.h"
+#include "audio/MixerAudioSource.h"
 
 Track::Track(juce::String name) : name(name) {}
 
@@ -37,7 +38,7 @@ void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioForm
     if (samples.size() == 0) {
         return;
     }
-    mixer = std::make_shared<PositionableMixingAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
+    mixer = std::make_shared<MixerAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
     for (std::unique_ptr<Sample> &sample : samples) {
         sample->loadFile(formatManager);
         if (sample->getSource() != nullptr) {
@@ -53,7 +54,7 @@ Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFor
     auto sample = &(*samples.back());
     sample->loadFile(formatManager);
     if (mixer == nullptr) {
-        mixer = std::make_shared<PositionableMixingAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
+        mixer = std::make_shared<MixerAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
     }
     if (sample->getSource() != nullptr) {
         mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);

@@ -4,6 +4,7 @@
 
 #include "audio/PositionableMixingAudioSource.h"
 #include "controls/desktop/TrackSourceListener.h"
+#include "audio/MixerAudioSource.h"
 
 class Mixer {
   public:
@@ -31,7 +32,7 @@ class Mixer {
 
   private:
     std::list<std::shared_ptr<juce::PositionableAudioSource>> sources;
-    PositionableMixingAudioSource mixerSource;
+    MixerAudioSource mixerSource;
     juce::AudioTransportSource transportSource;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;

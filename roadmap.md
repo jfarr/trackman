@@ -11,4 +11,5 @@
 - Prompt for delete track/sample
 - Prompt for save on exit
 - Mixer horizontal scroll
-- Click outside to deselect all
+- Click outside tracks to deselect all
+- Dropping a sample automatically creates a new track

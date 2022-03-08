@@ -31,4 +31,6 @@ class OffsetAudioSource : public juce::PositionableAudioSource {
     juce::int64 minLength;
 
     juce::CriticalSection mutex;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OffsetAudioSource)
 };
