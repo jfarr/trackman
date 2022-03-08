@@ -1,7 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Click outside tracks to deselect all
 - Fix track names / numbering
 - Solo tracks
 - Resize sample thumbnails
