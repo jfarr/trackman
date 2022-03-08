@@ -1,12 +1,11 @@
 # Roadmap
 
 ## Short-Term
-- Click outside tracks to deselect all
+- Fix track names / numbering
 - Solo tracks
 - Resize sample thumbnails
 - Undo move / resize
 - Move samples between lanes
-- Fix track names / numbering
 - Zoom track lanes
 - Mixer horizontal scroll
 - Drop multiple files

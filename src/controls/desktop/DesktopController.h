@@ -50,7 +50,7 @@ class DesktopController : public MasterTrackListener,
 
     //==============================================================================
     // TrackListListener
-    void selectionChanged(Track &track) override;
+    void selectionChanged(Track *track) override;
 
     //==============================================================================
     // MasterTrackListener

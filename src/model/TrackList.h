@@ -19,7 +19,7 @@ class TrackList {
 
     void clear() { tracks.clear(); }
     void adjustTrackLengths();
-    void setSelected(Track &selected);
+    void setSelected(Track *selected);
     void selectSample(Sample *selected);
 
   private:

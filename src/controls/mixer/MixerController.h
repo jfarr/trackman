@@ -45,7 +45,7 @@ class MixerController : public TrackListListener,
 
     //==============================================================================
     // TrackListListener
-    void selectionChanged(Track &track) override;
+    void selectionChanged(Track *track) override;
 
     //==============================================================================
     // TrackSourceListener
@@ -76,7 +76,7 @@ class MixerController : public TrackListListener,
     std::list<MasterTrackListener *> masterTrackListeners;
     std::list<TrackControlListener *> trackControlListeners;
 
-    void notifySelectionChanged(Track &track);
+    void notifySelectionChanged(Track *track);
     void notifyMasterLevelChangeFinalized(float previousLevel);
     void notifyMasterMuteToggled();
     void notifyLevelChangeFinalized(Track &track, float previousLevel);

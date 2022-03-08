@@ -99,7 +99,7 @@ void MixerController::levelChangeFinalized(Track &track, float previousLevel) {
 
 void MixerController::muteToggled(Track &track) { notifyMuteToggled(track); }
 
-void MixerController::selectionChanged(Track &track) { notifySelectionChanged(track); }
+void MixerController::selectionChanged(Track *track) { notifySelectionChanged(track); }
 
 void MixerController::addListener(TrackListListener *listener) {
     if (!listContains(trackListListeners, listener)) {
@@ -109,7 +109,7 @@ void MixerController::addListener(TrackListListener *listener) {
 
 void MixerController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
 
-void MixerController::notifySelectionChanged(Track &track) {
+void MixerController::notifySelectionChanged(Track *track) {
     for (TrackListListener *listener : trackListListeners) {
         listener->selectionChanged(track);
     }

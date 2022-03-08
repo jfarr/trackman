@@ -28,7 +28,7 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
 
     //==============================================================================
     // TrackListListener
-    void selectionChanged(Track &track) override;
+    void selectionChanged(Track *track) override;
 
     //==============================================================================
     // SampleListener

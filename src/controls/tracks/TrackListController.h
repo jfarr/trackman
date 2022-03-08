@@ -39,7 +39,7 @@ class TrackListController : public TrackListListener, SampleListener {
 
     //==============================================================================
     // TrackListListener
-    void selectionChanged(Track &track) override;
+    void selectionChanged(Track *track) override;
 
     //==============================================================================
     // SampleListener
@@ -64,7 +64,7 @@ class TrackListController : public TrackListListener, SampleListener {
     juce::AudioDeviceManager &deviceManager;
     juce::AudioFormatManager &formatManager;
 
-    void notifySelectionChanged(Track &track);
+    void notifySelectionChanged(Track *track);
     void notifySampleAdded(Track *track, juce::File file, int pos);
 
     void updateLane(Track &track);

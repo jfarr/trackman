@@ -53,8 +53,8 @@ void TrackList::eachTrack(std::function<void(Track &track)> f) {
     }
 }
 
-void TrackList::setSelected(Track &selected) {
-    eachTrack([&selected](Track &track) { track.setSelected(&track == &selected); });
+void TrackList::setSelected(Track *selected) {
+    eachTrack([&selected](Track &track) { track.setSelected(&track == selected); });
 }
 
 void TrackList::selectSample(Sample *selected) {

@@ -9,11 +9,15 @@ TrackListController::TrackListController(TrackList &trackList, juce::AudioTransp
     trackListViewport.setSize(800, 350);
     trackListViewport.setScrollBarsShown(true, true);
     trackListViewport.setViewedComponent(&trackListPanel, false);
-    trackListPanel.addListener(this);
+    trackListPanel.addListener((SampleListener *) this);
+    trackListPanel.addListener((TrackListListener *) this);
     trackListPanel.resized();
 }
 
-TrackListController::~TrackListController() { trackListPanel.removeListener(this); }
+TrackListController::~TrackListController() {
+    trackListPanel.removeListener((SampleListener *) this);
+    trackListPanel.removeListener((TrackListListener *) this);
+}
 
 void TrackListController::update() {
     for (std::unique_ptr<TrackLaneController> &lane : lanes) {
@@ -69,7 +73,7 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
         auto sample = track.addSample(
             deviceManager, formatManager, file, startPos / scale, endPos / scale, length, reader->sampleRate);
         trackList.adjustTrackLengths();
-        selectionChanged(track);
+        selectionChanged(&track);
         updateLane(track);
         if (listener != nullptr) {
             listener->onSourceSet();
@@ -131,13 +135,13 @@ void TrackListController::updateLanes() {
     }
 }
 
-void TrackListController::selectionChanged(Track &track) {
+void TrackListController::selectionChanged(Track *track) {
     if (!selectingSample) {
         trackList.selectSample(nullptr);
     }
     selectingSample = false;
-    if (&track != selected) {
-        selected = &track;
+    if (track != selected) {
+        selected = track;
         notifySelectionChanged(track);
         updateLanes();
     }
@@ -169,7 +173,7 @@ void TrackListController::addListener(TrackListListener *listener) {
 
 void TrackListController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
 
-void TrackListController::notifySelectionChanged(Track &track) {
+void TrackListController::notifySelectionChanged(Track *track) {
     for (TrackListListener *listener : trackListListeners) {
         listener->selectionChanged(track);
     }
