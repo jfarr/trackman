@@ -1,8 +1,9 @@
 #include "MixerPanel.h"
 #include "common/listutil.h"
 
-MixerPanel::MixerPanel(TrackList &trackList, Mixer &mixer)
-    : masterTrackControl(mixer), trackList(trackList), mixer(mixer), transportControl(mixer.getTransportSource()) {
+MixerPanel::MixerPanel(TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource)
+    : masterTrackControl(mixer, meterSource), trackList(trackList), mixer(mixer),
+      transportControl(mixer.getTransportSource()) {
     createControls();
     setSize(800, 280);
 }

@@ -16,6 +16,8 @@ target_sources(Trackman PRIVATE
         common/listutil.h
         audio/GainAudioSource.cpp
         audio/GainAudioSource.h
+        audio/MeteredAudioSource.cpp
+        audio/MeteredAudioSource.h
         audio/OffsetAudioSource.cpp
         audio/OffsetAudioSource.h
         audio/PositionableAudioSourceAdapter.h
@@ -54,6 +56,7 @@ target_sources(Trackman PRIVATE
         controls/desktop/FileDragDropTarget.h
         controls/desktop/TrackListListener.h
         controls/desktop/TrackSourceListener.h
+        controls/mixer/MasterLevelMeterLookAndFeel.h
         controls/mixer/MasterTrackControl.cpp
         controls/mixer/MasterTrackControl.h
         controls/mixer/MasterTrackListener.h

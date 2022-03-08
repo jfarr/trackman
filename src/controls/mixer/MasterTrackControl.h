@@ -1,17 +1,19 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
+#include <ff_meters.h>
 
 #include "MasterTrackListener.h"
 #include "controls/common/DecibelSlider.h"
 #include "model/Mixer.h"
+#include "MasterLevelMeterLookAndFeel.h"
 
 class MasterTrackControl : public juce::Component, public SliderListener {
   public:
-    MasterTrackControl(Mixer &mixer);
+    MasterTrackControl(Mixer &mixer, foleys::LevelMeterSource &meterSource);
     ~MasterTrackControl();
 
-    int getPreferredWidth() const { return std::max(getWidth(), 100); }
+    int getPreferredWidth() const { return std::max(getWidth(), 145); }
 
     void update();
 
@@ -37,6 +39,8 @@ class MasterTrackControl : public juce::Component, public SliderListener {
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
     juce::Label channelLabel;
+    foleys::LevelMeter levelMeter;
+    MasterLevelMeterLookAndFeel levelMeterLookAndFeel;
 
     Mixer &mixer;
     bool draggingSlider = false;

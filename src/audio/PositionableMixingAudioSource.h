@@ -1,6 +1,7 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
+#include <ff_meters.h>
 
 class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   public:
@@ -14,9 +15,9 @@ class PositionableMixingAudioSource : public juce::PositionableAudioSource {
 
     //==============================================================================
     // AudioSource
-    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    void prepareToPlay(int blockSize, double sampleRate) override;
     void releaseResources() override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &info) override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
 
     //==============================================================================
     // PositionableAudioSource

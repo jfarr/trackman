@@ -7,7 +7,7 @@ PositionableMixingAudioSource::~PositionableMixingAudioSource() { removeAllInput
 
 void PositionableMixingAudioSource::addInputSource(PositionableAudioSource *input, const bool deleteWhenRemoved,
     double sourceSampleRateToCorrectFor, int maxNumChannels) {
-    jassert (input != nullptr);
+    jassert(input != nullptr);
     if (sourceSampleRateToCorrectFor > 0) {
         input = new PositionableResamplingAudioSource(
             input, deleteWhenRemoved, sampleRate, sourceSampleRateToCorrectFor, maxNumChannels);
@@ -42,19 +42,20 @@ void PositionableMixingAudioSource::removeAllInputs() {
     mixer.removeAllInputs();
 }
 
-void PositionableMixingAudioSource::prepareToPlay(int samplesPerBlockExpected, double newSampleRate) {
+void PositionableMixingAudioSource::prepareToPlay(int blockSize, double newSampleRate) {
+    DBG("PositionableMixingAudioSource::prepareToPlay - blocksize: " << blockSize << " sample rate: " << newSampleRate);
     sampleRate = newSampleRate;
-    mixer.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    mixer.prepareToPlay(blockSize, sampleRate);
 }
 
 void PositionableMixingAudioSource::releaseResources() { mixer.releaseResources(); }
 
-void PositionableMixingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &info) {
+void PositionableMixingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
     juce::int64 currentPos = getNextReadPosition();
     if (currentPos > getTotalLength()) {
         setNextReadPosition(currentPos);
     }
-    mixer.getNextAudioBlock(info);
+    mixer.getNextAudioBlock(bufferToFill);
 }
 
 void PositionableMixingAudioSource::setNextReadPosition(juce::int64 newPosition) {

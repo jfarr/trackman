@@ -2,6 +2,14 @@
 
 #include "JuceHeader.h"
 
+class CustomLookAndFeel : public juce::LookAndFeel_V4 {
+    juce::Label *createSliderTextBox(juce::Slider &slider) override {
+        auto l = LookAndFeel_V4::createSliderTextBox(slider);
+        l->setFont(l->getFont().withHeight(8));
+        return l;
+    }
+};
+
 class SliderListener {
   public:
     virtual void onSliderClick() = 0;
@@ -10,11 +18,13 @@ class SliderListener {
 class DecibelSlider : public juce::Slider {
   public:
     DecibelSlider() {
+        setLookAndFeel(&lf);
         setSliderStyle(juce::Slider::LinearVertical);
         setRange(-100, 12);
-        setTextBoxStyle(juce::Slider::TextBoxAbove, false, 65, 14);
+        setTextBoxStyle(juce::Slider::TextBoxAbove, false, 35, 11);
         setSkewFactorFromMidPoint(-10.0);
     }
+    ~DecibelSlider() { setLookAndFeel(nullptr); }
 
     void setListener(SliderListener *newListener) { listener = newListener; }
 
@@ -37,6 +47,7 @@ class DecibelSlider : public juce::Slider {
 
   private:
     SliderListener *listener;
+    CustomLookAndFeel lf;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DecibelSlider)
 };

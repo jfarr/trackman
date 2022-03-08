@@ -1,6 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include <ff_meters.h>
 
 #include "MasterTrackControl.h"
 #include "TrackControl.h"
@@ -10,7 +11,7 @@
 
 class MixerPanel : public juce::Component {
   public:
-    MixerPanel(TrackList &trackList, Mixer &mixer);
+    MixerPanel(TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource);
     ~MixerPanel();
 
     int getPreferredHeight() const { return std::max(getHeight(), 280); }

@@ -2,12 +2,17 @@
 
 #include "common/listutil.h"
 
-MasterTrackControl::MasterTrackControl(Mixer &mixer) : mixer(mixer) {
+MasterTrackControl::MasterTrackControl(Mixer &mixer, foleys::LevelMeterSource &meterSource)
+    : mixer(mixer), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
+    levelMeter.setMeterSource(&meterSource);
+    levelMeter.setLookAndFeel(&levelMeterLookAndFeel);
     createControls();
-    setSize(100, 100);
+    setSize(getPreferredWidth(), 100);
 }
 
-MasterTrackControl::~MasterTrackControl() {}
+MasterTrackControl::~MasterTrackControl() {
+    levelMeter.setLookAndFeel(nullptr);
+}
 
 void MasterTrackControl::createControls() {
     previousLevel = mixer.getMasterLevelGain();
@@ -28,6 +33,7 @@ void MasterTrackControl::createControls() {
     addAndMakeVisible(decibelSlider);
     addAndMakeVisible(muteButton);
     addAndMakeVisible(channelLabel);
+    addAndMakeVisible(levelMeter);
 }
 
 void MasterTrackControl::update() {
@@ -67,11 +73,13 @@ void MasterTrackControl::resized() {
     auto area = getLocalBounds();
     auto buttonsHeight = 30;
     auto labelHeight = 25;
-    auto sliderWidth = 75;
+    auto sliderWidth = 45;
+    auto meterWidth = 75;
     auto buttonSize = 25;
     auto margin = 3;
     area.removeFromTop(buttonsHeight + margin);
     channelLabel.setBounds(area.removeFromBottom(labelHeight).withTrimmedRight(1));
+    levelMeter.setBounds(area.removeFromLeft(meterWidth).reduced(5));
     decibelSlider.setBounds(area.removeFromLeft(sliderWidth).reduced(margin));
     auto buttonArea = area.removeFromLeft(buttonSize);
     muteButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
@@ -90,7 +98,7 @@ void MasterTrackControl::muteButtonClicked() {
     notifyMuteToggled();
     muteButton.setColour(juce::TextButton::buttonColourId,
         mixer.isMasterMuted() ? juce::Colours::red
-                                   : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+                              : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
 void MasterTrackControl::addListener(MasterTrackListener *listener) {
