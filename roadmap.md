@@ -1,20 +1,18 @@
 # Roadmap
 
 ## Short-Term
-- Level meters
+- Dropping a sample automatically creates a new track
+- Click outside tracks to deselect all
+- Solo tracks
 - Resize sample thumbnails
 - Undo move / resize
 - Move samples between lanes
 - Fix track names / numbering
-- Shared sample sources
 - Zoom track lanes
+- Mixer horizontal scroll
 - Drop multiple files
 - Prompt for delete track/sample
 - Prompt for save on exit
-- Mixer horizontal scroll
-- Click outside tracks to deselect all
-- Dropping a sample automatically creates a new track
-- Solo tracks
 
 ## Long Term
 
