@@ -1,6 +1,9 @@
 #include "Mixer.h"
 
-Mixer::Mixer(double sampleRate) : mixerSource(sampleRate), gainSource(&mixerSource, false) { transportSource.setSource(&gainSource); }
+Mixer::Mixer(double sampleRate)
+    : mixerSource(sampleRate), gainSource(&mixerSource, false), meteredSource(gainSource, sampleRate) {
+    transportSource.setSource(&meteredSource);
+}
 
 Mixer::~Mixer() {
     transportSource.setSource(nullptr);

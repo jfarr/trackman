@@ -10,7 +10,7 @@
 
 class MasterTrackControl : public juce::Component, public SliderListener {
   public:
-    MasterTrackControl(Mixer &mixer/*, foleys::LevelMeterSource &meterSource*/);
+    MasterTrackControl(Mixer &mixer, foleys::LevelMeterSource &meterSource);
     ~MasterTrackControl();
 
     int getPreferredWidth() const { return std::max(getWidth(), 150); }

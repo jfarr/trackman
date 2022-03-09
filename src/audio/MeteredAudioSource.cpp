@@ -16,5 +16,6 @@ void MeteredAudioSource::prepareToPlay(int blockSize, double newSampleRate) {
 void MeteredAudioSource::releaseResources() { source.releaseResources(); }
 
 void MeteredAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+    source.getNextAudioBlock(bufferToFill);
     meterSource.measureBlock(*bufferToFill.buffer);
 }
