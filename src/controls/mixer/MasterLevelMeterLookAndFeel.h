@@ -2,9 +2,11 @@
 
 #include <ff_meters.h>
 
+#include "model/Mixer.h"
+
 class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
   public:
-    MasterLevelMeterLookAndFeel() {}
+    MasterLevelMeterLookAndFeel(Mixer &mixer) : mixer(mixer) {}
     ~MasterLevelMeterLookAndFeel() {}
 
     juce::Rectangle<float> drawBackground(
@@ -34,7 +36,7 @@ class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
 
     void drawMeterBars(juce::Graphics &g, foleys::LevelMeter::MeterFlags meterType, juce::Rectangle<float> bounds,
         const foleys::LevelMeterSource *source, int fixedNumChannels = -1, int selectedChannel = -1) override {
-        if (source == nullptr)
+        if (source == nullptr || mixer.isMasterMuted())
             return;
 
         const juce::Rectangle<float> innerBounds = getMeterInnerBounds(bounds, meterType);
@@ -191,6 +193,7 @@ class MasterLevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
     }
 
   private:
+    Mixer &mixer;
     juce::ColourGradient horizontalGradient;
     juce::ColourGradient verticalGradient;
 

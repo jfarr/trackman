@@ -3,7 +3,7 @@
 #include "common/listutil.h"
 
 MasterTrackControl::MasterTrackControl(Mixer &mixer, foleys::LevelMeterSource &meterSource)
-    : mixer(mixer), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
+    : mixer(mixer), levelMeterLookAndFeel(mixer), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
     levelMeter.setMeterSource(&meterSource);
     createControls();
     setSize(getPreferredWidth(), 100);

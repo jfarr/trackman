@@ -10,8 +10,6 @@ Track::~Track() {
     }
 }
 
-double Track::getSampleRate() const { return source == mixer ? 0.0 : sampleRate; }
-
 juce::uint64 Track::getTotalLength() const {
     return getTotalLengthSeconds() * sampleRate;
 }
@@ -24,6 +22,12 @@ double Track::getTotalLengthSeconds() const {
         }
     }
     return len;
+}
+
+double Track::getSampleRate() const { return source == mixer ? 0.0 : sampleRate; }
+
+bool Track::isSilenced() const {
+    return muted || (!trackList.getSoloed().empty() && !soloed);
 }
 
 void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate) {
