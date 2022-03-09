@@ -8,9 +8,11 @@
 #include "audio/PositionableMixingAudioSource.h"
 #include "audio/MixerAudioSource.h"
 
+class TrackList;
+
 class Track {
   public:
-    Track();
+    Track(TrackList& trackList);
     ~Track();
 
     int getNumber() const { return number; }
@@ -21,6 +23,7 @@ class Track {
     double getSampleRate() const;
     float getLevelGain() const { return level; }
     bool isMuted() const { return muted; }
+    bool isSoloed() const { return soloed; }
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
     foleys::LevelMeterSource *getMeterSource() { return mixer == nullptr ? nullptr : &mixer->getMeterSource(); }
@@ -37,7 +40,10 @@ class Track {
     void setName(juce::String newName) { name = newName; }
     void setLevelGain(float newLevel);
     void toggleMute();
+    void toggleSolo();
     void setMute(bool newMuted);
+    void setSolo(bool newSoloed);
+    void setGain();
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted);
     void selectSample(Sample *selected);
@@ -45,6 +51,7 @@ class Track {
     void undeleteSample(Sample *sample);
 
   private:
+    TrackList& trackList;
     int number = 0;
     juce::String name = "";
     std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
@@ -54,6 +61,7 @@ class Track {
     double sampleRate = 0;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
+    bool soloed = false;
     bool selected = false;
     bool deleted = false;
     std::list<std::unique_ptr<Sample>> samples;

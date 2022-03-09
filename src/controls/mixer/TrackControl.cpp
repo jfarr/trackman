@@ -22,6 +22,13 @@ void TrackControl::createControls() {
         track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     muteButton.onClick = [this] { muteButtonClicked(); };
 
+    soloButton.setButtonText("S");
+    soloButton.setTooltip("solo");
+    soloButton.setColour(juce::TextButton::buttonColourId,
+        track.isSoloed() ? juce::Colours::orange
+                         : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    soloButton.onClick = [this] { soloButtonClicked(); };
+
     trackNameLabel.setText(track.getName(), juce::dontSendNotification);
     trackNameLabel.setJustificationType(juce::Justification::horizontallyCentred);
     trackNameLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
@@ -41,6 +48,7 @@ void TrackControl::createControls() {
 
     addAndMakeVisible(decibelSlider);
     addAndMakeVisible(muteButton);
+    addAndMakeVisible(soloButton);
     addAndMakeVisible(trackNameLabel);
     addAndMakeVisible(trackNumberLabel);
     addAndMakeVisible(levelMeter);
@@ -51,6 +59,9 @@ void TrackControl::update() {
     decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevelGain()));
     muteButton.setColour(juce::TextButton::buttonColourId,
         track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    soloButton.setColour(juce::TextButton::buttonColourId,
+        track.isSoloed() ? juce::Colours::orange
+                         : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     trackNameLabel.setText(track.getName(), juce::dontSendNotification);
     trackNumberLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
 }
@@ -97,6 +108,7 @@ void TrackControl::resized() {
     decibelSlider.setBounds(area.removeFromLeft(sliderWidth));
     auto buttonArea = area.removeFromLeft(buttonSize);
     muteButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
+    soloButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
 }
 
 void TrackControl::decibelSliderChanged() {
@@ -114,15 +126,20 @@ void TrackControl::muteButtonClicked() {
         track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
+void TrackControl::soloButtonClicked() {
+    notifySoloToggled();
+    soloButton.setColour(juce::TextButton::buttonColourId,
+        track.isSoloed() ? juce::Colours::orange
+                         : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+}
+
 void TrackControl::addListener(TrackControlListener *listener) {
     if (!listContains(listeners, listener)) {
         listeners.push_front(listener);
     }
 }
 
-void TrackControl::removeListener(TrackControlListener *listener) {
-    listeners.remove(listener);
-}
+void TrackControl::removeListener(TrackControlListener *listener) { listeners.remove(listener); }
 
 void TrackControl::notifyNameChanged() {
     for (TrackControlListener *listener : listeners) {
@@ -145,5 +162,11 @@ void TrackControl::notifyLevelChangeFinalized(float previousLevel) {
 void TrackControl::notifyMuteToggled() {
     for (TrackControlListener *listener : listeners) {
         listener->muteToggled(track);
+    }
+}
+
+void TrackControl::notifySoloToggled() {
+    for (TrackControlListener *listener : listeners) {
+        listener->soloToggled(track);
     }
 }

@@ -22,13 +22,26 @@ void TrackController::toggleMute(Track &track) {
     trackControl.update();
 }
 
+void TrackController::toggleSolo(Track &track) {
+    track.toggleSolo();
+    trackControl.update();
+}
+
 void TrackController::repaint() { trackControl.repaint(); }
 
 void TrackController::nameChanged(Track &track, juce::String newName) { notifyNameChanged(track, newName); }
 
 void TrackController::levelChanged(Track &track, float newLevel) { track.setLevelGain(newLevel); }
 
-void TrackController::muteToggled(Track &track) { track.toggleMute(); }
+void TrackController::muteToggled(Track &track) {
+    track.toggleMute();
+    notifyMuteToggled(track);
+}
+
+void TrackController::soloToggled(Track &track) {
+    track.toggleSolo();
+    notifySoloToggled(track);
+}
 
 void TrackController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }
 
@@ -52,12 +65,22 @@ void TrackController::addListener(TrackControlListener *listener) {
     }
 }
 
-void TrackController::removeListener(TrackControlListener *listener) {
-    trackControlListeners.remove(listener);
-}
+void TrackController::removeListener(TrackControlListener *listener) { trackControlListeners.remove(listener); }
 
 void TrackController::notifyNameChanged(Track &track, juce::String newName) {
     for (TrackControlListener *listener : trackControlListeners) {
         listener->nameChanged(track, newName);
+    }
+}
+
+void TrackController::notifyMuteToggled(Track &track) {
+    for (TrackControlListener *listener : trackControlListeners) {
+        listener->muteToggled(track);
+    }
+}
+
+void TrackController::notifySoloToggled(Track &track) {
+    for (TrackControlListener *listener : trackControlListeners) {
+        listener->soloToggled(track);
     }
 }

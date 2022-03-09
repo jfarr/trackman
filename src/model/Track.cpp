@@ -1,7 +1,8 @@
 #include "Track.h"
+#include "TrackList.h"
 #include "audio/MixerAudioSource.h"
 
-Track::Track() {}
+Track::Track(TrackList &trackList) : trackList(trackList) {}
 
 Track::~Track() {
     if (source != nullptr) {
@@ -94,17 +95,29 @@ void Track::setLevelGain(float newLevel) {
     }
 }
 
-void Track::toggleMute() {
-    muted = !muted;
+void Track::toggleMute() { setMute(!muted); }
+
+void Track::toggleSolo() { setSolo(!soloed); }
+
+void Track::setMute(bool newMuted) {
+    DBG("Track " << number << " mute: " << (newMuted ? "true" : "false"));
+    muted = newMuted;
     if (gain != nullptr) {
         gain->setGain(muted ? 0 : level);
     }
 }
 
-void Track::setMute(bool newMuted) {
-    muted = newMuted;
+void Track::setSolo(bool newSoloed) {
+    DBG("Track " << number << " solo: " << (newSoloed ? "true" : "false"));
+    soloed = newSoloed;
+    trackList.soloTracks();
+}
+
+void Track::setGain() {
     if (gain != nullptr) {
-        gain->setGain(muted ? 0 : level);
+        bool solo = trackList.getSoloed().size() == 0 || soloed;
+        DBG("Track " << number << " set gain: " << (solo ? level : 0));
+        gain->setGain(solo ? level : 0);
     }
 }
 
