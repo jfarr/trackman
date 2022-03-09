@@ -18,7 +18,6 @@ class Track {
     int getNumber() const { return number; }
     juce::String getName() const { return name; }
     std::shared_ptr<juce::PositionableAudioSource> getSource() const { return meteredSource; }
-    std::shared_ptr<GainAudioSource> getGain() const { return gain; }
     juce::uint64 getTotalLength() const;
     double getTotalLengthSeconds() const;
     double getSampleRate() const;
@@ -58,9 +57,9 @@ class Track {
     juce::String name = "";
     std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
     std::shared_ptr<MeteredAudioSource> meteredSource;
-    std::shared_ptr<GainAudioSource> gain;
-    std::shared_ptr<OffsetAudioSource> offset;
-    std::shared_ptr<PositionableMixingAudioSource> mixer;
+    std::shared_ptr<GainAudioSource> gainSource;
+    std::shared_ptr<OffsetAudioSource> offsetSource;
+    std::shared_ptr<PositionableMixingAudioSource> mixerSource;
     double sampleRate = 0;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
