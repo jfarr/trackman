@@ -81,8 +81,7 @@ void MixerController::toggleSolo(Track &track) {
 
 void MixerController::onSourceSet() {
     mixer.removeAllSources();
-    auto soloed = trackList.getSoloed();
-    trackList.eachTrack([this, &soloed](Track &track) {
+    trackList.eachTrack([this](Track &track) {
         if (track.getSource() != nullptr) {
             DBG("MixerController::onSourceSet - add track source: " << track.getName());
             mixer.addSource(track.getGain(), track.getSampleRate(), 2);
