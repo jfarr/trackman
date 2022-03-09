@@ -2,9 +2,10 @@
 
 #include <JuceHeader.h>
 
-#include "audio/MixerAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
 #include "controls/desktop/TrackSourceListener.h"
+#include "audio/GainAudioSource.h"
+#include "audio/MeteredAudioSource.h"
 
 class Mixer {
   public:
@@ -16,7 +17,7 @@ class Mixer {
 
     juce::AudioTransportSource &getTransportSource() { return transportSource; }
     juce::AudioSource &getSource() { return *((PositionableMixingAudioSource *) &mixerSource); }
-    foleys::LevelMeterSource &getMeterSource() { return mixerSource.getMeterSource(); }
+    foleys::LevelMeterSource &getMeterSource() { return meteredSource.getMeterSource(); }
 
     void addSource(std::shared_ptr<juce::PositionableAudioSource> source, double sourceSampleRateToCorrectFor = 0.0,
         int maxNumChannels = 2);
@@ -33,7 +34,9 @@ class Mixer {
 
   private:
     std::list<std::shared_ptr<juce::PositionableAudioSource>> sources;
-    MixerAudioSource mixerSource;
+    PositionableMixingAudioSource mixerSource;
+    GainAudioSource gainSource;
+    MeteredAudioSource meteredSource;
     juce::AudioTransportSource transportSource;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;

@@ -1,6 +1,6 @@
 #include "Track.h"
 #include "TrackList.h"
-#include "audio/MixerAudioSource.h"
+#include "audio/PositionableMixingAudioSource.h"
 
 Track::Track(TrackList &trackList) : trackList(trackList) {}
 
@@ -24,7 +24,7 @@ double Track::getTotalLengthSeconds() const {
     return len;
 }
 
-double Track::getSampleRate() const { return source == mixer ? 0.0 : sampleRate; }
+double Track::getSampleRate() const { return source == mixerSource ? 0.0 : sampleRate; }
 
 bool Track::isSilenced() const {
     return muted || (!trackList.getSoloed().empty() && !soloed);
@@ -40,21 +40,22 @@ void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, 
     }
     source = newSource;
     sampleRate = newSampleRate;
-    gain = std::shared_ptr<GainAudioSource>(new GainAudioSource(newSource.get(), false));
+    gainSource = std::make_shared<GainAudioSource>(newSource.get(), false);
+    meteredSource = std::make_shared<MeteredAudioSource>(*gainSource, sampleRate);
 }
 
 void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {
     if (samples.size() == 0) {
         return;
     }
-    mixer = std::make_shared<MixerAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
+    mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
     for (std::unique_ptr<Sample> &sample : samples) {
         sample->loadFile(formatManager);
         if (sample->getSource() != nullptr) {
-            mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+            mixerSource->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
         }
     }
-    setSource(mixer, deviceManager.getAudioDeviceSetup().sampleRate);
+    setSource(mixerSource, deviceManager.getAudioDeviceSetup().sampleRate);
 }
 
 Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager,
@@ -62,13 +63,13 @@ Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFor
     samples.push_back(std::make_unique<Sample>(file, startPos, endPos, length, sampleRate));
     auto sample = &(*samples.back());
     sample->loadFile(formatManager);
-    if (mixer == nullptr) {
-        mixer = std::make_shared<MixerAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
+    if (mixerSource == nullptr) {
+        mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
     }
     if (sample->getSource() != nullptr) {
-        mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+        mixerSource->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
     }
-    setSource(mixer, deviceManager.getAudioDeviceSetup().sampleRate);
+    setSource(mixerSource, deviceManager.getAudioDeviceSetup().sampleRate);
     if (name == "") {
         name = file.getFileName();
     }
@@ -98,8 +99,8 @@ void Track::eachSample(std::function<void(Sample &sample)> f) {
 
 void Track::setLevelGain(float newLevel) {
     level = newLevel;
-    if (gain != nullptr) {
-        gain->setGain(level);
+    if (gainSource != nullptr) {
+        gainSource->setGain(level);
     }
 }
 
@@ -110,8 +111,8 @@ void Track::toggleSolo() { setSolo(!soloed); }
 void Track::setMute(bool newMuted) {
     DBG("Track " << number << " mute: " << (newMuted ? "true" : "false"));
     muted = newMuted;
-    if (gain != nullptr) {
-        gain->setGain(muted ? 0 : level);
+    if (gainSource != nullptr) {
+        gainSource->setGain(muted ? 0 : level);
     }
 }
 
@@ -121,11 +122,11 @@ void Track::setSolo(bool newSoloed) {
     trackList.soloTracks();
 }
 
-void Track::setGain() {
-    if (gain != nullptr) {
+void Track::updateGain() {
+    if (gainSource != nullptr) {
         bool solo = trackList.getSoloed().size() == 0 || soloed;
         DBG("Track " << number << " set gain: " << (solo ? level : 0));
-        gain->setGain(solo ? level : 0);
+        gainSource->setGain(solo ? level : 0);
     }
 }
 
@@ -143,7 +144,7 @@ void Track::deleteSample(Sample *sample) {
         return;
     }
     sample->setDeleted(true);
-    mixer->removeInputSource(sample->getSource());
+    mixerSource->removeInputSource(sample->getSource());
 }
 
 void Track::undeleteSample(Sample *sample) {
@@ -151,5 +152,5 @@ void Track::undeleteSample(Sample *sample) {
         return;
     }
     sample->setDeleted(false);
-    mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+    mixerSource->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
 }

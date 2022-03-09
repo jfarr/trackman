@@ -127,7 +127,7 @@ void TrackList::unsoloTrack(Track *soloed) {
 void TrackList::soloTracks() {
     for (std::unique_ptr<Track> const &track : tracks) {
         if (!track->isDeleted()) {
-            track->setGain();
+            track->updateGain();
         }
     }
 }
