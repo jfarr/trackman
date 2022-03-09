@@ -51,8 +51,10 @@ void DesktopController::masterMuteToggled() {
 }
 
 void DesktopController::nameChanged(Track &track, juce::String newName) {
-    track.setName(newName);
-    juce::MessageManager::callAsync([this] () {mixerController.update();});
+    Command *command = new RenameTrackCommand(*this, track, newName);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
 }
 
 void DesktopController::levelChangeFinalized(Track &track, float previousLevel) {
@@ -115,7 +117,7 @@ void DesktopController::sampleAdded(Track *track, juce::File file, int pos) {
 
 Track *DesktopController::addTrack() {
     auto track = trackList.addTrack();
-    juce::MessageManager::callAsync([this] () {
+    juce::MessageManager::callAsync([this]() {
         trackListController.update();
         mixerController.update();
     });
@@ -127,7 +129,7 @@ void DesktopController::deleteTrack(Track *track, bool purge) {
     if (purge) {
         trackList.removeTrack(track);
     }
-    juce::MessageManager::callAsync([this] () {
+    juce::MessageManager::callAsync([this]() {
         trackListController.update();
         mixerController.update();
     });
@@ -135,17 +137,20 @@ void DesktopController::deleteTrack(Track *track, bool purge) {
 
 void DesktopController::undeleteTrack(Track *track) {
     trackList.undeleteTrack(track);
-    juce::MessageManager::callAsync([this] () {
+    juce::MessageManager::callAsync([this]() {
         trackListController.update();
         mixerController.update();
     });
 }
 
+void DesktopController::renameTrack(Track &track, juce::String newName) {
+    track.setName(newName);
+    juce::MessageManager::callAsync([this]() { mixerController.update(); });
+}
+
 Sample *DesktopController::addSample(Track &track, juce::File file, int pos) {
     Sample *sample = trackListController.addSample(track, file, pos);
-    juce::MessageManager::callAsync([this] () {
-        mixerController.update();
-    });
+    juce::MessageManager::callAsync([this]() { mixerController.update(); });
     return sample;
 }
 

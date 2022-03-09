@@ -6,6 +6,23 @@
 #include "controls/tracks/TrackListController.h"
 #include "model/Track.h"
 
+class RenameTrackCommand : public Command {
+  public:
+    RenameTrackCommand(DesktopController &desktopController, Track &track, juce::String newName)
+        : Command("rename track"), desktopController(desktopController), track(track), newName(newName),
+          prevName(track.getName()) {}
+    ~RenameTrackCommand() {}
+
+    void execute() override { desktopController.renameTrack(track, newName); }
+    void undo() override { desktopController.renameTrack(track, prevName); }
+
+  private:
+    DesktopController &desktopController;
+    Track &track;
+    juce::String newName;
+    juce::String prevName;
+};
+
 class AddSampleCommand : public Command {
   public:
     AddSampleCommand(DesktopController &desktopController, Track *track, juce::File file, int pos)

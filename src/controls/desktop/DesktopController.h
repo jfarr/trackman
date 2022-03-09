@@ -39,6 +39,7 @@ class DesktopController : public MasterTrackListener,
     Track *addTrack();
     void deleteTrack(Track *track, bool purge);
     void undeleteTrack(Track *track);
+    void renameTrack(Track& track, juce::String newName);
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void deleteSample(Track &track, Sample *sample);
