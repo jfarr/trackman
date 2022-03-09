@@ -15,6 +15,7 @@ class TrackList {
     int size() const { return tracks.size(); }
     Track *getSelected() const;
     Sample *getSelectedSample() const;
+    juce::uint64 getTotalLength() const;
     double getTotalLengthSeconds() const;
 
     void eachTrack(std::function<void(Track &track)> f);
@@ -28,6 +29,8 @@ class TrackList {
     void unsoloTrack(Track *soloed);
     void soloTracks();
     std::list<const Track *> getSoloed();
+
+    void writeAudioFile(juce::File file, juce::AudioSource &source, double sampleRate, int bitsPerSample);
 
   private:
     std::list<std::unique_ptr<Track>> tracks;

@@ -12,6 +12,10 @@ Track::~Track() {
 
 double Track::getSampleRate() const { return source == mixer ? 0.0 : sampleRate; }
 
+juce::uint64 Track::getTotalLength() const {
+    return getTotalLengthSeconds() * sampleRate;
+}
+
 double Track::getTotalLengthSeconds() const {
     double len = 0;
     for (std::unique_ptr<Sample> const &sample : samples) {

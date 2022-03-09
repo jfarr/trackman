@@ -2,9 +2,9 @@
 
 #include <JuceHeader.h>
 
+#include "audio/MixerAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
 #include "controls/desktop/TrackSourceListener.h"
-#include "audio/MixerAudioSource.h"
 
 class Mixer {
   public:
@@ -15,6 +15,7 @@ class Mixer {
     bool isMasterMuted() const { return muted; }
 
     juce::AudioTransportSource &getTransportSource() { return transportSource; }
+    MixerAudioSource &getMixerSource() { return mixerSource; }
     foleys::LevelMeterSource &getMeterSource() { return mixerSource.getMeterSource(); }
 
     void addSource(std::shared_ptr<juce::PositionableAudioSource> source, double sourceSampleRateToCorrectFor = 0.0,

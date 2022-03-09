@@ -45,6 +45,17 @@ Track *TrackList::getSelected() const {
     return nullptr;
 }
 
+juce::uint64 TrackList::getTotalLength() const {
+    juce::uint64 total = 0;
+    for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
+        if (!(*iter)->isDeleted()) {
+            juce::uint64 length = (*iter)->getTotalLength();
+            total = std::max(total, length);
+        }
+    }
+    return total;
+}
+
 double TrackList::getTotalLengthSeconds() const {
     double total = 0;
     for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
@@ -129,4 +140,16 @@ std::list<const Track *> TrackList::getSoloed() {
         }
     }
     return soloed;
+}
+
+void TrackList::writeAudioFile(juce::File file, juce::AudioSource &source, double sampleRate, int bitsPerSample) {
+    auto len = getTotalLength();
+    auto os = file.createOutputStream();
+    auto meta = juce::WavAudioFormat::createBWAVMetadata("", "", "", juce::Time::getCurrentTime(), len, "");
+    auto format = std::make_unique<juce::WavAudioFormat>();
+    auto writer = format->createWriterFor(&*os, sampleRate, 2, bitsPerSample, meta, 0);
+    if (writer != nullptr) {
+        writer->writeFromAudioSource(source, len);
+        delete writer;
+    }
 }
