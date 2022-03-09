@@ -15,7 +15,7 @@ class Mixer {
     bool isMasterMuted() const { return muted; }
 
     juce::AudioTransportSource &getTransportSource() { return transportSource; }
-    MixerAudioSource &getMixerSource() { return mixerSource; }
+    juce::AudioSource &getSource() { return *((PositionableMixingAudioSource *) &mixerSource); }
     foleys::LevelMeterSource &getMeterSource() { return mixerSource.getMeterSource(); }
 
     void addSource(std::shared_ptr<juce::PositionableAudioSource> source, double sourceSampleRateToCorrectFor = 0.0,

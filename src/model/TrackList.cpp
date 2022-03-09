@@ -143,13 +143,14 @@ std::list<const Track *> TrackList::getSoloed() {
 }
 
 void TrackList::writeAudioFile(juce::File file, juce::AudioSource &source, double sampleRate, int bitsPerSample) {
-    auto len = getTotalLength();
-    auto os = file.createOutputStream();
-    auto meta = juce::WavAudioFormat::createBWAVMetadata("", "", "", juce::Time::getCurrentTime(), len, "");
-    auto format = std::make_unique<juce::WavAudioFormat>();
-    auto writer = format->createWriterFor(&*os, sampleRate, 2, bitsPerSample, meta, 0);
-    if (writer != nullptr) {
-        writer->writeFromAudioSource(source, len);
-        delete writer;
+    file.deleteFile();
+    if (auto fileStream = std::unique_ptr<juce::FileOutputStream> (file.createOutputStream())) {
+        juce::WavAudioFormat wavFormat;
+        if (auto writer = wavFormat.createWriterFor (fileStream.get(), sampleRate, 2, bitsPerSample, {}, 0)) {
+            fileStream.release();
+            writer->writeFromAudioSource(source, getTotalLength());
+            writer->flush();
+            delete writer;
+        }
     }
 }

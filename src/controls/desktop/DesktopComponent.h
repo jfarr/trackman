@@ -17,7 +17,16 @@ class DesktopComponent : public juce::AudioAppComponent,
   public:
     //==============================================================================
     /** A list of the commands that this menu responds to. */
-    enum CommandIDs { openProject = 1, saveProject, saveProjectAs, editUndo, newTrack, newAudioPlayer, deleteTrackSelection };
+    enum CommandIDs {
+        openProject = 1,
+        saveProject,
+        saveProjectAs,
+        exportProject,
+        editUndo,
+        newTrack,
+        newAudioPlayer,
+        deleteTrackSelection
+    };
 
     //==============================================================================
     DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager);
@@ -56,6 +65,8 @@ class DesktopComponent : public juce::AudioAppComponent,
             menu.addCommandItem(&commandManager, CommandIDs::openProject);
             menu.addCommandItem(&commandManager, CommandIDs::saveProject);
             menu.addCommandItem(&commandManager, CommandIDs::saveProjectAs);
+            menu.addSeparator();
+            menu.addCommandItem(&commandManager, CommandIDs::exportProject);
         } else if (menuIndex == 1) {
             menu.addCommandItem(&commandManager, CommandIDs::editUndo);
         } else if (menuIndex == 2) {
@@ -76,8 +87,8 @@ class DesktopComponent : public juce::AudioAppComponent,
 
     void getAllCommands(juce::Array<juce::CommandID> &c) override {
         juce::Array<juce::CommandID> commands{CommandIDs::openProject, CommandIDs::saveProject,
-            CommandIDs::saveProjectAs, CommandIDs::editUndo, CommandIDs::newTrack, CommandIDs::newAudioPlayer,
-            CommandIDs::deleteTrackSelection};
+            CommandIDs::saveProjectAs, CommandIDs::exportProject, CommandIDs::editUndo, CommandIDs::newTrack,
+            CommandIDs::newAudioPlayer, CommandIDs::deleteTrackSelection};
         c.addArray(commands);
     }
 
@@ -94,6 +105,10 @@ class DesktopComponent : public juce::AudioAppComponent,
         case CommandIDs::saveProjectAs:
             result.setInfo("save project as...", "Save the current project as a new file", "Menu", 0);
             result.addDefaultKeypress('s', juce::ModifierKeys::commandModifier | juce::ModifierKeys::altModifier);
+            break;
+        case CommandIDs::exportProject:
+            result.setInfo("export project...", "Export the current project as an audio file", "Menu", 0);
+            result.addDefaultKeypress('e', juce::ModifierKeys::commandModifier | juce::ModifierKeys::shiftModifier);
             break;
         case CommandIDs::editUndo:
             result.setInfo(
@@ -112,7 +127,8 @@ class DesktopComponent : public juce::AudioAppComponent,
             result.addDefaultKeypress('p', juce::ModifierKeys::shiftModifier);
             break;
         case CommandIDs::deleteTrackSelection:
-            result.setInfo("delete " + desktopController.getSelectionType(), "Delete the selected " + desktopController.getSelectionType(), "Menu", 0);
+            result.setInfo("delete " + desktopController.getSelectionType(),
+                "Delete the selected " + desktopController.getSelectionType(), "Menu", 0);
             result.addDefaultKeypress(juce::KeyPress::backspaceKey, juce::ModifierKeys::noModifiers);
             result.addDefaultKeypress(juce::KeyPress::deleteKey, juce::ModifierKeys::noModifiers);
             result.setActive(desktopController.hasSelection());
@@ -132,6 +148,9 @@ class DesktopComponent : public juce::AudioAppComponent,
             break;
         case CommandIDs::saveProjectAs:
             desktopController.saveProjectAs();
+            break;
+        case CommandIDs::exportProject:
+            desktopController.exportProject();
             break;
         case CommandIDs::editUndo:
             desktopController.undoLast();

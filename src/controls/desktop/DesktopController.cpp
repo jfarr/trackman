@@ -229,6 +229,18 @@ void DesktopController::openProject() {
     });
 }
 
+void DesktopController::exportProject() {
+    chooser = std::make_unique<juce::FileChooser>("Save project as...", juce::File{}, "*.wav", true);
+    auto chooserFlags = juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles;
+
+    chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
+        auto file = fc.getResult();
+        if (file != juce::File{}) {
+            trackList.writeAudioFile(file, mixer.getSource(), deviceManager.getAudioDeviceSetup().sampleRate, 16);
+        }
+    });
+}
+
 void DesktopController::updateTitleBar() {
     mainWindow.setName(
         (projectFile != juce::File{} ? projectFile.getFileNameWithoutExtension() + (dirty ? " [modified]" : "")
