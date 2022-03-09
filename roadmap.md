@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Short-Term
-- Solo tracks
+- Export audio
 - Resize sample thumbnails
 - Undo move / resize
 - Move samples between lanes
@@ -10,7 +10,6 @@
 - Drop multiple files
 - Prompt for delete track/sample
 - Prompt for save on exit
-- Export audio
 
 ## Long Term
 
