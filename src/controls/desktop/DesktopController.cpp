@@ -71,6 +71,13 @@ void DesktopController::muteToggled(Track &track) {
     updateTitleBar();
 }
 
+void DesktopController::soloToggled(Track &track) {
+    Command *command = new ToggleSoloCommand(mixerController, track);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
+}
+
 void DesktopController::resize() { getTrackListController().getTrackListPanel().resize(); }
 
 void DesktopController::addNewTrack() {

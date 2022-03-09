@@ -62,6 +62,7 @@ class DesktopController : public MasterTrackListener,
     void nameChanged(Track &track, juce::String newName) override;
     void levelChangeFinalized(Track &track, float previousLevel) override;
     void muteToggled(Track &track) override;
+    void soloToggled(Track &track) override;
 
     //==============================================================================
     // SampleListener

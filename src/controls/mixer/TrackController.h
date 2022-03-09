@@ -18,6 +18,7 @@ class TrackController : public TrackControlListener, public juce::MouseListener 
 
     void setLevel(float newLevel);
     void toggleMute(Track &track);
+    void toggleSolo(Track &track);
     void repaint();
 
     void addListener(TrackListListener *listener);
@@ -30,6 +31,7 @@ class TrackController : public TrackControlListener, public juce::MouseListener 
     void nameChanged(Track &track, juce::String newName) override;
     void levelChanged(Track &track, float newLevel) override;
     void muteToggled(Track &track) override;
+    void soloToggled(Track &track) override;
 
     //==============================================================================
     // MouseListener
@@ -45,6 +47,8 @@ class TrackController : public TrackControlListener, public juce::MouseListener 
 
     void notifySelectionChanged();
     void notifyNameChanged(Track &track, juce::String newName);
+    void notifyMuteToggled(Track &track);
+    void notifySoloToggled(Track &track);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackController)
 };

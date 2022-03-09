@@ -19,17 +19,14 @@ MixerController::~MixerController() {
 }
 
 void MixerController::update() {
+    onSourceSet();
     for (std::unique_ptr<TrackController> &track : tracks) {
         track->removeListener((TrackListListener *)this);
         track->removeListener((TrackControlListener *)this);
     }
     tracks.clear();
     mixerPanel.clear();
-    mixer.removeAllSources();
     trackList.eachTrack([this](Track &track) {
-        if (track.getSource() != nullptr) {
-            mixer.addSource(track.getGain(), track.getSampleRate(), 2);
-        }
         auto control = new TrackControl(track);
         auto controller = new TrackController(track, *control, formatManager);
         controller->addListener((TrackListListener *)this);
@@ -74,11 +71,20 @@ void MixerController::toggleMute(Track &track) {
     }
 }
 
+void MixerController::toggleSolo(Track &track) {
+    for (std::unique_ptr<TrackController> &trackController : tracks) {
+        if (&trackController->getTrack() == &track) {
+            trackController->toggleSolo(track);
+        }
+    }
+}
+
 void MixerController::onSourceSet() {
     mixer.removeAllSources();
-    trackList.eachTrack([this](Track &track) {
-        DBG("MixerController::onSourceSet - add track source: " << track.getName());
+    auto soloed = trackList.getSoloed();
+    trackList.eachTrack([this, &soloed](Track &track) {
         if (track.getSource() != nullptr) {
+            DBG("MixerController::onSourceSet - add track source: " << track.getName());
             mixer.addSource(track.getGain(), track.getSampleRate(), 2);
         }
     });
@@ -104,6 +110,8 @@ void MixerController::levelChangeFinalized(Track &track, float previousLevel) {
 }
 
 void MixerController::muteToggled(Track &track) { notifyMuteToggled(track); }
+
+void MixerController::soloToggled(Track &track) { notifySoloToggled(track); }
 
 void MixerController::selectionChanged(Track *track) { notifySelectionChanged(track); }
 
@@ -166,5 +174,11 @@ void MixerController::notifyLevelChangeFinalized(Track &track, float previousLev
 void MixerController::notifyMuteToggled(Track &track) {
     for (TrackControlListener *listener : trackControlListeners) {
         listener->muteToggled(track);
+    }
+}
+
+void MixerController::notifySoloToggled(Track &track) {
+    for (TrackControlListener *listener : trackControlListeners) {
+        listener->soloToggled(track);
     }
 }

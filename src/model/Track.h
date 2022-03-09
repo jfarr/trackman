@@ -8,9 +8,11 @@
 #include "audio/PositionableMixingAudioSource.h"
 #include "audio/MixerAudioSource.h"
 
+class TrackList;
+
 class Track {
   public:
-    Track();
+    Track(TrackList& trackList);
     ~Track();
 
     int getNumber() const { return number; }
@@ -38,8 +40,10 @@ class Track {
     void setName(juce::String newName) { name = newName; }
     void setLevelGain(float newLevel);
     void toggleMute();
+    void toggleSolo();
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
+    void setGain();
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted);
     void selectSample(Sample *selected);
@@ -47,6 +51,7 @@ class Track {
     void undeleteSample(Sample *sample);
 
   private:
+    TrackList& trackList;
     int number = 0;
     juce::String name = "";
     std::shared_ptr<juce::PositionableAudioSource> source = nullptr;

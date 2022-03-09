@@ -60,7 +60,8 @@ void TrackControl::update() {
     muteButton.setColour(juce::TextButton::buttonColourId,
         track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     soloButton.setColour(juce::TextButton::buttonColourId,
-        track.isSoloed() ? juce::Colours::orange : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+        track.isSoloed() ? juce::Colours::orange
+                         : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     trackNameLabel.setText(track.getName(), juce::dontSendNotification);
     trackNumberLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
 }
@@ -126,7 +127,6 @@ void TrackControl::muteButtonClicked() {
 }
 
 void TrackControl::soloButtonClicked() {
-    track.setSolo(!track.isSoloed());
     notifySoloToggled();
     soloButton.setColour(juce::TextButton::buttonColourId,
         track.isSoloed() ? juce::Colours::orange
@@ -165,4 +165,8 @@ void TrackControl::notifyMuteToggled() {
     }
 }
 
-void TrackControl::notifySoloToggled() {}
+void TrackControl::notifySoloToggled() {
+    for (TrackControlListener *listener : listeners) {
+        listener->soloToggled(track);
+    }
+}
