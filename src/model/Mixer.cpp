@@ -1,6 +1,6 @@
 #include "Mixer.h"
 
-Mixer::Mixer(double sampleRate) : mixerSource(sampleRate) { transportSource.setSource(&mixerSource); }
+Mixer::Mixer(double sampleRate) : mixerSource(sampleRate), gainSource(&mixerSource, false) { transportSource.setSource(&gainSource); }
 
 Mixer::~Mixer() {
     transportSource.setSource(nullptr);
@@ -25,17 +25,17 @@ void Mixer::removeAllSources() {
 
 void Mixer::setMasterLevelGain(float newLevel) {
     level = newLevel;
-    transportSource.setGain(newLevel);
+    gainSource.setGain(newLevel);
 }
 
 void Mixer::toggleMasterMute() {
     muted = !muted;
-    transportSource.setGain((muted ? 0 : level));
+    gainSource.setGain((muted ? 0 : level));
 }
 
 void Mixer::setMasterMute(bool newMuted) {
     muted = newMuted;
-    transportSource.setGain((muted ? 0 : level));
+    gainSource.setGain((muted ? 0 : level));
 }
 
 void Mixer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {

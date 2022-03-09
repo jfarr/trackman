@@ -6,7 +6,6 @@
 #include "audio/GainAudioSource.h"
 #include "audio/OffsetAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
-#include "audio/MixerAudioSource.h"
 
 class TrackList;
 
@@ -28,7 +27,7 @@ class Track {
     bool isSilenced() const;
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
-    foleys::LevelMeterSource *getMeterSource() { return mixer == nullptr ? nullptr : &mixer->getMeterSource(); }
+    foleys::LevelMeterSource *getMeterSource() { return nullptr; /*mixer == nullptr ? nullptr : &mixer->getMeterSource();*/ }
 
     void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate);
     void adjustSampleLengthSecs(double newLen);
@@ -59,7 +58,7 @@ class Track {
     std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
     std::shared_ptr<GainAudioSource> gain;
     std::shared_ptr<OffsetAudioSource> offset;
-    std::shared_ptr<MixerAudioSource> mixer;
+    std::shared_ptr<PositionableMixingAudioSource> mixer;
     double sampleRate = 0;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;

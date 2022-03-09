@@ -3,7 +3,7 @@
 #include "controls/mixer/TrackController.h"
 
 MixerController::MixerController(TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager)
-    : trackList(trackList), mixer(mixer), mixerPanel(trackList, mixer, mixer.getMeterSource()),
+    : trackList(trackList), mixer(mixer), mixerPanel(trackList, mixer/*, mixer.getMeterSource()*/),
       formatManager(formatManager) {
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);

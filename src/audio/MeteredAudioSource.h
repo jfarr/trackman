@@ -3,9 +3,11 @@
 #include <JuceHeader.h>
 #include <ff_meters.h>
 
-class MeteredAudioSource : public juce::AudioSource {
+#include "PositionableAudioSourceAdapter.h"
+
+class MeteredAudioSource : public PositionableAudioSourceAdapter {
   public:
-    MeteredAudioSource(double sampleRate);
+    MeteredAudioSource(juce::PositionableAudioSource &source, double sampleRate);
     ~MeteredAudioSource();
 
     foleys::LevelMeterSource &getMeterSource() { return meterSource; }
@@ -17,6 +19,7 @@ class MeteredAudioSource : public juce::AudioSource {
     void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
 
   private:
+    juce::PositionableAudioSource &source;
     foleys::LevelMeterSource meterSource;
     double sampleRate;
     int blockSize = 512;
