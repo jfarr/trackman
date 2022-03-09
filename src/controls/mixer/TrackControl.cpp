@@ -3,7 +3,7 @@
 #include "common/listutil.h"
 
 TrackControl::TrackControl(Track &track)
-    : track(track), levelMeterLookAndFeel(track), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
+    : track(track), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
     createControls();
     setSize(getPreferredWidth(), 100);
 }

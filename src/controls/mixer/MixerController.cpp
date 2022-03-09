@@ -84,7 +84,7 @@ void MixerController::onSourceSet() {
     trackList.eachTrack([this](Track &track) {
         if (track.getSource() != nullptr) {
             DBG("MixerController::onSourceSet - add track source: " << track.getName());
-            mixer.addSource(track.getGain(), track.getSampleRate(), 2);
+            mixer.addSource(track.getSource(), track.getSampleRate(), 2);
         }
     });
 }

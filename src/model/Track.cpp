@@ -40,7 +40,8 @@ void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, 
     }
     source = newSource;
     sampleRate = newSampleRate;
-    gain = std::shared_ptr<GainAudioSource>(new GainAudioSource(newSource.get(), false));
+    gain = std::make_shared<GainAudioSource>(newSource.get(), false);
+    meteredSource = std::make_shared<MeteredAudioSource>(*gain, sampleRate);
 }
 
 void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {
@@ -121,7 +122,7 @@ void Track::setSolo(bool newSoloed) {
     trackList.soloTracks();
 }
 
-void Track::setGain() {
+void Track::updateGain() {
     if (gain != nullptr) {
         bool solo = trackList.getSoloed().size() == 0 || soloed;
         DBG("Track " << number << " set gain: " << (solo ? level : 0));

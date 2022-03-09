@@ -6,6 +6,7 @@
 #include "audio/GainAudioSource.h"
 #include "audio/OffsetAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
+#include "audio/MeteredAudioSource.h"
 
 class TrackList;
 
@@ -16,7 +17,7 @@ class Track {
 
     int getNumber() const { return number; }
     juce::String getName() const { return name; }
-    std::shared_ptr<juce::PositionableAudioSource> getSource() const { return source; }
+    std::shared_ptr<juce::PositionableAudioSource> getSource() const { return meteredSource; }
     std::shared_ptr<GainAudioSource> getGain() const { return gain; }
     juce::uint64 getTotalLength() const;
     double getTotalLengthSeconds() const;
@@ -27,7 +28,7 @@ class Track {
     bool isSilenced() const;
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
-    foleys::LevelMeterSource *getMeterSource() { return nullptr; /*mixer == nullptr ? nullptr : &mixer->getMeterSource();*/ }
+    foleys::LevelMeterSource *getMeterSource() { return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource(); }
 
     void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate);
     void adjustSampleLengthSecs(double newLen);
@@ -44,7 +45,7 @@ class Track {
     void toggleSolo();
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
-    void setGain();
+    void updateGain();
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted);
     void selectSample(Sample *selected);
@@ -56,6 +57,7 @@ class Track {
     int number = 0;
     juce::String name = "";
     std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
+    std::shared_ptr<MeteredAudioSource> meteredSource;
     std::shared_ptr<GainAudioSource> gain;
     std::shared_ptr<OffsetAudioSource> offset;
     std::shared_ptr<PositionableMixingAudioSource> mixer;

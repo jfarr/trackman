@@ -6,7 +6,7 @@
 
 class LevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
   public:
-    LevelMeterLookAndFeel(Track &track) : track(track) {}
+    LevelMeterLookAndFeel() {}
     ~LevelMeterLookAndFeel() {}
 
     juce::Rectangle<float> drawBackground(
@@ -35,7 +35,7 @@ class LevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
 
     void drawMeterBars(juce::Graphics &g, foleys::LevelMeter::MeterFlags meterType, juce::Rectangle<float> bounds,
         const foleys::LevelMeterSource *source, int fixedNumChannels = -1, int selectedChannel = -1) override {
-        if (source == nullptr || track.isSilenced())
+        if (source == nullptr)
             return;
 
         const juce::Rectangle<float> innerBounds = getMeterInnerBounds(bounds, meterType);
@@ -190,7 +190,6 @@ class LevelMeterLookAndFeel : public foleys::LevelMeterLookAndFeel {
     }
 
   private:
-    Track &track;
     juce::ColourGradient horizontalGradient;
     juce::ColourGradient verticalGradient;
 
