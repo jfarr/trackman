@@ -10,6 +10,7 @@
 - Drop multiple files
 - Prompt for delete track/sample
 - Prompt for save on exit
+- Export audio
 
 ## Long Term
 
