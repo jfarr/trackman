@@ -25,6 +25,7 @@ class Track {
     float getLevelGain() const { return level; }
     bool isMuted() const { return muted; }
     bool isSoloed() const { return soloed; }
+    bool isSilenced() const;
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
     foleys::LevelMeterSource *getMeterSource() { return mixer == nullptr ? nullptr : &mixer->getMeterSource(); }
