@@ -38,6 +38,7 @@ class TrackControl : public juce::Component, public SliderListener {
 
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
+    juce::TextButton soloButton;
     juce::Label trackNameLabel;
     juce::Label trackNumberLabel;
     LevelMeterLookAndFeel levelMeterLookAndFeel;
@@ -50,10 +51,12 @@ class TrackControl : public juce::Component, public SliderListener {
     void createControls();
     void decibelSliderChanged();
     void muteButtonClicked();
+    void soloButtonClicked();
     void notifyNameChanged();
     void notifyLevelChanged(float level);
     void notifyLevelChangeFinalized(float previousLevel);
     void notifyMuteToggled();
+    void notifySoloToggled();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackControl)
 };

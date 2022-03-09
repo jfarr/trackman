@@ -108,6 +108,10 @@ void Track::setMute(bool newMuted) {
     }
 }
 
+void Track::setSolo(bool newSoloed) {
+    soloed = newSoloed;
+}
+
 void Track::setDeleted(bool newDeleted) {
     deleted = newDeleted;
     selected = false;
