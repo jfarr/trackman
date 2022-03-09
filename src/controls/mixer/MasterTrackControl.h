@@ -36,13 +36,13 @@ class MasterTrackControl : public juce::Component, public SliderListener {
     void mouseUp(const juce::MouseEvent &event) override;
 
   private:
+    Mixer &mixer;
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
     juce::Label channelLabel;
     MasterLevelMeterLookAndFeel levelMeterLookAndFeel;
     foleys::LevelMeter levelMeter;
 
-    Mixer &mixer;
     bool draggingSlider = false;
     float previousLevel = juce::Decibels::decibelsToGain<float>(0.0);
     std::list<MasterTrackListener *> listeners;
