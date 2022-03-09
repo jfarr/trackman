@@ -1,7 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Fix track names / numbering
 - Solo tracks
 - Resize sample thumbnails
 - Undo move / resize
