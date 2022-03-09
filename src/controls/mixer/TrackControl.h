@@ -50,6 +50,7 @@ class TrackControl : public juce::Component, public SliderListener {
     void createControls();
     void decibelSliderChanged();
     void muteButtonClicked();
+    void notifyNameChanged();
     void notifyLevelChanged(float level);
     void notifyLevelChangeFinalized(float previousLevel);
     void notifyMuteToggled();

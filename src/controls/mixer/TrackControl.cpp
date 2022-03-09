@@ -23,7 +23,10 @@ void TrackControl::createControls() {
     muteButton.onClick = [this] { muteButtonClicked(); };
 
     trackNameLabel.setText(track.getName(), juce::dontSendNotification);
+    trackNameLabel.setJustificationType(juce::Justification::horizontallyCentred);
     trackNameLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
+    trackNameLabel.setEditable(true);
+    trackNameLabel.onTextChange = [this] { notifyNameChanged(); };
 
     trackNumberLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
     trackNumberLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
@@ -112,15 +115,24 @@ void TrackControl::muteButtonClicked() {
 }
 
 void TrackControl::addListener(TrackControlListener *listener) {
-    if (!listContains(listeners, listener))
+    if (!listContains(listeners, listener)) {
         listeners.push_front(listener);
+    }
 }
 
-void TrackControl::removeListener(TrackControlListener *listener) { listeners.remove(listener); }
+void TrackControl::removeListener(TrackControlListener *listener) {
+    listeners.remove(listener);
+}
+
+void TrackControl::notifyNameChanged() {
+    for (TrackControlListener *listener : listeners) {
+        listener->nameChanged(track, trackNameLabel.getText());
+    }
+}
 
 void TrackControl::notifyLevelChanged(float level) {
     for (TrackControlListener *listener : listeners) {
-        listener->levelChanged(level);
+        listener->levelChanged(track, level);
     }
 }
 

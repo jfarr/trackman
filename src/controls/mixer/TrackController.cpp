@@ -9,7 +9,6 @@ TrackController::TrackController(Track &track, TrackControl &trackControl, juce:
 
 TrackController::~TrackController() {
     trackControl.removeListener(this);
-    trackControl.removeListener(this);
     trackControl.removeMouseListener(this);
 }
 
@@ -25,22 +24,42 @@ void TrackController::toggleMute(Track &track) {
 
 void TrackController::repaint() { trackControl.repaint(); }
 
-void TrackController::levelChanged(float newLevel) { track.setLevelGain(newLevel); }
+void TrackController::nameChanged(Track &track, juce::String newName) { notifyNameChanged(track, newName); }
+
+void TrackController::levelChanged(Track &track, float newLevel) { track.setLevelGain(newLevel); }
 
 void TrackController::muteToggled(Track &track) { track.toggleMute(); }
 
 void TrackController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }
 
 void TrackController::addListener(TrackListListener *listener) {
-    if (!listContains(listeners, listener)) {
-        listeners.push_front(listener);
+    if (!listContains(trackListListeners, listener)) {
+        trackListListeners.push_front(listener);
     }
 }
 
-void TrackController::removeListener(TrackListListener *listener) { listeners.remove(listener); }
+void TrackController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
 
 void TrackController::notifySelectionChanged() {
-    for (TrackListListener *listener : listeners) {
+    for (TrackListListener *listener : trackListListeners) {
         listener->selectionChanged(&track);
+    }
+}
+
+void TrackController::addListener(TrackControlListener *listener) {
+    if (!listContains(trackControlListeners, listener)) {
+        trackControlListeners.push_front(listener);
+    }
+}
+
+void TrackController::removeListener(TrackControlListener *listener) {
+    DBG("TrackController remove TrackControlListener: 0x" << juce::String::toHexString((juce::uint64)listener));
+    trackControlListeners.remove(listener);
+}
+
+void TrackController::notifyNameChanged(Track &track, juce::String newName) {
+    for (TrackControlListener *listener : trackControlListeners) {
+        DBG("TrackController::notifyNameChanged: 0x" << juce::String::toHexString((juce::uint64)listener));
+        listener->nameChanged(track, newName);
     }
 }

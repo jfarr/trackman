@@ -4,7 +4,8 @@
 
 class TrackControlListener {
   public:
-    virtual void levelChanged(float level) {}
+    virtual void nameChanged(Track &track, juce::String newName) {}
+    virtual void levelChanged(Track &track, float level) {}
     virtual void levelChangeFinalized(Track &track, float previousLevel) {}
     virtual void muteToggled(Track &track) {}
 };

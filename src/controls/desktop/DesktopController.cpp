@@ -50,6 +50,11 @@ void DesktopController::masterMuteToggled() {
     updateTitleBar();
 }
 
+void DesktopController::nameChanged(Track &track, juce::String newName) {
+    track.setName(newName);
+    juce::MessageManager::callAsync([this] () {mixerController.update();});
+}
+
 void DesktopController::levelChangeFinalized(Track &track, float previousLevel) {
     Command *command = new ChangeTrackVolumeCommand(mixerController, track, previousLevel);
     commandList.pushCommand(command);

@@ -63,6 +63,7 @@ class MixerController : public TrackListListener,
 
     //==============================================================================
     // TrackControlListener
+    void nameChanged(Track &track, juce::String newName) override;
     void levelChangeFinalized(Track &track, float previousLevel) override;
     void muteToggled(Track &track) override;
 
@@ -79,6 +80,7 @@ class MixerController : public TrackListListener,
     void notifySelectionChanged(Track *track);
     void notifyMasterLevelChangeFinalized(float previousLevel);
     void notifyMasterMuteToggled();
+    void notifyNameChanged(Track &track, juce::String newName);
     void notifyLevelChangeFinalized(Track &track, float previousLevel);
     void notifyMuteToggled(Track &track);
 
