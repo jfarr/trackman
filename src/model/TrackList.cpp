@@ -4,10 +4,27 @@ TrackList::TrackList() {}
 
 TrackList::~TrackList() {}
 
-Track *TrackList::addTrack(juce::String name) {
-    Track *track = new Track(name);
+Track *TrackList::addTrack() {
+    Track *track = new Track();
     tracks.push_back(std::unique_ptr<Track>(track));
+    renumber();
     return track;
+}
+
+void TrackList::deleteTrack(Track *track) {
+    if (track == nullptr) {
+        return;
+    }
+    track->setDeleted(true);
+    renumber();
+}
+
+void TrackList::undeleteTrack(Track *track) {
+    if (track == nullptr) {
+        return;
+    }
+    track->setDeleted(false);
+    renumber();
 }
 
 void TrackList::removeTrack(Track *track) {
@@ -49,6 +66,15 @@ void TrackList::eachTrack(std::function<void(Track &track)> f) {
     for (std::unique_ptr<Track> &track : tracks) {
         if (!track->isDeleted()) {
             f(*track);
+        }
+    }
+}
+
+void TrackList::renumber() {
+    int i = 1;
+    for (std::unique_ptr<Track> &track : tracks) {
+        if (!track->isDeleted()) {
+            track->setNumber(i++);
         }
     }
 }

@@ -10,9 +10,10 @@
 
 class Track {
   public:
-    Track(juce::String name);
+    Track();
     ~Track();
 
+    int getNumber() const { return number; }
     juce::String getName() const { return name; }
     std::shared_ptr<juce::PositionableAudioSource> getSource() const { return source; }
     std::shared_ptr<GainAudioSource> getGain() const { return gain; }
@@ -32,6 +33,8 @@ class Track {
     Sample *getSelected() const;
     void eachSample(std::function<void(Sample &sample)> f);
 
+    void setNumber(int newNumber) { number = newNumber; }
+    void setName(juce::String newName) { name = newName; }
     void setLevelGain(float newLevel);
     void toggleMute();
     void setMute(bool newMuted);
@@ -42,7 +45,8 @@ class Track {
     void undeleteSample(Sample *sample);
 
   private:
-    juce::String name;
+    int number = 0;
+    juce::String name = "";
     std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
     std::shared_ptr<GainAudioSource> gain;
     std::shared_ptr<OffsetAudioSource> offset;

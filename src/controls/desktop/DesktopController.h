@@ -36,10 +36,10 @@ class DesktopController : public MasterTrackListener,
     void deleteSelected();
     juce::String getSelectionType() const;
 
-    Track *addTrack(juce::String name);
+    Track *addTrack();
     void deleteTrack(Track *track, bool purge);
     void undeleteTrack(Track *track);
-    int getTrackListSize() const { return trackListController.getTrackListSize(); }
+    void renameTrack(Track& track, juce::String newName);
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void deleteSample(Track &track, Sample *sample);
@@ -59,6 +59,7 @@ class DesktopController : public MasterTrackListener,
 
     //==============================================================================
     // TrackControlListener
+    void nameChanged(Track &track, juce::String newName) override;
     void levelChangeFinalized(Track &track, float previousLevel) override;
     void muteToggled(Track &track) override;
 

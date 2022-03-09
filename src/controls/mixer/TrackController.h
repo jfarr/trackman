@@ -22,10 +22,13 @@ class TrackController : public TrackControlListener, public juce::MouseListener 
 
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
+    void addListener(TrackControlListener *listener);
+    void removeListener(TrackControlListener *listener);
 
     //==============================================================================
     // TrackControlListener
-    void levelChanged(float newLevel) override;
+    void nameChanged(Track &track, juce::String newName) override;
+    void levelChanged(Track &track, float newLevel) override;
     void muteToggled(Track &track) override;
 
     //==============================================================================
@@ -37,9 +40,11 @@ class TrackController : public TrackControlListener, public juce::MouseListener 
     TrackControl &trackControl;
     juce::AudioFormatManager &formatManager;
 
-    std::list<TrackListListener *> listeners;
+    std::list<TrackListListener *> trackListListeners;
+    std::list<TrackControlListener *> trackControlListeners;
 
     void notifySelectionChanged();
+    void notifyNameChanged(Track &track, juce::String newName);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackController)
 };

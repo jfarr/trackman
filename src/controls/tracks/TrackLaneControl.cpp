@@ -9,7 +9,7 @@ TrackLaneControl::TrackLaneControl(Track &track, juce::AudioTransportSource &tra
 TrackLaneControl::~TrackLaneControl() {}
 
 void TrackLaneControl::createControls() {
-    trackLabel.setText(track.getName(), juce::dontSendNotification);
+    trackLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
     auto font = trackLabel.getFont();
     trackLabel.setFont(trackLabel.getFont().withHeight(12));
     trackLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
@@ -20,6 +20,7 @@ void TrackLaneControl::addThumbnail(SampleThumbnail *thumbnail) { thumbnails.pus
 
 void TrackLaneControl::update() {
     removeAllChildren();
+    trackLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
     addAndMakeVisible(trackLabel);
     for (SampleThumbnail *thumbnail : thumbnails) {
         addAndMakeVisible(thumbnail);

@@ -7,7 +7,9 @@ class TrackList {
     TrackList();
     ~TrackList();
 
-    Track *addTrack(juce::String name);
+    Track *addTrack();
+    void deleteTrack(Track *track);
+    void undeleteTrack(Track *track);
     void removeTrack(Track *track);
 
     int size() const { return tracks.size(); }
@@ -24,6 +26,8 @@ class TrackList {
 
   private:
     std::list<std::unique_ptr<Track>> tracks;
+
+    void renumber();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackList)
 };

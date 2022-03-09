@@ -38,8 +38,8 @@ class TrackControl : public juce::Component, public SliderListener {
 
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
-    juce::Label trackLabel;
-    juce::Label channelLabel;
+    juce::Label trackNameLabel;
+    juce::Label trackNumberLabel;
     LevelMeterLookAndFeel levelMeterLookAndFeel;
     foleys::LevelMeter levelMeter;
 
@@ -50,6 +50,7 @@ class TrackControl : public juce::Component, public SliderListener {
     void createControls();
     void decibelSliderChanged();
     void muteButtonClicked();
+    void notifyNameChanged();
     void notifyLevelChanged(float level);
     void notifyLevelChangeFinalized(float previousLevel);
     void notifyMuteToggled();

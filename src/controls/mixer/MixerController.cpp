@@ -10,14 +10,18 @@ MixerController::MixerController(TrackList &trackList, Mixer &mixer, juce::Audio
 }
 
 MixerController::~MixerController() {
+    for (std::unique_ptr<TrackController> &track : tracks) {
+        track->removeListener((TrackListListener *)this);
+        track->removeListener((TrackControlListener *)this);
+    }
     mixerPanel.getMasterTrackControl().removeListener(this);
     mixerPanel.getTransportControl().removeListener(this);
 }
 
 void MixerController::update() {
-    mixerPanel.eachTrack([this](TrackControl &track) { track.removeListener(this); });
     for (std::unique_ptr<TrackController> &track : tracks) {
-        track->removeListener(this);
+        track->removeListener((TrackListListener *)this);
+        track->removeListener((TrackControlListener *)this);
     }
     tracks.clear();
     mixerPanel.clear();
@@ -27,9 +31,9 @@ void MixerController::update() {
             mixer.addSource(track.getGain(), track.getSampleRate(), 2);
         }
         auto control = new TrackControl(track);
-        control->addListener(this);
         auto controller = new TrackController(track, *control, formatManager);
-        controller->addListener(this);
+        controller->addListener((TrackListListener *)this);
+        controller->addListener((TrackControlListener *)this);
         tracks.push_back(std::unique_ptr<TrackController>(controller));
         mixerPanel.addTrack(control);
     });
@@ -93,6 +97,8 @@ void MixerController::masterMuteToggled() {
     notifyMasterMuteToggled();
 }
 
+void MixerController::nameChanged(Track &track, juce::String newName) { notifyNameChanged(track, newName); }
+
 void MixerController::levelChangeFinalized(Track &track, float previousLevel) {
     notifyLevelChangeFinalized(track, previousLevel);
 }
@@ -141,7 +147,15 @@ void MixerController::addListener(TrackControlListener *listener) {
     }
 }
 
-void MixerController::removeListener(TrackControlListener *listener) { trackControlListeners.remove(listener); }
+void MixerController::removeListener(TrackControlListener *listener) {
+    trackControlListeners.remove(listener);
+}
+
+void MixerController::notifyNameChanged(Track &track, juce::String newName) {
+    for (TrackControlListener *listener : trackControlListeners) {
+        listener->nameChanged(track, newName);
+    }
+}
 
 void MixerController::notifyLevelChangeFinalized(Track &track, float previousLevel) {
     for (TrackControlListener *listener : trackControlListeners) {

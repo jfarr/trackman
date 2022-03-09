@@ -1,7 +1,7 @@
 #include "Track.h"
 #include "audio/MixerAudioSource.h"
 
-Track::Track(juce::String name) : name(name) {}
+Track::Track() {}
 
 Track::~Track() {
     if (source != nullptr) {
@@ -60,6 +60,9 @@ Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFor
         mixer->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
     }
     setSource(mixer, deviceManager.getAudioDeviceSetup().sampleRate);
+    if (name == "") {
+        name = file.getFileName();
+    }
     return &(*samples.back());
 }
 
