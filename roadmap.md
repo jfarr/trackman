@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Short-Term
-- Export audio
+- Fix meters when muted/soloed
 - Resize sample thumbnails
 - Undo move / resize
 - Move samples between lanes
