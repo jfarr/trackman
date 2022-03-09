@@ -53,13 +53,11 @@ void TrackController::addListener(TrackControlListener *listener) {
 }
 
 void TrackController::removeListener(TrackControlListener *listener) {
-    DBG("TrackController remove TrackControlListener: 0x" << juce::String::toHexString((juce::uint64)listener));
     trackControlListeners.remove(listener);
 }
 
 void TrackController::notifyNameChanged(Track &track, juce::String newName) {
     for (TrackControlListener *listener : trackControlListeners) {
-        DBG("TrackController::notifyNameChanged: 0x" << juce::String::toHexString((juce::uint64)listener));
         listener->nameChanged(track, newName);
     }
 }

@@ -115,29 +115,37 @@ void DesktopController::sampleAdded(Track *track, juce::File file, int pos) {
 
 Track *DesktopController::addTrack() {
     auto track = trackList.addTrack();
-    trackListController.update();
-    mixerController.update();
+    juce::MessageManager::callAsync([this] () {
+        trackListController.update();
+        mixerController.update();
+    });
     return track;
 }
 
 void DesktopController::deleteTrack(Track *track, bool purge) {
     trackList.deleteTrack(track);
-    trackListController.update();
-    mixerController.update();
     if (purge) {
         trackList.removeTrack(track);
     }
+    juce::MessageManager::callAsync([this] () {
+        trackListController.update();
+        mixerController.update();
+    });
 }
 
 void DesktopController::undeleteTrack(Track *track) {
     trackList.undeleteTrack(track);
-    trackListController.update();
-    mixerController.update();
+    juce::MessageManager::callAsync([this] () {
+        trackListController.update();
+        mixerController.update();
+    });
 }
 
 Sample *DesktopController::addSample(Track &track, juce::File file, int pos) {
     Sample *sample = trackListController.addSample(track, file, pos);
-    mixerController.update();
+    juce::MessageManager::callAsync([this] () {
+        mixerController.update();
+    });
     return sample;
 }
 
