@@ -10,6 +10,8 @@ class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
 
     juce::PositionableAudioSource *getSource() { return source; }
 
+    void setSourceSampleRateToCorrectFor(double newSampleRate);
+
     //==============================================================================
     // AudioSource
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
@@ -35,6 +37,8 @@ class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
     double getSampleRatio() const {
         return (sampleRate > 0 && sourceSampleRate > 0) ? sampleRate / sourceSampleRate : 1.0;
     }
+
+    juce::CriticalSection mutex;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PositionableResamplingAudioSource)
 };

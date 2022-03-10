@@ -44,7 +44,8 @@ class TrackListController : public TrackListListener, SampleListener {
     //==============================================================================
     // SampleListener
     void sampleSelected(Track &track, Sample &sample) override;
-    void sampleMoved(Sample &sample, juce::Point<int> pos) override;
+    void sampleMoved(Sample &sample, int x) override;
+    void sampleResized(Sample &sample, int width) override;
     void dragEnded() override;
 
   private:

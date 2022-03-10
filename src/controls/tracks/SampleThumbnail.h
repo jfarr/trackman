@@ -2,13 +2,40 @@
 
 #include <JuceHeader.h>
 
+#include "SampleListener.h"
 #include "controls/common/ThumbnailComponent.h"
 #include "model/Sample.h"
-#include "SampleListener.h"
+
+class SampleThumbnail;
+
+class StretchHandle : public juce::Component {
+  public:
+    StretchHandle(SampleThumbnail &thumbnail)
+        : thumbnail(thumbnail), dragImage(juce::Image::ARGB, 1, 1, true), scaledDragImage(dragImage) {}
+    ~StretchHandle() {}
+
+    SampleThumbnail &getThumbnail() { return thumbnail; }
+
+    //==============================================================================
+    // Component
+    void paint(juce::Graphics &g) override;
+    void mouseDrag(const juce::MouseEvent &event) override;
+    void mouseDown(const juce::MouseEvent &event) override;
+    void mouseUp(const juce::MouseEvent &event) override;
+
+  private:
+    SampleThumbnail &thumbnail;
+    juce::Image dragImage;
+    juce::ScaledImage scaledDragImage;
+    bool dragging = false;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StretchHandle)
+};
 
 class SampleThumbnail : public juce::Component {
   public:
-    SampleThumbnail(Track &track, Sample &sample, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
+    SampleThumbnail(
+        Track &track, Sample &sample, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
     ~SampleThumbnail() {}
 
     Sample &getSample() { return sample; }
@@ -29,6 +56,8 @@ class SampleThumbnail : public juce::Component {
     juce::AudioTransportSource &transport;
     juce::Label filenameLabel;
     juce::Label missingFileLabel;
+    StretchHandle stretchHandle;
+
     // TODO: make thumbnailCache a singleton
     juce::AudioThumbnailCache thumbnailCache;
     juce::AudioThumbnail thumbnail;
@@ -43,4 +72,6 @@ class SampleThumbnail : public juce::Component {
     juce::ScaledImage *getImage();
 
     void notifySampleSelected(Track &track, Sample &selected);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SampleThumbnail)
 };

@@ -1,19 +1,22 @@
 #pragma once
 
-#include <JuceHeader.h>
 #include "audio/OffsetAudioSource.h"
+#include "audio/PositionableResamplingAudioSource.h"
+#include <JuceHeader.h>
 
 class Sample {
   public:
-    Sample(juce::File file, double startPos, double endPos, double length, double sampleRate)
-        : file(file), startPos(startPos), endPos(endPos), length(length), sampleRate(sampleRate) {}
+    Sample(juce::File file, double startPos, double endPos, double sourceLengthSecs, double sampleRate)
+        : file(file), startPos(startPos), endPos(endPos), length(sourceLengthSecs),
+          sourceLengthSecs(sourceLengthSecs), sourceSampleRate(sampleRate) {}
     ~Sample() {}
 
     juce::File getFile() const { return file; }
     double getStartPos() const { return startPos; }
     double getEndPos() const { return endPos; }
-    double getOriginalLengthSecs() const { return length; }
-    double getSampleRate() const { return sampleRate; }
+    double getLengthSecs() const { return length; }
+    double getSourceLengthSecs() const { return sourceLengthSecs; }
+    double getSampleRate() const { return sourceSampleRate; }
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
 
@@ -22,6 +25,7 @@ class Sample {
 
     void setMinLengthSecs(double newLength);
     void setPosition(double pos);
+    void setLength(double newLength);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
 
@@ -30,8 +34,10 @@ class Sample {
     double startPos;
     double endPos;
     double length;
-    double sampleRate;
+    double sourceLengthSecs;
+    double sourceSampleRate;
     std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
+    std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
     std::unique_ptr<OffsetAudioSource> offsetSource;
     bool selected = false;
     bool deleted = false;

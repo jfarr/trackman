@@ -1,7 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Resize sample thumbnails
 - Undo move / resize
 - Move samples between lanes
 - Zoom track lanes
@@ -23,4 +22,8 @@
 - Filter
 - EQ
 - VST Plugins
+- Configure audio settings
+  - Sample rate
+  - Block size
+  - Channels / bus layout
 - Skins

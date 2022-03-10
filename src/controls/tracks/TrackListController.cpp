@@ -152,13 +152,20 @@ void TrackListController::sampleSelected(Track &track, Sample &sample) {
     trackList.selectSample(&sample);
 }
 
-void TrackListController::sampleMoved(Sample &sample, juce::Point<int> pos) {
-    auto length = sample.getOriginalLengthSecs();
+void TrackListController::sampleMoved(Sample &sample, int x) {
+    auto length = sample.getLengthSecs();
     auto width = length * scale;
     auto leftPanelWidth = 25;
     double offset = width / 2;
-    double startPos = std::max((pos.getX() - offset - leftPanelWidth), 0.0);
+    double startPos = std::max((x - offset - leftPanelWidth), 0.0);
     sample.setPosition(startPos / scale);
+    trackList.adjustTrackLengths();
+    trackListPanel.resize();
+}
+
+void TrackListController::sampleResized(Sample &sample, int width) {
+    auto newLength = width / scale;
+    sample.setLength(newLength);
     trackList.adjustTrackLengths();
     trackListPanel.resize();
 }
