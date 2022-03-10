@@ -1,22 +1,24 @@
 #include "TrackListController.h"
 #include "common/listutil.h"
+#include "controls/desktop/DesktopController.h"
 
-TrackListController::TrackListController(TrackList &trackList, juce::AudioTransportSource &transport,
-    juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
-    : trackList(trackList), transport(transport),
+TrackListController::TrackListController(DesktopController &desktop, TrackList &trackList,
+    juce::AudioTransportSource &transport, juce::AudioDeviceManager &deviceManager,
+    juce::AudioFormatManager &formatManager)
+    : desktop(desktop), trackList(trackList), transport(transport),
       trackListPanel(trackList, trackListViewport, transport, formatManager), deviceManager(deviceManager),
       formatManager(formatManager) {
     trackListViewport.setSize(800, 350);
     trackListViewport.setScrollBarsShown(true, true);
     trackListViewport.setViewedComponent(&trackListPanel, false);
-    trackListPanel.addListener((SampleListener *) this);
-    trackListPanel.addListener((TrackListListener *) this);
+    trackListPanel.addListener((SampleListener *)this);
+    trackListPanel.addListener((TrackListListener *)this);
     trackListPanel.resized();
 }
 
 TrackListController::~TrackListController() {
-    trackListPanel.removeListener((SampleListener *) this);
-    trackListPanel.removeListener((TrackListListener *) this);
+    trackListPanel.removeListener((SampleListener *)this);
+    trackListPanel.removeListener((TrackListListener *)this);
 }
 
 void TrackListController::update() {
@@ -84,7 +86,7 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
 }
 
 void TrackListController::deleteSample(Track &track, Sample *sample) {
-    auto pos =  transport.getCurrentPosition();
+    auto pos = transport.getCurrentPosition();
     if (sample == nullptr) {
         return;
     }
@@ -100,7 +102,7 @@ void TrackListController::deleteSample(Track &track, Sample *sample) {
 }
 
 void TrackListController::undeleteSample(Track &track, Sample *sample) {
-    auto pos =  transport.getCurrentPosition();
+    auto pos = transport.getCurrentPosition();
     if (sample == nullptr) {
         return;
     }
@@ -153,14 +155,13 @@ void TrackListController::sampleSelected(Track &track, Sample &sample) {
 }
 
 void TrackListController::sampleMoved(Sample &sample, int x) {
+    auto curPos = sample.getStartPos();
     auto length = sample.getLengthSecs();
     auto width = length * scale;
     auto leftPanelWidth = 25;
     double offset = width / 2;
-    double startPos = std::max((x - offset - leftPanelWidth), 0.0);
-    sample.setPosition(startPos / scale);
-    trackList.adjustTrackLengths();
-    trackListPanel.resize();
+    double newPos = std::max((x - offset - leftPanelWidth), 10.0) / scale;
+    desktop.moveSample(sample, curPos, newPos);
 }
 
 void TrackListController::sampleResized(Sample &sample, int width) {
@@ -168,6 +169,25 @@ void TrackListController::sampleResized(Sample &sample, int width) {
     sample.setLength(newLength);
     trackList.adjustTrackLengths();
     trackListPanel.resize();
+}
+
+void TrackListController::moveSample(Sample &sample, double pos) {
+    //    auto length = sample.getLengthSecs();
+    //    auto width = length * scale;
+    //    auto leftPanelWidth = 25;
+    //    double offset = width / 2;
+    //    double startPos = std::max((x - offset - leftPanelWidth), 10.0);
+    //    sample.setPosition(startPos / scale);
+    sample.setPosition(pos);
+    trackList.adjustTrackLengths();
+    trackListPanel.resize();
+}
+
+void TrackListController::resizeSample(Sample &sample, double length) {
+//    auto newLength = width / scale;
+//    sample.setLength(newLength);
+//    trackList.adjustTrackLengths();
+//    trackListPanel.resize();
 }
 
 void TrackListController::dragEnded() { updateLanes(); }

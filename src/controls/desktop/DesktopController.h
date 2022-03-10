@@ -43,6 +43,7 @@ class DesktopController : public MasterTrackListener,
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void deleteSample(Track &track, Sample *sample);
+    void moveSample(Sample &sample, double prevPos, double newPos);
 
     void saveProject();
     void saveProjectAs();

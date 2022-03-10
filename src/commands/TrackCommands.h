@@ -60,11 +60,27 @@ class DeleteSampleCommand : public Command {
         : Command("delete sample"), controller(controller), track(track), sample(sample) {}
     ~DeleteSampleCommand() {}
 
-    virtual void execute() override { controller.deleteSample(track, &sample); }
+    void execute() override { controller.deleteSample(track, &sample); }
     void undo() override { controller.undeleteSample(track, &sample); }
 
   private:
     TrackListController &controller;
     Track &track;
     Sample &sample;
+};
+
+class MoveSampleCommand : public Command {
+  public:
+    MoveSampleCommand(TrackListController &controller, Sample &sample, double prevPos, double newPos)
+        : Command("move sample"), controller(controller), sample(sample), prevPos(prevPos), newPos(newPos) {}
+    ~MoveSampleCommand() {}
+
+    void execute() override { controller.moveSample(sample, newPos); }
+    void undo() override { controller.moveSample(sample, prevPos); }
+
+  private:
+    TrackListController &controller;
+    Sample &sample;
+    double prevPos;
+    double newPos;
 };

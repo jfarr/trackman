@@ -7,7 +7,8 @@
 DesktopController::DesktopController(
     juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
     : mixer(deviceManager.getAudioDeviceSetup().sampleRate), mixerController(trackList, mixer, formatManager),
-      trackListController(trackList, mixerController.getMixer().getTransportSource(), deviceManager, formatManager),
+      trackListController(
+          *this, trackList, mixerController.getMixer().getTransportSource(), deviceManager, formatManager),
       project(trackList, mixer), mainWindow(mainWindow), applicationName(mainWindow.getName()),
       deviceManager(deviceManager), formatManager(formatManager) {
     mixerController.addListener((TrackListListener *)this);
@@ -117,6 +118,13 @@ juce::String DesktopController::getSelectionType() const {
 
 void DesktopController::sampleAdded(Track *track, juce::File file, int pos) {
     Command *command = new AddSampleCommand(*this, track, file, pos);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
+}
+
+void DesktopController::moveSample(Sample &sample, double prevPos, double newPos) {
+    Command *command = new MoveSampleCommand(trackListController, sample, prevPos, newPos);
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
