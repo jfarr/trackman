@@ -6,11 +6,15 @@
 #include "controls/common/ThumbnailComponent.h"
 #include "model/Sample.h"
 
+class SampleThumbnail;
+
 class StretchHandle : public juce::Component {
   public:
-    StretchHandle(juce::Component &thumbnail)
+    StretchHandle(SampleThumbnail &thumbnail)
         : thumbnail(thumbnail), dragImage(juce::Image::ARGB, 1, 1, true), scaledDragImage(dragImage) {}
     ~StretchHandle() {}
+
+    SampleThumbnail &getThumbnail() { return thumbnail; }
 
     //==============================================================================
     // Component
@@ -19,7 +23,7 @@ class StretchHandle : public juce::Component {
     void mouseUp(const juce::MouseEvent &event) override;
 
   private:
-    juce::Component &thumbnail;
+    SampleThumbnail &thumbnail;
     juce::Image dragImage;
     juce::ScaledImage scaledDragImage;
     bool dragging = false;

@@ -13,7 +13,7 @@ std::string Project::to_json() {
             {"name", track.getName().toStdString()}, {"gain", track.getLevelGain()}, {"muted", track.isMuted()}};
         track.eachSample([&track_json](Sample &sample) {
             json sample_json = {{"file", sample.getFile().getFullPathName().toStdString()},
-                {"startPos", sample.getStartPos()}, {"endPos", sample.getEndPos()}, {"length", sample.getOriginalLengthSecs()},
+                {"startPos", sample.getStartPos()}, {"endPos", sample.getEndPos()}, {"length", sample.getSourceLengthSecs()},
                 {"sampleRate", sample.getSampleRate()}};
             track_json["samples"].push_back(sample_json);
         });

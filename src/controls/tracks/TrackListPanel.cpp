@@ -52,13 +52,20 @@ Track *TrackListPanel::getTrackAtPos(int x, int y) {
 }
 
 void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
-    auto *thumbnail = dynamic_cast<SampleThumbnail *>(dragSourceDetails.sourceComponent.get());
-    if (thumbnail == nullptr) {
+    auto sourceComponent = dragSourceDetails.sourceComponent.get();
+    auto *thumbnail = dynamic_cast<SampleThumbnail *>(sourceComponent);
+    if (thumbnail != nullptr) {
+        auto pos = juce::Point<int>(
+            dragSourceDetails.localPosition.getX() + dragSourceOffset, dragSourceDetails.localPosition.getY());
+        notifySampleDropped(thumbnail, pos.getX());
         return;
     }
-    auto pos = juce::Point<int>(
-        dragSourceDetails.localPosition.getX() + dragSourceOffset, dragSourceDetails.localPosition.getY());
-    notifySampleDropped(thumbnail, pos);
+    auto stretchHandle = dynamic_cast<StretchHandle *>(sourceComponent);
+    if (stretchHandle != nullptr) {
+        auto bounds = stretchHandle->getThumbnail().getBounds();
+        notifySampleResized(&stretchHandle->getThumbnail(), dragSourceDetails.localPosition.x - bounds.getX());
+        return;
+    }
 }
 
 void TrackListPanel::dragOperationStarted(const DragAndDropTarget::SourceDetails &dragSourceDetails) {
@@ -134,9 +141,15 @@ void TrackListPanel::addListener(SampleListener *listener) {
 
 void TrackListPanel::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
 
-void TrackListPanel::notifySampleDropped(SampleThumbnail *thumbnail, juce::Point<int> pos) {
+void TrackListPanel::notifySampleDropped(SampleThumbnail *thumbnail, int x) {
     for (SampleListener *listener : sampleListeners) {
-        listener->sampleMoved(thumbnail->getSample(), pos);
+        listener->sampleMoved(thumbnail->getSample(), x);
+    }
+}
+
+void TrackListPanel::notifySampleResized(SampleThumbnail *thumbnail, int width) {
+    for (SampleListener *listener : sampleListeners) {
+        listener->sampleResized(thumbnail->getSample(), width);
     }
 }
 

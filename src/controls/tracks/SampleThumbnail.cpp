@@ -6,7 +6,7 @@ void StretchHandle::paint(juce::Graphics &g) {
     auto w = getWidth();
     auto h = getHeight();
     path.addTriangle(juce::Point<float>(0, 0), juce::Point<float>(w, 0), juce::Point<float>(w, h));
-    g.setColour(juce::Colours::grey.withAlpha(0.6f));
+    g.setColour(juce::Colours::grey.withAlpha(0.8f));
     g.fillPath(path);
 }
 
