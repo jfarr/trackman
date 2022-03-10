@@ -38,8 +38,8 @@ void PositionableMixingAudioSource::removeInputSource(PositionableAudioSource *i
 }
 
 void PositionableMixingAudioSource::removeAllInputs() {
-    inputs.clear();
     mixer.removeAllInputs();
+    inputs.clear();
 }
 
 void PositionableMixingAudioSource::prepareToPlay(int blockSize, double newSampleRate) {

@@ -22,7 +22,7 @@ void OffsetAudioSource::setMinLength(juce::int64 newLength) {
 
 void OffsetAudioSource::prepareToPlay(int blockSize, double sampleRate) { source.prepareToPlay(blockSize, sampleRate); }
 
-void OffsetAudioSource::releaseResources() { source.releaseResources(); }
+void OffsetAudioSource::releaseResources() {}
 
 void OffsetAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
     source.getNextAudioBlock(bufferToFill);
