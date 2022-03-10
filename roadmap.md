@@ -8,6 +8,9 @@
 - Drop multiple files
 - Prompt for delete track/sample
 - Prompt for save on exit
+- Finish gain sliders
+  - Ticks
+  - Custom image
 
 ## Long Term
 
