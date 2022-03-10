@@ -1,7 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Resize sample thumbnails
 - Undo move / resize
 - Move samples between lanes
 - Zoom track lanes
