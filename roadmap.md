@@ -22,4 +22,8 @@
 - Filter
 - EQ
 - VST Plugins
+- Configure audio settings
+  - Sample rate
+  - Block size
+  - Channels / bus layout
 - Skins
