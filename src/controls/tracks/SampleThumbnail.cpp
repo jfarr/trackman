@@ -2,13 +2,16 @@
 #include "common/listutil.h"
 
 void StretchHandle::paint(juce::Graphics &g) {
-    g.fillAll(juce::Colours::green);
-    setSize(10, 10);
+    juce::Path path;
+    auto w = getWidth();
+    auto h = getHeight();
+    path.addTriangle(juce::Point<float>(0, 0), juce::Point<float>(w, 0), juce::Point<float>(w, h));
+    g.setColour(juce::Colours::grey.withAlpha(0.6f));
+    g.fillPath(path);
 }
 
 void StretchHandle::mouseDrag(const juce::MouseEvent &event) {
     if (!dragging) {
-        DBG("start dragging");
         dragging = true;
         auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
         if (container != nullptr) {
@@ -94,7 +97,8 @@ void SampleThumbnail::resized() {
     auto area = getLocalBounds();
     auto labelHeight = 18;
     auto margin = 2;
-    stretchHandle.setBounds(getWidth() - 10, 0, 10, 10);
+    auto handleSize = 12;
+    stretchHandle.setBounds(getWidth() - handleSize, 0, handleSize, handleSize);
     filenameLabel.setBounds(area.removeFromTop(labelHeight).reduced(margin));
     if (sample.getSource() == nullptr) {
         missingFileLabel.centreWithSize(40, 15);
