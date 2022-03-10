@@ -17,6 +17,7 @@ void TrackListPanel::update() {
     removeAllChildren();
     addAndMakeVisible(timeMeter);
     for (TrackLaneControl *lane : lanes) {
+        lane->update();
         addAndMakeVisible(lane);
     }
     resize();

@@ -2,13 +2,20 @@
 
 PositionableResamplingAudioSource::PositionableResamplingAudioSource(juce::PositionableAudioSource *source,
     const bool deleteWhenRemoved, double sampleRate, double sourceSampleRateToCorrectFor, int maxNumChannels)
-    : source(source), resamplerSource(source, false, maxNumChannels), sampleRate(sampleRate), sourceSampleRate(sourceSampleRateToCorrectFor),
-      deleteWhenRemoved(deleteWhenRemoved) {}
+    : source(source), resamplerSource(source, false, maxNumChannels), sampleRate(sampleRate),
+      sourceSampleRate(sourceSampleRateToCorrectFor), deleteWhenRemoved(deleteWhenRemoved) {}
 
 PositionableResamplingAudioSource::~PositionableResamplingAudioSource() {
     if (deleteWhenRemoved && source != nullptr) {
         std::unique_ptr<AudioSource> toDelete;
         toDelete.reset(source);
+    }
+}
+
+void PositionableResamplingAudioSource::setSourceSampleRateToCorrectFor(double newSampleRate) {
+    sourceSampleRate = newSampleRate;
+    if (sourceSampleRate > 0) {
+        resamplerSource.setResamplingRatio(sourceSampleRate / sampleRate);
     }
 }
 
@@ -19,13 +26,15 @@ void PositionableResamplingAudioSource::prepareToPlay(int samplesPerBlockExpecte
 
     resamplerSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 
-    if (sourceSampleRate > 0)
+    if (sourceSampleRate > 0) {
         resamplerSource.setResamplingRatio(sourceSampleRate / sampleRate);
+    }
 }
 
 void PositionableResamplingAudioSource::releaseResources() {
-    if (deleteWhenRemoved)
+    if (deleteWhenRemoved) {
         resamplerSource.releaseResources();
+    }
 }
 
 void PositionableResamplingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &info) {

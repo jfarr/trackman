@@ -10,6 +10,8 @@ class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
 
     juce::PositionableAudioSource *getSource() { return source; }
 
+    void setSourceSampleRateToCorrectFor(double newSampleRate);
+
     //==============================================================================
     // AudioSource
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;

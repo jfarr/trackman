@@ -1,6 +1,7 @@
 #pragma once
 
 #include "audio/OffsetAudioSource.h"
+#include "audio/PositionableResamplingAudioSource.h"
 #include <JuceHeader.h>
 
 class Sample {
@@ -13,6 +14,7 @@ class Sample {
     juce::File getFile() const { return file; }
     double getStartPos() const { return startPos; }
     double getEndPos() const { return endPos; }
+    double getLengthSecs() const { return length; }
     double getSourceLengthSecs() const { return sourceLengthSecs; }
     double getSampleRate() const { return sourceSampleRate; }
     bool isSelected() const { return selected; }
@@ -23,7 +25,7 @@ class Sample {
 
     void setMinLengthSecs(double newLength);
     void setPosition(double pos);
-    void setLength(double length);
+    void setLength(double newLength);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
 
@@ -35,6 +37,7 @@ class Sample {
     double sourceLengthSecs;
     double sourceSampleRate;
     std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
+    std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
     std::unique_ptr<OffsetAudioSource> offsetSource;
     bool selected = false;
     bool deleted = false;

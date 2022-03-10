@@ -153,8 +153,7 @@ void TrackListController::sampleSelected(Track &track, Sample &sample) {
 }
 
 void TrackListController::sampleMoved(Sample &sample, int x) {
-    // TODO: fix this
-    auto length = sample.getSourceLengthSecs();
+    auto length = sample.getLengthSecs();
     auto width = length * scale;
     auto leftPanelWidth = 25;
     double offset = width / 2;
