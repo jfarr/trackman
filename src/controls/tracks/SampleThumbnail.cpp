@@ -1,10 +1,33 @@
 #include "SampleThumbnail.h"
 #include "common/listutil.h"
 
+void StretchHandle::paint(juce::Graphics &g) {
+    g.fillAll(juce::Colours::green);
+    setSize(10, 10);
+}
+
+void StretchHandle::mouseDrag(const juce::MouseEvent &event) {
+    if (!dragging) {
+        DBG("start dragging");
+        dragging = true;
+        auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
+        if (container != nullptr) {
+            container->startDragging("clip", this, scaledDragImage);
+        }
+    } else {
+        auto bounds = thumbnail.getScreenBounds();
+        auto x = event.getScreenX();
+        auto newWidth = std::max(x - bounds.getX(), 1);
+        thumbnail.setBounds(thumbnail.getBounds().withWidth(newWidth));
+    }
+}
+
+void StretchHandle::mouseUp(const juce::MouseEvent &event) { dragging = false; }
+
 SampleThumbnail::SampleThumbnail(
     Track &track, Sample &sample, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
     : track(track), sample(sample), transport(transport), thumbnailCache(5),
-      thumbnail(512, formatManager, thumbnailCache) {
+      thumbnail(512, formatManager, thumbnailCache), stretchHandle(*this) {
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     createControls();
     setSize(200, 81);
@@ -14,6 +37,7 @@ void SampleThumbnail::createControls() {
     filenameLabel.setText(sample.getFile().getFileName(), juce::dontSendNotification);
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     addAndMakeVisible(filenameLabel);
+    addAndMakeVisible(stretchHandle);
     if (sample.getSource() == nullptr) {
         missingFileLabel.setText("no file", juce::dontSendNotification);
         missingFileLabel.setFont(missingFileLabel.getFont().withHeight(10));
@@ -70,6 +94,7 @@ void SampleThumbnail::resized() {
     auto area = getLocalBounds();
     auto labelHeight = 18;
     auto margin = 2;
+    stretchHandle.setBounds(getWidth() - 10, 0, 10, 10);
     filenameLabel.setBounds(area.removeFromTop(labelHeight).reduced(margin));
     if (sample.getSource() == nullptr) {
         missingFileLabel.centreWithSize(40, 15);
