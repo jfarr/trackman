@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Short-Term
-- Undo move / resize
+- Refactor controllers
 - Move samples between lanes
 - Zoom track lanes
 - Mixer horizontal scroll

@@ -10,9 +10,7 @@ Track::~Track() {
     }
 }
 
-juce::uint64 Track::getTotalLength() const {
-    return getTotalLengthSeconds() * sampleRate;
-}
+juce::uint64 Track::getTotalLength() const { return getTotalLengthSeconds() * sampleRate; }
 
 double Track::getTotalLengthSeconds() const {
     double len = 0;
@@ -26,9 +24,7 @@ double Track::getTotalLengthSeconds() const {
 
 double Track::getSampleRate() const { return source == mixerSource ? 0.0 : sampleRate; }
 
-bool Track::isSilenced() const {
-    return muted || (!trackList.getSoloed().empty() && !soloed);
-}
+bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
 
 void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate) {
     DBG("Track::setSource - set track source: " << getName());
@@ -77,7 +73,9 @@ Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFor
 }
 
 void Track::adjustSampleLengthSecs(double newLen) {
-    eachSample([newLen](Sample &sample) { sample.setMinLengthSecs(newLen); });
+    if (!deleted) {
+        eachSample([this, newLen](Sample &sample) { sample.setMinLengthSecs(newLen); });
+    }
 }
 
 Sample *Track::getSelected() const {

@@ -9,9 +9,11 @@
 #include "controls/tracks/SampleListener.h"
 #include "model/TrackList.h"
 
+class DesktopController;
+
 class TrackListController : public TrackListListener, SampleListener {
   public:
-    TrackListController(TrackList &trackList, juce::AudioTransportSource &transport,
+    TrackListController(DesktopController &desktop, TrackList &trackList, juce::AudioTransportSource &transport,
         juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     ~TrackListController();
 
@@ -22,6 +24,8 @@ class TrackListController : public TrackListListener, SampleListener {
     Sample *addSample(Track &track, juce::File file, int pos);
     void deleteSample(Track &track, Sample *sample);
     void undeleteSample(Track &track, Sample *sample);
+    void moveSample(Sample &, double pos);
+    void resizeSample(Sample &, double length);
 
     void update();
     void repaint();
@@ -49,6 +53,7 @@ class TrackListController : public TrackListListener, SampleListener {
     void dragEnded() override;
 
   private:
+    DesktopController &desktop;
     TrackList &trackList;
     juce::AudioTransportSource &transport;
     TrackListPanel trackListPanel;
