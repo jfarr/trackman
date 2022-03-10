@@ -25,6 +25,8 @@ void StretchHandle::mouseDrag(const juce::MouseEvent &event) {
     }
 }
 
+void StretchHandle::mouseDown(const juce::MouseEvent &event) { thumbnail.mouseDown(event); }
+
 void StretchHandle::mouseUp(const juce::MouseEvent &event) { dragging = false; }
 
 SampleThumbnail::SampleThumbnail(

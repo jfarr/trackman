@@ -20,6 +20,7 @@ class StretchHandle : public juce::Component {
     // Component
     void paint(juce::Graphics &g) override;
     void mouseDrag(const juce::MouseEvent &event) override;
+    void mouseDown(const juce::MouseEvent &event) override;
     void mouseUp(const juce::MouseEvent &event) override;
 
   private:
