@@ -84,3 +84,19 @@ class MoveSampleCommand : public Command {
     double prevPos;
     double newPos;
 };
+
+class ResizeSampleCommand : public Command {
+  public:
+    ResizeSampleCommand(TrackListController &controller, Sample &sample, double prevLen, double newLen)
+        : Command("resize sample"), controller(controller), sample(sample), prevLen(prevLen), newLen(newLen) {}
+    ~ResizeSampleCommand() {}
+
+    void execute() override { controller.resizeSample(sample, newLen); }
+    void undo() override { controller.resizeSample(sample, prevLen); }
+
+  private:
+    TrackListController &controller;
+    Sample &sample;
+    double prevLen;
+    double newLen;
+};

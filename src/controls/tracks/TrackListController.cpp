@@ -165,29 +165,21 @@ void TrackListController::sampleMoved(Sample &sample, int x) {
 }
 
 void TrackListController::sampleResized(Sample &sample, int width) {
-    auto newLength = width / scale;
-    sample.setLength(newLength);
-    trackList.adjustTrackLengths();
-    trackListPanel.resize();
+    auto curLen = sample.getLengthSecs();
+    auto newLen = width / scale;
+    desktop.resizeSample(sample, curLen, newLen);
 }
 
 void TrackListController::moveSample(Sample &sample, double pos) {
-    //    auto length = sample.getLengthSecs();
-    //    auto width = length * scale;
-    //    auto leftPanelWidth = 25;
-    //    double offset = width / 2;
-    //    double startPos = std::max((x - offset - leftPanelWidth), 10.0);
-    //    sample.setPosition(startPos / scale);
     sample.setPosition(pos);
     trackList.adjustTrackLengths();
     trackListPanel.resize();
 }
 
 void TrackListController::resizeSample(Sample &sample, double length) {
-//    auto newLength = width / scale;
-//    sample.setLength(newLength);
-//    trackList.adjustTrackLengths();
-//    trackListPanel.resize();
+    sample.setLength(length);
+    trackList.adjustTrackLengths();
+    trackListPanel.resize();
 }
 
 void TrackListController::dragEnded() { updateLanes(); }

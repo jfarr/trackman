@@ -130,6 +130,13 @@ void DesktopController::moveSample(Sample &sample, double prevPos, double newPos
     updateTitleBar();
 }
 
+void DesktopController::resizeSample(Sample &sample, double prevLen, double newLen) {
+    Command *command = new ResizeSampleCommand(trackListController, sample, prevLen, newLen);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
+}
+
 Track *DesktopController::addTrack() {
     auto track = trackList.addTrack();
     juce::MessageManager::callAsync([this]() {
