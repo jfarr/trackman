@@ -13,6 +13,7 @@ PositionableResamplingAudioSource::~PositionableResamplingAudioSource() {
 }
 
 void PositionableResamplingAudioSource::setSourceSampleRateToCorrectFor(double newSampleRate) {
+    const juce::ScopedLock lock(mutex);
     sourceSampleRate = newSampleRate;
     if (sourceSampleRate > 0) {
         resamplerSource.setResamplingRatio(sourceSampleRate / sampleRate);
@@ -21,6 +22,7 @@ void PositionableResamplingAudioSource::setSourceSampleRateToCorrectFor(double n
 
 //==============================================================================
 void PositionableResamplingAudioSource::prepareToPlay(int samplesPerBlockExpected, double newSampleRate) {
+    const juce::ScopedLock lock(mutex);
     sampleRate = newSampleRate;
     blockSize = samplesPerBlockExpected;
 

@@ -38,5 +38,7 @@ class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
         return (sampleRate > 0 && sourceSampleRate > 0) ? sampleRate / sourceSampleRate : 1.0;
     }
 
+    juce::CriticalSection mutex;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PositionableResamplingAudioSource)
 };
