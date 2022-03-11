@@ -14,7 +14,6 @@ MixerController::MixerController(
 MixerController::~MixerController() {
     for (std::unique_ptr<TrackController> &track : tracks) {
         track->removeListener((TrackListListener *)this);
-        track->removeListener((TrackControlListener *)this);
     }
     mixerPanel.getMasterTrackControl().removeListener(this);
     mixerPanel.getTransportControl().removeListener(this);
@@ -23,16 +22,14 @@ MixerController::~MixerController() {
 void MixerController::update() {
     updateAudioSource();
     for (std::unique_ptr<TrackController> &track : tracks) {
-        track->removeListener((TrackListListener *)this);
-        track->removeListener((TrackControlListener *)this);
+        track->removeListener((TrackListListener *)nullptr);
     }
     tracks.clear();
     mixerPanel.clear();
     trackList.eachTrack([this](Track &track) {
         auto control = new TrackControl(track);
-        auto controller = new TrackController(track, *control, formatManager);
+        auto controller = new TrackController(*this, track, *control, formatManager);
         controller->addListener((TrackListListener *)this);
-        controller->addListener((TrackControlListener *)this);
         tracks.push_back(std::unique_ptr<TrackController>(controller));
         mixerPanel.addTrack(control);
     });
@@ -104,54 +101,14 @@ void MixerController::masterMuteToggled() {
     desktop.masterMuteToggled();
 }
 
-void MixerController::nameChanged(Track &track, juce::String newName) { notifyNameChanged(track, newName); }
+void MixerController::nameChanged(Track &track, juce::String newName) { desktop.trackNameChanged(track, newName); }
 
 void MixerController::levelChangeFinalized(Track &track, float previousLevel) {
-    notifyLevelChangeFinalized(track, previousLevel);
+    desktop.trackLevelChangeFinalized(track, previousLevel);
 }
 
-void MixerController::muteToggled(Track &track) { notifyMuteToggled(track); }
+void MixerController::muteToggled(Track &track) { desktop.trackMuteToggled(track); }
 
-void MixerController::soloToggled(Track &track) { notifySoloToggled(track); }
+void MixerController::soloToggled(Track &track) { desktop.trackSoloToggled(track); }
 
 void MixerController::selectionChanged(Track *track) { desktop.selectionChanged(track); }
-
-void MixerController::addListener(TrackListListener *listener) {
-    if (!listContains(trackListListeners, listener)) {
-        trackListListeners.push_front(listener);
-    }
-}
-
-void MixerController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
-
-void MixerController::addListener(TrackControlListener *listener) {
-    if (!listContains(trackControlListeners, listener)) {
-        trackControlListeners.push_front(listener);
-    }
-}
-
-void MixerController::removeListener(TrackControlListener *listener) { trackControlListeners.remove(listener); }
-
-void MixerController::notifyNameChanged(Track &track, juce::String newName) {
-    for (TrackControlListener *listener : trackControlListeners) {
-        listener->nameChanged(track, newName);
-    }
-}
-
-void MixerController::notifyLevelChangeFinalized(Track &track, float previousLevel) {
-    for (TrackControlListener *listener : trackControlListeners) {
-        listener->levelChangeFinalized(track, previousLevel);
-    }
-}
-
-void MixerController::notifyMuteToggled(Track &track) {
-    for (TrackControlListener *listener : trackControlListeners) {
-        listener->muteToggled(track);
-    }
-}
-
-void MixerController::notifySoloToggled(Track &track) {
-    for (TrackControlListener *listener : trackControlListeners) {
-        listener->soloToggled(track);
-    }
-}

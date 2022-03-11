@@ -109,9 +109,7 @@ void Track::toggleSolo() { setSolo(!soloed); }
 void Track::setMute(bool newMuted) {
     DBG("Track " << number << " mute: " << (newMuted ? "true" : "false"));
     muted = newMuted;
-    if (gainSource != nullptr) {
-        gainSource->setGain(muted ? 0 : level);
-    }
+    updateGain();
 }
 
 void Track::setSolo(bool newSoloed) {
@@ -122,9 +120,9 @@ void Track::setSolo(bool newSoloed) {
 
 void Track::updateGain() {
     if (gainSource != nullptr) {
-        bool solo = trackList.getSoloed().size() == 0 || soloed;
-        DBG("Track " << number << " set gain: " << (solo ? level : 0));
-        gainSource->setGain(solo ? level : 0);
+        bool play = (trackList.getSoloed().size() == 0 || soloed) && !muted;
+        DBG("Track " << number << " set gain: " << (play ? level : 0));
+        gainSource->setGain(play ? level : 0);
     }
 }
 

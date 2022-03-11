@@ -35,7 +35,7 @@ class ToggleMasterMuteCommand : public Command {
 class ChangeTrackVolumeCommand : public Command {
   public:
     ChangeTrackVolumeCommand(MixerController &mixerController, Track &track, float previousLevel)
-        : Command("change " + track.getName() + " volume"), mixerController(mixerController), track(track),
+        : Command("change track " + juce::String(track.getNumber()) + " volume"), mixerController(mixerController), track(track),
           previousLevel(previousLevel) {}
     ~ChangeTrackVolumeCommand() override {}
 

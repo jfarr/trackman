@@ -11,12 +11,10 @@ DesktopController::DesktopController(
           *this, trackList, mixerController.getMixer().getTransportSource(), deviceManager, formatManager),
       project(trackList, mixer), mainWindow(mainWindow), applicationName(mainWindow.getName()),
       deviceManager(deviceManager), formatManager(formatManager) {
-    mixerController.addListener((TrackControlListener *)this);
     updateTitleBar();
 }
 
 DesktopController::~DesktopController() {
-    mixerController.removeListener((TrackControlListener *)this);
 }
 
 bool DesktopController::canUndo() const { return !commandList.isEmpty(); }
@@ -41,28 +39,28 @@ void DesktopController::masterMuteToggled() {
     updateTitleBar();
 }
 
-void DesktopController::nameChanged(Track &track, juce::String newName) {
+void DesktopController::trackNameChanged(Track &track, juce::String newName) {
     Command *command = new RenameTrackCommand(*this, track, newName);
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
 }
 
-void DesktopController::levelChangeFinalized(Track &track, float previousLevel) {
+void DesktopController::trackLevelChangeFinalized(Track &track, float previousLevel) {
     Command *command = new ChangeTrackVolumeCommand(mixerController, track, previousLevel);
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
 }
 
-void DesktopController::muteToggled(Track &track) {
+void DesktopController::trackMuteToggled(Track &track) {
     Command *command = new ToggleMuteCommand(mixerController, track);
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
 }
 
-void DesktopController::soloToggled(Track &track) {
+void DesktopController::trackSoloToggled(Track &track) {
     Command *command = new ToggleSoloCommand(mixerController, track);
     commandList.pushCommand(command);
     dirty = true;

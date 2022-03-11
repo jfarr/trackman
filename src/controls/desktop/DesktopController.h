@@ -10,8 +10,7 @@
 #include "model/TrackList.h"
 
 // TODO: consider using juce::FileBasedDocument
-class DesktopController : public TrackControlListener,
-                          public FileDragDropTarget {
+class DesktopController : public FileDragDropTarget {
   public:
     DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager,
         juce::AudioFormatManager &formatManager);
@@ -33,6 +32,10 @@ class DesktopController : public TrackControlListener,
     void deleteSelected();
     void masterLevelChangeFinalized(float previousLevel);
     void masterMuteToggled();
+    void trackNameChanged(Track &track, juce::String newName);
+    void trackLevelChangeFinalized(Track &track, float previousLevel);
+    void trackMuteToggled(Track &track);
+    void trackSoloToggled(Track &track);
 
     void selectionChanged(Track *track);
     juce::String getSelectionType() const;
@@ -51,13 +54,6 @@ class DesktopController : public TrackControlListener,
     void saveProjectAs();
     void openProject();
     void exportProject();
-
-    //==============================================================================
-    // TrackControlListener
-    void nameChanged(Track &track, juce::String newName) override;
-    void levelChangeFinalized(Track &track, float previousLevel) override;
-    void muteToggled(Track &track) override;
-    void soloToggled(Track &track) override;
 
     //==============================================================================
     // FileDragDropTarget

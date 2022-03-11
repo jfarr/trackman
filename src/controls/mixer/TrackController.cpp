@@ -1,8 +1,10 @@
 #include "TrackController.h"
+#include "MixerController.h"
 #include "common/listutil.h"
 
-TrackController::TrackController(Track &track, TrackControl &trackControl, juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), track(track), trackControl(trackControl) {
+TrackController::TrackController(
+    MixerController &mixerController, Track &track, TrackControl &trackControl, juce::AudioFormatManager &formatManager)
+    : mixerController(mixerController), formatManager(formatManager), track(track), trackControl(trackControl) {
     trackControl.addListener(this);
     trackControl.addMouseListener(this, true);
 }
@@ -29,18 +31,22 @@ void TrackController::toggleSolo(Track &track) {
 
 void TrackController::repaint() { trackControl.repaint(); }
 
-void TrackController::nameChanged(Track &track, juce::String newName) { notifyNameChanged(track, newName); }
+void TrackController::nameChanged(Track &track, juce::String newName) { mixerController.nameChanged(track, newName); }
 
 void TrackController::levelChanged(Track &track, float newLevel) { track.setLevelGain(newLevel); }
 
+void TrackController::levelChangeFinalized(Track &track, float previousLevel) {
+    mixerController.levelChangeFinalized(track, previousLevel);
+}
+
 void TrackController::muteToggled(Track &track) {
     track.toggleMute();
-    notifyMuteToggled(track);
+    mixerController.muteToggled(track);
 }
 
 void TrackController::soloToggled(Track &track) {
     track.toggleSolo();
-    notifySoloToggled(track);
+    mixerController.soloToggled(track);
 }
 
 void TrackController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }
@@ -56,31 +62,5 @@ void TrackController::removeListener(TrackListListener *listener) { trackListLis
 void TrackController::notifySelectionChanged() {
     for (TrackListListener *listener : trackListListeners) {
         listener->selectionChanged(&track);
-    }
-}
-
-void TrackController::addListener(TrackControlListener *listener) {
-    if (!listContains(trackControlListeners, listener)) {
-        trackControlListeners.push_front(listener);
-    }
-}
-
-void TrackController::removeListener(TrackControlListener *listener) { trackControlListeners.remove(listener); }
-
-void TrackController::notifyNameChanged(Track &track, juce::String newName) {
-    for (TrackControlListener *listener : trackControlListeners) {
-        listener->nameChanged(track, newName);
-    }
-}
-
-void TrackController::notifyMuteToggled(Track &track) {
-    for (TrackControlListener *listener : trackControlListeners) {
-        listener->muteToggled(track);
-    }
-}
-
-void TrackController::notifySoloToggled(Track &track) {
-    for (TrackControlListener *listener : trackControlListeners) {
-        listener->soloToggled(track);
     }
 }
