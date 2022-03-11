@@ -107,17 +107,17 @@ void SampleThumbnail::resized() {
     }
 }
 
+void SampleThumbnail::mouseDown(const juce::MouseEvent &event) {
+    Component::mouseDown(event);
+    notifySampleSelected(track, sample);
+}
+
 void SampleThumbnail::mouseDrag(const juce::MouseEvent &event) {
     auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
     auto pos = juce::Point<int>(-event.getPosition().getX(), -event.getPosition().getY());
     if (container != nullptr) {
         container->startDragging("clip", this, *getImage(), false, &pos);
     }
-}
-
-void SampleThumbnail::mouseDown(const juce::MouseEvent &event) {
-    Component::mouseDown(event);
-    notifySampleSelected(track, sample);
 }
 
 void SampleThumbnail::addListener(SampleListener *listener) {

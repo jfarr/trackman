@@ -48,8 +48,8 @@ class SampleThumbnail : public juce::Component {
     // Component
     void paint(juce::Graphics &g) override;
     void resized() override;
-    void mouseDrag(const juce::MouseEvent &event) override;
     void mouseDown(const juce::MouseEvent &event) override;
+    void mouseDrag(const juce::MouseEvent &event) override;
 
   private:
     Track &track;

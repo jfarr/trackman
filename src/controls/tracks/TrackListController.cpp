@@ -148,13 +148,13 @@ void TrackListController::selectionChanged(Track *track) {
     if (track != selected) {
         selected = track;
         desktop.selectionChanged(track);
-        updateLanes();
     }
 }
 
 void TrackListController::sampleSelected(Track &track, Sample &sample) {
     selectingSample = true;
     trackList.selectSample(&sample);
+    selectionChanged(&track);
 }
 
 void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y) {

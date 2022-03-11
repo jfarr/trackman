@@ -7,12 +7,10 @@ TrackLaneController::TrackLaneController(TrackListController &trackListControlle
     : trackListController(trackListController), track(track), transport(transport), trackLaneControl(track, transport),
       formatManager(formatManager) {
     addListener((TrackListListener *)&trackListController);
-    trackLaneControl.addMouseListener(this, true);
+    trackLaneControl.addMouseListener(this, false);
 }
 
-TrackLaneController::~TrackLaneController() {
-    removeListener((TrackListListener *)&trackListController);
-}
+TrackLaneController::~TrackLaneController() { removeListener((TrackListListener *)&trackListController); }
 
 void TrackLaneController::update() {
     for (std::unique_ptr<SampleThumbnail> &thumbnail : thumbnails) {
