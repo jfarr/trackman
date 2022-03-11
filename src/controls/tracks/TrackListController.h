@@ -17,7 +17,7 @@ class TrackListController : public TrackListListener, public SampleListener {
     ~TrackListController();
 
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
-    juce::Component &getViewport() { return trackListViewport; }
+    juce::Viewport &getViewport() { return trackListViewport; }
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos);

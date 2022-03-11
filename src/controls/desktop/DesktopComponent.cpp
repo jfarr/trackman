@@ -10,6 +10,8 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::Aud
 
     addListener(&desktopController);
 
+    trackListViewport.getHorizontalScrollBar().setAutoHide(false);
+    trackListViewport.getVerticalScrollBar().setAutoHide(false);
     addAndMakeVisible(trackListViewport);
     addAndMakeVisible(mixerPanel);
 

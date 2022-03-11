@@ -172,7 +172,7 @@ class DesktopComponent : public juce::AudioAppComponent,
 
   private:
     DesktopController desktopController;
-    juce::Component &trackListViewport;
+    juce::Viewport &trackListViewport;
     MixerPanel &mixerPanel;
     Mixer &mixer;
     std::list<FileDragDropTarget *> listeners;
