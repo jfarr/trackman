@@ -78,6 +78,10 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
 }
 
 void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos) {
+    if (&fromTrack != &toTrack) {
+        fromTrack.moveSampleTo(sample, toTrack);
+        selectionChanged(&toTrack);
+    }
     sample.setPosition(pos);
     trackList.adjustTrackLengths();
     trackListPanel.resize();

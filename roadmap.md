@@ -1,7 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Move samples between lanes
 - Zoom track lanes
 - Mixer horizontal scroll
 - Drop multiple files

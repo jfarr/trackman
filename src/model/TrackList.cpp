@@ -31,8 +31,9 @@ void TrackList::removeTrack(Track *track) {
     for (auto iter = tracks.begin(); iter != tracks.end();) {
         if (track == iter->get()) {
             tracks.erase(iter++);
-        } else
+        } else {
             ++iter;
+        }
     }
 }
 
