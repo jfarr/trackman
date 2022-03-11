@@ -163,14 +163,14 @@ void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y
     auto width = length * scale;
     auto leftPanelWidth = 25;
     double offset = width / 2;
-    double newPos = std::max((x - offset - leftPanelWidth), 10.0) / scale;
+    double newPos = std::max((x - offset - leftPanelWidth), 0.0) / scale;
     Track *toTrack = trackListPanel.getTrackAtPos(x, y);
     desktop.moveSelectedSample(sample, track, toTrack, curPos, newPos);
 }
 
 void TrackListController::sampleResized(Sample &sample, int width) {
     auto curLen = sample.getLengthSecs();
-    auto newLen = width / scale;
+    auto newLen = std::max(width, 2) / scale;
     desktop.resizeSample(sample, curLen, newLen);
 }
 
