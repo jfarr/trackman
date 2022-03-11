@@ -10,7 +10,7 @@
 
 class DesktopController;
 
-class TrackListController : public TrackListListener, SampleListener {
+class TrackListController : public TrackListListener, public SampleListener {
   public:
     TrackListController(DesktopController &desktop, TrackList &trackList, juce::AudioTransportSource &transport,
         juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
@@ -33,11 +33,6 @@ class TrackListController : public TrackListListener, SampleListener {
     void fileDragExit(const juce::StringArray &files);
     void filesDropped(const juce::StringArray &files, int x, int y);
 
-    void addListener(TrackListListener *listener);
-    void removeListener(TrackListListener *listener);
-    void addListener(SampleListener *listener);
-    void removeListener(SampleListener *listener);
-
     //==============================================================================
     // TrackListListener
     void selectionChanged(Track *track) override;
@@ -59,9 +54,6 @@ class TrackListController : public TrackListListener, SampleListener {
     std::list<std::unique_ptr<TrackLaneController>> lanes;
     Track *selected = nullptr;
     bool selectingSample = false;
-
-    std::list<TrackListListener *> trackListListeners;
-    std::list<SampleListener *> sampleListeners;
 
     juce::AudioDeviceManager &deviceManager;
     juce::AudioFormatManager &formatManager;

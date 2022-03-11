@@ -1,21 +1,28 @@
 #include "TrackLaneController.h"
+#include "TrackListController.h"
 #include "common/listutil.h"
 
-TrackLaneController::TrackLaneController(
-    Track &track, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
-    : track(track), transport(transport), trackLaneControl(track, transport), formatManager(formatManager) {
+TrackLaneController::TrackLaneController(TrackListController &trackListController, Track &track,
+    juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
+    : trackListController(trackListController), track(track), transport(transport), trackLaneControl(track, transport),
+      formatManager(formatManager) {
+    addListener((TrackListListener *)&trackListController);
     trackLaneControl.addMouseListener(this, true);
+}
+
+TrackLaneController::~TrackLaneController() {
+    removeListener((TrackListListener *)&trackListController);
 }
 
 void TrackLaneController::update() {
     for (std::unique_ptr<SampleThumbnail> &thumbnail : thumbnails) {
-        thumbnail->removeListener(this);
+        thumbnail->removeListener(&trackListController);
     }
     thumbnails.clear();
     trackLaneControl.clear();
     track.eachSample([this](Sample &sample) {
         thumbnails.push_back(std::make_unique<SampleThumbnail>(track, sample, transport, formatManager));
-        thumbnails.back()->addListener(this);
+        thumbnails.back()->addListener(&trackListController);
         trackLaneControl.addThumbnail(thumbnails.back().get());
     });
     trackLaneControl.update();
@@ -26,8 +33,6 @@ void TrackLaneController::repaint() { trackLaneControl.repaint(); }
 void TrackLaneController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }
 
 void TrackLaneController::selectionChanged(Track *track) { notifySelectionChanged(); }
-
-void TrackLaneController::sampleSelected(Track &track, Sample &sample) { notifySampleSelected(track, sample); }
 
 void TrackLaneController::addListener(TrackListListener *listener) {
     if (!listContains(trackListListeners, listener)) {
@@ -40,19 +45,5 @@ void TrackLaneController::removeListener(TrackListListener *listener) { trackLis
 void TrackLaneController::notifySelectionChanged() {
     for (TrackListListener *listener : trackListListeners) {
         listener->selectionChanged(&track);
-    }
-}
-
-void TrackLaneController::addListener(SampleListener *listener) {
-    if (!listContains(sampleListeners, listener)) {
-        sampleListeners.push_front(listener);
-    }
-}
-
-void TrackLaneController::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
-
-void TrackLaneController::notifySampleSelected(Track &track, Sample &sample) {
-    for (SampleListener *listener : sampleListeners) {
-        listener->sampleSelected(track, sample);
     }
 }

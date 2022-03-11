@@ -22,16 +22,10 @@ TrackListController::~TrackListController() {
 }
 
 void TrackListController::update() {
-    for (std::unique_ptr<TrackLaneController> &lane : lanes) {
-        lane->removeListener((TrackListListener *)this);
-        lane->removeListener((SampleListener *)this);
-    }
     lanes.clear();
     trackListPanel.clear();
     trackList.eachTrack([this](Track &track) {
-        auto lane = new TrackLaneController(track, transport, formatManager);
-        lane->addListener((TrackListListener *)this);
-        lane->addListener((SampleListener *)this);
+        auto lane = new TrackLaneController(*this, track, transport, formatManager);
         lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
         trackListPanel.addLane(&lane->getTrackLaneControl());
         lane->update();
@@ -176,22 +170,6 @@ void TrackListController::resizeSample(Sample &sample, double length) {
 }
 
 void TrackListController::dragEnded() { updateLanes(); }
-
-void TrackListController::addListener(TrackListListener *listener) {
-    if (!listContains(trackListListeners, listener)) {
-        trackListListeners.push_front(listener);
-    }
-}
-
-void TrackListController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
-
-void TrackListController::addListener(SampleListener *listener) {
-    if (!listContains(sampleListeners, listener)) {
-        sampleListeners.push_front(listener);
-    }
-}
-
-void TrackListController::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
 
 void TrackListController::updateMixerSource() {
     desktop.getMixerController().updateAudioSource();
