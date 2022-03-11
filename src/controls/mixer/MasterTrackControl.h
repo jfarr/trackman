@@ -26,17 +26,15 @@ class MasterTrackControl : public juce::Component, public SliderListener {
     // Component
     void paint(juce::Graphics &g) override;
     void resized() override;
+    void mouseUp(const juce::MouseEvent &event) override;
 
     //==============================================================================
     // SliderListener
-    void onSliderClick() override;
-
-    //==============================================================================
-    // MouseListener
-    void mouseUp(const juce::MouseEvent &event) override;
+    void sliderClicked() override;
 
   private:
     Mixer &mixer;
+
     DecibelSlider decibelSlider;
     juce::TextButton muteButton;
     juce::Label channelLabel;
@@ -50,6 +48,7 @@ class MasterTrackControl : public juce::Component, public SliderListener {
     void createControls();
     void decibelSliderChanged();
     void muteButtonClicked();
+
     void notifyLevelChanged(float level);
     void notifyLevelChangeFinalized(float previousLevel);
     void notifyMuteToggled();

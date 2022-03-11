@@ -50,8 +50,6 @@ void MasterTrackControl::setLevel(float level) {
     decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
 }
 
-void MasterTrackControl::onSliderClick() { draggingSlider = true; }
-
 void MasterTrackControl::paint(juce::Graphics &g) {
     g.fillAll(juce::Colour{0xff282828});
     g.setColour(juce::Colours::black);
@@ -88,6 +86,8 @@ void MasterTrackControl::mouseUp(const juce::MouseEvent &event) {
         decibelSliderChanged();
     }
 }
+
+void MasterTrackControl::sliderClicked() { draggingSlider = true; }
 
 void MasterTrackControl::decibelSliderChanged() {
     auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());

@@ -21,17 +21,14 @@ class TrackControl : public juce::Component, public SliderListener {
     void removeListener(TrackControlListener *listener);
 
     //==============================================================================
-    // SliderListener
-    void onSliderClick() override;
-
-    //==============================================================================
-    // MouseListener
-    void mouseUp(const juce::MouseEvent &event) override;
-
-    //==============================================================================
     // Component
     void paint(juce::Graphics &g) override;
     void resized() override;
+    void mouseUp(const juce::MouseEvent &event) override;
+
+    //==============================================================================
+    // SliderListener
+    void sliderClicked() override;
 
   private:
     Track &track;

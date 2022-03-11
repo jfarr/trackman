@@ -59,8 +59,6 @@ void TrackControl::update() {
     trackNumberLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
 }
 
-void TrackControl::onSliderClick() { draggingSlider = true; }
-
 void TrackControl::paint(juce::Graphics &g) {
     auto bgColor = juce::Colour{0xff282828};
     auto buttonsHeight = 30;
@@ -103,6 +101,8 @@ void TrackControl::mouseUp(const juce::MouseEvent &event) {
         decibelSliderChanged();
     }
 }
+
+void TrackControl::sliderClicked() { draggingSlider = true; }
 
 void TrackControl::decibelSliderChanged() {
     auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
