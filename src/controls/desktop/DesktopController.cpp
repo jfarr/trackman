@@ -83,6 +83,20 @@ void DesktopController::addNewSample(Track *track, juce::File file, int pos) {
     updateTitleBar();
 }
 
+void DesktopController::moveSelectedSample(Sample &sample, Track &fromTrack, Track *toTrack, double prevPos, double newPos) {
+    Command *command = new MoveSampleCommand(*this, sample, fromTrack, toTrack, prevPos, newPos);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
+}
+
+void DesktopController::resizeSample(Sample &sample, double prevLen, double newLen) {
+    Command *command = new ResizeSampleCommand(trackListController, sample, prevLen, newLen);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
+}
+
 void DesktopController::deleteSelected() {
     Track *track = trackList.getSelected();
     Sample *sample = trackList.getSelectedSample();
@@ -109,20 +123,6 @@ juce::String DesktopController::getSelectionType() const {
         return "track";
     }
     return "";
-}
-
-void DesktopController::moveSample(Sample &sample, double prevPos, double newPos) {
-    Command *command = new MoveSampleCommand(trackListController, sample, prevPos, newPos);
-    commandList.pushCommand(command);
-    dirty = true;
-    updateTitleBar();
-}
-
-void DesktopController::resizeSample(Sample &sample, double prevLen, double newLen) {
-    Command *command = new ResizeSampleCommand(trackListController, sample, prevLen, newLen);
-    commandList.pushCommand(command);
-    dirty = true;
-    updateTitleBar();
 }
 
 Track *DesktopController::addTrack() {

@@ -77,6 +77,22 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
     return nullptr;
 }
 
+void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos) {
+    if (&fromTrack != &toTrack) {
+        fromTrack.moveSampleTo(sample, toTrack);
+        selectionChanged(&toTrack);
+    }
+    sample.setPosition(pos);
+    trackList.adjustTrackLengths();
+    trackListPanel.resize();
+}
+
+void TrackListController::resizeSample(Sample &sample, double length) {
+    sample.setLength(length);
+    trackList.adjustTrackLengths();
+    trackListPanel.resize();
+}
+
 void TrackListController::deleteSample(Track &track, Sample *sample) {
     auto pos = transport.getCurrentPosition();
     if (sample == nullptr) {
@@ -141,32 +157,21 @@ void TrackListController::sampleSelected(Track &track, Sample &sample) {
     trackList.selectSample(&sample);
 }
 
-void TrackListController::sampleMoved(Sample &sample, int x) {
+void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y) {
     auto curPos = sample.getStartPos();
     auto length = sample.getLengthSecs();
     auto width = length * scale;
     auto leftPanelWidth = 25;
     double offset = width / 2;
     double newPos = std::max((x - offset - leftPanelWidth), 10.0) / scale;
-    desktop.moveSample(sample, curPos, newPos);
+    Track *toTrack = trackListPanel.getTrackAtPos(x, y);
+    desktop.moveSelectedSample(sample, track, toTrack, curPos, newPos);
 }
 
 void TrackListController::sampleResized(Sample &sample, int width) {
     auto curLen = sample.getLengthSecs();
     auto newLen = width / scale;
     desktop.resizeSample(sample, curLen, newLen);
-}
-
-void TrackListController::moveSample(Sample &sample, double pos) {
-    sample.setPosition(pos);
-    trackList.adjustTrackLengths();
-    trackListPanel.resize();
-}
-
-void TrackListController::resizeSample(Sample &sample, double length) {
-    sample.setLength(length);
-    trackList.adjustTrackLengths();
-    trackListPanel.resize();
 }
 
 void TrackListController::dragEnded() { updateLanes(); }

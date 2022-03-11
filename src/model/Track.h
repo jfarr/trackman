@@ -34,6 +34,7 @@ class Track {
     void loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     Sample *addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, juce::File file,
         double startPos, double endPos, double length, double sampleRate);
+    void moveSampleTo(Sample &sample, Track &toTrack);
     Sample *getSelected() const;
     void eachSample(std::function<void(Sample &sample)> f);
 
@@ -64,7 +65,7 @@ class Track {
     bool soloed = false;
     bool selected = false;
     bool deleted = false;
-    std::list<std::unique_ptr<Sample>> samples;
+    std::list<std::shared_ptr<Sample>> samples;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
 };

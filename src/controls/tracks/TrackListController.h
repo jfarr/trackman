@@ -20,10 +20,10 @@ class TrackListController : public TrackListListener, public SampleListener {
     juce::Component &getViewport() { return trackListViewport; }
 
     Sample *addSample(Track &track, juce::File file, int pos);
+    void moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos);
+    void resizeSample(Sample &sample, double length);
     void deleteSample(Track &track, Sample *sample);
     void undeleteSample(Track &track, Sample *sample);
-    void moveSample(Sample &, double pos);
-    void resizeSample(Sample &, double length);
 
     void update();
     void repaint();
@@ -40,7 +40,7 @@ class TrackListController : public TrackListListener, public SampleListener {
     //==============================================================================
     // SampleListener
     void sampleSelected(Track &track, Sample &sample) override;
-    void sampleMoved(Sample &sample, int x) override;
+    void sampleMoved(Track &track, Sample &sample, int x, int y) override;
     void sampleResized(Sample &sample, int width) override;
     void dragEnded() override;
 

@@ -14,7 +14,7 @@ juce::uint64 Track::getTotalLength() const { return getTotalLengthSeconds() * sa
 
 double Track::getTotalLengthSeconds() const {
     double len = 0;
-    for (std::unique_ptr<Sample> const &sample : samples) {
+    for (std::shared_ptr<Sample> const &sample : samples) {
         if (!sample->isDeleted() && sample->getSource() != nullptr) {
             len = std::max(len, sample->getEndPos());
         }
@@ -45,7 +45,7 @@ void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioForm
         return;
     }
     mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
-    for (std::unique_ptr<Sample> &sample : samples) {
+    for (std::shared_ptr<Sample> &sample : samples) {
         sample->loadFile(formatManager);
         if (sample->getSource() != nullptr) {
             mixerSource->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
@@ -56,7 +56,7 @@ void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioForm
 
 Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager,
     juce::File file, double startPos, double endPos, double length, double sampleRate) {
-    samples.push_back(std::make_unique<Sample>(file, startPos, endPos, length, sampleRate));
+    samples.push_back(std::make_shared<Sample>(file, startPos, endPos, length, sampleRate));
     auto sample = &(*samples.back());
     sample->loadFile(formatManager);
     if (mixerSource == nullptr) {
@@ -72,14 +72,25 @@ Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFor
     return &(*samples.back());
 }
 
+void Track::moveSampleTo(Sample &sample, Track &toTrack) {
+    for (auto iter = samples.begin(); iter != samples.end();) {
+        if (&sample == iter->get()) {
+            toTrack.samples.push_back(*iter);
+            samples.erase(iter++);
+        } else {
+            ++iter;
+        }
+    }
+}
+
 void Track::adjustSampleLengthSecs(double newLen) {
     if (!deleted) {
-        eachSample([this, newLen](Sample &sample) { sample.setMinLengthSecs(newLen); });
+        eachSample([newLen](Sample &sample) { sample.setMinLengthSecs(newLen); });
     }
 }
 
 Sample *Track::getSelected() const {
-    for (std::unique_ptr<Sample> const &sample : samples) {
+    for (std::shared_ptr<Sample> const &sample : samples) {
         if (!sample->isDeleted() && sample->isSelected()) {
             return sample.get();
         }
@@ -88,7 +99,7 @@ Sample *Track::getSelected() const {
 }
 
 void Track::eachSample(std::function<void(Sample &sample)> f) {
-    for (std::unique_ptr<Sample> &sample : samples) {
+    for (std::shared_ptr<Sample> &sample : samples) {
         if (!(*sample).isDeleted()) {
             f(*sample);
         }

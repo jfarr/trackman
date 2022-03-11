@@ -29,6 +29,8 @@ class DesktopController : public FileDragDropTarget, public MasterTrackListener,
 
     void addNewTrack();
     void addNewSample(Track *track, juce::File file, int pos);
+    void moveSelectedSample(Sample &sample, Track &fromTrack, Track *toTrack, double prevPos, double newPos);
+    void resizeSample(Sample &sample, double prevLen, double newLen);
     void deleteSelected();
 
     void selectionChanged(Track *track);
@@ -41,8 +43,6 @@ class DesktopController : public FileDragDropTarget, public MasterTrackListener,
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void deleteSample(Track &track, Sample *sample);
-    void moveSample(Sample &sample, double prevPos, double newPos);
-    void resizeSample(Sample &sample, double prevLen, double newLen);
 
     void saveProject();
     void saveProjectAs();
@@ -70,7 +70,6 @@ class DesktopController : public FileDragDropTarget, public MasterTrackListener,
 
   private:
     CommandList commandList;
-    // TODO: move trackList and mixer inside project
     TrackList trackList;
     Mixer mixer;
     MixerController mixerController;

@@ -1,8 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Refactor controllers
-- Move samples between lanes
 - Zoom track lanes
 - Mixer horizontal scroll
 - Drop multiple files
