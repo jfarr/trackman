@@ -110,20 +110,6 @@ Sample *TrackList::getSelectedSample() const {
     return nullptr;
 }
 
-void TrackList::soloTrack(Track *soloed) {
-    if (soloed == nullptr) {
-        return;
-    }
-    soloed->setSolo(true);
-}
-
-void TrackList::unsoloTrack(Track *soloed) {
-    if (soloed == nullptr) {
-        return;
-    }
-    soloed->setSolo(false);
-}
-
 void TrackList::soloTracks() {
     for (std::unique_ptr<Track> const &track : tracks) {
         if (!track->isDeleted()) {

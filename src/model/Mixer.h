@@ -23,7 +23,6 @@ class Mixer {
     void removeAllSources();
 
     void setMasterLevelGain(float newLevel);
-    void toggleMasterMute();
     void setMasterMute(bool newMuted);
     void setLooping(bool shouldLoop) { mixerSource.setLooping(shouldLoop); }
 

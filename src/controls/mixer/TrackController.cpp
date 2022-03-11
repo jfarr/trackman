@@ -5,12 +5,14 @@
 TrackController::TrackController(
     DesktopController &desktopController, Track &track, juce::AudioFormatManager &formatManager)
     : desktopController(desktopController), track(track), formatManager(formatManager), trackControl(track) {
+    addListener(&desktopController.getTrackListController());
     trackControl.addListener(&desktopController);
     trackControl.addListener(this);
     trackControl.addMouseListener(this, true);
 }
 
 TrackController::~TrackController() {
+    removeListener(&desktopController.getTrackListController());
     trackControl.removeListener(&desktopController);
     trackControl.removeListener(this);
     trackControl.removeMouseListener(this);

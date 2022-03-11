@@ -32,11 +32,6 @@ void Mixer::setMasterLevelGain(float newLevel) {
     gainSource.setGain(newLevel);
 }
 
-void Mixer::toggleMasterMute() {
-    muted = !muted;
-    gainSource.setGain((muted ? 0 : level));
-}
-
 void Mixer::setMasterMute(bool newMuted) {
     muted = newMuted;
     gainSource.setGain((muted ? 0 : level));

@@ -14,7 +14,7 @@
 
 class DesktopController;
 
-class MixerController : public TrackListListener, public TransportControlListener, public MasterTrackListener {
+class MixerController : public TransportControlListener, public MasterTrackListener {
   public:
     MixerController(DesktopController &desktopController, TrackList &trackList, Mixer &mixer,
         juce::AudioFormatManager &formatManager);
@@ -34,10 +34,6 @@ class MixerController : public TrackListListener, public TransportControlListene
     void setLevel(Track &track, float newLevel);
     void setMute(Track &track, bool newMute);
     void setSolo(Track &track, bool newSolo);
-
-    //==============================================================================
-    // TrackListListener
-    void selectionChanged(Track *track) override;
 
     //==============================================================================
     // TransportControlListener

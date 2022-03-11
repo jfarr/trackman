@@ -21,8 +21,6 @@ MixerController::~MixerController() {
 
 void MixerController::update() {
     updateAudioSource();
-    for (std::unique_ptr<TrackController> &track : tracks) {
-    }
     tracks.clear();
     mixerPanel.clear();
     trackList.eachTrack([this](Track &track) {
@@ -88,5 +86,3 @@ void MixerController::setSolo(Track &track, bool newSolo) {
 void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldLoop); }
 
 void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevelGain(newLevel); }
-
-void MixerController::selectionChanged(Track *track) { desktopController.selectionChanged(track); }

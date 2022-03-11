@@ -102,10 +102,6 @@ void Track::setLevelGain(float newLevel) {
     }
 }
 
-void Track::toggleMute() { setMute(!muted); }
-
-void Track::toggleSolo() { setSolo(!soloed); }
-
 void Track::setMute(bool newMuted) {
     DBG("Track " << number << " mute: " << (newMuted ? "true" : "false"));
     muted = newMuted;

@@ -61,13 +61,6 @@ void TrackControl::update() {
 
 void TrackControl::onSliderClick() { draggingSlider = true; }
 
-void TrackControl::mouseUp(const juce::MouseEvent &event) {
-    if (event.eventComponent == &decibelSlider) {
-        draggingSlider = false;
-        decibelSliderChanged();
-    }
-}
-
 void TrackControl::paint(juce::Graphics &g) {
     auto bgColor = juce::Colour{0xff282828};
     auto buttonsHeight = 30;
@@ -102,6 +95,13 @@ void TrackControl::resized() {
     auto buttonArea = area.removeFromLeft(buttonSize);
     muteButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
     soloButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
+}
+
+void TrackControl::mouseUp(const juce::MouseEvent &event) {
+    if (event.eventComponent == &decibelSlider) {
+        draggingSlider = false;
+        decibelSliderChanged();
+    }
 }
 
 void TrackControl::decibelSliderChanged() {
