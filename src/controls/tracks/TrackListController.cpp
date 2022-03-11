@@ -87,12 +87,6 @@ void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &to
     trackListPanel.resize();
 }
 
-//void TrackListController::moveSample(Sample &sample, double pos) {
-//    sample.setPosition(pos);
-//    trackList.adjustTrackLengths();
-//    trackListPanel.resize();
-//}
-
 void TrackListController::resizeSample(Sample &sample, double length) {
     sample.setLength(length);
     trackList.adjustTrackLengths();

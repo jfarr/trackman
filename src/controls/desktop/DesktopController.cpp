@@ -164,10 +164,6 @@ Sample *DesktopController::addSample(Track &track, juce::File file, int pos) {
     return sample;
 }
 
-//void DesktopController::moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos) {
-//    trackListController.moveSample(sample, pos);
-//}
-
 void DesktopController::deleteSample(Track &track, Sample *sample) { trackListController.deleteSample(track, sample); }
 
 void DesktopController::saveProject() {

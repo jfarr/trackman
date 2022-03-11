@@ -21,10 +21,9 @@ class TrackListController : public TrackListListener, public SampleListener {
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos);
+    void resizeSample(Sample &sample, double length);
     void deleteSample(Track &track, Sample *sample);
     void undeleteSample(Track &track, Sample *sample);
-//    void moveSample(Sample &sample, double pos);
-    void resizeSample(Sample &sample, double length);
 
     void update();
     void repaint();
