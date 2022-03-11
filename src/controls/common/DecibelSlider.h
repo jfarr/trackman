@@ -12,7 +12,7 @@ class CustomLookAndFeel : public juce::LookAndFeel_V4 {
 
 class SliderListener {
   public:
-    virtual void onSliderClick() = 0;
+    virtual void sliderClicked() = 0;
 };
 
 class DecibelSlider : public juce::Slider {
@@ -30,7 +30,7 @@ class DecibelSlider : public juce::Slider {
 
     void mouseDown(const juce::MouseEvent &event) override {
         if (listener != nullptr) {
-            listener->onSliderClick();
+            listener->sliderClicked();
         }
         Slider::mouseDown(event);
     }

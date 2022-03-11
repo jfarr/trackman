@@ -58,7 +58,7 @@ void TrackListController::fileDragExit(const juce::StringArray &files) { trackLi
 
 void TrackListController::filesDropped(const juce::StringArray &files, int x, int y) {
     Track *selected = trackListPanel.getTrackAtPos(x, y);
-    notifySampleAdded(selected, juce::File(files[0]), x);
+    desktop.addNewSample(selected, juce::File(files[0]), x);
     trackListPanel.filesDropped(files, x, y);
 }
 
@@ -77,9 +77,7 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
         trackList.adjustTrackLengths();
         selectionChanged(&track);
         updateLane(track);
-        if (listener != nullptr) {
-            listener->onSourceSet();
-        }
+        updateMixerSource();
         return sample;
     }
     return nullptr;
@@ -92,13 +90,10 @@ void TrackListController::deleteSample(Track &track, Sample *sample) {
     }
     track.deleteSample(sample);
     updateLane(track);
-    if (listener != nullptr) {
-        listener->onSourceSet();
-    }
+    updateMixerSource();
     trackList.adjustTrackLengths();
     pos = std::max(pos, transport.getLengthInSeconds());
     transport.setPosition(pos);
-    // delete new track
 }
 
 void TrackListController::undeleteSample(Track &track, Sample *sample) {
@@ -108,9 +103,7 @@ void TrackListController::undeleteSample(Track &track, Sample *sample) {
     }
     track.undeleteSample(sample);
     updateLane(track);
-    if (listener != nullptr) {
-        listener->onSourceSet();
-    }
+    updateMixerSource();
     transport.setPosition(pos);
     trackList.adjustTrackLengths();
 }
@@ -144,7 +137,7 @@ void TrackListController::selectionChanged(Track *track) {
     selectingSample = false;
     if (track != selected) {
         selected = track;
-        notifySelectionChanged(track);
+        desktop.selectionChanged(track);
         updateLanes();
     }
 }
@@ -192,12 +185,6 @@ void TrackListController::addListener(TrackListListener *listener) {
 
 void TrackListController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
 
-void TrackListController::notifySelectionChanged(Track *track) {
-    for (TrackListListener *listener : trackListListeners) {
-        listener->selectionChanged(track);
-    }
-}
-
 void TrackListController::addListener(SampleListener *listener) {
     if (!listContains(sampleListeners, listener)) {
         sampleListeners.push_front(listener);
@@ -206,8 +193,6 @@ void TrackListController::addListener(SampleListener *listener) {
 
 void TrackListController::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
 
-void TrackListController::notifySampleAdded(Track *track, juce::File file, int pos) {
-    for (SampleListener *listener : sampleListeners) {
-        listener->sampleAdded(track, file, pos);
-    }
+void TrackListController::updateMixerSource() {
+    desktop.getMixerController().updateAudioSource();
 }

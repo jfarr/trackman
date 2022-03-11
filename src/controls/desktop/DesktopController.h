@@ -3,7 +3,6 @@
 #include "FileDragDropTarget.h"
 #include "TrackListListener.h"
 #include "commands/CommandList.h"
-#include "controls/mixer/MasterTrackListener.h"
 #include "controls/mixer/MixerController.h"
 #include "controls/mixer/TrackControlListener.h"
 #include "controls/tracks/TrackListController.h"
@@ -11,11 +10,7 @@
 #include "model/TrackList.h"
 
 // TODO: consider using juce::FileBasedDocument
-class DesktopController : public MasterTrackListener,
-                          public TrackControlListener,
-                          public TrackListListener,
-                          public SampleListener,
-                          public FileDragDropTarget {
+class DesktopController : public FileDragDropTarget, public MasterTrackListener, public TrackControlListener {
   public:
     DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager,
         juce::AudioFormatManager &formatManager);
@@ -33,13 +28,16 @@ class DesktopController : public MasterTrackListener,
     void resize();
 
     void addNewTrack();
+    void addNewSample(Track *track, juce::File file, int pos);
     void deleteSelected();
+
+    void selectionChanged(Track *track);
     juce::String getSelectionType() const;
 
     Track *addTrack();
     void deleteTrack(Track *track, bool purge);
     void undeleteTrack(Track *track);
-    void renameTrack(Track& track, juce::String newName);
+    void renameTrack(Track &track, juce::String newName);
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void deleteSample(Track &track, Sample *sample);
@@ -52,8 +50,11 @@ class DesktopController : public MasterTrackListener,
     void exportProject();
 
     //==============================================================================
-    // TrackListListener
-    void selectionChanged(Track *track) override;
+    // FileDragDropTarget
+    void fileDragEnter(const juce::StringArray &files, int x, int y) override;
+    void fileDragMove(const juce::StringArray &files, int x, int y) override;
+    void fileDragExit(const juce::StringArray &files) override;
+    void filesDropped(const juce::StringArray &files, int x, int y) override;
 
     //==============================================================================
     // MasterTrackListener
@@ -62,21 +63,10 @@ class DesktopController : public MasterTrackListener,
 
     //==============================================================================
     // TrackControlListener
-    void nameChanged(Track &track, juce::String newName) override;
-    void levelChangeFinalized(Track &track, float previousLevel) override;
-    void muteToggled(Track &track) override;
-    void soloToggled(Track &track) override;
-
-    //==============================================================================
-    // SampleListener
-    void sampleAdded(Track *track, juce::File file, int pos) override;
-
-    //==============================================================================
-    // FileDragDropTarget
-    void fileDragEnter(const juce::StringArray &files, int x, int y) override;
-    void fileDragMove(const juce::StringArray &files, int x, int y) override;
-    void fileDragExit(const juce::StringArray &files) override;
-    void filesDropped(const juce::StringArray &files, int x, int y) override;
+    void trackNameChanged(Track &track, juce::String newName) override;
+    void trackLevelChangeFinalized(Track &track, float previousLevel) override;
+    void trackMuteToggled(Track &track) override;
+    void trackSoloToggled(Track &track) override;
 
   private:
     CommandList commandList;

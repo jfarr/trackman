@@ -5,38 +5,30 @@
 TrackControl::TrackControl(Track &track)
     : track(track), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
     createControls();
+    update();
     setSize(getPreferredWidth(), 100);
 }
 
 TrackControl::~TrackControl() { levelMeter.setLookAndFeel(nullptr); }
 
 void TrackControl::createControls() {
-    previousLevel = track.getLevelGain();
-    decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevelGain()));
     decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
     decibelSlider.addMouseListener(this, false);
     decibelSlider.setListener(this);
 
     muteButton.setButtonText("M");
     muteButton.setTooltip("mute");
-    muteButton.setColour(juce::TextButton::buttonColourId,
-        track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     muteButton.onClick = [this] { muteButtonClicked(); };
 
     soloButton.setButtonText("S");
     soloButton.setTooltip("solo");
-    soloButton.setColour(juce::TextButton::buttonColourId,
-        track.isSoloed() ? juce::Colours::orange
-                         : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     soloButton.onClick = [this] { soloButtonClicked(); };
 
-    trackNameLabel.setText(track.getName(), juce::dontSendNotification);
     trackNameLabel.setJustificationType(juce::Justification::horizontallyCentred);
     trackNameLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
     trackNameLabel.setEditable(true);
     trackNameLabel.onTextChange = [this] { notifyNameChanged(); };
 
-    trackNumberLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
     trackNumberLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
     trackNumberLabel.setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
     trackNumberLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
@@ -65,15 +57,6 @@ void TrackControl::update() {
                          : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     trackNameLabel.setText(track.getName(), juce::dontSendNotification);
     trackNumberLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
-}
-
-void TrackControl::onSliderClick() { draggingSlider = true; }
-
-void TrackControl::mouseUp(const juce::MouseEvent &event) {
-    if (event.eventComponent == &decibelSlider) {
-        draggingSlider = false;
-        decibelSliderChanged();
-    }
 }
 
 void TrackControl::paint(juce::Graphics &g) {
@@ -112,6 +95,15 @@ void TrackControl::resized() {
     soloButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
 }
 
+void TrackControl::mouseUp(const juce::MouseEvent &event) {
+    if (event.eventComponent == &decibelSlider) {
+        draggingSlider = false;
+        decibelSliderChanged();
+    }
+}
+
+void TrackControl::sliderClicked() { draggingSlider = true; }
+
 void TrackControl::decibelSliderChanged() {
     auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
     notifyLevelChanged(level);
@@ -144,30 +136,30 @@ void TrackControl::removeListener(TrackControlListener *listener) { listeners.re
 
 void TrackControl::notifyNameChanged() {
     for (TrackControlListener *listener : listeners) {
-        listener->nameChanged(track, trackNameLabel.getText());
+        listener->trackNameChanged(track, trackNameLabel.getText());
     }
 }
 
 void TrackControl::notifyLevelChanged(float level) {
     for (TrackControlListener *listener : listeners) {
-        listener->levelChanged(track, level);
+        listener->trackLevelChanged(track, level);
     }
 }
 
 void TrackControl::notifyLevelChangeFinalized(float previousLevel) {
     for (TrackControlListener *listener : listeners) {
-        listener->levelChangeFinalized(track, previousLevel);
+        listener->trackLevelChangeFinalized(track, previousLevel);
     }
 }
 
 void TrackControl::notifyMuteToggled() {
     for (TrackControlListener *listener : listeners) {
-        listener->muteToggled(track);
+        listener->trackMuteToggled(track);
     }
 }
 
 void TrackControl::notifySoloToggled() {
     for (TrackControlListener *listener : listeners) {
-        listener->soloToggled(track);
+        listener->trackSoloToggled(track);
     }
 }

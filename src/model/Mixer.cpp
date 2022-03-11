@@ -17,6 +17,7 @@ void Mixer::addSource(
     auto pos = transportSource.getCurrentPosition();
     mixerSource.addInputSource(source.get(), false, sourceSampleRateToCorrectFor, maxNumChannels);
     transportSource.setPosition(pos);
+    DBG("Mixer::addSource - set position: " << pos);
 }
 
 void Mixer::removeAllSources() {
@@ -29,11 +30,6 @@ void Mixer::removeAllSources() {
 void Mixer::setMasterLevelGain(float newLevel) {
     level = newLevel;
     gainSource.setGain(newLevel);
-}
-
-void Mixer::toggleMasterMute() {
-    muted = !muted;
-    gainSource.setGain((muted ? 0 : level));
 }
 
 void Mixer::setMasterMute(bool newMuted) {

@@ -40,8 +40,6 @@ class Track {
     void setNumber(int newNumber) { number = newNumber; }
     void setName(juce::String newName) { name = newName; }
     void setLevelGain(float newLevel);
-    void toggleMute();
-    void toggleSolo();
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
     void updateGain();

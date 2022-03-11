@@ -1,7 +1,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include <ff_meters.h>
 
 #include "MasterTrackControl.h"
 #include "TrackControl.h"
@@ -9,9 +8,11 @@
 #include "model/Mixer.h"
 #include "model/TrackList.h"
 
+class DesktopController;
+
 class MixerPanel : public juce::Component {
   public:
-    MixerPanel(TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource);
+    MixerPanel(DesktopController &desktopController, TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource);
     ~MixerPanel();
 
     int getPreferredHeight() const { return std::max(getHeight(), 280); }
@@ -22,7 +23,6 @@ class MixerPanel : public juce::Component {
 
     TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
-    void eachTrack(std::function<void(TrackControl &)> f);
 
     //==============================================================================
     // Component
@@ -30,12 +30,13 @@ class MixerPanel : public juce::Component {
     void resized() override;
 
   private:
-    TransportControl transportControl;
-    MasterTrackControl masterTrackControl;
-    std::list<std::unique_ptr<TrackControl>> tracks;
-
+    DesktopController &desktopController;
     TrackList &trackList;
     Mixer &mixer;
+
+    TransportControl transportControl;
+    MasterTrackControl masterTrackControl;
+    std::list<TrackControl *> tracks;
 
     void createControls();
 

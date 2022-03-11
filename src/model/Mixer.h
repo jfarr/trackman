@@ -3,7 +3,6 @@
 #include <JuceHeader.h>
 
 #include "audio/PositionableMixingAudioSource.h"
-#include "controls/desktop/TrackSourceListener.h"
 #include "audio/GainAudioSource.h"
 #include "audio/MeteredAudioSource.h"
 
@@ -24,7 +23,6 @@ class Mixer {
     void removeAllSources();
 
     void setMasterLevelGain(float newLevel);
-    void toggleMasterMute();
     void setMasterMute(bool newMuted);
     void setLooping(bool shouldLoop) { mixerSource.setLooping(shouldLoop); }
 

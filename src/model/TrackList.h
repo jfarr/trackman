@@ -25,8 +25,6 @@ class TrackList {
     void setSelected(Track *selected);
     void selectSample(Sample *selected);
 
-    void soloTrack(Track *soloed);
-    void unsoloTrack(Track *soloed);
     void soloTracks();
     std::list<const Track *> getSoloed();
 

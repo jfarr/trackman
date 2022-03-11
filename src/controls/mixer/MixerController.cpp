@@ -1,10 +1,12 @@
 #include "MixerController.h"
 #include "common/listutil.h"
+#include "controls/desktop/DesktopController.h"
 #include "controls/mixer/TrackController.h"
 
-MixerController::MixerController(TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager)
-    : trackList(trackList), mixer(mixer), mixerPanel(trackList, mixer, mixer.getMeterSource()),
-      formatManager(formatManager) {
+MixerController::MixerController(
+    DesktopController &desktopController, TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager)
+    : desktopController(desktopController), trackList(trackList), mixer(mixer), formatManager(formatManager),
+      mixerPanel(desktopController, trackList, mixer, mixer.getMeterSource()) {
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
 }
@@ -12,27 +14,19 @@ MixerController::MixerController(TrackList &trackList, Mixer &mixer, juce::Audio
 MixerController::~MixerController() {
     for (std::unique_ptr<TrackController> &track : tracks) {
         track->removeListener((TrackListListener *)this);
-        track->removeListener((TrackControlListener *)this);
     }
     mixerPanel.getMasterTrackControl().removeListener(this);
     mixerPanel.getTransportControl().removeListener(this);
 }
 
 void MixerController::update() {
-    onSourceSet();
-    for (std::unique_ptr<TrackController> &track : tracks) {
-        track->removeListener((TrackListListener *)this);
-        track->removeListener((TrackControlListener *)this);
-    }
+    updateAudioSource();
     tracks.clear();
     mixerPanel.clear();
     trackList.eachTrack([this](Track &track) {
-        auto control = new TrackControl(track);
-        auto controller = new TrackController(track, *control, formatManager);
-        controller->addListener((TrackListListener *)this);
-        controller->addListener((TrackControlListener *)this);
+        auto controller = new TrackController(desktopController, track, formatManager);
         tracks.push_back(std::unique_ptr<TrackController>(controller));
-        mixerPanel.addTrack(control);
+        mixerPanel.addTrack(&controller->getTrackControl());
     });
     mixerPanel.update();
     mixerPanel.resized();
@@ -45,13 +39,23 @@ void MixerController::repaint() {
     mixerPanel.repaint();
 }
 
+void MixerController::updateAudioSource() {
+    mixer.removeAllSources();
+    trackList.eachTrack([this](Track &track) {
+        if (track.getSource() != nullptr) {
+            DBG("MixerController::onSourceSet - add track source: " << track.getName());
+            mixer.addSource(track.getSource(), track.getSampleRate(), 2);
+        }
+    });
+}
+
 void MixerController::setMasterLevel(float newLevel) {
     mixer.setMasterLevelGain(newLevel);
     mixerPanel.getMasterTrackControl().setLevel(newLevel);
 }
 
-void MixerController::toggleMasterMute() {
-    mixer.toggleMasterMute();
+void MixerController::setMasterMute(bool newMute) {
+    mixer.setMasterMute(newMute);
     mixerPanel.getMasterTrackControl().update();
 }
 
@@ -63,121 +67,22 @@ void MixerController::setLevel(Track &track, float newLevel) {
     }
 }
 
-void MixerController::toggleMute(Track &track) {
+void MixerController::setMute(Track &track, bool newMute) {
     for (std::unique_ptr<TrackController> &trackController : tracks) {
         if (&trackController->getTrack() == &track) {
-            trackController->toggleMute(track);
+            trackController->setMute(track, newMute);
         }
     }
 }
 
-void MixerController::toggleSolo(Track &track) {
+void MixerController::setSolo(Track &track, bool newSolo) {
     for (std::unique_ptr<TrackController> &trackController : tracks) {
         if (&trackController->getTrack() == &track) {
-            trackController->toggleSolo(track);
+            trackController->setSolo(track, newSolo);
         }
     }
-}
-
-void MixerController::onSourceSet() {
-    mixer.removeAllSources();
-    trackList.eachTrack([this](Track &track) {
-        if (track.getSource() != nullptr) {
-            DBG("MixerController::onSourceSet - add track source: " << track.getName());
-            mixer.addSource(track.getSource(), track.getSampleRate(), 2);
-        }
-    });
 }
 
 void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldLoop); }
 
 void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevelGain(newLevel); }
-
-void MixerController::masterLevelChangeFinalized(float previousLevel) {
-    notifyMasterLevelChangeFinalized(previousLevel);
-}
-
-void MixerController::masterMuteToggled() {
-    mixer.toggleMasterMute();
-    notifyMasterMuteToggled();
-}
-
-void MixerController::nameChanged(Track &track, juce::String newName) { notifyNameChanged(track, newName); }
-
-void MixerController::levelChangeFinalized(Track &track, float previousLevel) {
-    notifyLevelChangeFinalized(track, previousLevel);
-}
-
-void MixerController::muteToggled(Track &track) { notifyMuteToggled(track); }
-
-void MixerController::soloToggled(Track &track) { notifySoloToggled(track); }
-
-void MixerController::selectionChanged(Track *track) { notifySelectionChanged(track); }
-
-void MixerController::addListener(TrackListListener *listener) {
-    if (!listContains(trackListListeners, listener)) {
-        trackListListeners.push_front(listener);
-    }
-}
-
-void MixerController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
-
-void MixerController::notifySelectionChanged(Track *track) {
-    for (TrackListListener *listener : trackListListeners) {
-        listener->selectionChanged(track);
-    }
-}
-
-void MixerController::addListener(MasterTrackListener *listener) {
-    if (!listContains(masterTrackListeners, listener)) {
-        masterTrackListeners.push_front(listener);
-    }
-}
-
-void MixerController::removeListener(MasterTrackListener *listener) { masterTrackListeners.remove(listener); }
-
-void MixerController::notifyMasterMuteToggled() {
-    for (MasterTrackListener *listener : masterTrackListeners) {
-        listener->masterMuteToggled();
-    }
-}
-
-void MixerController::notifyMasterLevelChangeFinalized(float previousLevel) {
-    for (MasterTrackListener *listener : masterTrackListeners) {
-        listener->masterLevelChangeFinalized(previousLevel);
-    }
-}
-
-void MixerController::addListener(TrackControlListener *listener) {
-    if (!listContains(trackControlListeners, listener)) {
-        trackControlListeners.push_front(listener);
-    }
-}
-
-void MixerController::removeListener(TrackControlListener *listener) {
-    trackControlListeners.remove(listener);
-}
-
-void MixerController::notifyNameChanged(Track &track, juce::String newName) {
-    for (TrackControlListener *listener : trackControlListeners) {
-        listener->nameChanged(track, newName);
-    }
-}
-
-void MixerController::notifyLevelChangeFinalized(Track &track, float previousLevel) {
-    for (TrackControlListener *listener : trackControlListeners) {
-        listener->levelChangeFinalized(track, previousLevel);
-    }
-}
-
-void MixerController::notifyMuteToggled(Track &track) {
-    for (TrackControlListener *listener : trackControlListeners) {
-        listener->muteToggled(track);
-    }
-}
-
-void MixerController::notifySoloToggled(Track &track) {
-    for (TrackControlListener *listener : trackControlListeners) {
-        listener->soloToggled(track);
-    }
-}

@@ -5,7 +5,6 @@
 #include "TrackLaneController.h"
 #include "TrackListPanel.h"
 #include "controls/desktop/TrackListListener.h"
-#include "controls/desktop/TrackSourceListener.h"
 #include "controls/tracks/SampleListener.h"
 #include "model/TrackList.h"
 
@@ -19,7 +18,6 @@ class TrackListController : public TrackListListener, SampleListener {
 
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
     juce::Component &getViewport() { return trackListViewport; }
-    int getTrackListSize() const { return trackList.size(); }
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void deleteSample(Track &track, Sample *sample);
@@ -39,7 +37,6 @@ class TrackListController : public TrackListListener, SampleListener {
     void removeListener(TrackListListener *listener);
     void addListener(SampleListener *listener);
     void removeListener(SampleListener *listener);
-    void setListener(class TrackSourceListener *newListener) { listener = newListener; }
 
     //==============================================================================
     // TrackListListener
@@ -65,14 +62,11 @@ class TrackListController : public TrackListListener, SampleListener {
 
     std::list<TrackListListener *> trackListListeners;
     std::list<SampleListener *> sampleListeners;
-    TrackSourceListener *listener = nullptr;
 
     juce::AudioDeviceManager &deviceManager;
     juce::AudioFormatManager &formatManager;
 
-    void notifySelectionChanged(Track *track);
-    void notifySampleAdded(Track *track, juce::File file, int pos);
-
+    void updateMixerSource();
     void updateLane(Track &track);
     TrackLaneController *getLane(Track &track);
     void updateLanes();
