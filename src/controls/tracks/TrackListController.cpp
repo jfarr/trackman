@@ -81,6 +81,8 @@ void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &to
     if (&fromTrack != &toTrack) {
         fromTrack.moveSampleTo(sample, toTrack);
         selectionChanged(&toTrack);
+        fromTrack.selectSample(nullptr);
+        toTrack.selectSample(&sample);
     }
     sample.setPosition(pos);
     trackList.adjustTrackLengths();
