@@ -40,9 +40,6 @@ class MixerController : public TrackListListener,
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
 
-    void addListener(MasterTrackListener *listener);
-    void removeListener(MasterTrackListener *listener);
-
     void addListener(TrackControlListener *listener);
     void removeListener(TrackControlListener *listener);
 
@@ -75,12 +72,8 @@ class MixerController : public TrackListListener,
     std::list<std::unique_ptr<TrackController>> tracks;
     juce::AudioFormatManager &formatManager;
     std::list<TrackListListener *> trackListListeners;
-    std::list<MasterTrackListener *> masterTrackListeners;
     std::list<TrackControlListener *> trackControlListeners;
 
-    //    void notifySelectionChanged(Track *track);
-//    void notifyMasterLevelChangeFinalized(float previousLevel);
-//    void notifyMasterMuteToggled();
     void notifyNameChanged(Track &track, juce::String newName);
     void notifyLevelChangeFinalized(Track &track, float previousLevel);
     void notifyMuteToggled(Track &track);

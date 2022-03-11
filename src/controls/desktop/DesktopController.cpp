@@ -11,13 +11,11 @@ DesktopController::DesktopController(
           *this, trackList, mixerController.getMixer().getTransportSource(), deviceManager, formatManager),
       project(trackList, mixer), mainWindow(mainWindow), applicationName(mainWindow.getName()),
       deviceManager(deviceManager), formatManager(formatManager) {
-    mixerController.addListener((MasterTrackListener *)this);
     mixerController.addListener((TrackControlListener *)this);
     updateTitleBar();
 }
 
 DesktopController::~DesktopController() {
-    mixerController.removeListener((MasterTrackListener *)this);
     mixerController.removeListener((TrackControlListener *)this);
 }
 
