@@ -4,7 +4,6 @@
 
 #include "audio/GainAudioSource.h"
 #include "controls/desktop/TrackListListener.h"
-#include "controls/desktop/TrackSourceListener.h"
 #include "controls/mixer/TrackControl.h"
 #include "controls/tracks/TrackLaneControl.h"
 #include "model/Track.h"

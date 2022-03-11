@@ -9,18 +9,19 @@
 #include "TrackController.h"
 #include "controls/common/TransportControl.h"
 #include "controls/desktop/TrackListListener.h"
-#include "controls/desktop/TrackSourceListener.h"
 #include "controls/mixer/MasterTrackListener.h"
 #include "model/Mixer.h"
 #include "model/TrackList.h"
 
+class DesktopController;
+
 class MixerController : public TrackListListener,
-                        public TrackSourceListener,
                         public TransportControlListener,
                         public MasterTrackListener,
                         public TrackControlListener {
   public:
-    MixerController(TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager);
+    MixerController(
+        DesktopController &desktop, TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager);
     ~MixerController();
 
     MixerPanel &getMixerPanel() { return mixerPanel; }
@@ -29,6 +30,7 @@ class MixerController : public TrackListListener,
     void update();
     void repaint();
 
+    void updateAudioSource();
     void setMasterLevel(float newLevel);
     void toggleMasterMute();
     void setLevel(Track &track, float newLevel);
@@ -49,10 +51,6 @@ class MixerController : public TrackListListener,
     void selectionChanged(Track *track) override;
 
     //==============================================================================
-    // TrackSourceListener
-    void onSourceSet() override;
-
-    //==============================================================================
     // TransportControlListener
     void loopingChanged(bool shouldLoop) override;
 
@@ -70,6 +68,7 @@ class MixerController : public TrackListListener,
     void muteToggled(Track &track) override;
 
   private:
+    DesktopController &desktop;
     TrackList &trackList;
     Mixer &mixer;
     MixerPanel mixerPanel;
@@ -79,7 +78,7 @@ class MixerController : public TrackListListener,
     std::list<MasterTrackListener *> masterTrackListeners;
     std::list<TrackControlListener *> trackControlListeners;
 
-    void notifySelectionChanged(Track *track);
+    //    void notifySelectionChanged(Track *track);
     void notifyMasterLevelChangeFinalized(float previousLevel);
     void notifyMasterMuteToggled();
     void notifyNameChanged(Track &track, juce::String newName);

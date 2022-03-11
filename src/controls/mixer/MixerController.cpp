@@ -1,9 +1,11 @@
 #include "MixerController.h"
 #include "common/listutil.h"
+#include "controls/desktop/DesktopController.h"
 #include "controls/mixer/TrackController.h"
 
-MixerController::MixerController(TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager)
-    : trackList(trackList), mixer(mixer), mixerPanel(trackList, mixer, mixer.getMeterSource()),
+MixerController::MixerController(
+    DesktopController &desktop, TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager)
+    : desktop(desktop), trackList(trackList), mixer(mixer), mixerPanel(trackList, mixer, mixer.getMeterSource()),
       formatManager(formatManager) {
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
@@ -19,7 +21,7 @@ MixerController::~MixerController() {
 }
 
 void MixerController::update() {
-    onSourceSet();
+    updateAudioSource();
     for (std::unique_ptr<TrackController> &track : tracks) {
         track->removeListener((TrackListListener *)this);
         track->removeListener((TrackControlListener *)this);
@@ -43,6 +45,16 @@ void MixerController::repaint() {
         track->repaint();
     }
     mixerPanel.repaint();
+}
+
+void MixerController::updateAudioSource() {
+    mixer.removeAllSources();
+    trackList.eachTrack([this](Track &track) {
+        if (track.getSource() != nullptr) {
+            DBG("MixerController::onSourceSet - add track source: " << track.getName());
+            mixer.addSource(track.getSource(), track.getSampleRate(), 2);
+        }
+    });
 }
 
 void MixerController::setMasterLevel(float newLevel) {
@@ -79,16 +91,6 @@ void MixerController::toggleSolo(Track &track) {
     }
 }
 
-void MixerController::onSourceSet() {
-    mixer.removeAllSources();
-    trackList.eachTrack([this](Track &track) {
-        if (track.getSource() != nullptr) {
-            DBG("MixerController::onSourceSet - add track source: " << track.getName());
-            mixer.addSource(track.getSource(), track.getSampleRate(), 2);
-        }
-    });
-}
-
 void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldLoop); }
 
 void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevelGain(newLevel); }
@@ -112,7 +114,7 @@ void MixerController::muteToggled(Track &track) { notifyMuteToggled(track); }
 
 void MixerController::soloToggled(Track &track) { notifySoloToggled(track); }
 
-void MixerController::selectionChanged(Track *track) { notifySelectionChanged(track); }
+void MixerController::selectionChanged(Track *track) { desktop.selectionChanged(track); }
 
 void MixerController::addListener(TrackListListener *listener) {
     if (!listContains(trackListListeners, listener)) {
@@ -122,11 +124,11 @@ void MixerController::addListener(TrackListListener *listener) {
 
 void MixerController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
 
-void MixerController::notifySelectionChanged(Track *track) {
-    for (TrackListListener *listener : trackListListeners) {
-        listener->selectionChanged(track);
-    }
-}
+// void MixerController::notifySelectionChanged(Track *track) {
+//     for (TrackListListener *listener : trackListListeners) {
+//         listener->selectionChanged(track);
+//     }
+// }
 
 void MixerController::addListener(MasterTrackListener *listener) {
     if (!listContains(masterTrackListeners, listener)) {
@@ -154,9 +156,7 @@ void MixerController::addListener(TrackControlListener *listener) {
     }
 }
 
-void MixerController::removeListener(TrackControlListener *listener) {
-    trackControlListeners.remove(listener);
-}
+void MixerController::removeListener(TrackControlListener *listener) { trackControlListeners.remove(listener); }
 
 void MixerController::notifyNameChanged(Track &track, juce::String newName) {
     for (TrackControlListener *listener : trackControlListeners) {

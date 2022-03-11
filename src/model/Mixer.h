@@ -3,7 +3,6 @@
 #include <JuceHeader.h>
 
 #include "audio/PositionableMixingAudioSource.h"
-#include "controls/desktop/TrackSourceListener.h"
 #include "audio/GainAudioSource.h"
 #include "audio/MeteredAudioSource.h"
 

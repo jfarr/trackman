@@ -6,27 +6,19 @@
 
 DesktopController::DesktopController(
     juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
-    : mixer(deviceManager.getAudioDeviceSetup().sampleRate), mixerController(trackList, mixer, formatManager),
+    : mixer(deviceManager.getAudioDeviceSetup().sampleRate), mixerController(*this, trackList, mixer, formatManager),
       trackListController(
           *this, trackList, mixerController.getMixer().getTransportSource(), deviceManager, formatManager),
       project(trackList, mixer), mainWindow(mainWindow), applicationName(mainWindow.getName()),
       deviceManager(deviceManager), formatManager(formatManager) {
-    mixerController.addListener((TrackListListener *)this);
     mixerController.addListener((MasterTrackListener *)this);
     mixerController.addListener((TrackControlListener *)this);
-    trackListController.addListener((TrackListListener *)this);
-    trackListController.addListener((SampleListener *)this);
-    trackListController.setListener(&mixerController);
     updateTitleBar();
 }
 
 DesktopController::~DesktopController() {
-    mixerController.removeListener((TrackListListener *)this);
     mixerController.removeListener((MasterTrackListener *)this);
     mixerController.removeListener((TrackControlListener *)this);
-    trackListController.removeListener((TrackListListener *)this);
-    trackListController.removeListener((SampleListener *)this);
-    trackListController.setListener(nullptr);
 }
 
 bool DesktopController::canUndo() const { return !commandList.isEmpty(); }

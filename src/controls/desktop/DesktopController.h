@@ -13,7 +13,6 @@
 // TODO: consider using juce::FileBasedDocument
 class DesktopController : public MasterTrackListener,
                           public TrackControlListener,
-                          public TrackListListener,
                           public FileDragDropTarget {
   public:
     DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager,
@@ -34,6 +33,7 @@ class DesktopController : public MasterTrackListener,
     void addNewTrack();
     void addNewSample(Track *track, juce::File file, int pos);
     void deleteSelected();
+    void selectionChanged(Track *track);
     juce::String getSelectionType() const;
 
     Track *addTrack();
@@ -50,10 +50,6 @@ class DesktopController : public MasterTrackListener,
     void saveProjectAs();
     void openProject();
     void exportProject();
-
-    //==============================================================================
-    // TrackListListener
-    void selectionChanged(Track *track) override;
 
     //==============================================================================
     // MasterTrackListener
