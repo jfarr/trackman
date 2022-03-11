@@ -88,6 +88,13 @@ void DesktopController::addNewTrack() {
     updateTitleBar();
 }
 
+void DesktopController::addNewSample(Track *track, juce::File file, int pos) {
+    Command *command = new AddSampleCommand(*this, track, file, pos);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
+}
+
 void DesktopController::deleteSelected() {
     Track *track = trackList.getSelected();
     Sample *sample = trackList.getSelectedSample();
@@ -114,13 +121,6 @@ juce::String DesktopController::getSelectionType() const {
         return "track";
     }
     return "";
-}
-
-void DesktopController::sampleAdded(Track *track, juce::File file, int pos) {
-    Command *command = new AddSampleCommand(*this, track, file, pos);
-    commandList.pushCommand(command);
-    dirty = true;
-    updateTitleBar();
 }
 
 void DesktopController::moveSample(Sample &sample, double prevPos, double newPos) {

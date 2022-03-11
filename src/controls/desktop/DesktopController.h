@@ -14,7 +14,6 @@
 class DesktopController : public MasterTrackListener,
                           public TrackControlListener,
                           public TrackListListener,
-                          public SampleListener,
                           public FileDragDropTarget {
   public:
     DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager,
@@ -33,6 +32,7 @@ class DesktopController : public MasterTrackListener,
     void resize();
 
     void addNewTrack();
+    void addNewSample(Track *track, juce::File file, int pos);
     void deleteSelected();
     juce::String getSelectionType() const;
 
@@ -66,10 +66,6 @@ class DesktopController : public MasterTrackListener,
     void levelChangeFinalized(Track &track, float previousLevel) override;
     void muteToggled(Track &track) override;
     void soloToggled(Track &track) override;
-
-    //==============================================================================
-    // SampleListener
-    void sampleAdded(Track *track, juce::File file, int pos) override;
 
     //==============================================================================
     // FileDragDropTarget

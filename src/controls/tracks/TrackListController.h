@@ -19,7 +19,6 @@ class TrackListController : public TrackListListener, SampleListener {
 
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
     juce::Component &getViewport() { return trackListViewport; }
-    int getTrackListSize() const { return trackList.size(); }
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void deleteSample(Track &track, Sample *sample);
@@ -71,7 +70,6 @@ class TrackListController : public TrackListListener, SampleListener {
     juce::AudioFormatManager &formatManager;
 
     void notifySelectionChanged(Track *track);
-    void notifySampleAdded(Track *track, juce::File file, int pos);
 
     void updateLane(Track &track);
     TrackLaneController *getLane(Track &track);

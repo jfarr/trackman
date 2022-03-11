@@ -14,6 +14,7 @@
 
 ## Long Term
 
+- Unit tests
 - GPL license
 - Midi note roll
   - Notes
