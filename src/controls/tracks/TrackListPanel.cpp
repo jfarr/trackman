@@ -58,7 +58,7 @@ void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
     if (thumbnail != nullptr) {
         auto pos = juce::Point<int>(
             dragSourceDetails.localPosition.getX() + dragSourceOffset, dragSourceDetails.localPosition.getY());
-        notifySampleDropped(thumbnail, pos.getX());
+        notifySampleDropped(thumbnail, pos.getX(), pos.getY());
         return;
     }
     auto stretchHandle = dynamic_cast<StretchHandle *>(sourceComponent);
@@ -142,9 +142,9 @@ void TrackListPanel::addListener(SampleListener *listener) {
 
 void TrackListPanel::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
 
-void TrackListPanel::notifySampleDropped(SampleThumbnail *thumbnail, int x) {
+void TrackListPanel::notifySampleDropped(SampleThumbnail *thumbnail, int x, int y) {
     for (SampleListener *listener : sampleListeners) {
-        listener->sampleMoved(thumbnail->getSample(), x);
+        listener->sampleMoved(thumbnail->getTrack(), thumbnail->getSample(), x, y);
     }
 }
 

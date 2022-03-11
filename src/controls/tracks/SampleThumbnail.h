@@ -38,6 +38,7 @@ class SampleThumbnail : public juce::Component {
         Track &track, Sample &sample, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
     ~SampleThumbnail() {}
 
+    Track &getTrack() { return track; }
     Sample &getSample() { return sample; }
 
     void addListener(SampleListener *listener);

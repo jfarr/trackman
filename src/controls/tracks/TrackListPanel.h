@@ -89,7 +89,7 @@ class TrackListPanel : public juce::Component,
     int getTrackLaneWidth() const;
     int getTrackLaneHeight() const;
 
-    void notifySampleDropped(SampleThumbnail *thumbnail, int x);
+    void notifySampleDropped(SampleThumbnail *thumbnail, int x, int y);
     void notifySampleResized(SampleThumbnail *thumbnail, int width);
     void notifyDragEnded();
     void notifySelectionChanged();
