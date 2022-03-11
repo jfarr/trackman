@@ -4,18 +4,14 @@
 TrackListPanel::TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
     juce::AudioFormatManager &formatManager)
     : trackList(trackList), viewport(viewport), transport(transport), formatManager(formatManager) {
-    createControls();
     resize();
     startTimer(20);
 }
 
 TrackListPanel::~TrackListPanel() {}
 
-void TrackListPanel::createControls() { addAndMakeVisible(timeMeter); }
-
 void TrackListPanel::update() {
     removeAllChildren();
-    addAndMakeVisible(timeMeter);
     for (TrackLaneControl *lane : lanes) {
         lane->update();
         addAndMakeVisible(lane);
@@ -82,7 +78,6 @@ void TrackListPanel::dragOperationEnded(const DragAndDropTarget::SourceDetails &
 }
 
 void TrackListPanel::resize() {
-    auto topStripWidth = 20;
     setSize(getTrackLaneWidth(), getTrackLaneHeight());
     for (TrackLaneControl *lane : lanes) {
         lane->resized();
@@ -109,9 +104,7 @@ void TrackListPanel::paint(juce::Graphics &g) {
 }
 
 void TrackListPanel::resized() {
-    auto topStripWidth = 20;
     auto area = getLocalBounds();
-    timeMeter.setBounds(area.removeFromTop(topStripWidth));
     for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(lane->getHeight()));
     }
@@ -129,9 +122,8 @@ int TrackListPanel::getTrackLaneWidth() const {
 }
 
 int TrackListPanel::getTrackLaneHeight() const {
-    auto topStripWidth = 20;
     int trackHeight = lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() : 0;
-    return std::max(trackHeight + topStripWidth, viewport.getHeight());
+    return std::max(trackHeight, viewport.getHeight());
 }
 
 void TrackListPanel::addListener(SampleListener *listener) {

@@ -8,6 +8,7 @@
 #include "controls/AudioPlayer.h"
 #include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
+#include "controls/tracks/TrackListViewport.h"
 #include "model/Mixer.h"
 
 class DesktopComponent : public juce::AudioAppComponent,
@@ -172,9 +173,10 @@ class DesktopComponent : public juce::AudioAppComponent,
 
   private:
     DesktopController desktopController;
-    juce::Viewport &trackListViewport;
+    TrackListViewport &trackListViewport;
     MixerPanel &mixerPanel;
     Mixer &mixer;
+    TimeMeter timeMeter;
     std::list<FileDragDropTarget *> listeners;
 
     juce::ApplicationCommandManager commandManager;

@@ -12,6 +12,7 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::Aud
 
     trackListViewport.getHorizontalScrollBar().setAutoHide(false);
     trackListViewport.getVerticalScrollBar().setAutoHide(false);
+    addAndMakeVisible(timeMeter);
     addAndMakeVisible(trackListViewport);
     addAndMakeVisible(mixerPanel);
 
@@ -80,6 +81,8 @@ void DesktopComponent::paint(juce::Graphics &g) {
 
 void DesktopComponent::resized() {
     auto area = getLocalBounds();
+    auto topStripWidth = 20;
+    timeMeter.setBounds(area.removeFromTop(topStripWidth));
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
     trackListViewport.setBounds(area);
     desktopController.resize();

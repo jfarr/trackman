@@ -78,14 +78,12 @@ class TrackListPanel : public juce::Component,
     std::list<TrackLaneControl *> lanes;
     float scale = 75;
 
-    TimeMeter timeMeter;
     DropBox dropBox;
     int dragSourceOffset;
 
     std::list<SampleListener *> sampleListeners;
     std::list<TrackListListener *> trackListListeners;
 
-    void createControls();
     int getTrackLaneWidth() const;
     int getTrackLaneHeight() const;
 
