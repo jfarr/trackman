@@ -6,6 +6,11 @@ MainWindow::MainWindow(juce::String name, juce::AudioFormatManager &formatManage
               juce::ResizableWindow::backgroundColourId),
           DocumentWindow::allButtons) {
     setUsingNativeTitleBar(true);
+    auto display = juce::Desktop::getInstance().getDisplays().getPrimaryDisplay();
+    if (display != nullptr) {
+        auto r = display->userArea;
+        setResizeLimits(250, 250, r.getWidth(), r.getHeight());
+    }
     setContentOwned(new DesktopComponent(this, formatManager), true);
 
 #if JUCE_IOS || JUCE_ANDROID
