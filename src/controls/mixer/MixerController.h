@@ -79,8 +79,8 @@ class MixerController : public TrackListListener,
     std::list<TrackControlListener *> trackControlListeners;
 
     //    void notifySelectionChanged(Track *track);
-    void notifyMasterLevelChangeFinalized(float previousLevel);
-    void notifyMasterMuteToggled();
+//    void notifyMasterLevelChangeFinalized(float previousLevel);
+//    void notifyMasterMuteToggled();
     void notifyNameChanged(Track &track, juce::String newName);
     void notifyLevelChangeFinalized(Track &track, float previousLevel);
     void notifyMuteToggled(Track &track);

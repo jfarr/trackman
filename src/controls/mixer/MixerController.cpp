@@ -96,12 +96,14 @@ void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldL
 void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevelGain(newLevel); }
 
 void MixerController::masterLevelChangeFinalized(float previousLevel) {
-    notifyMasterLevelChangeFinalized(previousLevel);
+    desktop.masterLevelChangeFinalized(previousLevel);
+//    notifyMasterLevelChangeFinalized(previousLevel);
 }
 
 void MixerController::masterMuteToggled() {
     mixer.toggleMasterMute();
-    notifyMasterMuteToggled();
+    desktop.masterMuteToggled();
+//    notifyMasterMuteToggled();
 }
 
 void MixerController::nameChanged(Track &track, juce::String newName) { notifyNameChanged(track, newName); }
@@ -138,17 +140,17 @@ void MixerController::addListener(MasterTrackListener *listener) {
 
 void MixerController::removeListener(MasterTrackListener *listener) { masterTrackListeners.remove(listener); }
 
-void MixerController::notifyMasterMuteToggled() {
-    for (MasterTrackListener *listener : masterTrackListeners) {
-        listener->masterMuteToggled();
-    }
-}
-
-void MixerController::notifyMasterLevelChangeFinalized(float previousLevel) {
-    for (MasterTrackListener *listener : masterTrackListeners) {
-        listener->masterLevelChangeFinalized(previousLevel);
-    }
-}
+//void MixerController::notifyMasterMuteToggled() {
+//    for (MasterTrackListener *listener : masterTrackListeners) {
+//        listener->masterMuteToggled();
+//    }
+//}
+//
+//void MixerController::notifyMasterLevelChangeFinalized(float previousLevel) {
+//    for (MasterTrackListener *listener : masterTrackListeners) {
+//        listener->masterLevelChangeFinalized(previousLevel);
+//    }
+//}
 
 void MixerController::addListener(TrackControlListener *listener) {
     if (!listContains(trackControlListeners, listener)) {
