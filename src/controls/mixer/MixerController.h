@@ -14,12 +14,10 @@
 
 class DesktopController;
 
-class MixerController : public TrackListListener,
-                        public TransportControlListener,
-                        public MasterTrackListener {
+class MixerController : public TrackListListener, public TransportControlListener, public MasterTrackListener {
   public:
-    MixerController(
-        DesktopController &desktop, TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager);
+    MixerController(DesktopController &desktopController, TrackList &trackList, Mixer &mixer,
+        juce::AudioFormatManager &formatManager);
     ~MixerController();
 
     MixerPanel &getMixerPanel() { return mixerPanel; }
@@ -32,12 +30,8 @@ class MixerController : public TrackListListener,
     void setMasterLevel(float newLevel);
     void toggleMasterMute();
     void setLevel(Track &track, float newLevel);
-    void toggleMute(Track &track);
-    void toggleSolo(Track &track);
-    void nameChanged(Track &track, juce::String newName);
-    void levelChangeFinalized(Track &track, float previousLevel);
-    void soloToggled(Track &track);
-    void muteToggled(Track &track);
+    void setMute(Track &track, bool newMute);
+    void setSolo(Track &track, bool newSolo);
 
     //==============================================================================
     // TrackListListener
@@ -54,18 +48,12 @@ class MixerController : public TrackListListener,
     void masterMuteToggled() override;
 
   private:
-    DesktopController &desktop;
+    DesktopController &desktopController;
     TrackList &trackList;
     Mixer &mixer;
     MixerPanel mixerPanel;
     std::list<std::unique_ptr<TrackController>> tracks;
     juce::AudioFormatManager &formatManager;
-//    std::list<TrackListListener *> trackListListeners;
-
-//    void notifyNameChanged(Track &track, juce::String newName);
-//    void notifyLevelChangeFinalized(Track &track, float previousLevel);
-//    void notifyMuteToggled(Track &track);
-//    void notifySoloToggled(Track &track);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerController)
 };

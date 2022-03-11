@@ -1,15 +1,17 @@
 #include "TrackController.h"
-#include "MixerController.h"
 #include "common/listutil.h"
+#include "controls/desktop/DesktopController.h"
 
 TrackController::TrackController(
-    MixerController &mixerController, Track &track, TrackControl &trackControl, juce::AudioFormatManager &formatManager)
-    : mixerController(mixerController), formatManager(formatManager), track(track), trackControl(trackControl) {
+    DesktopController &desktopController, Track &track, juce::AudioFormatManager &formatManager)
+    : desktopController(desktopController), track(track), formatManager(formatManager), trackControl(track) {
+    trackControl.addListener(&desktopController);
     trackControl.addListener(this);
     trackControl.addMouseListener(this, true);
 }
 
 TrackController::~TrackController() {
+    trackControl.removeListener(&desktopController);
     trackControl.removeListener(this);
     trackControl.removeMouseListener(this);
 }
@@ -19,35 +21,19 @@ void TrackController::setLevel(float newLevel) {
     trackControl.update();
 }
 
-void TrackController::toggleMute(Track &track) {
-    track.toggleMute();
+void TrackController::setMute(Track &track, bool newMute) {
+    track.setMute(newMute);
     trackControl.update();
 }
 
-void TrackController::toggleSolo(Track &track) {
-    track.toggleSolo();
+void TrackController::setSolo(Track &track, bool newSolo) {
+    track.setSolo(newSolo);
     trackControl.update();
 }
 
 void TrackController::repaint() { trackControl.repaint(); }
 
-void TrackController::nameChanged(Track &track, juce::String newName) { mixerController.nameChanged(track, newName); }
-
-void TrackController::levelChanged(Track &track, float newLevel) { track.setLevelGain(newLevel); }
-
-void TrackController::levelChangeFinalized(Track &track, float previousLevel) {
-    mixerController.levelChangeFinalized(track, previousLevel);
-}
-
-void TrackController::muteToggled(Track &track) {
-    track.toggleMute();
-    mixerController.muteToggled(track);
-}
-
-void TrackController::soloToggled(Track &track) {
-    track.toggleSolo();
-    mixerController.soloToggled(track);
-}
+void TrackController::trackLevelChanged(Track &track, float newLevel) { track.setLevelGain(newLevel); }
 
 void TrackController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }
 

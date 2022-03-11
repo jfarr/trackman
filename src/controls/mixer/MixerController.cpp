@@ -4,9 +4,9 @@
 #include "controls/mixer/TrackController.h"
 
 MixerController::MixerController(
-    DesktopController &desktop, TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager)
-    : desktop(desktop), trackList(trackList), mixer(mixer), mixerPanel(trackList, mixer, mixer.getMeterSource()),
-      formatManager(formatManager) {
+    DesktopController &desktopController, TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager)
+    : desktopController(desktopController), trackList(trackList), mixer(mixer),
+      mixerPanel(trackList, mixer, mixer.getMeterSource()), formatManager(formatManager) {
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
 }
@@ -22,16 +22,15 @@ MixerController::~MixerController() {
 void MixerController::update() {
     updateAudioSource();
     for (std::unique_ptr<TrackController> &track : tracks) {
-        track->removeListener((TrackListListener *)nullptr);
     }
     tracks.clear();
     mixerPanel.clear();
     trackList.eachTrack([this](Track &track) {
-        auto control = new TrackControl(track);
-        auto controller = new TrackController(*this, track, *control, formatManager);
-        controller->addListener((TrackListListener *)this);
+//        auto control = new TrackControl(track);
+//        mixerPanel.addTrack(control);
+        auto controller = new TrackController(desktopController, track, formatManager);
         tracks.push_back(std::unique_ptr<TrackController>(controller));
-        mixerPanel.addTrack(control);
+        mixerPanel.addTrack(&controller->getTrackControl());
     });
     mixerPanel.update();
     mixerPanel.resized();
@@ -72,18 +71,18 @@ void MixerController::setLevel(Track &track, float newLevel) {
     }
 }
 
-void MixerController::toggleMute(Track &track) {
+void MixerController::setMute(Track &track, bool newMute) {
     for (std::unique_ptr<TrackController> &trackController : tracks) {
         if (&trackController->getTrack() == &track) {
-            trackController->toggleMute(track);
+            trackController->setMute(track, newMute);
         }
     }
 }
 
-void MixerController::toggleSolo(Track &track) {
+void MixerController::setSolo(Track &track, bool newSolo) {
     for (std::unique_ptr<TrackController> &trackController : tracks) {
         if (&trackController->getTrack() == &track) {
-            trackController->toggleSolo(track);
+            trackController->setSolo(track, newSolo);
         }
     }
 }
@@ -93,22 +92,12 @@ void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldL
 void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevelGain(newLevel); }
 
 void MixerController::masterLevelChangeFinalized(float previousLevel) {
-    desktop.masterLevelChangeFinalized(previousLevel);
+    desktopController.masterLevelChangeFinalized(previousLevel);
 }
 
 void MixerController::masterMuteToggled() {
     mixer.toggleMasterMute();
-    desktop.masterMuteToggled();
+    desktopController.masterMuteToggled();
 }
 
-void MixerController::nameChanged(Track &track, juce::String newName) { desktop.trackNameChanged(track, newName); }
-
-void MixerController::levelChangeFinalized(Track &track, float previousLevel) {
-    desktop.trackLevelChangeFinalized(track, previousLevel);
-}
-
-void MixerController::muteToggled(Track &track) { desktop.trackMuteToggled(track); }
-
-void MixerController::soloToggled(Track &track) { desktop.trackSoloToggled(track); }
-
-void MixerController::selectionChanged(Track *track) { desktop.selectionChanged(track); }
+void MixerController::selectionChanged(Track *track) { desktopController.selectionChanged(track); }

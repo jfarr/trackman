@@ -24,14 +24,8 @@ void MixerPanel::clear() {
 void MixerPanel::update() { masterTrackControl.update(); }
 
 void MixerPanel::addTrack(TrackControl *trackControl) {
-    tracks.push_back(std::unique_ptr<TrackControl>(trackControl));
+    tracks.push_back(trackControl);
     addAndMakeVisible(trackControl);
-}
-
-void MixerPanel::eachTrack(std::function<void(TrackControl &)> f) {
-    for (std::unique_ptr<TrackControl> &track : tracks) {
-        f(*track);
-    }
 }
 
 //==============================================================================

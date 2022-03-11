@@ -17,6 +17,7 @@ void Mixer::addSource(
     auto pos = transportSource.getCurrentPosition();
     mixerSource.addInputSource(source.get(), false, sourceSampleRateToCorrectFor, maxNumChannels);
     transportSource.setPosition(pos);
+    DBG("Mixer::addSource - set position: " << pos);
 }
 
 void Mixer::removeAllSources() {

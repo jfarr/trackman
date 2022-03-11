@@ -1,7 +1,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include <ff_meters.h>
 
 #include "MasterTrackControl.h"
 #include "TrackControl.h"
@@ -22,7 +21,6 @@ class MixerPanel : public juce::Component {
 
     TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
-    void eachTrack(std::function<void(TrackControl &)> f);
 
     //==============================================================================
     // Component
@@ -32,7 +30,7 @@ class MixerPanel : public juce::Component {
   private:
     TransportControl transportControl;
     MasterTrackControl masterTrackControl;
-    std::list<std::unique_ptr<TrackControl>> tracks;
+    std::list<TrackControl *> tracks;
 
     TrackList &trackList;
     Mixer &mixer;

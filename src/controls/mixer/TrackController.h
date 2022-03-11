@@ -8,49 +8,41 @@
 #include "controls/tracks/TrackLaneControl.h"
 #include "model/Track.h"
 
-class MixerController;
+class DesktopController;
 
 class TrackController : public TrackControlListener, public juce::MouseListener {
   public:
-    TrackController(MixerController &mixerController, Track &track, TrackControl &trackControl,
-        juce::AudioFormatManager &formatManager);
+    TrackController(DesktopController &desktopController, Track &track, juce::AudioFormatManager &formatManager);
     ~TrackController();
 
+    TrackControl &getTrackControl() { return trackControl; }
     Track &getTrack() const { return track; }
 
     void setLevel(float newLevel);
-    void toggleMute(Track &track);
-    void toggleSolo(Track &track);
+    void setMute(Track &track, bool newMute);
+    void setSolo(Track &track, bool newSolo);
     void repaint();
 
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
-//    void addListener(TrackControlListener *listener);
-//    void removeListener(TrackControlListener *listener);
 
     //==============================================================================
     // TrackControlListener
-    void nameChanged(Track &track, juce::String newName) override;
-    void levelChanged(Track &track, float newLevel) override;
-    void levelChangeFinalized(Track &track, float previousLevel) override;
-    void muteToggled(Track &track) override;
-    void soloToggled(Track &track) override;
+    void trackLevelChanged(Track &track, float newLevel) override;
 
     //==============================================================================
     // MouseListener
     void mouseDown(const juce::MouseEvent &event) override;
 
   private:
-    MixerController &mixerController;
+    DesktopController &desktopController;
     Track &track;
-    TrackControl &trackControl;
     juce::AudioFormatManager &formatManager;
 
+    TrackControl trackControl;
     std::list<TrackListListener *> trackListListeners;
-//    std::list<TrackControlListener *> trackControlListeners;
 
     void notifySelectionChanged();
-//    void notifyNameChanged(Track &track, juce::String newName);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackController)
 };
