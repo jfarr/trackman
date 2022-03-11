@@ -5,8 +5,8 @@
 
 MixerController::MixerController(
     DesktopController &desktopController, TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager)
-    : desktopController(desktopController), trackList(trackList), mixer(mixer),
-      mixerPanel(trackList, mixer, mixer.getMeterSource()), formatManager(formatManager) {
+    : desktopController(desktopController), trackList(trackList), mixer(mixer), formatManager(formatManager),
+      mixerPanel(desktopController, trackList, mixer, mixer.getMeterSource()) {
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
 }
@@ -26,8 +26,6 @@ void MixerController::update() {
     tracks.clear();
     mixerPanel.clear();
     trackList.eachTrack([this](Track &track) {
-//        auto control = new TrackControl(track);
-//        mixerPanel.addTrack(control);
         auto controller = new TrackController(desktopController, track, formatManager);
         tracks.push_back(std::unique_ptr<TrackController>(controller));
         mixerPanel.addTrack(&controller->getTrackControl());
@@ -58,8 +56,8 @@ void MixerController::setMasterLevel(float newLevel) {
     mixerPanel.getMasterTrackControl().setLevel(newLevel);
 }
 
-void MixerController::toggleMasterMute() {
-    mixer.toggleMasterMute();
+void MixerController::setMasterMute(bool newMute) {
+    mixer.setMasterMute(newMute);
     mixerPanel.getMasterTrackControl().update();
 }
 
@@ -90,14 +88,5 @@ void MixerController::setSolo(Track &track, bool newSolo) {
 void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldLoop); }
 
 void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevelGain(newLevel); }
-
-void MixerController::masterLevelChangeFinalized(float previousLevel) {
-    desktopController.masterLevelChangeFinalized(previousLevel);
-}
-
-void MixerController::masterMuteToggled() {
-    mixer.toggleMasterMute();
-    desktopController.masterMuteToggled();
-}
 
 void MixerController::selectionChanged(Track *track) { desktopController.selectionChanged(track); }

@@ -3,19 +3,16 @@
 #include "common/listutil.h"
 
 MasterTrackControl::MasterTrackControl(Mixer &mixer, foleys::LevelMeterSource &meterSource)
-    : mixer(mixer), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
+    : mixer(mixer), previousLevel(mixer.getMasterLevelGain()), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
     levelMeter.setMeterSource(&meterSource);
     createControls();
+    update();
     setSize(getPreferredWidth(), 100);
 }
 
-MasterTrackControl::~MasterTrackControl() {
-    levelMeter.setLookAndFeel(nullptr);
-}
+MasterTrackControl::~MasterTrackControl() { levelMeter.setLookAndFeel(nullptr); }
 
 void MasterTrackControl::createControls() {
-    previousLevel = mixer.getMasterLevelGain();
-    decibelSlider.setValue(juce::Decibels::gainToDecibels(mixer.getMasterLevelGain()));
     decibelSlider.onValueChange = [this] { decibelSliderChanged(); };
     decibelSlider.addMouseListener(this, false);
     decibelSlider.setListener(this);
@@ -38,8 +35,11 @@ void MasterTrackControl::createControls() {
 }
 
 void MasterTrackControl::update() {
-    previousLevel = mixer.getMasterLevelGain();
-    decibelSlider.setValue(juce::Decibels::gainToDecibels(mixer.getMasterLevelGain()));
+    auto level = mixer.getMasterLevelGain();
+    if (level != previousLevel) {
+        previousLevel = level;
+        decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
+    }
     muteButton.setColour(juce::TextButton::buttonColourId,
         mixer.isMasterMuted() ? juce::Colours::red
                               : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
@@ -51,13 +51,6 @@ void MasterTrackControl::setLevel(float level) {
 }
 
 void MasterTrackControl::onSliderClick() { draggingSlider = true; }
-
-void MasterTrackControl::mouseUp(const juce::MouseEvent &event) {
-    if (event.eventComponent == &decibelSlider) {
-        draggingSlider = false;
-        decibelSliderChanged();
-    }
-}
 
 void MasterTrackControl::paint(juce::Graphics &g) {
     g.fillAll(juce::Colour{0xff282828});
@@ -89,6 +82,13 @@ void MasterTrackControl::resized() {
     muteButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
 }
 
+void MasterTrackControl::mouseUp(const juce::MouseEvent &event) {
+    if (event.eventComponent == &decibelSlider) {
+        draggingSlider = false;
+        decibelSliderChanged();
+    }
+}
+
 void MasterTrackControl::decibelSliderChanged() {
     auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
     notifyLevelChanged(level);
@@ -99,15 +99,14 @@ void MasterTrackControl::decibelSliderChanged() {
 }
 
 void MasterTrackControl::muteButtonClicked() {
+    update();
     notifyMuteToggled();
-    muteButton.setColour(juce::TextButton::buttonColourId,
-        mixer.isMasterMuted() ? juce::Colours::red
-                              : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 }
 
 void MasterTrackControl::addListener(MasterTrackListener *listener) {
-    if (!listContains(listeners, listener))
+    if (!listContains(listeners, listener)) {
         listeners.push_front(listener);
+    }
 }
 
 void MasterTrackControl::removeListener(MasterTrackListener *listener) { listeners.remove(listener); }

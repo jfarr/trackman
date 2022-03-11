@@ -44,7 +44,7 @@ class MasterTrackControl : public juce::Component, public SliderListener {
     foleys::LevelMeter levelMeter;
 
     bool draggingSlider = false;
-    float previousLevel = juce::Decibels::decibelsToGain<float>(0.0);
+    float previousLevel;
     std::list<MasterTrackListener *> listeners;
 
     void createControls();

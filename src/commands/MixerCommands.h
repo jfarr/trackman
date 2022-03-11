@@ -22,15 +22,17 @@ class ChangeMasterVolumeCommand : public Command {
 
 class ToggleMasterMuteCommand : public Command {
   public:
-    ToggleMasterMuteCommand(MixerController &mixerController)
-        : Command(juce::String(mixerController.getMixer().isMasterMuted() ? "mute" : "unmute") + " master"),
-          mixerController(mixerController) {}
+    ToggleMasterMuteCommand(MixerController &controller)
+        : Command(juce::String(controller.isMasterMuted() ? "unmute" : "mute") + " master"),
+          controller(controller), muted(controller.isMasterMuted()) {}
     ~ToggleMasterMuteCommand() {}
 
-    void undo() override { mixerController.toggleMasterMute(); }
+    void execute() override { controller.setMasterMute(!muted); }
+    void undo() override { controller.setMasterMute(muted); }
 
   private:
-    MixerController &mixerController;
+    MixerController &controller;
+    bool muted;
 };
 
 class ChangeTrackVolumeCommand : public Command {

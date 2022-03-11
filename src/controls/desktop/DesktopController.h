@@ -10,8 +10,7 @@
 #include "model/TrackList.h"
 
 // TODO: consider using juce::FileBasedDocument
-class DesktopController : public FileDragDropTarget,
-                          public TrackControlListener {
+class DesktopController : public FileDragDropTarget, public MasterTrackListener, public TrackControlListener {
   public:
     DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager,
         juce::AudioFormatManager &formatManager);
@@ -31,8 +30,6 @@ class DesktopController : public FileDragDropTarget,
     void addNewTrack();
     void addNewSample(Track *track, juce::File file, int pos);
     void deleteSelected();
-    void masterLevelChangeFinalized(float previousLevel);
-    void masterMuteToggled();
 
     void selectionChanged(Track *track);
     juce::String getSelectionType() const;
@@ -40,7 +37,7 @@ class DesktopController : public FileDragDropTarget,
     Track *addTrack();
     void deleteTrack(Track *track, bool purge);
     void undeleteTrack(Track *track);
-    void renameTrack(Track& track, juce::String newName);
+    void renameTrack(Track &track, juce::String newName);
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void deleteSample(Track &track, Sample *sample);
@@ -60,11 +57,16 @@ class DesktopController : public FileDragDropTarget,
     void filesDropped(const juce::StringArray &files, int x, int y) override;
 
     //==============================================================================
+    // MasterTrackListener
+    void masterLevelChangeFinalized(float previousLevel) override;
+    void masterMuteToggled() override;
+
+    //==============================================================================
     // TrackControlListener
-     void trackNameChanged(Track &track, juce::String newName) override;
-     void trackLevelChangeFinalized(Track &track, float previousLevel) override;
-     void trackMuteToggled(Track &track) override;
-     void trackSoloToggled(Track &track) override;
+    void trackNameChanged(Track &track, juce::String newName) override;
+    void trackLevelChangeFinalized(Track &track, float previousLevel) override;
+    void trackMuteToggled(Track &track) override;
+    void trackSoloToggled(Track &track) override;
 
   private:
     CommandList commandList;

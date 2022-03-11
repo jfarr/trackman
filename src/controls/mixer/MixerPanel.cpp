@@ -1,14 +1,16 @@
 #include "MixerPanel.h"
-#include "common/listutil.h"
+#include "controls/desktop/DesktopController.h"
 
-MixerPanel::MixerPanel(TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource)
-    : masterTrackControl(mixer, meterSource), trackList(trackList), mixer(mixer),
+MixerPanel::MixerPanel(
+    DesktopController &desktopController, TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource)
+    : desktopController(desktopController), trackList(trackList), mixer(mixer), masterTrackControl(mixer, meterSource),
       transportControl(mixer.getTransportSource()) {
     createControls();
+    masterTrackControl.addListener(&desktopController);
     setSize(800, 280);
 }
 
-MixerPanel::~MixerPanel() {}
+MixerPanel::~MixerPanel() { masterTrackControl.removeListener(&desktopController); }
 
 void MixerPanel::createControls() {
     addAndMakeVisible(transportControl);

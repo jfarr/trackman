@@ -20,6 +20,8 @@ class MixerController : public TrackListListener, public TransportControlListene
         juce::AudioFormatManager &formatManager);
     ~MixerController();
 
+    bool isMasterMuted() const { return mixer.isMasterMuted(); }
+
     MixerPanel &getMixerPanel() { return mixerPanel; }
     Mixer &getMixer() { return mixer; }
 
@@ -28,7 +30,7 @@ class MixerController : public TrackListListener, public TransportControlListene
 
     void updateAudioSource();
     void setMasterLevel(float newLevel);
-    void toggleMasterMute();
+    void setMasterMute(bool newMute);
     void setLevel(Track &track, float newLevel);
     void setMute(Track &track, bool newMute);
     void setSolo(Track &track, bool newSolo);
@@ -44,16 +46,15 @@ class MixerController : public TrackListListener, public TransportControlListene
     //==============================================================================
     // MasterTrackListener
     void masterLevelChanged(float level) override;
-    void masterLevelChangeFinalized(float previousLevel) override;
-    void masterMuteToggled() override;
 
   private:
     DesktopController &desktopController;
     TrackList &trackList;
     Mixer &mixer;
+    juce::AudioFormatManager &formatManager;
+
     MixerPanel mixerPanel;
     std::list<std::unique_ptr<TrackController>> tracks;
-    juce::AudioFormatManager &formatManager;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerController)
 };

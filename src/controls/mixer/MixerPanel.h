@@ -8,9 +8,11 @@
 #include "model/Mixer.h"
 #include "model/TrackList.h"
 
+class DesktopController;
+
 class MixerPanel : public juce::Component {
   public:
-    MixerPanel(TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource);
+    MixerPanel(DesktopController &desktopController, TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource);
     ~MixerPanel();
 
     int getPreferredHeight() const { return std::max(getHeight(), 280); }
@@ -28,12 +30,13 @@ class MixerPanel : public juce::Component {
     void resized() override;
 
   private:
+    DesktopController &desktopController;
+    TrackList &trackList;
+    Mixer &mixer;
+
     TransportControl transportControl;
     MasterTrackControl masterTrackControl;
     std::list<TrackControl *> tracks;
-
-    TrackList &trackList;
-    Mixer &mixer;
 
     void createControls();
 
