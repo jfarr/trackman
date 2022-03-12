@@ -32,7 +32,7 @@ class TrackListPanel : public juce::Component,
                        public juce::DragAndDropTarget,
                        private juce::Timer {
   public:
-    TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
+    TrackListPanel(Project &project, TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
         juce::AudioFormatManager &formatManager);
     ~TrackListPanel();
 
@@ -71,12 +71,12 @@ class TrackListPanel : public juce::Component,
     void mouseDown(const juce::MouseEvent &event) override;
 
   private:
+    Project &project;
     TrackList &trackList;
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
     juce::AudioFormatManager &formatManager;
     std::list<TrackLaneControl *> lanes;
-    float scale = 75;
 
     DropBox dropBox;
     int dragSourceOffset;

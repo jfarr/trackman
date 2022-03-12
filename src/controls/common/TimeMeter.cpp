@@ -10,31 +10,34 @@ void TimeMeter::paint(juce::Graphics &g) {
     auto tickHeight = 15;
     auto secondTickHeight = 5;
     auto thirdTickHeight = 3;
+    auto scale = project.getHorizontalScale();
     g.fillAll(juce::Colours::grey);
     g.setColour(juce::Colour{0xff282828});
     g.setFont(11);
     int y = getHeight() - tickHeight;
     int i = 0;
+    int increment = std::max(1, (int)(75 / project.getHorizontalScale()));
+    DBG("increment " << increment);
     while (i * scale < bounds.getWidth()) {
         int x = leftPanelWidth + i * scale;
         g.drawRect(x, y, 1, tickHeight, 1);
         g.drawText(juce::String(i) + ":00", x + labelMargin, labelY, labelWidth, labelHeight,
             juce::Justification::bottom | juce::Justification::left, true);
-        i++;
+        i += increment;
     }
     y = getHeight() - secondTickHeight;
     i = 1;
-    while (i * scale / 2 < bounds.getWidth()) {
-        int x = leftPanelWidth + i * scale / 2;
+    while (i * scale / 2 * increment < bounds.getWidth()) {
+        int x = leftPanelWidth + i * scale / 2 * increment;
         g.drawRect(x, y, 1, secondTickHeight, 1);
-        i++;
+        i += 1;
     }
     y = getHeight() - thirdTickHeight;
     i = 1;
-    while (i * scale / 8 < bounds.getWidth()) {
-        int x = leftPanelWidth + i * scale / 8;
+    while (i * scale / 8 * increment < bounds.getWidth()) {
+        int x = leftPanelWidth + i * scale / 8 * increment;
         g.drawRect(x, y, 1, thirdTickHeight, 1);
-        i++;
+        i += 1;
     }
 
     auto margin = 4;

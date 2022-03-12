@@ -6,7 +6,7 @@ TrackListController::TrackListController(DesktopController &desktopController, j
     juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
     : desktopController(desktopController), project(desktopController.getProject()),
       trackList(desktopController.getTrackList()), transport(transport),
-      trackListPanel(trackList, trackListViewport, transport, formatManager), deviceManager(deviceManager),
+      trackListPanel(project, trackList, trackListViewport, transport, formatManager), deviceManager(deviceManager),
       formatManager(formatManager) {
     trackListViewport.setSize(800, 350);
     trackListViewport.setScrollBarsShown(true, true);

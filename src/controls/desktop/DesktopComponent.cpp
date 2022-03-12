@@ -2,13 +2,15 @@
 #include "common/listutil.h"
 
 DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), desktopController(*parentWindow, deviceManager, formatManager),
+    : formatManager(formatManager), desktopController(*parentWindow, *this, deviceManager, formatManager),
       trackListViewport(desktopController.getTrackListController().getViewport()),
-      mixerPanel(desktopController.getMixerController().getMixerPanel()), mixer(desktopController.getMixer()) {
+      mixerPanel(desktopController.getMixerController().getMixerPanel()), mixer(desktopController.getMixer()),
+      timeMeter(desktopController.getProject()) {
 
     setAudioChannels(0, 2);
 
     addListener(&desktopController);
+    scaleButtonPanel.addListener(&desktopController);
 
     trackListViewport.getHorizontalScrollBar().setAutoHide(false);
     trackListViewport.getVerticalScrollBar().setAutoHide(false);
@@ -16,7 +18,6 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::Aud
     addAndMakeVisible(trackListViewport);
     addAndMakeVisible(mixerPanel);
     addAndMakeVisible(scaleButtonPanel);
-    //    scaleButtonPanel.setAlwaysOnTop(true);
 
     setApplicationCommandManagerToWatch(&commandManager);
     commandManager.registerAllCommandsForTarget(this);
@@ -88,10 +89,12 @@ void DesktopComponent::resized() {
     auto scaleButtonPanelHeight = 12;
     auto scrollBarWidth = trackListViewport.getScrollBarThickness();
     timeMeter.setBounds(area.removeFromTop(topStripWidth));
+    timeMeter.repaint();
     //    scaleButtonPanel.setBounds(juce::Rectangle<int>(area.getWidth() - (scaleButtonPanelWidth + scrollBarWidth),
     //        area.getY(), scaleButtonPanelWidth, scaleButtonPanelHeight));
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
-    scaleButtonPanel.setBounds(juce::Rectangle<int>(0, area.getHeight(), scaleButtonPanelWidth, scaleButtonPanelHeight));
+    scaleButtonPanel.setBounds(
+        juce::Rectangle<int>(0, area.getHeight(), scaleButtonPanelWidth, scaleButtonPanelHeight));
     trackListViewport.setBounds(area);
     desktopController.resize();
 }

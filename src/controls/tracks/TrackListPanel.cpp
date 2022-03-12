@@ -1,9 +1,9 @@
 #include "TrackListPanel.h"
 #include "common/listutil.h"
 
-TrackListPanel::TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
-    juce::AudioFormatManager &formatManager)
-    : trackList(trackList), viewport(viewport), transport(transport), formatManager(formatManager) {
+TrackListPanel::TrackListPanel(Project &project, TrackList &trackList, juce::Viewport &viewport,
+    juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
+    : project(project), trackList(trackList), viewport(viewport), transport(transport), formatManager(formatManager) {
     resize();
     startTimer(20);
 }
@@ -23,7 +23,7 @@ void TrackListPanel::fileDragEnter(const juce::StringArray &files, int x, int y)
     auto *reader = formatManager.createReaderFor(juce::File(files[0]));
     auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
     auto length = newSource->getTotalLength() / reader->sampleRate;
-    auto width = length * scale;
+    auto width = length * project.getHorizontalScale();
     addAndMakeVisible(dropBox);
     auto bounds = dropBox.getLocalBounds();
     dropBox.setBounds(bounds.withWidth(width).withCentre(juce::Point(x, y)));
@@ -93,7 +93,7 @@ void TrackListPanel::paint(juce::Graphics &g) {
 
     if (duration > 0.0) {
         auto audioPosition = (float)transport.getCurrentPosition();
-        auto drawPosition = audioPosition * scale + leftPanelWidth;
+        auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
 
         g.setColour(juce::Colour{0xff282828});
         g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
@@ -116,7 +116,7 @@ void TrackListPanel::mouseDown(const juce::MouseEvent &event) {
 }
 
 int TrackListPanel::getTrackLaneWidth() const {
-    int trackWidth = trackList.getTotalLengthSeconds() * scale;
+    int trackWidth = trackList.getTotalLengthSeconds() * project.getHorizontalScale();
     auto leftPanelWidth = 25;
     return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
 }

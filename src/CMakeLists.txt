@@ -54,6 +54,9 @@ target_sources(Trackman PRIVATE
         controls/desktop/DesktopController.cpp
         controls/desktop/DesktopController.h
         controls/desktop/FileDragDropTarget.h
+        controls/desktop/ScaleButtonPanel.cpp
+        controls/desktop/ScaleButtonPanel.h
+        controls/desktop/TrackScaleListener.h
         controls/desktop/TrackListListener.h
         controls/mixer/LevelMeterLookAndFeel.h
         controls/mixer/MasterLevelMeterLookAndFeel.h
@@ -80,8 +83,6 @@ target_sources(Trackman PRIVATE
         controls/tracks/TrackListController.h
         controls/tracks/TrackListPanel.cpp
         controls/tracks/TrackListPanel.h
-        controls/tracks/TrackListViewport.cpp
-        controls/tracks/TrackListViewport.h
         model/Mixer.cpp
         model/Mixer.h
         model/Project.cpp

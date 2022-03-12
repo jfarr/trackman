@@ -2,6 +2,7 @@
 
 #include "FileDragDropTarget.h"
 #include "TrackListListener.h"
+#include "TrackScaleListener.h"
 #include "commands/CommandList.h"
 #include "controls/mixer/MixerController.h"
 #include "controls/mixer/TrackControlListener.h"
@@ -9,10 +10,15 @@
 #include "model/Project.h"
 #include "model/TrackList.h"
 
+class DesktopComponent;
+
 // TODO: consider using juce::FileBasedDocument
-class DesktopController : public FileDragDropTarget, public MasterTrackListener, public TrackControlListener {
+class DesktopController : public FileDragDropTarget,
+                          public MasterTrackListener,
+                          public TrackControlListener,
+                          public TrackScaleListener {
   public:
-    DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager,
+    DesktopController(juce::DocumentWindow &mainWindow, DesktopComponent &desktopComponent, juce::AudioDeviceManager &deviceManager,
         juce::AudioFormatManager &formatManager);
     ~DesktopController() override = default;
 
@@ -70,6 +76,12 @@ class DesktopController : public FileDragDropTarget, public MasterTrackListener,
     void trackMuteToggled(Track &track) override;
     void trackSoloToggled(Track &track) override;
 
+    //==============================================================================
+    // TrackScaleListener
+    void scaleIncreased() override;
+    void scaleDecreased() override;
+
+
   private:
     CommandList commandList;
     TrackList trackList;
@@ -82,6 +94,7 @@ class DesktopController : public FileDragDropTarget, public MasterTrackListener,
     juce::File projectFile;
     bool dirty = false;
     Command *saveCommand = nullptr;
+    DesktopComponent &desktopComponent;
     juce::DocumentWindow &mainWindow;
     juce::String applicationName;
 

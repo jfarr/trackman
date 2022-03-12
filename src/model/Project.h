@@ -11,7 +11,10 @@ class Project {
     double getHorizontalScale() const { return horizontalScale; }
 
     void setHorizontalScale(int newScale) { horizontalScale = newScale; }
-    void incrementHorizontalScale() { horizontalScale += scaleIncrement; }
+    void incrementHorizontalScale() { horizontalScale *= 1.1; DBG("scale: " << horizontalScale); }
+    void decrementHorizontalScale() { horizontalScale /= 1.1; DBG("scale: " << horizontalScale); }
+//    void incrementHorizontalScale() { horizontalScale += scaleIncrement; }
+//    void decrementHorizontalScale() { horizontalScale = std::max(horizontalScale - scaleIncrement, scaleIncrement); }
 
     std::string to_json();
     void from_json(
