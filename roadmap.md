@@ -13,6 +13,7 @@
 ## Long Term
 
 - Copy / paste
+- Tempo + time signature
 - Console commands
 - Script window
 - Unit tests
