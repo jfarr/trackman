@@ -3,7 +3,13 @@
 
 //==============================================================================
 TransportControl::TransportControl(juce::AudioTransportSource &transportSource, bool enabled)
-    : transportSource(transportSource), enabled(enabled) {
+    : startButtonImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      playButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      playButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      stopButtonImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      pauseButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      pauseButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true), startButton("start"),
+      playButton("play"), stopButton("stop"), pauseButton("pause"), transportSource(transportSource), enabled(enabled) {
     transportSource.addChangeListener(this);
     createControls();
     startTimer(20);
@@ -12,41 +18,131 @@ TransportControl::TransportControl(juce::AudioTransportSource &transportSource, 
 TransportControl::~TransportControl() {}
 
 void TransportControl::createControls() {
-    addAndMakeVisible(&playButton);
-    playButton.setButtonText(">");
+
+    auto bgColorOff = juce::Colours::steelblue;
+    auto bgColorOn = juce::Colour{0xff68ef61};
+    auto borderColorOff = juce::Colours::grey.brighter(0.3f);
+    auto borderColorOn = juce::Colours::lightgrey;
+
+    drawStartButton(startButtonImage, bgColorOff, borderColorOff);
+    setButtonImage(startButton, startButtonImage);
+
+    startButton.onClick = [this] { startButtonClicked(); };
+    startButton.setEnabled(enabled);
+    addAndMakeVisible(&startButton);
+
+    drawPlayButton(playButtonOffImage, bgColorOff, borderColorOff);
+    drawPlayButton(playButtonOnImage, bgColorOn, borderColorOn);
+    setButtonImage(playButton, playButtonOffImage);
+
     playButton.onClick = [this] { playButtonClicked(); };
-    playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
-    playButton.setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     playButton.setEnabled(enabled);
+    addAndMakeVisible(&playButton);
 
-    addAndMakeVisible(&stopButton);
-    stopButton.setButtonText("[]");
+    drawStopButton(stopButtonImage, bgColorOff, borderColorOff);
+    setButtonImage(stopButton, stopButtonImage);
+
     stopButton.onClick = [this] { stopButtonClicked(); };
-    stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
-    stopButton.setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     stopButton.setEnabled(enabled);
+    addAndMakeVisible(&stopButton);
 
-    addAndMakeVisible(&pauseButton);
-    pauseButton.setButtonText("||");
+    drawPauseButton(pauseButtonOffImage, bgColorOff, borderColorOff);
+    drawPauseButton(pauseButtonOnImage, bgColorOn, borderColorOn);
+    setButtonImage(pauseButton, pauseButtonOffImage);
+
     pauseButton.onClick = [this] { pauseButtonClicked(); };
-    pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     pauseButton.setConnectedEdges(juce::Button::ConnectedOnLeft);
     pauseButton.setEnabled(enabled);
+    addAndMakeVisible(&pauseButton);
 
-    addAndMakeVisible(&startButton);
-    startButton.setButtonText("|<");
-    startButton.onClick = [this] { startButtonClicked(); };
-    startButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
-    startButton.setConnectedEdges(juce::Button::ConnectedOnRight);
-    startButton.setEnabled(enabled);
-
-    addAndMakeVisible(&loopingToggle);
     loopingToggle.setButtonText("loop");
     loopingToggle.onClick = [this] { loopButtonClicked(); };
     loopingToggle.setEnabled(enabled);
+    addAndMakeVisible(&loopingToggle);
 
-    addAndMakeVisible(&currentPositionLabel);
     currentPositionLabel.setEnabled(enabled);
+    addAndMakeVisible(&currentPositionLabel);
+}
+
+void TransportControl::setButtonImage(juce::ImageButton &button, juce::Image &image) {
+    button.setImages(false, true, false, image, 1.0, juce::Colours::transparentWhite, juce::Image(), 0.9,
+        juce::Colours::transparentWhite, juce::Image(), 1.0, juce::Colour{0x20ffffff});
+}
+
+void TransportControl::drawStartButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
+    juce::Graphics g(image);
+    juce::Path path;
+    auto cornerSize = 60.0f;
+    g.setColour(bgColor);
+    path.addRoundedRectangle(
+        0.0, 0.0, buttonImageWidth, buttonImageHeight, cornerSize, cornerSize, true, false, true, false);
+    g.fillPath(path);
+    g.setColour(borderColor);
+    g.strokePath(path, juce::PathStrokeType(5.0f));
+
+    g.setColour(juce::Colours::white);
+    juce::Path p;
+    auto iconLeft = 180.0f;
+    auto iconTop = 50.0f;
+    auto iconWidth = 140.0f;
+    auto iconHeight = 120.0f;
+    juce::Point<float> left(iconLeft + 40.0, iconTop + iconHeight / 2);
+    juce::Point<float> topRight(iconLeft + iconWidth, iconTop);
+    juce::Point<float> bottomRight(iconLeft + iconWidth, iconTop + iconHeight);
+    p.addTriangle(left, topRight, bottomRight);
+    g.fillRect(iconLeft, iconTop, 30.0, iconHeight);
+    g.fillPath(p);
+}
+
+void TransportControl::drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
+    juce::Graphics g(image);
+    g.setColour(bgColor);
+    g.fillRect(0.0, 0.0, buttonImageWidth, buttonImageHeight);
+    g.setColour(borderColor);
+    g.drawRect(0.0, 0.0, buttonImageWidth, buttonImageHeight, 5.0);
+    g.setColour(juce::Colours::white);
+    juce::Path p;
+    auto iconLeft = 210.0f;
+    auto iconTop = 50.0f;
+    auto iconWidth = 110.0f;
+    auto iconHeight = 120.0f;
+    juce::Point<float> topLeft(iconLeft, iconTop);
+    juce::Point<float> bottomLeft(iconLeft, iconTop + iconHeight);
+    juce::Point<float> right(iconLeft + iconWidth, iconTop + iconHeight / 2);
+    p.addTriangle(topLeft, bottomLeft, right);
+    g.fillPath(p);
+}
+
+void TransportControl::drawStopButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
+    juce::Graphics g(image);
+    g.setColour(bgColor);
+    g.fillRect(0.0, 0.0, buttonImageWidth, buttonImageHeight);
+    g.setColour(borderColor);
+    g.drawRect(0.0, 0.0, buttonImageWidth, buttonImageHeight, 5.0);
+    g.setColour(juce::Colours::white);
+    auto iconLeft = 200.0f;
+    auto iconTop = 50.0f;
+    auto iconSize = 110.0f;
+    g.fillRect(iconLeft, iconTop, iconSize, iconSize);
+}
+
+void TransportControl::drawPauseButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
+    juce::Graphics g(image);
+    juce::Path path;
+    auto cornerSize = 60.0f;
+    g.setColour(bgColor);
+    path.addRoundedRectangle(
+        0.0, 0.0, buttonImageWidth, buttonImageHeight, cornerSize, cornerSize, false, true, false, true);
+    g.fillPath(path);
+    g.setColour(borderColor);
+    g.strokePath(path, juce::PathStrokeType(5.0f));
+
+    g.setColour(juce::Colours::white);
+    float iconLeft = 200.0f;
+    float iconTop = 50.0f;
+    float iconSize = 110.0f;
+    g.fillRect(iconLeft, iconTop, iconSize / 3, iconSize);
+    g.fillRect(iconLeft + (iconSize * 2 / 3), iconTop, iconSize / 3, iconSize);
 }
 
 void TransportControl::setEnabled(bool isEnabled) {
@@ -83,8 +179,8 @@ void TransportControl::changeState(TransportState newState) {
 
         switch (state) {
         case TransportState::Stopped:
-            playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
-            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
+            setButtonImage(playButton, playButtonOffImage);
+            setButtonImage(pauseButton, pauseButtonOffImage);
             transportSource.setPosition(0.0);
             break;
 
@@ -93,8 +189,8 @@ void TransportControl::changeState(TransportState newState) {
             break;
 
         case TransportState::Playing:
-            playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::lightgreen);
-            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
+            setButtonImage(playButton, playButtonOnImage);
+            setButtonImage(pauseButton, pauseButtonOffImage);
             break;
 
         case TransportState::Pausing:
@@ -102,7 +198,7 @@ void TransportControl::changeState(TransportState newState) {
             break;
 
         case TransportState::Paused:
-            pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::lightgreen);
+            setButtonImage(pauseButton, pauseButtonOnImage);
             break;
 
         case TransportState::Stopping:
@@ -158,6 +254,8 @@ void TransportControl::timerCallback() {
         positionString + juce::String(" / ") + lengthString + stateText, juce::dontSendNotification);
 }
 
+void TransportControl::startButtonClicked() { transportSource.setPosition(0.0); }
+
 void TransportControl::playButtonClicked() {
     notifyLoopingChanged(loopingToggle.getToggleState());
     if ((state == TransportState::Stopped) || (state == TransportState::Paused)) {
@@ -184,8 +282,6 @@ void TransportControl::pauseButtonClicked() {
         changeState(TransportState::Pausing);
     }
 }
-
-void TransportControl::startButtonClicked() { transportSource.setPosition(0.0); }
 
 void TransportControl::loopButtonClicked() { notifyLoopingChanged(loopingToggle.getToggleState()); }
 

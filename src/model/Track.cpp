@@ -66,7 +66,7 @@ Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFor
         mixerSource->addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
     }
     setSource(mixerSource, deviceManager.getAudioDeviceSetup().sampleRate);
-    if (name == "") {
+    if (name == defaultName) {
         name = file.getFileName();
     }
     return &(*samples.back());
