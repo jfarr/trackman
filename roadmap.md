@@ -1,17 +1,24 @@
 # Roadmap
 
 ## Short-Term
-- Drop multiple files
 - Sample info popup
+- Drop multiple files
+  - Default one track
+  - Ctrl-drag multiple tracks
 - Use undo manager
+- Stereo panner
+- Click to move transport
+- Song start / end position
+- Loop start / end position
 - Bug fixes
-  - Track level meter scale
+  - Track level meter scale is off
 
 
 ## Long Term
 
 - Copy / paste
 - Tempo + time signature
+  - Snap to nearest quanta
 - Console commands
 - Script window
 - Unit tests
