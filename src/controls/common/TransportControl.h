@@ -50,9 +50,12 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
     void startButtonClicked();
     void loopButtonClicked();
 
+    const float buttonHeight = 210;
+    const float buttonWidth = 500;
+
     juce::ImageButton playButton;
     juce::ImageButton stopButton;
-    juce::TextButton pauseButton;
+    juce::ImageButton pauseButton;
     juce::TextButton startButton;
     juce::ToggleButton loopingToggle;
     juce::Label currentPositionLabel;
@@ -60,12 +63,12 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
     juce::Image playButtonOffImage;
     juce::Image playButtonOnImage;
     juce::Image stopButtonImage;
-
-    const int buttonHeight = 21;
-    const int buttonWidth = 50;
+    juce::Image pauseButtonOffImage;
+    juce::Image pauseButtonOnImage;
 
     void drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
     void drawStopButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
+    void drawPauseButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
     void setButtonImage(juce::ImageButton &button, juce::Image &image);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TransportControl)
