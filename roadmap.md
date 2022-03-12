@@ -10,9 +10,13 @@
   - Ticks
   - Custom image
 - Sample info popup
+- Use undo manager
 
 ## Long Term
 
+- Copy / paste
+- Console commands
+- Script window
 - Unit tests
 - GPL license
 - Midi note roll
