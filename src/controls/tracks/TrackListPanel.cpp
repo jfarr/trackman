@@ -120,7 +120,7 @@ int TrackListPanel::getTrackLaneWidth() const {
 }
 
 int TrackListPanel::getTrackLaneHeight() const {
-    int trackHeight = lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() : 0;
+    int trackHeight = lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() * project.getVerticalScale() : 0;
     return std::max(trackHeight, viewport.getHeight());
 }
 
