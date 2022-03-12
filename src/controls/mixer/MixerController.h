@@ -11,6 +11,7 @@
 #include "controls/mixer/MasterTrackListener.h"
 #include "model/Mixer.h"
 #include "model/TrackList.h"
+#include "TrackPanel.h"
 
 class DesktopController;
 
@@ -23,6 +24,7 @@ class MixerController : public TransportControlListener, public MasterTrackListe
 
     MixerPanel &getMixerPanel() { return mixerPanel; }
     Mixer &getMixer() { return mixer; }
+    juce::Viewport &getViewport() { return mixerViewport; }
 
     void update();
     void repaint();
@@ -48,7 +50,9 @@ class MixerController : public TransportControlListener, public MasterTrackListe
     Mixer &mixer;
     juce::AudioFormatManager &formatManager;
 
+    juce::Viewport mixerViewport;
     MixerPanel mixerPanel;
+    TrackPanel trackPanel;
     std::list<std::unique_ptr<TrackController>> tracks;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerController)

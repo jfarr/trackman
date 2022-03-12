@@ -41,7 +41,6 @@ class TrackListPanel : public juce::Component,
     void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
     void resize();
     void clear() { lanes.clear(); }
-
     void update();
 
     void fileDragEnter(const juce::StringArray &files, int x, int y);
@@ -76,6 +75,7 @@ class TrackListPanel : public juce::Component,
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
     juce::AudioFormatManager &formatManager;
+    TimeMeter timeMeter;
     std::list<TrackLaneControl *> lanes;
 
     DropBox dropBox;

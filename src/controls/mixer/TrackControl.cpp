@@ -6,7 +6,7 @@ TrackControl::TrackControl(Track &track)
     : track(track), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
     createControls();
     update();
-    setSize(getPreferredWidth(), 100);
+    setSize(getPreferredWidth(), 244);
 }
 
 TrackControl::~TrackControl() { levelMeter.setLookAndFeel(nullptr); }
