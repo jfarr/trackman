@@ -61,7 +61,11 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
     juce::Image playButtonOnImage;
     juce::Image stopButtonImage;
 
+    const int buttonHeight = 21;
+    const int buttonWidth = 50;
+
     void drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
+    void drawStopButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
     void setButtonImage(juce::ImageButton &button, juce::Image &image);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TransportControl)
