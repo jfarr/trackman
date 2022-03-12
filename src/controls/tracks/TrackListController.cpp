@@ -163,6 +163,7 @@ void TrackListController::sampleSelected(Track &track, Sample &sample) {
 }
 
 void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y) {
+    removeDragLane();
     auto curPos = sample.getStartPos();
     auto length = sample.getLengthSecs();
     auto scale = project.getHorizontalScale();
@@ -180,6 +181,47 @@ void TrackListController::sampleResized(Sample &sample, int width) {
     desktopController.resizeSample(sample, curLen, newLen);
 }
 
-void TrackListController::dragEnded() { updateLanes(); }
+void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int screenY) {
+    thumbnail.setTopLeftPosition(thumbnail.getPosition().withX(x));
+    auto y = screenY - trackListPanel.getScreenPosition().getY();
+    auto track = trackListPanel.getTrackAtPos(x, y);
+    if (track != currentDragTrack) {
+        currentDragTrack = track;
+        TrackLaneController *lane;
+        if (track == nullptr) {
+            if (newDragLane == nullptr) {
+                track = new Track(trackList);
+                newDragLane = new TrackLaneController(project, *track, *this, transport, formatManager);
+                trackListPanel.addLane(&newDragLane->getTrackLaneControl());
+                trackListPanel.addAndMakeVisible(&newDragLane->getTrackLaneControl());
+                trackListPanel.resize();
+            }
+            lane = newDragLane;
+        } else {
+            lane = getLane(*track);
+        }
+        if (lane != nullptr) {
+            getLane(thumbnail.getTrack())->getTrackLaneControl().removeChildComponent(&thumbnail);
+            lane->getTrackLaneControl().addAndMakeVisible(thumbnail);
+        }
+    }
+}
+
+void TrackListController::dragEnded() {
+    removeDragLane();
+    updateLanes();
+}
+
+void TrackListController::removeDragLane() {
+    if (newDragLane != nullptr) {
+        trackListPanel.removeChildComponent(&newDragLane->getTrackLaneControl());
+        trackListPanel.removeLane(&newDragLane->getTrackLaneControl());
+        trackListPanel.resize();
+        delete &newDragLane->getTrack();
+        delete newDragLane;
+        newDragLane = nullptr;
+    }
+    currentDragTrack = nullptr;
+}
 
 void TrackListController::updateMixerSource() { desktopController.getMixerController().updateAudioSource(); }

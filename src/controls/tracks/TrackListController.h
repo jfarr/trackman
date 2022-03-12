@@ -43,6 +43,7 @@ class TrackListController : public TrackListListener, public SampleListener {
     void sampleSelected(Track &track, Sample &sample) override;
     void sampleMoved(Track &track, Sample &sample, int x, int y) override;
     void sampleResized(Sample &sample, int width) override;
+    void mouseDragged(SampleThumbnail &thumbnail, int x, int screenY) override;
     void dragEnded() override;
 
   private:
@@ -55,6 +56,8 @@ class TrackListController : public TrackListListener, public SampleListener {
     std::list<std::unique_ptr<TrackLaneController>> lanes;
     Track *selected = nullptr;
     bool selectingSample = false;
+    Track *currentDragTrack = nullptr;
+    TrackLaneController *newDragLane = nullptr;
 
     juce::AudioDeviceManager &deviceManager;
     juce::AudioFormatManager &formatManager;
@@ -63,6 +66,7 @@ class TrackListController : public TrackListListener, public SampleListener {
     void updateLane(Track &track);
     TrackLaneController *getLane(Track &track);
     void updateLanes();
+    void removeDragLane();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListController)
 };

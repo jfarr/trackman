@@ -39,6 +39,7 @@ class TrackListPanel : public juce::Component,
     Track *getTrackAtPos(int x, int y);
 
     void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
+    void removeLane(TrackLaneControl *lane) { lanes.remove(lane); }
     void resize();
     void clear() { lanes.clear(); }
     void update();
@@ -60,7 +61,6 @@ class TrackListPanel : public juce::Component,
 
     //==============================================================================
     // DragAndDropContainer
-    void dragOperationStarted(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
     void dragOperationEnded(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
 
     //==============================================================================

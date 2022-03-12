@@ -9,11 +9,13 @@ TrackLaneControl::TrackLaneControl(Project &project, Track &track, juce::AudioTr
 TrackLaneControl::~TrackLaneControl() {}
 
 void TrackLaneControl::createControls() {
-    trackLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
-    auto font = trackLabel.getFont();
-    trackLabel.setFont(trackLabel.getFont().withHeight(11));
-    trackLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
-    addAndMakeVisible(trackLabel);
+    if (track.getNumber() > 0) {
+        trackLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
+        auto font = trackLabel.getFont();
+        trackLabel.setFont(trackLabel.getFont().withHeight(11));
+        trackLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
+        addAndMakeVisible(trackLabel);
+    }
 }
 
 void TrackLaneControl::addThumbnail(SampleThumbnail *thumbnail) { thumbnails.push_back(thumbnail); }
