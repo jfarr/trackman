@@ -12,7 +12,9 @@ void TrackPanel::update() {
 }
 
 void TrackPanel::resize() {
-    setSize(getTrackWidth(), 280);
+    auto w = getTrackWidth();
+    auto h = 244 - (w > viewport.getMaximumVisibleWidth() ? viewport.getScrollBarThickness() : 0);
+    setSize(getTrackWidth(), h);
     for (TrackControl *track : tracks) {
         track->resized();
     }

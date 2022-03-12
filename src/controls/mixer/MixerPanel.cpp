@@ -4,7 +4,8 @@
 MixerPanel::MixerPanel(
     DesktopController &desktopController, TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource)
     : desktopController(desktopController), trackList(trackList), mixer(mixer), masterTrackControl(mixer, meterSource),
-      mixerViewport(desktopController.getMixerController().getViewport()), transportControl(mixer.getTransportSource()) {
+      mixerViewport(desktopController.getMixerController().getViewport()),
+      transportControl(mixer.getTransportSource()) {
     createControls();
     masterTrackControl.addListener(&desktopController);
     setSize(800, 280);
@@ -13,20 +14,21 @@ MixerPanel::MixerPanel(
 MixerPanel::~MixerPanel() { masterTrackControl.removeListener(&desktopController); }
 
 void MixerPanel::createControls() {
+    mixerViewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
     addAndMakeVisible(transportControl);
     addAndMakeVisible(masterTrackControl);
-//    addAndMakeVisible(mixerViewport);
+    addAndMakeVisible(mixerViewport);
 }
 //
-//void MixerPanel::clear() {
+// void MixerPanel::clear() {
 //    tracks.clear();
 //    removeAllChildren();
 //    createControls();
 //}
 //
-//void MixerPanel::update() { masterTrackControl.update(); }
+// void MixerPanel::update() { masterTrackControl.update(); }
 //
-//void MixerPanel::addTrack(TrackControl *trackControl) {
+// void MixerPanel::addTrack(TrackControl *trackControl) {
 //    tracks.push_back(trackControl);
 //    addAndMakeVisible(trackControl);
 //}
@@ -49,9 +51,5 @@ void MixerPanel::resized() {
     transportControl.setBounds(area.removeFromTop(buttonHeight).reduced(transportMargin));
     area.removeFromTop(1);
     masterTrackControl.setBounds(area.removeFromLeft(masterTrackControl.getPreferredWidth()));
-//    mixerViewport.setBounds(area);
-
-    //    for (auto &track : tracks) {
-//        track->setBounds(area.removeFromLeft(track->getPreferredWidth()));
-//    }
+    mixerViewport.setBounds(area);
 }

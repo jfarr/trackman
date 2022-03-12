@@ -121,11 +121,11 @@ class DesktopComponent : public juce::AudioAppComponent,
             break;
         case CommandIDs::newTrack:
             result.setInfo("track", "Create a new track", "Menu", 0);
-            result.addDefaultKeypress('t', juce::ModifierKeys::shiftModifier);
+            result.addDefaultKeypress('t', juce::ModifierKeys::commandModifier);
             break;
         case CommandIDs::newAudioPlayer:
             result.setInfo("audioplayer", "Create a new audioplayer component", "Menu", 0);
-            result.addDefaultKeypress('p', juce::ModifierKeys::shiftModifier);
+            result.addDefaultKeypress('p', juce::ModifierKeys::commandModifier);
             break;
         case CommandIDs::deleteTrackSelection:
             result.setInfo("delete " + desktopController.getSelectionType(),
