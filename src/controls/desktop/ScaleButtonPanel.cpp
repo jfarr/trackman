@@ -3,11 +3,16 @@
 
 ScaleButtonPanel::ScaleButtonPanel(bool vertical) : vertical(vertical) {
     minusButton.setButtonText("-");
-    minusButton.setConnectedEdges(juce::Button::ConnectedOnRight);
     minusButton.onClick = [this]() { minusButtonClicked(); };
     plusButton.setButtonText("+");
-    plusButton.setConnectedEdges(juce::Button::ConnectedOnLeft);
     plusButton.onClick = [this]() { plusButtonClicked(); };
+    if (vertical) {
+        plusButton.setConnectedEdges(juce::Button::ConnectedOnBottom);
+        minusButton.setConnectedEdges(juce::Button::ConnectedOnTop);
+    } else {
+        minusButton.setConnectedEdges(juce::Button::ConnectedOnRight);
+        plusButton.setConnectedEdges(juce::Button::ConnectedOnLeft);
+    }
     addAndMakeVisible(minusButton);
     addAndMakeVisible(plusButton);
 }
@@ -21,8 +26,13 @@ void ScaleButtonPanel::paint(juce::Graphics &g) {
 void ScaleButtonPanel::resized() {
     auto area = getLocalBounds();
     auto buttonWidth = 12;
-    minusButton.setBounds(area.removeFromLeft(buttonWidth));
-    plusButton.setBounds(area.removeFromLeft(buttonWidth));
+    if (vertical) {
+        plusButton.setBounds(area.removeFromTop(buttonWidth));
+        minusButton.setBounds(area.removeFromTop(buttonWidth));
+    } else {
+        minusButton.setBounds(area.removeFromLeft(buttonWidth));
+        plusButton.setBounds(area.removeFromLeft(buttonWidth));
+    }
 }
 
 void ScaleButtonPanel::minusButtonClicked() { notifyScaleDecreased(); }
