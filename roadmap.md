@@ -1,13 +1,12 @@
 # Roadmap
 
 ## Short-Term
-- Redo move dragging
-- Drop multiple files
 - Prompt for delete track/sample
 - Prompt for save on exit
 - Finish gain sliders
   - Ticks
   - Custom image
+- Drop multiple files
 - Sample info popup
 - Use undo manager
 
