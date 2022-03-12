@@ -3,13 +3,13 @@
 
 //==============================================================================
 TransportControl::TransportControl(juce::AudioTransportSource &transportSource, bool enabled)
-    : startButtonImage(juce::Image::ARGB, buttonWidth, buttonHeight, true),
-      playButtonOffImage(juce::Image::ARGB, buttonWidth, buttonHeight, true),
-      playButtonOnImage(juce::Image::ARGB, buttonWidth, buttonHeight, true),
-      stopButtonImage(juce::Image::ARGB, buttonWidth, buttonHeight, true),
-      pauseButtonOffImage(juce::Image::ARGB, buttonWidth, buttonHeight, true),
-      pauseButtonOnImage(juce::Image::ARGB, buttonWidth, buttonHeight, true), startButton("start"), playButton("play"),
-      stopButton("stop"), pauseButton("pause"), transportSource(transportSource), enabled(enabled) {
+    : startButtonImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      playButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      playButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      stopButtonImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      pauseButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      pauseButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true), startButton("start"),
+      playButton("play"), stopButton("stop"), pauseButton("pause"), transportSource(transportSource), enabled(enabled) {
     transportSource.addChangeListener(this);
     createControls();
     startTimer(20);
@@ -74,7 +74,8 @@ void TransportControl::drawStartButton(juce::Image &image, juce::Colour bgColor,
     juce::Path path;
     auto cornerSize = 60.0f;
     g.setColour(bgColor);
-    path.addRoundedRectangle(0.0, 0.0, buttonWidth, buttonHeight, cornerSize, cornerSize, true, false, true, false);
+    path.addRoundedRectangle(
+        0.0, 0.0, buttonImageWidth, buttonImageHeight, cornerSize, cornerSize, true, false, true, false);
     g.fillPath(path);
     g.setColour(borderColor);
     g.strokePath(path, juce::PathStrokeType(5.0f));
@@ -90,19 +91,15 @@ void TransportControl::drawStartButton(juce::Image &image, juce::Colour bgColor,
     juce::Point<float> bottomRight(iconLeft + iconWidth, iconTop + iconHeight);
     p.addTriangle(left, topRight, bottomRight);
     g.fillRect(iconLeft, iconTop, 30.0, iconHeight);
-    //    juce::Point<float> topLeft(iconLeft + 40.0, iconTop);
-    //    juce::Point<float> bottomLeft(iconLeft + 40.0, iconTop + iconHeight);
-    //    juce::Point<float> right(iconLeft + iconWidth, iconTop + iconHeight / 2);
-    //    p.addTriangle(topLeft, bottomLeft, right);
     g.fillPath(p);
 }
 
 void TransportControl::drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
     juce::Graphics g(image);
     g.setColour(bgColor);
-    g.fillRect(0.0, 0.0, buttonWidth, buttonHeight);
+    g.fillRect(0.0, 0.0, buttonImageWidth, buttonImageHeight);
     g.setColour(borderColor);
-    g.drawRect(0.0, 0.0, buttonWidth, buttonHeight, 5.0);
+    g.drawRect(0.0, 0.0, buttonImageWidth, buttonImageHeight, 5.0);
     g.setColour(juce::Colours::white);
     juce::Path p;
     auto iconLeft = 210.0f;
@@ -119,9 +116,9 @@ void TransportControl::drawPlayButton(juce::Image &image, juce::Colour bgColor, 
 void TransportControl::drawStopButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
     juce::Graphics g(image);
     g.setColour(bgColor);
-    g.fillRect(0.0, 0.0, buttonWidth, buttonHeight);
+    g.fillRect(0.0, 0.0, buttonImageWidth, buttonImageHeight);
     g.setColour(borderColor);
-    g.drawRect(0.0, 0.0, buttonWidth, buttonHeight, 5.0);
+    g.drawRect(0.0, 0.0, buttonImageWidth, buttonImageHeight, 5.0);
     g.setColour(juce::Colours::white);
     auto iconLeft = 200.0f;
     auto iconTop = 50.0f;
@@ -134,7 +131,8 @@ void TransportControl::drawPauseButton(juce::Image &image, juce::Colour bgColor,
     juce::Path path;
     auto cornerSize = 60.0f;
     g.setColour(bgColor);
-    path.addRoundedRectangle(0.0, 0.0, buttonWidth, buttonHeight, cornerSize, cornerSize, false, true, false, true);
+    path.addRoundedRectangle(
+        0.0, 0.0, buttonImageWidth, buttonImageHeight, cornerSize, cornerSize, false, true, false, true);
     g.fillPath(path);
     g.setColour(borderColor);
     g.strokePath(path, juce::PathStrokeType(5.0f));

@@ -50,8 +50,8 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
     void pauseButtonClicked();
     void loopButtonClicked();
 
-    const float buttonHeight = 210;
-    const float buttonWidth = 500;
+    const float buttonImageWidth = 500;
+    const float buttonImageHeight = 210;
 
     juce::ImageButton startButton;
     juce::ImageButton playButton;
