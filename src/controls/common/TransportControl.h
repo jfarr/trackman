@@ -50,8 +50,6 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
     void startButtonClicked();
     void loopButtonClicked();
 
-//    juce::TextButton playButton;
-//    juce::TextButton stopButton;
     juce::ImageButton playButton;
     juce::ImageButton stopButton;
     juce::TextButton pauseButton;
@@ -59,8 +57,12 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
     juce::ToggleButton loopingToggle;
     juce::Label currentPositionLabel;
 
-    juce::Image playButtonImage;
+    juce::Image playButtonOffImage;
+    juce::Image playButtonOnImage;
     juce::Image stopButtonImage;
+
+    void drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
+    void setButtonImage(juce::ImageButton &button, juce::Image &image);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TransportControl)
 };

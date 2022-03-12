@@ -3,8 +3,9 @@
 
 //==============================================================================
 TransportControl::TransportControl(juce::AudioTransportSource &transportSource, bool enabled)
-    : playButtonImage(juce::Image::ARGB, 50, 21, true), stopButtonImage(juce::Image::ARGB, 50, 21, true),
-      playButton("play"), stopButton("stop"), transportSource(transportSource), enabled(enabled) {
+    : playButtonOnImage(juce::Image::ARGB, 50, 21, true), playButtonOffImage(juce::Image::ARGB, 50, 21, true),
+      stopButtonImage(juce::Image::ARGB, 50, 21, true), playButton("play"), stopButton("stop"),
+      transportSource(transportSource), enabled(enabled) {
     transportSource.addChangeListener(this);
     createControls();
     startTimer(20);
@@ -14,17 +15,21 @@ TransportControl::~TransportControl() {}
 
 void TransportControl::createControls() {
 
-    juce::Graphics g(playButtonImage);
-    g.setColour(juce::Colours::steelblue);
-    g.fillRect(0, 0, 50, 21);
-    g.setColour(juce::Colours::grey.brighter(0.3f));
-    g.drawRect(0, 0, 50, 21);
-    g.setColour(juce::Colours::white);
-    juce::Path p;
-    p.addTriangle(21, 5, 21, 17, 32, 11);
-    g.fillPath(p);
-    playButton.setImages(true, false, false, playButtonImage, 0.9, juce::Colours::transparentWhite, juce::Image(), 1.0,
-        juce::Colours::transparentWhite, juce::Image(), 1.0, juce::Colours::transparentWhite);
+    //    juce::Graphics g(playButtonImage);
+    //    g.setColour(juce::Colours::steelblue);
+    //    g.fillRect(0, 0, 50, 21);
+    //    g.setColour(juce::Colours::grey.brighter(0.3f));
+    //    g.drawRect(0, 0, 50, 21);
+    //    g.setColour(juce::Colours::white);
+    //    juce::Path p;
+    //    p.addTriangle(21, 5, 21, 17, 32, 11);
+    //    g.fillPath(p);
+
+    drawPlayButton(playButtonOffImage, juce::Colours::steelblue, juce::Colours::grey.brighter(0.3f));
+    drawPlayButton(playButtonOnImage, juce::Colours::lightgreen, juce::Colours::lightgrey);
+    setButtonImage(playButton, playButtonOffImage);
+//    playButton.setImages(true, false, false, playButtonOffImage, 0.9, juce::Colours::transparentWhite, juce::Image(),
+//        1.0, juce::Colours::transparentWhite, juce::Image(), 1.0, juce::Colours::transparentWhite);
 
     playButton.onClick = [this] { playButtonClicked(); };
     playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
@@ -39,8 +44,9 @@ void TransportControl::createControls() {
     g2.drawRect(0, 0, 50, 21);
     g2.setColour(juce::Colours::white);
     g2.fillRect(20, 5, 11, 11);
-    stopButton.setImages(true, false, false, stopButtonImage, 0.9, juce::Colours::transparentWhite, juce::Image(), 1.0,
-        juce::Colours::transparentWhite, juce::Image(), 1.0, juce::Colours::transparentWhite);
+//    stopButton.setImages(true, false, false, stopButtonImage, 0.9, juce::Colours::transparentWhite, juce::Image(), 1.0,
+//        juce::Colours::transparentWhite, juce::Image(), 1.0, juce::Colours::transparentWhite);
+    setButtonImage(stopButton, stopButtonImage);
 
     stopButton.onClick = [this] { stopButtonClicked(); };
     stopButton.setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
@@ -68,6 +74,28 @@ void TransportControl::createControls() {
 
     currentPositionLabel.setEnabled(enabled);
     addAndMakeVisible(&currentPositionLabel);
+}
+
+void TransportControl::setButtonImage(juce::ImageButton &button, juce::Image &image) {
+    button.setImages(true, false, false, image, 0.9, juce::Colours::transparentWhite, juce::Image(),
+        1.0, juce::Colours::transparentWhite, juce::Image(), 1.0, juce::Colour{ 0x20ffffff });
+}
+
+void TransportControl::drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) {
+    auto buttonHeight = 21;
+    auto buttonWidth = 50;
+    juce::Graphics g(image);
+    g.setColour(bgColor);
+    g.fillRect(0, 0, buttonWidth, buttonHeight);
+    g.setColour(borderColor);
+    g.drawRect(0, 0, buttonWidth, buttonHeight);
+    g.setColour(juce::Colours::white);
+    juce::Path p;
+    juce::Point<float> topLeft(21, 5);
+    juce::Point<float> bottomLeft(21, 17);
+    juce::Point<float> right(32, 11);
+    p.addTriangle(topLeft, bottomLeft, right);
+    g.fillPath(p);
 }
 
 void TransportControl::setEnabled(bool isEnabled) {
@@ -104,7 +132,8 @@ void TransportControl::changeState(TransportState newState) {
 
         switch (state) {
         case TransportState::Stopped:
-            playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
+//            playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
+            setButtonImage(playButton, playButtonOffImage);
             pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
             transportSource.setPosition(0.0);
             break;
@@ -114,7 +143,8 @@ void TransportControl::changeState(TransportState newState) {
             break;
 
         case TransportState::Playing:
-            playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::lightgreen);
+//            playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::lightgreen);
+            setButtonImage(playButton, playButtonOnImage);
             pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
             break;
 
