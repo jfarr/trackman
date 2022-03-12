@@ -68,16 +68,15 @@ void SampleThumbnail::paintWithoutOverlay(juce::Graphics &g) {
     auto area = getLocalBounds();
     auto margin = 3;
 
-    auto alpha = 0.8f;
     auto bgcolor = track.isSelected() && sample.isSelected() ? juce::Colours::lightgrey : juce::Colours::dimgrey;
-    g.fillAll(bgcolor.withAlpha(alpha));
+    g.fillAll(bgcolor);
     g.setColour(juce::Colours::grey);
     g.drawRect(0, 0, getWidth(), getHeight());
 
     auto thumbnailBounds = area.reduced(margin);
-    g.setColour(juce::Colours::darkgrey.withAlpha(alpha));
+    g.setColour(juce::Colours::dimgrey);
     g.fillRect(thumbnailBounds);
-    g.setColour(juce::Colours::green.withAlpha(alpha));
+    g.setColour(juce::Colours::limegreen);
     thumbnail.drawChannels(g, thumbnailBounds, 0.0, thumbnail.getTotalLength(), 1.0f);
 }
 

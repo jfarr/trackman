@@ -14,8 +14,10 @@ class DesktopController : public FileDragDropTarget, public MasterTrackListener,
   public:
     DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager,
         juce::AudioFormatManager &formatManager);
-    ~DesktopController();
+    ~DesktopController() override = default;
 
+    Project &getProject() { return project; }
+    TrackList &getTrackList() { return trackList; }
     Mixer &getMixer() { return mixer; }
     MixerController &getMixerController() { return mixerController; }
     TrackListController &getTrackListController() { return trackListController; }
@@ -72,10 +74,10 @@ class DesktopController : public FileDragDropTarget, public MasterTrackListener,
     CommandList commandList;
     TrackList trackList;
     Mixer mixer;
+    Project project;
     MixerController mixerController;
     TrackListController trackListController;
 
-    Project project;
     std::unique_ptr<juce::FileChooser> chooser;
     juce::File projectFile;
     bool dirty = false;
