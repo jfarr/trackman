@@ -1,6 +1,12 @@
 # Roadmap
 
 ## Short-Term
+- Bug fixes
+  - Meter strip scrolls out of view when vscrolling
+  - Tracks that zoom out of view when vertical scrolling won't expand again
+  - Dropped samples snap to center point
+  - Track level meter scale is off
+  - Delete menu item not updating on native Mac menu
 - Sample info popup
 - Drop multiple files
   - Default one track
@@ -10,10 +16,6 @@
 - Click to move transport
 - Song start / end position
 - Loop start / end position
-- Bug fixes
-  - Dropped samples snap to center point
-  - Track level meter scale is off
-  - Delete menu item not updating on native Mac menu
 
 
 ## Long Term
