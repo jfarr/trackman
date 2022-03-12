@@ -16,12 +16,10 @@ class DecibelSliderLookAndFeel : public juce::LookAndFeel_V4 {
         juce::LookAndFeel_V4::drawLinearSlider(
             g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, slider);
 
-//        g.setColour(juce::Colours::lightgrey);
         auto buttonRect = juce::Rectangle<int>(13, height / 6).withCentre(juce::Point<int>((width - x) / 2, sliderPos));
         auto r = buttonRect;
 
-        //        g.fillRect(20, 20, 20, 20);
-//        g.fillRect(r);
+        // draw button gradients
         auto topRect = r.removeFromTop(3);
         auto bottomRect = r.removeFromBottom(6);
         juce::ColourGradient gradient =
@@ -36,8 +34,8 @@ class DecibelSliderLookAndFeel : public juce::LookAndFeel_V4 {
             juce::Colours::darkgrey, r.getY(), juce::Colours::silver, r.getBottom() + bottomRect.getHeight());
         g.setGradientFill(gradient);
         g.fillRect(r);
-//        g.setColour(juce::Colours::grey);
-//        g.drawHorizontalLine(topRect.getBottom(), topRect.getY(), topRect.getRight());
+
+        // draw button lines
         g.setColour(juce::Colours::silver);
         g.drawHorizontalLine(topRect.getBottom(), topRect.getX(), topRect.getRight());
         g.drawHorizontalLine(bottomRect.getY(), bottomRect.getX(), bottomRect.getRight());
@@ -57,6 +55,7 @@ class DecibelSliderLookAndFeel : public juce::LookAndFeel_V4 {
             g.drawLine(r.getX() + 1, lineY2, r.getRight() - 1, lineY2, 0.5);
         }
 
+        // draw ticks
         g.setColour(juce::Colours::grey);
         g.setFont(g.getCurrentFont().withHeight(10));
         auto tickX = width - 15;
