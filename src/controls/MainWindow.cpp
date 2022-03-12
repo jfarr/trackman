@@ -11,7 +11,8 @@ MainWindow::MainWindow(juce::String name, juce::AudioFormatManager &formatManage
         auto r = display->userArea;
         setResizeLimits(250, 250, r.getWidth(), r.getHeight());
     }
-    setContentOwned(new DesktopComponent(this, formatManager), true);
+    desktop = new DesktopComponent(this, formatManager);
+    setContentOwned(desktop, true);
 
 #if JUCE_IOS || JUCE_ANDROID
     setFullScreen(true);

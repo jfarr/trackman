@@ -1,8 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Prompt for delete track/sample
-- Prompt for save on exit
 - Finish gain sliders
   - Ticks
   - Custom image
@@ -13,6 +11,7 @@
 ## Long Term
 
 - Copy / paste
+- Tempo + time signature
 - Console commands
 - Script window
 - Unit tests
