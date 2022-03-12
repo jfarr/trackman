@@ -180,6 +180,45 @@ void TrackListController::sampleResized(Sample &sample, int width) {
     desktopController.resizeSample(sample, curLen, newLen);
 }
 
-void TrackListController::dragEnded() { updateLanes(); }
+void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int screenY) {
+    thumbnail.setTopLeftPosition(thumbnail.getPosition().withX(x));
+    auto y = screenY - trackListPanel.getScreenPosition().getY();
+    auto track = trackListPanel.getTrackAtPos(x, y);
+    if (track != currentDragTrack) {
+        currentDragTrack = track;
+        DBG("track: " << juce::String::toHexString((long)track));
+        TrackLaneController *lane;
+        if (track == nullptr) {
+            DBG("newDragTrack: " << juce::String::toHexString((long)newDragTrack));
+            if (newDragTrack == nullptr) {
+                track = new Track(trackList);
+                newDragTrack = new TrackLaneController(project, *track, *this, transport, formatManager);
+                trackListPanel.addLane(&newDragTrack->getTrackLaneControl());
+                trackListPanel.addAndMakeVisible(&newDragTrack->getTrackLaneControl());
+                trackListPanel.resize();
+            }
+            lane = newDragTrack;
+        } else {
+            lane = getLane(*track);
+        }
+        if (lane != nullptr) {
+            getLane(thumbnail.getTrack())->getTrackLaneControl().removeChildComponent(&thumbnail);
+            lane->getTrackLaneControl().addAndMakeVisible(thumbnail);
+        }
+    }
+}
+
+void TrackListController::dragEnded() {
+    if (newDragTrack != nullptr) {
+        trackListPanel.removeChildComponent(&newDragTrack->getTrackLaneControl());
+        trackListPanel.removeLane(&newDragTrack->getTrackLaneControl());
+        trackListPanel.resize();
+        delete &newDragTrack->getTrack();
+        delete newDragTrack;
+        newDragTrack = nullptr;
+    }
+    currentDragTrack = nullptr;
+    updateLanes();
+}
 
 void TrackListController::updateMixerSource() { desktopController.getMixerController().updateAudioSource(); }

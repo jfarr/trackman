@@ -11,23 +11,19 @@ void StretchHandle::paint(juce::Graphics &g) {
 }
 
 void StretchHandle::mouseDrag(const juce::MouseEvent &event) {
-    if (!dragging) {
-        dragging = true;
-        auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
-        if (container != nullptr) {
-            container->startDragging("clip", this, scaledDragImage);
-        }
-    } else {
-        auto bounds = thumbnail.getScreenBounds();
-        auto x = event.getScreenX();
-        auto newWidth = std::max(x - bounds.getX(), 1);
-        thumbnail.setBounds(thumbnail.getBounds().withWidth(newWidth));
+    auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
+    if (container != nullptr) {
+        container->startDragging("clip", this, scaledDragImage);
     }
+    auto bounds = thumbnail.getScreenBounds();
+    auto x = event.getScreenX();
+    auto newWidth = std::max(x - bounds.getX(), 1);
+    thumbnail.setBounds(thumbnail.getBounds().withWidth(newWidth));
 }
 
 void StretchHandle::mouseDown(const juce::MouseEvent &event) { thumbnail.mouseDown(event); }
 
-void StretchHandle::mouseUp(const juce::MouseEvent &event) { dragging = false; }
+void StretchHandle::mouseUp(const juce::MouseEvent &event) {}
 
 SampleThumbnail::SampleThumbnail(Project &project, Track &track, Sample &sample, juce::AudioTransportSource &transport,
     juce::AudioFormatManager &formatManager)
@@ -110,14 +106,22 @@ void SampleThumbnail::resized() {
 void SampleThumbnail::mouseDown(const juce::MouseEvent &event) {
     Component::mouseDown(event);
     notifySampleSelected(track, sample);
+    if (!dragging) {
+        dragging = true;
+        xPos = getPosition().getX();
+    }
 }
+
+void SampleThumbnail::mouseUp(const juce::MouseEvent &event) { dragging = false; }
 
 void SampleThumbnail::mouseDrag(const juce::MouseEvent &event) {
     auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
-    auto pos = juce::Point<int>(-event.getPosition().getX(), -event.getPosition().getY());
     if (container != nullptr) {
-        container->startDragging("clip", this, *getImage(), false, &pos);
+        container->startDragging("clip", this);
     }
+    auto d = event.getDistanceFromDragStartX();
+//    setTopLeftPosition(getPosition().withX(xPos + d));
+    notifyMouseDragged(*this, xPos + d, event.getScreenY());
 }
 
 void SampleThumbnail::addListener(SampleListener *listener) {
@@ -131,5 +135,11 @@ void SampleThumbnail::removeListener(SampleListener *listener) { sampleListeners
 void SampleThumbnail::notifySampleSelected(Track &track, Sample &selected) {
     for (SampleListener *listener : sampleListeners) {
         listener->sampleSelected(track, selected);
+    }
+}
+
+void SampleThumbnail::notifyMouseDragged(SampleThumbnail &thumbnail, int x, int y) {
+    for (SampleListener *listener : sampleListeners) {
+        listener->mouseDragged(thumbnail, x, y);
     }
 }

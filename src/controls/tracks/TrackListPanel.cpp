@@ -69,11 +69,11 @@ void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
 }
 
 void TrackListPanel::dragOperationStarted(const DragAndDropTarget::SourceDetails &dragSourceDetails) {
-    if (dynamic_cast<SampleThumbnail *>(dragSourceDetails.sourceComponent.get()) != nullptr) {
-        dragSourceOffset = dragSourceDetails.sourceComponent->getWidth() / 2 - dragSourceDetails.localPosition.getX();
-        dragSourceDetails.sourceComponent->getParentComponent()->removeChildComponent(
-            dragSourceDetails.sourceComponent);
-    }
+//    if (dynamic_cast<SampleThumbnail *>(dragSourceDetails.sourceComponent.get()) != nullptr) {
+//        dragSourceOffset = dragSourceDetails.sourceComponent->getWidth() / 2 - dragSourceDetails.localPosition.getX();
+//        dragSourceDetails.sourceComponent->getParentComponent()->removeChildComponent(
+//            dragSourceDetails.sourceComponent);
+//    }
 }
 
 void TrackListPanel::dragOperationEnded(const DragAndDropTarget::SourceDetails &dragSourceDetails) {
