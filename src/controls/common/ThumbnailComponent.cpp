@@ -19,27 +19,23 @@ void ThumbnailComponent::paint(juce::Graphics &g) {
 }
 
 void ThumbnailComponent::paintIfNoFileLoaded(juce::Graphics &g, const juce::Rectangle<int> &thumbnailBounds) {
-    g.setColour(juce::Colours::darkgrey);
+    g.setColour(juce::Colours::dimgrey);
     g.fillRect(thumbnailBounds);
     g.setColour(juce::Colours::white);
     g.drawFittedText("No File Loaded", thumbnailBounds, juce::Justification::centred, 1);
 }
 
 void ThumbnailComponent::paintIfFileLoaded(juce::Graphics &g, const juce::Rectangle<int> &thumbnailBounds) {
-    g.setColour(juce::Colours::darkgrey);
+    g.setColour(juce::Colours::dimgrey);
     g.fillRect(thumbnailBounds);
-
-    g.setColour(juce::Colours::green);
-
-    thumbnail.drawChannels(g, thumbnailBounds,
-        0.0,                        // start time
-        thumbnail.getTotalLength(), // end time
-        1.0f);                      // vertical zoom
+    g.setColour(juce::Colours::limegreen);
+    thumbnail.drawChannels(g, thumbnailBounds, 0.0, thumbnail.getTotalLength(), 1.0f);
 }
 
 void ThumbnailComponent::changeListenerCallback(juce::ChangeBroadcaster *source) {
-    if (source == &thumbnail)
+    if (source == &thumbnail) {
         thumbnailChanged();
+    }
 }
 
 void ThumbnailComponent::thumbnailChanged() { repaint(); }

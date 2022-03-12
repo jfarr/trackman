@@ -1,7 +1,7 @@
 #include "TrackLaneControl.h"
 
-TrackLaneControl::TrackLaneControl(Track &track, juce::AudioTransportSource &transport)
-    : track(track), transport(transport) {
+TrackLaneControl::TrackLaneControl(Project &project, Track &track, juce::AudioTransportSource &transport)
+    : project(project), track(track), transport(transport) {
     createControls();
     setSize(800, 100);
 }
@@ -39,7 +39,7 @@ void TrackLaneControl::paint(juce::Graphics &g) {
 
     if (duration > 0.0) {
         auto audioPosition = (float)transport.getCurrentPosition();
-        auto drawPosition = audioPosition * scale + leftPanelWidth;
+        auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
 
         g.setColour(juce::Colour{0xff282828});
         g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
@@ -54,6 +54,7 @@ void TrackLaneControl::resized() {
     auto leftPanelWidth = 25;
     auto labelHeight = 15;
     auto margin = 3;
+    auto scale = project.getHorizontalScale();
     area.removeFromLeft(leftPanelWidth);
     trackLabel.setBounds(area.removeFromTop(labelHeight).withTrimmedTop(margin));
     area.removeFromTop(margin);

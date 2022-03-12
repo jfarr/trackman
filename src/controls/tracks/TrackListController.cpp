@@ -25,7 +25,7 @@ void TrackListController::update() {
     lanes.clear();
     trackListPanel.clear();
     trackList.eachTrack([this](Track &track) {
-        auto lane = new TrackLaneController(*this, track, transport, formatManager);
+        auto lane = new TrackLaneController(project, track, *this, transport, formatManager);
         lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
         trackListPanel.addLane(&lane->getTrackLaneControl());
         lane->update();

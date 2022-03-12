@@ -29,9 +29,9 @@ void StretchHandle::mouseDown(const juce::MouseEvent &event) { thumbnail.mouseDo
 
 void StretchHandle::mouseUp(const juce::MouseEvent &event) { dragging = false; }
 
-SampleThumbnail::SampleThumbnail(
-    Track &track, Sample &sample, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
-    : track(track), sample(sample), transport(transport), thumbnailCache(5),
+SampleThumbnail::SampleThumbnail(Project &project, Track &track, Sample &sample, juce::AudioTransportSource &transport,
+    juce::AudioFormatManager &formatManager)
+    : project(project), track(track), sample(sample), transport(transport), thumbnailCache(5),
       thumbnail(512, formatManager, thumbnailCache), stretchHandle(*this) {
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     createControls();
@@ -87,7 +87,7 @@ void SampleThumbnail::paintOverlay(juce::Graphics &g) {
         auto audioPosition = (float)transport.getCurrentPosition();
         if (audioPosition >= sample.getStartPos() && audioPosition <= sample.getEndPos()) {
             auto samplePos = audioPosition - sample.getStartPos();
-            auto drawPosition = samplePos * scale;
+            auto drawPosition = samplePos * project.getHorizontalScale();
             g.setColour(juce::Colour{0xff282828});
             g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
         }
