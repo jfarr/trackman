@@ -10,7 +10,7 @@ TrackListController::TrackListController(DesktopController &desktopController, j
       formatManager(formatManager) {
 
     trackListViewport.setSize(800, 350);
-    trackListViewport.setScrollBarsShown(true, true);
+    trackListViewport.setScrollBarsShown(false, true);
     trackListViewport.setViewedComponent(&trackListPanel, false);
 
     trackListPanel.addListener((SampleListener *)this);

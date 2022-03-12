@@ -2,7 +2,6 @@
 
 ## Short-Term
 - Bug fixes
-  - Tracks that zoom out of view when vertical scrolling won't expand again
   - Meter strip scrolls out of view when vscrolling
   - Dropped samples snap to center point
   - Can't scroll mixer far enough to see the last track

@@ -8,6 +8,7 @@ class Project {
     Project(TrackList &trackList, Mixer &mixer) : trackList(trackList), mixer(mixer) {}
     ~Project() = default;
 
+    TrackList &getTrackList() const { return trackList; }
     double getVerticalScale() const { return verticalScale; }
     double getHorizontalScale() const { return horizontalScale; }
 

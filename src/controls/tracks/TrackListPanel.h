@@ -25,6 +25,39 @@ class DropBox : public juce::Component {
 
   private:
     std::unique_ptr<juce::AudioFormatReaderSource> source;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DropBox)
+};
+
+class InnerTrackPanel : public juce::Component {
+  public:
+    InnerTrackPanel(Project &project, juce::Viewport &viewport);
+    ~InnerTrackPanel() = default;
+
+    Track *getTrackAtPos(int x, int y);
+
+    void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
+    void removeLane(TrackLaneControl *lane) { lanes.remove(lane); }
+    void clear() { lanes.clear(); }
+    void resize();
+    void update();
+
+    //==============================================================================
+    // Component
+    void paint(juce::Graphics &g) override;
+    void resized() override;
+
+    int getPanelWidth() const;
+    int getPanelHeight() const;
+
+  private:
+    Project &project;
+    juce::Viewport &viewport;
+    TimeMeter timeMeter;
+    std::list<TrackLaneControl *> lanes;
+
+    int getTrackLaneHeight() const;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InnerTrackPanel)
 };
 
 class TrackListPanel : public juce::Component,
@@ -32,16 +65,16 @@ class TrackListPanel : public juce::Component,
                        public juce::DragAndDropTarget,
                        private juce::Timer {
   public:
-    TrackListPanel(Project &project, TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
-        juce::AudioFormatManager &formatManager);
+    TrackListPanel(Project &project, TrackList &trackList, juce::Viewport &viewport,
+        juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
     ~TrackListPanel();
 
-    Track *getTrackAtPos(int x, int y);
+    Track *getTrackAtPos(int x, int y) { return innerPanel.getTrackAtPos(x, y); }
 
-    void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
-    void removeLane(TrackLaneControl *lane) { lanes.remove(lane); }
+    void addLane(TrackLaneControl *lane) { innerPanel.addLane(lane); }
+    void removeLane(TrackLaneControl *lane) { innerPanel.removeLane(lane); }
     void resize();
-    void clear() { lanes.clear(); }
+    void clear() { innerPanel.clear(); }
     void update();
 
     void fileDragEnter(const juce::StringArray &files, int x, int y);
@@ -76,7 +109,9 @@ class TrackListPanel : public juce::Component,
     juce::AudioTransportSource &transport;
     juce::AudioFormatManager &formatManager;
     TimeMeter timeMeter;
-    std::list<TrackLaneControl *> lanes;
+    juce::Viewport innerViewport;
+    InnerTrackPanel innerPanel;
+    //    std::list<TrackLaneControl *> lanes;
 
     DropBox dropBox;
     int dragSourceOffset;
@@ -84,9 +119,9 @@ class TrackListPanel : public juce::Component,
     std::list<SampleListener *> sampleListeners;
     std::list<TrackListListener *> trackListListeners;
 
-    int getPanelWidth() const;
-    int getPanelHeight() const;
-    int getTrackLaneHeight() const;
+//    int getPanelWidth() const;
+//    int getPanelHeight() const;
+//    int getTrackLaneHeight() const;
 
     void notifySampleDropped(SampleThumbnail *thumbnail, int x, int y);
     void notifySampleResized(SampleThumbnail *thumbnail, int width);
