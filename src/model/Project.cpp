@@ -6,7 +6,7 @@
 using json = nlohmann::json;
 
 std::string Project::to_json() {
-    json project_json = {{"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
+    json project_json = {{"horizontalScale", horizontalScale}, {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
     project_json["tracks"] = json::array();
     trackList.eachTrack([&project_json](Track &track) {
         json track_json = {
@@ -27,6 +27,7 @@ void Project::from_json(
     std::ifstream s(filename);
     json project_json;
     s >> project_json;
+    horizontalScale = project_json["horizontalScale"];
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);
     trackList.clear();

@@ -9,6 +9,7 @@
 - Finish gain sliders
   - Ticks
   - Custom image
+- Sample info popup
 
 ## Long Term
 
