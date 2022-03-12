@@ -1,7 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Image buttons
 - Drop multiple files
 - Sample info popup
 - Use undo manager
