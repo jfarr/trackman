@@ -12,6 +12,8 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::Aud
     addListener(&desktopController);
     scaleButtonPanel.addListener(&desktopController);
 
+    trackListViewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
+    trackListViewport.getVerticalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
     trackListViewport.getHorizontalScrollBar().setAutoHide(false);
     trackListViewport.getVerticalScrollBar().setAutoHide(false);
     addAndMakeVisible(timeMeter);

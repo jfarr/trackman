@@ -17,7 +17,6 @@ void TimeMeter::paint(juce::Graphics &g) {
     int y = getHeight() - tickHeight;
     int i = 0;
     int increment = std::max(1, (int)(75 / project.getHorizontalScale()));
-    DBG("increment " << increment);
     while (i * scale < bounds.getWidth()) {
         int x = leftPanelWidth + i * scale;
         g.drawRect(x, y, 1, tickHeight, 1);
