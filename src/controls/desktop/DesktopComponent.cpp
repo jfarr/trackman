@@ -34,13 +34,13 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::Aud
     addKeyListener(commandManager.getKeyMappings());
     setWantsKeyboardFocus(true);
 
-    parentWindow->setMenuBar(this);
-    addAndMakeVisible(menuBar);
-
     setSize(800, 600);
 
 #if JUCE_MAC
     MenuBarModel::setMacMainMenu(this);
+#else
+    parentWindow->setMenuBar(this);
+    addAndMakeVisible(menuBar);
 #endif
 }
 
