@@ -13,8 +13,8 @@ void TrackPanel::update() {
 
 void TrackPanel::resize() {
     setSize(getTrackWidth(), 280);
-    for (TrackControl *lane : tracks) {
-        lane->resized();
+    for (TrackControl *track : tracks) {
+        track->resized();
     }
     resized();
 }

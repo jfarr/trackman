@@ -8,14 +8,15 @@ MixerController::MixerController(DesktopController &desktopController, juce::Aud
       mixer(desktopController.getMixer()), formatManager(formatManager),
       mixerPanel(desktopController, trackList, mixer, mixer.getMeterSource()), trackPanel(mixerViewport) {
 
-    mixerViewport.setSize(800, 280);
-    mixerViewport.setViewedComponent(&trackPanel, false);
+//    mixerViewport.setSize(800, 280);
+//    mixerViewport.setViewedComponent(&trackPanel, false);
 
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
 }
 
 MixerController::~MixerController() {
+    // TODO: fix this
     for (std::unique_ptr<TrackController> &track : tracks) {
         track->removeListener((TrackListListener *)this);
     }
@@ -25,23 +26,23 @@ MixerController::~MixerController() {
 
 void MixerController::update() {
     updateAudioSource();
-    tracks.clear();
-    trackPanel.clear();
-    trackList.eachTrack([this](Track &track) {
-        auto controller = new TrackController(desktopController, track, formatManager);
-        tracks.push_back(std::unique_ptr<TrackController>(controller));
-        trackPanel.addTrack(&controller->getTrackControl());
-    });
-    trackPanel.update();
-    trackPanel.resized();
+//    tracks.clear();
+//    trackPanel.clear();
+//    trackList.eachTrack([this](Track &track) {
+//        auto controller = new TrackController(desktopController, track, formatManager);
+//        tracks.push_back(std::unique_ptr<TrackController>(controller));
+//        trackPanel.addTrack(&controller->getTrackControl());
+//    });
+//    trackPanel.update();
+//    trackPanel.resized();
 }
 
 void MixerController::repaint() {
-    for (std::unique_ptr<TrackController> &track : tracks) {
-        track->repaint();
-    }
-    mixerPanel.repaint();
-    trackPanel.repaint();
+//    for (std::unique_ptr<TrackController> &track : tracks) {
+//        track->repaint();
+//    }
+//    mixerPanel.repaint();
+//    trackPanel.repaint();
 }
 
 void MixerController::updateAudioSource() {

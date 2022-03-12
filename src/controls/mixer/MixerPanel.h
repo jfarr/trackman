@@ -13,13 +13,13 @@ class DesktopController;
 class MixerPanel : public juce::Component {
   public:
     MixerPanel(DesktopController &desktopController, TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource);
-    ~MixerPanel();
+    ~MixerPanel() override;
 
     int getPreferredHeight() const { return std::max(getHeight(), 280); }
 
-    void clear();
-    void update();
-    void addTrack(TrackControl *trackControl);
+//    void clear();
+//    void update();
+//    void addTrack(TrackControl *trackControl);
 
     TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
@@ -37,7 +37,7 @@ class MixerPanel : public juce::Component {
 
     TransportControl transportControl;
     MasterTrackControl masterTrackControl;
-    std::list<TrackControl *> tracks;
+//    std::list<TrackControl *> tracks;
 
     void createControls();
 

@@ -50,9 +50,9 @@ class MixerController : public TransportControlListener, public MasterTrackListe
     Mixer &mixer;
     juce::AudioFormatManager &formatManager;
 
+    juce::Viewport mixerViewport;
     MixerPanel mixerPanel;
     TrackPanel trackPanel;
-    juce::Viewport mixerViewport;
     std::list<std::unique_ptr<TrackController>> tracks;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerController)
