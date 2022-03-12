@@ -44,28 +44,30 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
 
     //==============================================================================
 
+    void startButtonClicked();
     void playButtonClicked();
     void stopButtonClicked();
     void pauseButtonClicked();
-    void startButtonClicked();
     void loopButtonClicked();
 
     const float buttonHeight = 210;
     const float buttonWidth = 500;
 
+    juce::ImageButton startButton;
     juce::ImageButton playButton;
     juce::ImageButton stopButton;
     juce::ImageButton pauseButton;
-    juce::TextButton startButton;
     juce::ToggleButton loopingToggle;
     juce::Label currentPositionLabel;
 
+    juce::Image startButtonImage;
     juce::Image playButtonOffImage;
     juce::Image playButtonOnImage;
     juce::Image stopButtonImage;
     juce::Image pauseButtonOffImage;
     juce::Image pauseButtonOnImage;
 
+    void drawStartButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
     void drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
     void drawStopButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
     void drawPauseButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
