@@ -67,11 +67,11 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
     juce::Image pauseButtonOffImage;
     juce::Image pauseButtonOnImage;
 
-    void drawStartButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
-    void drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
-    void drawStopButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
-    void drawPauseButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor);
-    void setButtonImage(juce::ImageButton &button, juce::Image &image);
+    void drawStartButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const;
+    void drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const;
+    void drawStopButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const;
+    void drawPauseButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const;
+    static void setButtonImage(juce::ImageButton &button, juce::Image &image);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TransportControl)
 };

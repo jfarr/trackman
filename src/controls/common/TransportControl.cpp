@@ -69,7 +69,7 @@ void TransportControl::setButtonImage(juce::ImageButton &button, juce::Image &im
         juce::Colours::transparentWhite, juce::Image(), 1.0, juce::Colour{0x20ffffff});
 }
 
-void TransportControl::drawStartButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) {
+void TransportControl::drawStartButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
     juce::Graphics g(image);
     juce::Path path;
     auto cornerSize = 60.0f;
@@ -81,14 +81,23 @@ void TransportControl::drawStartButton(juce::Image &image, juce::Colour bgColor,
 
     g.setColour(juce::Colours::white);
     juce::Path p;
-    juce::Point<float> topLeft(210, 50);
-    juce::Point<float> bottomLeft(210, 170);
-    juce::Point<float> right(320, 110);
-    p.addTriangle(topLeft, bottomLeft, right);
+    auto iconLeft = 180.0f;
+    auto iconTop = 50.0f;
+    auto iconWidth = 140.0f;
+    auto iconHeight = 120.0f;
+    juce::Point<float> left(iconLeft + 40.0, iconTop + iconHeight / 2);
+    juce::Point<float> topRight(iconLeft + iconWidth, iconTop);
+    juce::Point<float> bottomRight(iconLeft + iconWidth, iconTop + iconHeight);
+    p.addTriangle(left, topRight, bottomRight);
+    g.fillRect(iconLeft, iconTop, 30.0, iconHeight);
+    //    juce::Point<float> topLeft(iconLeft + 40.0, iconTop);
+    //    juce::Point<float> bottomLeft(iconLeft + 40.0, iconTop + iconHeight);
+    //    juce::Point<float> right(iconLeft + iconWidth, iconTop + iconHeight / 2);
+    //    p.addTriangle(topLeft, bottomLeft, right);
     g.fillPath(p);
 }
 
-void TransportControl::drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) {
+void TransportControl::drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
     juce::Graphics g(image);
     g.setColour(bgColor);
     g.fillRect(0.0, 0.0, buttonWidth, buttonHeight);
@@ -96,27 +105,31 @@ void TransportControl::drawPlayButton(juce::Image &image, juce::Colour bgColor, 
     g.drawRect(0.0, 0.0, buttonWidth, buttonHeight, 5.0);
     g.setColour(juce::Colours::white);
     juce::Path p;
-    juce::Point<float> topLeft(210, 50);
-    juce::Point<float> bottomLeft(210, 170);
-    juce::Point<float> right(320, 110);
+    auto iconLeft = 210.0f;
+    auto iconTop = 50.0f;
+    auto iconWidth = 110.0f;
+    auto iconHeight = 120.0f;
+    juce::Point<float> topLeft(iconLeft, iconTop);
+    juce::Point<float> bottomLeft(iconLeft, iconTop + iconHeight);
+    juce::Point<float> right(iconLeft + iconWidth, iconTop + iconHeight / 2);
     p.addTriangle(topLeft, bottomLeft, right);
     g.fillPath(p);
 }
 
-void TransportControl::drawStopButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) {
+void TransportControl::drawStopButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
     juce::Graphics g(image);
     g.setColour(bgColor);
     g.fillRect(0.0, 0.0, buttonWidth, buttonHeight);
     g.setColour(borderColor);
     g.drawRect(0.0, 0.0, buttonWidth, buttonHeight, 5.0);
     g.setColour(juce::Colours::white);
-    auto left = 200;
-    auto top = 50;
-    auto iconSize = 110;
-    g.fillRect(left, top, iconSize, iconSize);
+    auto iconLeft = 200.0f;
+    auto iconTop = 50.0f;
+    auto iconSize = 110.0f;
+    g.fillRect(iconLeft, iconTop, iconSize, iconSize);
 }
 
-void TransportControl::drawPauseButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) {
+void TransportControl::drawPauseButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
     juce::Graphics g(image);
     juce::Path path;
     auto cornerSize = 60.0f;
@@ -127,11 +140,11 @@ void TransportControl::drawPauseButton(juce::Image &image, juce::Colour bgColor,
     g.strokePath(path, juce::PathStrokeType(5.0f));
 
     g.setColour(juce::Colours::white);
-    float left = 200;
-    float top = 50;
-    float iconSize = 110;
-    g.fillRect(left, top, iconSize / 3, iconSize);
-    g.fillRect(left + (iconSize * 2 / 3), top, iconSize / 3, iconSize);
+    float iconLeft = 200.0f;
+    float iconTop = 50.0f;
+    float iconSize = 110.0f;
+    g.fillRect(iconLeft, iconTop, iconSize / 3, iconSize);
+    g.fillRect(iconLeft + (iconSize * 2 / 3), iconTop, iconSize / 3, iconSize);
 }
 
 void TransportControl::setEnabled(bool isEnabled) {
