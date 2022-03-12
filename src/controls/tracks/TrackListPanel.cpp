@@ -73,7 +73,9 @@ void TrackListPanel::dragOperationEnded(const DragAndDropTarget::SourceDetails &
 }
 
 void TrackListPanel::resize() {
-    setSize(getTrackLaneWidth(), getTrackLaneHeight());
+    auto w = getPanelWidth();
+    auto h = getPanelHeight();
+    setSize(w, h);
     for (TrackLaneControl *lane : lanes) {
         lane->resized();
     }
@@ -103,8 +105,9 @@ void TrackListPanel::resized() {
     auto topStripWidth = 20;
     timeMeter.setBounds(area.removeFromTop(topStripWidth));
     timeMeter.repaint();
+    auto laneHeight = getTrackLaneHeight() / lanes.size();
     for (auto &lane : lanes) {
-        lane->setBounds(area.removeFromTop(lane->getHeight() * project.getVerticalScale()));
+        lane->setBounds(area.removeFromTop(laneHeight));
     }
 }
 
@@ -113,15 +116,25 @@ void TrackListPanel::mouseDown(const juce::MouseEvent &event) {
     notifySelectionChanged();
 }
 
-int TrackListPanel::getTrackLaneWidth() const {
+int TrackListPanel::getPanelWidth() const {
     int trackWidth = trackList.getTotalLengthSeconds() * project.getHorizontalScale();
     auto leftPanelWidth = 25;
     return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
 }
 
-int TrackListPanel::getTrackLaneHeight() const {
-    int trackHeight = lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() * project.getVerticalScale() : 0;
+int TrackListPanel::getPanelHeight() const {
+    auto topStripWidth = 20;
+    int trackHeight =
+        lanes.size() > 0
+            ? (lanes.size() + 1) * lanes.back()->getPreferredHeight() * project.getVerticalScale() + topStripWidth
+            : 0;
     return std::max(trackHeight, viewport.getHeight());
+}
+
+int TrackListPanel::getTrackLaneHeight() const {
+    int trackHeight =
+        lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() * project.getVerticalScale() : 0;
+    return trackHeight;
 }
 
 void TrackListPanel::addListener(SampleListener *listener) {

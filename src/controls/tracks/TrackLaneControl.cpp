@@ -3,7 +3,7 @@
 TrackLaneControl::TrackLaneControl(Project &project, Track &track, juce::AudioTransportSource &transport)
     : project(project), track(track), transport(transport) {
     createControls();
-    setSize(800, 75);
+    setSize(preferredWidth, preferredHeight);
 }
 
 TrackLaneControl::~TrackLaneControl() {}

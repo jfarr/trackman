@@ -84,7 +84,8 @@ class TrackListPanel : public juce::Component,
     std::list<SampleListener *> sampleListeners;
     std::list<TrackListListener *> trackListListeners;
 
-    int getTrackLaneWidth() const;
+    int getPanelWidth() const;
+    int getPanelHeight() const;
     int getTrackLaneHeight() const;
 
     void notifySampleDropped(SampleThumbnail *thumbnail, int x, int y);
