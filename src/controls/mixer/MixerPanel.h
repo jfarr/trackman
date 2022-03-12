@@ -33,6 +33,7 @@ class MixerPanel : public juce::Component {
     DesktopController &desktopController;
     TrackList &trackList;
     Mixer &mixer;
+    juce::Viewport &mixerViewport;
 
     TransportControl transportControl;
     MasterTrackControl masterTrackControl;

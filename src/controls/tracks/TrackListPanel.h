@@ -41,7 +41,6 @@ class TrackListPanel : public juce::Component,
     void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
     void resize();
     void clear() { lanes.clear(); }
-
     void update();
 
     void fileDragEnter(const juce::StringArray &files, int x, int y);

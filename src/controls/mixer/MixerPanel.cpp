@@ -4,7 +4,7 @@
 MixerPanel::MixerPanel(
     DesktopController &desktopController, TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource)
     : desktopController(desktopController), trackList(trackList), mixer(mixer), masterTrackControl(mixer, meterSource),
-      transportControl(mixer.getTransportSource()) {
+      mixerViewport(desktopController.getMixerController().getViewport()), transportControl(mixer.getTransportSource()) {
     createControls();
     masterTrackControl.addListener(&desktopController);
     setSize(800, 280);
@@ -48,7 +48,9 @@ void MixerPanel::resized() {
     transportControl.setBounds(area.removeFromTop(buttonHeight).reduced(transportMargin));
     area.removeFromTop(1);
     masterTrackControl.setBounds(area.removeFromLeft(masterTrackControl.getPreferredWidth()));
-    for (auto &track : tracks) {
-        track->setBounds(area.removeFromLeft(track->getPreferredWidth()));
-    }
+//    mixerViewport.setBounds(area);
+
+    //    for (auto &track : tracks) {
+//        track->setBounds(area.removeFromLeft(track->getPreferredWidth()));
+//    }
 }

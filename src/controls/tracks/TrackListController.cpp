@@ -8,9 +8,11 @@ TrackListController::TrackListController(DesktopController &desktopController, j
       trackList(desktopController.getTrackList()), transport(transport),
       trackListPanel(project, trackList, trackListViewport, transport, formatManager), deviceManager(deviceManager),
       formatManager(formatManager) {
+
     trackListViewport.setSize(800, 350);
     trackListViewport.setScrollBarsShown(true, true);
     trackListViewport.setViewedComponent(&trackListPanel, false);
+
     trackListPanel.addListener((SampleListener *)this);
     trackListPanel.addListener((TrackListListener *)this);
     trackListPanel.resized();
