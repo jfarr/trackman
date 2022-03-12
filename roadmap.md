@@ -11,6 +11,7 @@
 - Song start / end position
 - Loop start / end position
 - Bug fixes
+  - Dropped samples snap to center point
   - Track level meter scale is off
   - Delete menu item not updating on native Mac menu
 

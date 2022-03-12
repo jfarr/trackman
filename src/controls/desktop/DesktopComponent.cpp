@@ -86,14 +86,16 @@ void DesktopComponent::paint(juce::Graphics &g) {
 }
 
 void DesktopComponent::resized() {
-    auto area = getLocalBounds();
+    auto topStripHeight = 15;
     auto scaleButtonWidth = 12;
     auto scrollBarWidth = trackListViewport.getScrollBarThickness();
+    auto area = getLocalBounds();
+    area.removeFromTop(topStripHeight);
     verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(
         area.getWidth() - (scaleButtonWidth + scrollBarWidth), area.getY(), scaleButtonWidth, scaleButtonWidth * 2));
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
     horizontalScaleButtonPanel.setBounds(juce::Rectangle<int>(
-        0, area.getHeight() - (scaleButtonWidth + scrollBarWidth), scaleButtonWidth * 2, scaleButtonWidth));
+        0, area.getHeight() - (scaleButtonWidth + scrollBarWidth) + topStripHeight, scaleButtonWidth * 2, scaleButtonWidth));
     trackListViewport.setBounds(area);
     desktopController.resize();
 }
