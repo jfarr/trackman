@@ -29,9 +29,9 @@ void StretchHandle::mouseDown(const juce::MouseEvent &event) { thumbnail.mouseDo
 
 void StretchHandle::mouseUp(const juce::MouseEvent &event) { dragging = false; }
 
-SampleThumbnail::SampleThumbnail(
-    Track &track, Sample &sample, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
-    : track(track), sample(sample), transport(transport), thumbnailCache(5),
+SampleThumbnail::SampleThumbnail(Project &project, Track &track, Sample &sample, juce::AudioTransportSource &transport,
+    juce::AudioFormatManager &formatManager)
+    : project(project), track(track), sample(sample), transport(transport), thumbnailCache(5),
       thumbnail(512, formatManager, thumbnailCache), stretchHandle(*this) {
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     createControls();
@@ -40,6 +40,7 @@ SampleThumbnail::SampleThumbnail(
 
 void SampleThumbnail::createControls() {
     filenameLabel.setText(sample.getFile().getFileName(), juce::dontSendNotification);
+    filenameLabel.setFont(missingFileLabel.getFont().withHeight(10));
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     addAndMakeVisible(filenameLabel);
     addAndMakeVisible(stretchHandle);
@@ -68,16 +69,15 @@ void SampleThumbnail::paintWithoutOverlay(juce::Graphics &g) {
     auto area = getLocalBounds();
     auto margin = 3;
 
-    auto alpha = 0.8f;
     auto bgcolor = track.isSelected() && sample.isSelected() ? juce::Colours::lightgrey : juce::Colours::dimgrey;
-    g.fillAll(bgcolor.withAlpha(alpha));
+    g.fillAll(bgcolor);
     g.setColour(juce::Colours::grey);
     g.drawRect(0, 0, getWidth(), getHeight());
 
     auto thumbnailBounds = area.reduced(margin);
-    g.setColour(juce::Colours::darkgrey.withAlpha(alpha));
+    g.setColour(juce::Colours::dimgrey);
     g.fillRect(thumbnailBounds);
-    g.setColour(juce::Colours::green.withAlpha(alpha));
+    g.setColour(juce::Colours::limegreen);
     thumbnail.drawChannels(g, thumbnailBounds, 0.0, thumbnail.getTotalLength(), 1.0f);
 }
 
@@ -88,7 +88,7 @@ void SampleThumbnail::paintOverlay(juce::Graphics &g) {
         auto audioPosition = (float)transport.getCurrentPosition();
         if (audioPosition >= sample.getStartPos() && audioPosition <= sample.getEndPos()) {
             auto samplePos = audioPosition - sample.getStartPos();
-            auto drawPosition = samplePos * scale;
+            auto drawPosition = samplePos * project.getHorizontalScale();
             g.setColour(juce::Colour{0xff282828});
             g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
         }
@@ -97,7 +97,7 @@ void SampleThumbnail::paintOverlay(juce::Graphics &g) {
 
 void SampleThumbnail::resized() {
     auto area = getLocalBounds();
-    auto labelHeight = 18;
+    auto labelHeight = 15;
     auto margin = 2;
     auto handleSize = 12;
     stretchHandle.setBounds(getWidth() - handleSize, 0, handleSize, handleSize);
@@ -107,17 +107,17 @@ void SampleThumbnail::resized() {
     }
 }
 
+void SampleThumbnail::mouseDown(const juce::MouseEvent &event) {
+    Component::mouseDown(event);
+    notifySampleSelected(track, sample);
+}
+
 void SampleThumbnail::mouseDrag(const juce::MouseEvent &event) {
     auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
     auto pos = juce::Point<int>(-event.getPosition().getX(), -event.getPosition().getY());
     if (container != nullptr) {
         container->startDragging("clip", this, *getImage(), false, &pos);
     }
-}
-
-void SampleThumbnail::mouseDown(const juce::MouseEvent &event) {
-    Component::mouseDown(event);
-    notifySampleSelected(track, sample);
 }
 
 void SampleThumbnail::addListener(SampleListener *listener) {

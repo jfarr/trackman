@@ -10,7 +10,8 @@ class TrackListController;
 
 class TrackLaneController : public juce::MouseListener, public TrackListListener {
   public:
-    TrackLaneController(TrackListController &trackListController, Track &track, juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
+    TrackLaneController(Project &project, Track &track, TrackListController &trackListController,
+        juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
     ~TrackLaneController();
 
     Track &getTrack() { return track; }
@@ -31,10 +32,11 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
     void selectionChanged(Track *track) override;
 
   private:
-    TrackListController &trackListController;
+    Project &project;
     Track &track;
     juce::AudioTransportSource &transport;
     juce::AudioFormatManager &formatManager;
+    TrackListController &trackListController;
 
     TrackLaneControl trackLaneControl;
     std::list<std::unique_ptr<SampleThumbnail>> thumbnails;

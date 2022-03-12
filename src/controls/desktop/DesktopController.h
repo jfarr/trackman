@@ -2,6 +2,7 @@
 
 #include "FileDragDropTarget.h"
 #include "TrackListListener.h"
+#include "TrackScaleListener.h"
 #include "commands/CommandList.h"
 #include "controls/mixer/MixerController.h"
 #include "controls/mixer/TrackControlListener.h"
@@ -9,13 +10,20 @@
 #include "model/Project.h"
 #include "model/TrackList.h"
 
-// TODO: consider using juce::FileBasedDocument
-class DesktopController : public FileDragDropTarget, public MasterTrackListener, public TrackControlListener {
-  public:
-    DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager,
-        juce::AudioFormatManager &formatManager);
-    ~DesktopController();
+class DesktopComponent;
 
+// TODO: consider using juce::FileBasedDocument
+class DesktopController : public FileDragDropTarget,
+                          public MasterTrackListener,
+                          public TrackControlListener,
+                          public TrackScaleListener {
+  public:
+    DesktopController(juce::DocumentWindow &mainWindow, DesktopComponent &desktopComponent, juce::AudioDeviceManager &deviceManager,
+        juce::AudioFormatManager &formatManager);
+    ~DesktopController() override = default;
+
+    Project &getProject() { return project; }
+    TrackList &getTrackList() { return trackList; }
     Mixer &getMixer() { return mixer; }
     MixerController &getMixerController() { return mixerController; }
     TrackListController &getTrackListController() { return trackListController; }
@@ -68,18 +76,27 @@ class DesktopController : public FileDragDropTarget, public MasterTrackListener,
     void trackMuteToggled(Track &track) override;
     void trackSoloToggled(Track &track) override;
 
+    //==============================================================================
+    // TrackScaleListener
+    void verticalScaleIncreased() override;
+    void verticalScaleDecreased() override;
+    void horizontalScaleIncreased() override;
+    void horizontalScaleDecreased() override;
+
+
   private:
     CommandList commandList;
     TrackList trackList;
     Mixer mixer;
+    Project project;
     MixerController mixerController;
     TrackListController trackListController;
 
-    Project project;
     std::unique_ptr<juce::FileChooser> chooser;
     juce::File projectFile;
     bool dirty = false;
     Command *saveCommand = nullptr;
+    DesktopComponent &desktopComponent;
     juce::DocumentWindow &mainWindow;
     juce::String applicationName;
 

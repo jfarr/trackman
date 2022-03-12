@@ -3,9 +3,9 @@
 #include "controls/desktop/DesktopController.h"
 #include "controls/mixer/TrackController.h"
 
-MixerController::MixerController(
-    DesktopController &desktopController, TrackList &trackList, Mixer &mixer, juce::AudioFormatManager &formatManager)
-    : desktopController(desktopController), trackList(trackList), mixer(mixer), formatManager(formatManager),
+MixerController::MixerController(DesktopController &desktopController, juce::AudioFormatManager &formatManager)
+    : desktopController(desktopController), trackList(desktopController.getTrackList()),
+      mixer(desktopController.getMixer()), formatManager(formatManager),
       mixerPanel(desktopController, trackList, mixer, mixer.getMeterSource()) {
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);

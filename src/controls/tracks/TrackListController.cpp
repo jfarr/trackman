@@ -2,11 +2,11 @@
 #include "common/listutil.h"
 #include "controls/desktop/DesktopController.h"
 
-TrackListController::TrackListController(DesktopController &desktop, TrackList &trackList,
-    juce::AudioTransportSource &transport, juce::AudioDeviceManager &deviceManager,
-    juce::AudioFormatManager &formatManager)
-    : desktop(desktop), trackList(trackList), transport(transport),
-      trackListPanel(trackList, trackListViewport, transport, formatManager), deviceManager(deviceManager),
+TrackListController::TrackListController(DesktopController &desktopController, juce::AudioTransportSource &transport,
+    juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
+    : desktopController(desktopController), project(desktopController.getProject()),
+      trackList(desktopController.getTrackList()), transport(transport),
+      trackListPanel(project, trackList, trackListViewport, transport, formatManager), deviceManager(deviceManager),
       formatManager(formatManager) {
     trackListViewport.setSize(800, 350);
     trackListViewport.setScrollBarsShown(true, true);
@@ -25,7 +25,7 @@ void TrackListController::update() {
     lanes.clear();
     trackListPanel.clear();
     trackList.eachTrack([this](Track &track) {
-        auto lane = new TrackLaneController(*this, track, transport, formatManager);
+        auto lane = new TrackLaneController(project, track, *this, transport, formatManager);
         lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
         trackListPanel.addLane(&lane->getTrackLaneControl());
         lane->update();
@@ -52,7 +52,7 @@ void TrackListController::fileDragExit(const juce::StringArray &files) { trackLi
 
 void TrackListController::filesDropped(const juce::StringArray &files, int x, int y) {
     Track *selected = trackListPanel.getTrackAtPos(x, y);
-    desktop.addNewSample(selected, juce::File(files[0]), x);
+    desktopController.addNewSample(selected, juce::File(files[0]), x);
     trackListPanel.filesDropped(files, x, y);
 }
 
@@ -61,6 +61,7 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
     if (reader != nullptr) {
         auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
         auto length = newSource->getTotalLength() / reader->sampleRate;
+        auto scale = project.getHorizontalScale();
         auto width = length * scale;
         auto leftPanelWidth = 25;
         double offset = width / 2;
@@ -81,6 +82,8 @@ void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &to
     if (&fromTrack != &toTrack) {
         fromTrack.moveSampleTo(sample, toTrack);
         selectionChanged(&toTrack);
+        fromTrack.selectSample(nullptr);
+        toTrack.selectSample(&sample);
     }
     sample.setPosition(pos);
     trackList.adjustTrackLengths();
@@ -147,35 +150,34 @@ void TrackListController::selectionChanged(Track *track) {
     selectingSample = false;
     if (track != selected) {
         selected = track;
-        desktop.selectionChanged(track);
-        updateLanes();
+        desktopController.selectionChanged(track);
     }
 }
 
 void TrackListController::sampleSelected(Track &track, Sample &sample) {
     selectingSample = true;
     trackList.selectSample(&sample);
+    selectionChanged(&track);
 }
 
 void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y) {
     auto curPos = sample.getStartPos();
     auto length = sample.getLengthSecs();
+    auto scale = project.getHorizontalScale();
     auto width = length * scale;
     auto leftPanelWidth = 25;
     double offset = width / 2;
-    double newPos = std::max((x - offset - leftPanelWidth), 10.0) / scale;
+    double newPos = std::max((x - offset - leftPanelWidth), 0.0) / scale;
     Track *toTrack = trackListPanel.getTrackAtPos(x, y);
-    desktop.moveSelectedSample(sample, track, toTrack, curPos, newPos);
+    desktopController.moveSelectedSample(sample, track, toTrack, curPos, newPos);
 }
 
 void TrackListController::sampleResized(Sample &sample, int width) {
     auto curLen = sample.getLengthSecs();
-    auto newLen = width / scale;
-    desktop.resizeSample(sample, curLen, newLen);
+    auto newLen = std::max(width, 2) / project.getHorizontalScale();
+    desktopController.resizeSample(sample, curLen, newLen);
 }
 
 void TrackListController::dragEnded() { updateLanes(); }
 
-void TrackListController::updateMixerSource() {
-    desktop.getMixerController().updateAudioSource();
-}
+void TrackListController::updateMixerSource() { desktopController.getMixerController().updateAudioSource(); }

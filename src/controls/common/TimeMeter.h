@@ -1,10 +1,11 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "model/Project.h"
 
 class TimeMeter : public juce::Component {
   public:
-    TimeMeter() {}
+    TimeMeter(Project &project) : project(project) {}
     ~TimeMeter() {}
 
     //==============================================================================
@@ -12,5 +13,5 @@ class TimeMeter : public juce::Component {
     void paint(juce::Graphics &g) override;
 
   private:
-    float scale = 75;
+    Project &project;
 };

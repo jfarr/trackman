@@ -5,6 +5,7 @@
 #include "ChildWindow.h"
 #include "DesktopController.h"
 #include "FileDragDropTarget.h"
+#include "ScaleButtonPanel.h"
 #include "controls/AudioPlayer.h"
 #include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
@@ -172,9 +173,12 @@ class DesktopComponent : public juce::AudioAppComponent,
 
   private:
     DesktopController desktopController;
-    juce::Component &trackListViewport;
+    juce::Viewport &trackListViewport;
     MixerPanel &mixerPanel;
     Mixer &mixer;
+    TimeMeter timeMeter;
+    ScaleButtonPanel horizontalScaleButtonPanel;
+    ScaleButtonPanel verticalScaleButtonPanel;
     std::list<FileDragDropTarget *> listeners;
 
     juce::ApplicationCommandManager commandManager;

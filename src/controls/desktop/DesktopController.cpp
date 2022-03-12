@@ -1,20 +1,18 @@
 #include "DesktopController.h"
+#include "DesktopComponent.h"
 #include "commands/MixerCommands.h"
 #include "commands/TrackCommands.h"
 #include "commands/TrackListCommands.h"
 #include "common/listutil.h"
 
-DesktopController::DesktopController(
-    juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
-    : mixer(deviceManager.getAudioDeviceSetup().sampleRate), mixerController(*this, trackList, mixer, formatManager),
-      trackListController(
-          *this, trackList, mixerController.getMixer().getTransportSource(), deviceManager, formatManager),
-      project(trackList, mixer), mainWindow(mainWindow), applicationName(mainWindow.getName()),
+DesktopController::DesktopController(juce::DocumentWindow &mainWindow, DesktopComponent &desktopComponent,
+    juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
+    : mixer(deviceManager.getAudioDeviceSetup().sampleRate), project(trackList, mixer),
+      mixerController(*this, formatManager),
+      trackListController(*this, mixerController.getMixer().getTransportSource(), deviceManager, formatManager),
+      mainWindow(mainWindow), desktopComponent(desktopComponent), applicationName(mainWindow.getName()),
       deviceManager(deviceManager), formatManager(formatManager) {
     updateTitleBar();
-}
-
-DesktopController::~DesktopController() {
 }
 
 bool DesktopController::canUndo() const { return !commandList.isEmpty(); }
@@ -83,7 +81,8 @@ void DesktopController::addNewSample(Track *track, juce::File file, int pos) {
     updateTitleBar();
 }
 
-void DesktopController::moveSelectedSample(Sample &sample, Track &fromTrack, Track *toTrack, double prevPos, double newPos) {
+void DesktopController::moveSelectedSample(
+    Sample &sample, Track &fromTrack, Track *toTrack, double prevPos, double newPos) {
     Command *command = new MoveSampleCommand(*this, sample, fromTrack, toTrack, prevPos, newPos);
     commandList.pushCommand(command);
     dirty = true;
@@ -269,4 +268,36 @@ void DesktopController::fileDragExit(const juce::StringArray &files) { trackList
 
 void DesktopController::filesDropped(const juce::StringArray &files, int x, int y) {
     trackListController.filesDropped(files, x, y);
+}
+
+void DesktopController::verticalScaleIncreased() {
+    project.incrementVerticalScale();
+    juce::MessageManager::callAsync([this]() {
+        trackListController.update();
+        desktopComponent.resized();
+    });
+}
+
+void DesktopController::verticalScaleDecreased() {
+    project.decrementVerticalScale();
+    juce::MessageManager::callAsync([this]() {
+        trackListController.update();
+        desktopComponent.resized();
+    });
+}
+
+void DesktopController::horizontalScaleIncreased() {
+    project.incrementHorizontalScale();
+    juce::MessageManager::callAsync([this]() {
+        trackListController.update();
+        desktopComponent.resized();
+    });
+}
+
+void DesktopController::horizontalScaleDecreased() {
+    project.decrementHorizontalScale();
+    juce::MessageManager::callAsync([this]() {
+        trackListController.update();
+        desktopComponent.resized();
+    });
 }

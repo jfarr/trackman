@@ -6,18 +6,19 @@
 #include "TrackListPanel.h"
 #include "controls/desktop/TrackListListener.h"
 #include "controls/tracks/SampleListener.h"
+#include "model/Project.h"
 #include "model/TrackList.h"
 
 class DesktopController;
 
 class TrackListController : public TrackListListener, public SampleListener {
   public:
-    TrackListController(DesktopController &desktop, TrackList &trackList, juce::AudioTransportSource &transport,
+    TrackListController(DesktopController &desktopController, juce::AudioTransportSource &transport,
         juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     ~TrackListController();
 
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
-    juce::Component &getViewport() { return trackListViewport; }
+    juce::Viewport &getViewport() { return trackListViewport; }
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos);
@@ -45,12 +46,12 @@ class TrackListController : public TrackListListener, public SampleListener {
     void dragEnded() override;
 
   private:
-    DesktopController &desktop;
+    DesktopController &desktopController;
+    Project &project;
     TrackList &trackList;
     juce::AudioTransportSource &transport;
     TrackListPanel trackListPanel;
     juce::Viewport trackListViewport;
-    float scale = 75;
     std::list<std::unique_ptr<TrackLaneController>> lanes;
     Track *selected = nullptr;
     bool selectingSample = false;

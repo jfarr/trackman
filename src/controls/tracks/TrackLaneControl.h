@@ -7,7 +7,7 @@
 
 class TrackLaneControl : public juce::Component {
   public:
-    TrackLaneControl(Track &track, juce::AudioTransportSource &transport);
+    TrackLaneControl(Project &project, Track &track, juce::AudioTransportSource &transport);
     ~TrackLaneControl();
 
     Track &getTrack() { return track; }
@@ -23,12 +23,12 @@ class TrackLaneControl : public juce::Component {
     void resized() override;
 
   private:
+    Project &project;
     Track &track;
     juce::AudioTransportSource &transport;
 
     juce::Label trackLabel;
     std::list<SampleThumbnail *> thumbnails;
-    float scale = 75;
 
     void createControls();
 

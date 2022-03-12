@@ -12,7 +12,7 @@
 
 class DropBox : public juce::Component {
   public:
-    DropBox() { setSize(200, 85); }
+    DropBox() { setSize(200, 60); }
     ~DropBox() {}
 
     void setSource(std::unique_ptr<juce::AudioFormatReaderSource> &newSource) { source = std::move(newSource); }
@@ -32,7 +32,7 @@ class TrackListPanel : public juce::Component,
                        public juce::DragAndDropTarget,
                        private juce::Timer {
   public:
-    TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
+    TrackListPanel(Project &project, TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
         juce::AudioFormatManager &formatManager);
     ~TrackListPanel();
 
@@ -71,21 +71,19 @@ class TrackListPanel : public juce::Component,
     void mouseDown(const juce::MouseEvent &event) override;
 
   private:
+    Project &project;
     TrackList &trackList;
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
     juce::AudioFormatManager &formatManager;
     std::list<TrackLaneControl *> lanes;
-    float scale = 75;
 
-    TimeMeter timeMeter;
     DropBox dropBox;
     int dragSourceOffset;
 
     std::list<SampleListener *> sampleListeners;
     std::list<TrackListListener *> trackListListeners;
 
-    void createControls();
     int getTrackLaneWidth() const;
     int getTrackLaneHeight() const;
 

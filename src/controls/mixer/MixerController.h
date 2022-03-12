@@ -16,8 +16,7 @@ class DesktopController;
 
 class MixerController : public TransportControlListener, public MasterTrackListener {
   public:
-    MixerController(DesktopController &desktopController, TrackList &trackList, Mixer &mixer,
-        juce::AudioFormatManager &formatManager);
+    MixerController(DesktopController &desktopController, juce::AudioFormatManager &formatManager);
     ~MixerController();
 
     bool isMasterMuted() const { return mixer.isMasterMuted(); }

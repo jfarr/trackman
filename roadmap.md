@@ -1,17 +1,22 @@
 # Roadmap
 
 ## Short-Term
-- Zoom track lanes
 - Mixer horizontal scroll
+- Redo move dragging
 - Drop multiple files
 - Prompt for delete track/sample
 - Prompt for save on exit
 - Finish gain sliders
   - Ticks
   - Custom image
+- Sample info popup
+- Use undo manager
 
 ## Long Term
 
+- Copy / paste
+- Console commands
+- Script window
 - Unit tests
 - GPL license
 - Midi note roll

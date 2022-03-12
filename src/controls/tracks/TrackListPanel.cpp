@@ -1,21 +1,17 @@
 #include "TrackListPanel.h"
 #include "common/listutil.h"
 
-TrackListPanel::TrackListPanel(TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
-    juce::AudioFormatManager &formatManager)
-    : trackList(trackList), viewport(viewport), transport(transport), formatManager(formatManager) {
-    createControls();
+TrackListPanel::TrackListPanel(Project &project, TrackList &trackList, juce::Viewport &viewport,
+    juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
+    : project(project), trackList(trackList), viewport(viewport), transport(transport), formatManager(formatManager) {
     resize();
     startTimer(20);
 }
 
 TrackListPanel::~TrackListPanel() {}
 
-void TrackListPanel::createControls() { addAndMakeVisible(timeMeter); }
-
 void TrackListPanel::update() {
     removeAllChildren();
-    addAndMakeVisible(timeMeter);
     for (TrackLaneControl *lane : lanes) {
         lane->update();
         addAndMakeVisible(lane);
@@ -27,7 +23,7 @@ void TrackListPanel::fileDragEnter(const juce::StringArray &files, int x, int y)
     auto *reader = formatManager.createReaderFor(juce::File(files[0]));
     auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
     auto length = newSource->getTotalLength() / reader->sampleRate;
-    auto width = length * scale;
+    auto width = length * project.getHorizontalScale();
     addAndMakeVisible(dropBox);
     auto bounds = dropBox.getLocalBounds();
     dropBox.setBounds(bounds.withWidth(width).withCentre(juce::Point(x, y)));
@@ -82,7 +78,6 @@ void TrackListPanel::dragOperationEnded(const DragAndDropTarget::SourceDetails &
 }
 
 void TrackListPanel::resize() {
-    auto topStripWidth = 20;
     setSize(getTrackLaneWidth(), getTrackLaneHeight());
     for (TrackLaneControl *lane : lanes) {
         lane->resized();
@@ -98,7 +93,7 @@ void TrackListPanel::paint(juce::Graphics &g) {
 
     if (duration > 0.0) {
         auto audioPosition = (float)transport.getCurrentPosition();
-        auto drawPosition = audioPosition * scale + leftPanelWidth;
+        auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
 
         g.setColour(juce::Colour{0xff282828});
         g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
@@ -109,11 +104,9 @@ void TrackListPanel::paint(juce::Graphics &g) {
 }
 
 void TrackListPanel::resized() {
-    auto topStripWidth = 20;
     auto area = getLocalBounds();
-    timeMeter.setBounds(area.removeFromTop(topStripWidth));
     for (auto &lane : lanes) {
-        lane->setBounds(area.removeFromTop(lane->getHeight()));
+        lane->setBounds(area.removeFromTop(lane->getHeight() * project.getVerticalScale()));
     }
 }
 
@@ -123,15 +116,14 @@ void TrackListPanel::mouseDown(const juce::MouseEvent &event) {
 }
 
 int TrackListPanel::getTrackLaneWidth() const {
-    int trackWidth = trackList.getTotalLengthSeconds() * scale;
+    int trackWidth = trackList.getTotalLengthSeconds() * project.getHorizontalScale();
     auto leftPanelWidth = 25;
     return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
 }
 
 int TrackListPanel::getTrackLaneHeight() const {
-    auto topStripWidth = 20;
     int trackHeight = lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() : 0;
-    return std::max(trackHeight + topStripWidth, viewport.getHeight());
+    return std::max(trackHeight, viewport.getHeight());
 }
 
 void TrackListPanel::addListener(SampleListener *listener) {
