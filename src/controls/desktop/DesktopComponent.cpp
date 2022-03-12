@@ -15,6 +15,8 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::Aud
     addAndMakeVisible(timeMeter);
     addAndMakeVisible(trackListViewport);
     addAndMakeVisible(mixerPanel);
+    addAndMakeVisible(scaleButtonPanel);
+    //    scaleButtonPanel.setAlwaysOnTop(true);
 
     setApplicationCommandManagerToWatch(&commandManager);
     commandManager.registerAllCommandsForTarget(this);
@@ -82,8 +84,14 @@ void DesktopComponent::paint(juce::Graphics &g) {
 void DesktopComponent::resized() {
     auto area = getLocalBounds();
     auto topStripWidth = 20;
+    auto scaleButtonPanelWidth = 24;
+    auto scaleButtonPanelHeight = 12;
+    auto scrollBarWidth = trackListViewport.getScrollBarThickness();
     timeMeter.setBounds(area.removeFromTop(topStripWidth));
+    //    scaleButtonPanel.setBounds(juce::Rectangle<int>(area.getWidth() - (scaleButtonPanelWidth + scrollBarWidth),
+    //        area.getY(), scaleButtonPanelWidth, scaleButtonPanelHeight));
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
+    scaleButtonPanel.setBounds(juce::Rectangle<int>(0, area.getHeight(), scaleButtonPanelWidth, scaleButtonPanelHeight));
     trackListViewport.setBounds(area);
     desktopController.resize();
 }

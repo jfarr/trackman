@@ -1,8 +1,8 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
 
-class CustomLookAndFeel : public juce::LookAndFeel_V4 {
+class DecibelSliderLookAndFeel : public juce::LookAndFeel_V4 {
     juce::Label *createSliderTextBox(juce::Slider &slider) override {
         auto l = LookAndFeel_V4::createSliderTextBox(slider);
         l->setFont(l->getFont().withHeight(8));
@@ -47,7 +47,7 @@ class DecibelSlider : public juce::Slider {
 
   private:
     SliderListener *listener;
-    CustomLookAndFeel lf;
+    DecibelSliderLookAndFeel lf;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DecibelSlider)
 };

@@ -8,8 +8,37 @@
 #include "controls/AudioPlayer.h"
 #include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
-#include "controls/tracks/TrackListViewport.h"
 #include "model/Mixer.h"
+
+class ScaleButtonPanel : public juce::Component {
+  public:
+    ScaleButtonPanel() {
+        minusButton.setButtonText("-");
+        minusButton.setConnectedEdges(juce::Button::ConnectedOnRight);
+        plusButton.setButtonText("+");
+        plusButton.setConnectedEdges(juce::Button::ConnectedOnLeft);
+        addAndMakeVisible(minusButton);
+        addAndMakeVisible(plusButton);
+    }
+    ~ScaleButtonPanel() {}
+
+    void paint(juce::Graphics &g) override {
+        g.fillAll(juce::Colours::grey.withAlpha(0.5f));
+        g.setColour(juce::Colours::lightgrey.withAlpha(0.2f));
+        g.drawRect(0, -1, getWidth(), getHeight() + 1);
+    }
+    void resized() override {
+        auto area = getLocalBounds();
+        auto buttonWidth = 12;
+        minusButton.setBounds(area.removeFromLeft(buttonWidth));
+        plusButton.setBounds(area.removeFromLeft(buttonWidth));
+    }
+
+  private:
+    juce::TextButton minusButton;
+    juce::TextButton plusButton;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScaleButtonPanel)
+};
 
 class DesktopComponent : public juce::AudioAppComponent,
                          public juce::ApplicationCommandTarget,
@@ -173,10 +202,11 @@ class DesktopComponent : public juce::AudioAppComponent,
 
   private:
     DesktopController desktopController;
-    TrackListViewport &trackListViewport;
+    juce::Viewport &trackListViewport;
     MixerPanel &mixerPanel;
     Mixer &mixer;
     TimeMeter timeMeter;
+    ScaleButtonPanel scaleButtonPanel;
     std::list<FileDragDropTarget *> listeners;
 
     juce::ApplicationCommandManager commandManager;

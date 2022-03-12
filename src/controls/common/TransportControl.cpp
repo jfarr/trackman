@@ -16,24 +16,28 @@ void TransportControl::createControls() {
     playButton.setButtonText(">");
     playButton.onClick = [this] { playButtonClicked(); };
     playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
+    playButton.setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     playButton.setEnabled(enabled);
 
     addAndMakeVisible(&stopButton);
     stopButton.setButtonText("[]");
     stopButton.onClick = [this] { stopButtonClicked(); };
     stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
+    stopButton.setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     stopButton.setEnabled(enabled);
 
     addAndMakeVisible(&pauseButton);
     pauseButton.setButtonText("||");
     pauseButton.onClick = [this] { pauseButtonClicked(); };
     pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
+    pauseButton.setConnectedEdges(juce::Button::ConnectedOnLeft);
     pauseButton.setEnabled(enabled);
 
     addAndMakeVisible(&startButton);
     startButton.setButtonText("|<");
     startButton.onClick = [this] { startButtonClicked(); };
     startButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
+    startButton.setConnectedEdges(juce::Button::ConnectedOnRight);
     startButton.setEnabled(enabled);
 
     addAndMakeVisible(&loopingToggle);
@@ -65,10 +69,10 @@ void TransportControl::resized() {
     auto buttonWidth = 50;
     auto loopButtonWidth = 65;
     auto buttonMargin = 2;
-    startButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
-    playButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
-    stopButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
-    pauseButton.setBounds(area.removeFromLeft(buttonWidth).reduced(buttonMargin));
+    startButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin).withTrimmedLeft(buttonMargin));
+    playButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
+    stopButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
+    pauseButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
     loopingToggle.setBounds(area.removeFromLeft(loopButtonWidth).reduced(buttonMargin));
     currentPositionLabel.setBounds(area.reduced(buttonMargin));
 }

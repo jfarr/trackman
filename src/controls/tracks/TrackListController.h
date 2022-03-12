@@ -4,7 +4,6 @@
 
 #include "TrackLaneController.h"
 #include "TrackListPanel.h"
-#include "TrackListViewport.h"
 #include "controls/desktop/TrackListListener.h"
 #include "controls/tracks/SampleListener.h"
 #include "model/TrackList.h"
@@ -18,7 +17,7 @@ class TrackListController : public TrackListListener, public SampleListener {
     ~TrackListController();
 
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
-    TrackListViewport &getViewport() { return trackListViewport; }
+    juce::Viewport &getViewport() { return trackListViewport; }
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos);
@@ -50,7 +49,7 @@ class TrackListController : public TrackListListener, public SampleListener {
     TrackList &trackList;
     juce::AudioTransportSource &transport;
     TrackListPanel trackListPanel;
-    TrackListViewport trackListViewport;
+    juce::Viewport trackListViewport;
     float scale = 75;
     std::list<std::unique_ptr<TrackLaneController>> lanes;
     Track *selected = nullptr;
