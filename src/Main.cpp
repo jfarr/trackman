@@ -1,6 +1,8 @@
 #include <JuceHeader.h>
 
 #include "controls/MainWindow.h"
+#include "controls/desktop/DesktopComponent.h"
+#include "controls/desktop/DesktopController.h"
 
 class TrackmanApplication : public juce::JUCEApplication {
   public:
@@ -31,7 +33,20 @@ class TrackmanApplication : public juce::JUCEApplication {
         // This is called when the app is being asked to quit: you can ignore
         // this request and let the app carry on running, or call quit() to
         // allow the app to close.
-        quit();
+        if (mainWindow == nullptr || mainWindow->getDesktopComponent() == nullptr ||
+            !mainWindow->getDesktopComponent()->isDirty()) {
+            quit();
+        } else {
+            juce::NativeMessageBox::showYesNoCancelBox(juce::MessageBoxIconType::QuestionIcon, "",
+                "Save project before closing?", mainWindow->getDesktopComponent(),
+                juce::ModalCallbackFunction::create([this](int result) {
+                    if (result == 2) {
+                        quit();
+                    } else if (result == 1) {
+                        mainWindow->getDesktopComponent()->getDesktopController().saveProject([]() { quit(); });
+                    }
+                }));
+        }
     }
 
     void anotherInstanceStarted(const juce::String & /*commandLine*/) override {

@@ -18,8 +18,8 @@ class DesktopController : public FileDragDropTarget,
                           public TrackControlListener,
                           public TrackScaleListener {
   public:
-    DesktopController(juce::DocumentWindow &mainWindow, DesktopComponent &desktopComponent, juce::AudioDeviceManager &deviceManager,
-        juce::AudioFormatManager &formatManager);
+    DesktopController(juce::DocumentWindow &mainWindow, DesktopComponent &desktopComponent,
+        juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     ~DesktopController() override = default;
 
     Project &getProject() { return project; }
@@ -32,6 +32,7 @@ class DesktopController : public FileDragDropTarget,
     void undoLast();
     juce::String getLastCommandName() const { return commandList.getLastCommandName(); }
     bool hasSelection() const { return getSelectionType() != ""; }
+    bool isDirty() const { return dirty; }
 
     void resize();
 
@@ -52,8 +53,8 @@ class DesktopController : public FileDragDropTarget,
     Sample *addSample(Track &track, juce::File file, int pos);
     void deleteSample(Track &track, Sample *sample);
 
-    void saveProject();
-    void saveProjectAs();
+    void saveProject(std::function<void()> callback = nullptr);
+    void saveProjectAs(std::function<void()> callback = nullptr);
     void openProject();
     void exportProject();
 
@@ -82,7 +83,6 @@ class DesktopController : public FileDragDropTarget,
     void verticalScaleDecreased() override;
     void horizontalScaleIncreased() override;
     void horizontalScaleDecreased() override;
-
 
   private:
     CommandList commandList;

@@ -171,24 +171,27 @@ Sample *DesktopController::addSample(Track &track, juce::File file, int pos) {
 
 void DesktopController::deleteSample(Track &track, Sample *sample) { trackListController.deleteSample(track, sample); }
 
-void DesktopController::saveProject() {
+void DesktopController::saveProject(std::function<void()> callback) {
     if (projectFile != juce::File{}) {
         saveProjectFile(projectFile);
+        callback();
     } else {
-        saveProjectAs();
+        saveProjectAs(callback);
     }
 }
 
-void DesktopController::saveProjectAs() {
+void DesktopController::saveProjectAs(std::function<void()> callback) {
     chooser = std::make_unique<juce::FileChooser>("Save project as...", juce::File{}, "*.trackman", true);
     auto chooserFlags = juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles;
 
-    chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
+    std::function<void()> cb = callback;
+    chooser->launchAsync(chooserFlags, [this, cb](const juce::FileChooser &fc) {
         auto file = fc.getResult();
         if (file != juce::File{}) {
             projectFile = file;
             saveProjectFile(file);
         }
+        cb();
     });
 }
 

@@ -33,6 +33,9 @@ class DesktopComponent : public juce::AudioAppComponent,
     DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager);
     ~DesktopComponent() override;
 
+    DesktopController &getDesktopController() { return desktopController; }
+    bool isDirty() const { return desktopController.isDirty(); };
+
     void addListener(FileDragDropTarget *listener);
     void removeListener(FileDragDropTarget *listener);
 
