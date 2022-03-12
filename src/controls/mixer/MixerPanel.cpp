@@ -19,19 +19,6 @@ void MixerPanel::createControls() {
     addAndMakeVisible(masterTrackControl);
     addAndMakeVisible(mixerViewport);
 }
-//
-// void MixerPanel::clear() {
-//    tracks.clear();
-//    removeAllChildren();
-//    createControls();
-//}
-//
-// void MixerPanel::update() { masterTrackControl.update(); }
-//
-// void MixerPanel::addTrack(TrackControl *trackControl) {
-//    tracks.push_back(trackControl);
-//    addAndMakeVisible(trackControl);
-//}
 
 //==============================================================================
 void MixerPanel::paint(juce::Graphics &g) {
