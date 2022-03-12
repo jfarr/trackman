@@ -134,7 +134,6 @@ class DesktopComponent : public juce::AudioAppComponent,
             result.setInfo("delete " + desktopController.getSelectionType(),
                 "Delete the selected " + desktopController.getSelectionType(), "Menu", 0);
             result.addDefaultKeypress(juce::KeyPress::backspaceKey, juce::ModifierKeys::noModifiers);
-            result.addDefaultKeypress(juce::KeyPress::deleteKey, juce::ModifierKeys::noModifiers);
             result.setActive(desktopController.hasSelection());
             break;
         default:

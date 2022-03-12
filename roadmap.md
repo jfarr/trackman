@@ -12,6 +12,7 @@
 - Loop start / end position
 - Bug fixes
   - Track level meter scale is off
+  - Delete menu item not updating on native Mac menu
 
 
 ## Long Term
