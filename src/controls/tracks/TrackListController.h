@@ -57,7 +57,7 @@ class TrackListController : public TrackListListener, public SampleListener {
     Track *selected = nullptr;
     bool selectingSample = false;
     Track *currentDragTrack = nullptr;
-    TrackLaneController *newDragTrack = nullptr;
+    TrackLaneController *newDragLane = nullptr;
 
     juce::AudioDeviceManager &deviceManager;
     juce::AudioFormatManager &formatManager;
@@ -66,6 +66,7 @@ class TrackListController : public TrackListListener, public SampleListener {
     void updateLane(Track &track);
     TrackLaneController *getLane(Track &track);
     void updateLanes();
+    void removeDragLane();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListController)
 };

@@ -252,8 +252,10 @@ void DesktopController::updateTitleBar() {
 
 void DesktopController::selectionChanged(Track *track) {
     trackList.setSelected(track);
-    trackListController.repaint();
-    mixerController.repaint();
+    juce::MessageManager::callAsync([this]() {
+        trackListController.repaint();
+        mixerController.repaint();
+    });
 }
 
 void DesktopController::fileDragEnter(const juce::StringArray &files, int x, int y) {
