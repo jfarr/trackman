@@ -5,12 +5,13 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::Aud
     : formatManager(formatManager), desktopController(*parentWindow, *this, deviceManager, formatManager),
       trackListViewport(desktopController.getTrackListController().getViewport()),
       mixerPanel(desktopController.getMixerController().getMixerPanel()), mixer(desktopController.getMixer()),
-      timeMeter(desktopController.getProject()) {
+      timeMeter(desktopController.getProject()), horizontalScaleButtonPanel(false), verticalScaleButtonPanel(true) {
 
     setAudioChannels(0, 2);
 
     addListener(&desktopController);
-    scaleButtonPanel.addListener(&desktopController);
+    verticalScaleButtonPanel.addListener(&desktopController);
+    horizontalScaleButtonPanel.addListener(&desktopController);
 
     trackListViewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
     trackListViewport.getVerticalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
@@ -19,7 +20,8 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::Aud
     addAndMakeVisible(timeMeter);
     addAndMakeVisible(trackListViewport);
     addAndMakeVisible(mixerPanel);
-    addAndMakeVisible(scaleButtonPanel);
+    addAndMakeVisible(verticalScaleButtonPanel);
+    addAndMakeVisible(horizontalScaleButtonPanel);
 
     setApplicationCommandManagerToWatch(&commandManager);
     commandManager.registerAllCommandsForTarget(this);
@@ -92,10 +94,10 @@ void DesktopComponent::resized() {
     auto scrollBarWidth = trackListViewport.getScrollBarThickness();
     timeMeter.setBounds(area.removeFromTop(topStripWidth));
     timeMeter.repaint();
-    //    scaleButtonPanel.setBounds(juce::Rectangle<int>(area.getWidth() - (scaleButtonPanelWidth + scrollBarWidth),
-    //        area.getY(), scaleButtonPanelWidth, scaleButtonPanelHeight));
+    verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(area.getWidth() - (scaleButtonPanelWidth + scrollBarWidth),
+        area.getY(), scaleButtonPanelWidth, scaleButtonPanelHeight));
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
-    scaleButtonPanel.setBounds(
+    horizontalScaleButtonPanel.setBounds(
         juce::Rectangle<int>(0, area.getHeight(), scaleButtonPanelWidth, scaleButtonPanelHeight));
     trackListViewport.setBounds(area);
     desktopController.resize();

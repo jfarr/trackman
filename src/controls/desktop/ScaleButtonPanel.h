@@ -5,7 +5,7 @@
 
 class ScaleButtonPanel : public juce::Component {
   public:
-    ScaleButtonPanel();
+    ScaleButtonPanel(bool vertical);
     ~ScaleButtonPanel() override = default;
 
     void addListener(TrackScaleListener *listener);
@@ -19,6 +19,7 @@ class ScaleButtonPanel : public juce::Component {
   private:
     juce::TextButton minusButton;
     juce::TextButton plusButton;
+    bool vertical;
     std::list<TrackScaleListener *> listeners;
 
     void minusButtonClicked();

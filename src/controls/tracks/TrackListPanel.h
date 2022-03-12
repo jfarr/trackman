@@ -12,7 +12,7 @@
 
 class DropBox : public juce::Component {
   public:
-    DropBox() { setSize(200, 85); }
+    DropBox() { setSize(200, 60); }
     ~DropBox() {}
 
     void setSource(std::unique_ptr<juce::AudioFormatReaderSource> &newSource) { source = std::move(newSource); }

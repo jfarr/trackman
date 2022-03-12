@@ -8,9 +8,11 @@ class Project {
     Project(TrackList &trackList, Mixer &mixer) : trackList(trackList), mixer(mixer) {}
     ~Project() = default;
 
+    double getVerticalScale() const { return verticalScale; }
     double getHorizontalScale() const { return horizontalScale; }
 
-    void setHorizontalScale(int newScale) { horizontalScale = newScale; }
+    void incrementVerticalScale() { verticalScale *= 1.05; }
+    void decrementVerticalScale() { verticalScale /= 1.05; verticalScale = std::max(verticalScale, 0.0000001); }
     void incrementHorizontalScale() { horizontalScale *= 1.1; }
     void decrementHorizontalScale() { horizontalScale /= 1.1; horizontalScale = std::max(horizontalScale, 0.0000001); }
 
@@ -19,10 +21,12 @@ class Project {
         juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, std::string filename);
 
   private:
-    const double initialHorizontalScale = 75;
+    const double initialVerticalScale = 1;
+    const double initialHorizontalScale = 100;
     const double scaleIncrement = 5;
 
     TrackList &trackList;
     Mixer &mixer;
+    double verticalScale = initialVerticalScale;
     double horizontalScale = initialHorizontalScale;
 };

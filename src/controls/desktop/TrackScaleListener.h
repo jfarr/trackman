@@ -2,6 +2,8 @@
 
 class TrackScaleListener {
   public:
-    virtual void scaleIncreased() = 0;
-    virtual void scaleDecreased() = 0;
+    virtual void verticalScaleIncreased() = 0;
+    virtual void verticalScaleDecreased() = 0;
+    virtual void horizontalScaleIncreased() = 0;
+    virtual void horizontalScaleDecreased() = 0;
 };

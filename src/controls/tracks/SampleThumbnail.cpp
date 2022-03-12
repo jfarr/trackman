@@ -40,6 +40,7 @@ SampleThumbnail::SampleThumbnail(Project &project, Track &track, Sample &sample,
 
 void SampleThumbnail::createControls() {
     filenameLabel.setText(sample.getFile().getFileName(), juce::dontSendNotification);
+    filenameLabel.setFont(missingFileLabel.getFont().withHeight(10));
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     addAndMakeVisible(filenameLabel);
     addAndMakeVisible(stretchHandle);
@@ -96,7 +97,7 @@ void SampleThumbnail::paintOverlay(juce::Graphics &g) {
 
 void SampleThumbnail::resized() {
     auto area = getLocalBounds();
-    auto labelHeight = 18;
+    auto labelHeight = 15;
     auto margin = 2;
     auto handleSize = 12;
     stretchHandle.setBounds(getWidth() - handleSize, 0, handleSize, handleSize);

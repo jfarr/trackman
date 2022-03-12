@@ -78,8 +78,10 @@ class DesktopController : public FileDragDropTarget,
 
     //==============================================================================
     // TrackScaleListener
-    void scaleIncreased() override;
-    void scaleDecreased() override;
+    void verticalScaleIncreased() override;
+    void verticalScaleDecreased() override;
+    void horizontalScaleIncreased() override;
+    void horizontalScaleDecreased() override;
 
 
   private:

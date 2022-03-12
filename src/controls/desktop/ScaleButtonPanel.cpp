@@ -1,7 +1,7 @@
 #include "ScaleButtonPanel.h"
 #include "common/listutil.h"
 
-ScaleButtonPanel::ScaleButtonPanel() {
+ScaleButtonPanel::ScaleButtonPanel(bool vertical) : vertical(vertical) {
     minusButton.setButtonText("-");
     minusButton.setConnectedEdges(juce::Button::ConnectedOnRight);
     minusButton.onClick = [this]() { minusButtonClicked(); };
@@ -39,12 +39,20 @@ void ScaleButtonPanel::removeListener(TrackScaleListener *listener) { listeners.
 
 void ScaleButtonPanel::notifyScaleIncreased() {
     for (TrackScaleListener *listener : listeners) {
-        listener->scaleIncreased();
+        if (vertical) {
+            listener->verticalScaleIncreased();
+        } else {
+            listener->horizontalScaleIncreased();
+        }
     }
 }
 
 void ScaleButtonPanel::notifyScaleDecreased() {
     for (TrackScaleListener *listener : listeners) {
-        listener->scaleDecreased();
+        if (vertical) {
+            listener->verticalScaleDecreased();
+        } else {
+            listener->horizontalScaleDecreased();
+        }
     }
 }

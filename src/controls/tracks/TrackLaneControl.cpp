@@ -3,7 +3,7 @@
 TrackLaneControl::TrackLaneControl(Project &project, Track &track, juce::AudioTransportSource &transport)
     : project(project), track(track), transport(transport) {
     createControls();
-    setSize(800, 100);
+    setSize(800, 75);
 }
 
 TrackLaneControl::~TrackLaneControl() {}
@@ -11,7 +11,7 @@ TrackLaneControl::~TrackLaneControl() {}
 void TrackLaneControl::createControls() {
     trackLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
     auto font = trackLabel.getFont();
-    trackLabel.setFont(trackLabel.getFont().withHeight(12));
+    trackLabel.setFont(trackLabel.getFont().withHeight(11));
     trackLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
     addAndMakeVisible(trackLabel);
 }
@@ -52,7 +52,7 @@ void TrackLaneControl::paint(juce::Graphics &g) {
 void TrackLaneControl::resized() {
     auto area = getLocalBounds();
     auto leftPanelWidth = 25;
-    auto labelHeight = 15;
+    auto labelHeight = 12;
     auto margin = 3;
     auto scale = project.getHorizontalScale();
     area.removeFromLeft(leftPanelWidth);
@@ -61,6 +61,6 @@ void TrackLaneControl::resized() {
     for (SampleThumbnail *thumbnail : thumbnails) {
         auto x = thumbnail->getSample().getStartPos() * scale;
         thumbnail->setBounds(
-            x + leftPanelWidth, area.getY(), thumbnail->getSample().getLengthSecs() * scale, thumbnail->getHeight());
+            x + leftPanelWidth, area.getY(), thumbnail->getSample().getLengthSecs() * scale, area.getHeight());
     }
 }

@@ -106,7 +106,7 @@ void TrackListPanel::paint(juce::Graphics &g) {
 void TrackListPanel::resized() {
     auto area = getLocalBounds();
     for (auto &lane : lanes) {
-        lane->setBounds(area.removeFromTop(lane->getHeight()));
+        lane->setBounds(area.removeFromTop(lane->getHeight() * project.getVerticalScale()));
     }
 }
 

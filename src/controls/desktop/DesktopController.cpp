@@ -270,7 +270,23 @@ void DesktopController::filesDropped(const juce::StringArray &files, int x, int 
     trackListController.filesDropped(files, x, y);
 }
 
-void DesktopController::scaleIncreased() {
+void DesktopController::verticalScaleIncreased() {
+    project.incrementVerticalScale();
+    juce::MessageManager::callAsync([this]() {
+        trackListController.update();
+        desktopComponent.resized();
+    });
+}
+
+void DesktopController::verticalScaleDecreased() {
+    project.decrementVerticalScale();
+    juce::MessageManager::callAsync([this]() {
+        trackListController.update();
+        desktopComponent.resized();
+    });
+}
+
+void DesktopController::horizontalScaleIncreased() {
     project.incrementHorizontalScale();
     juce::MessageManager::callAsync([this]() {
         trackListController.update();
@@ -278,7 +294,7 @@ void DesktopController::scaleIncreased() {
     });
 }
 
-void DesktopController::scaleDecreased() {
+void DesktopController::horizontalScaleDecreased() {
     project.decrementHorizontalScale();
     juce::MessageManager::callAsync([this]() {
         trackListController.update();
