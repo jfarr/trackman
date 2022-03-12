@@ -16,6 +16,47 @@ class DecibelSliderLookAndFeel : public juce::LookAndFeel_V4 {
         juce::LookAndFeel_V4::drawLinearSlider(
             g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, slider);
 
+//        g.setColour(juce::Colours::lightgrey);
+        auto buttonRect = juce::Rectangle<int>(13, height / 6).withCentre(juce::Point<int>((width - x) / 2, sliderPos));
+        auto r = buttonRect;
+
+        //        g.fillRect(20, 20, 20, 20);
+//        g.fillRect(r);
+        auto topRect = r.removeFromTop(3);
+        auto bottomRect = r.removeFromBottom(6);
+        juce::ColourGradient gradient =
+            juce::ColourGradient::vertical(juce::Colours::silver, topRect.getY(), juce::Colours::darkgrey, topRect.getBottom());
+        g.setGradientFill(gradient);
+        g.fillRect(topRect);
+        gradient = juce::ColourGradient::vertical(
+            juce::Colours::dimgrey, bottomRect.getY(), juce::Colour{ 0xff101010 }, bottomRect.getBottom());
+        g.setGradientFill(gradient);
+        g.fillRect(bottomRect);
+        gradient = juce::ColourGradient::vertical(
+            juce::Colours::darkgrey, r.getY(), juce::Colours::silver, r.getBottom() + bottomRect.getHeight());
+        g.setGradientFill(gradient);
+        g.fillRect(r);
+//        g.setColour(juce::Colours::grey);
+//        g.drawHorizontalLine(topRect.getBottom(), topRect.getY(), topRect.getRight());
+        g.setColour(juce::Colours::silver);
+        g.drawHorizontalLine(topRect.getBottom(), topRect.getX(), topRect.getRight());
+        g.drawHorizontalLine(bottomRect.getY(), bottomRect.getX(), bottomRect.getRight());
+        auto lineY = r.getHeight() / 2 + r.getY() + 1;
+        g.setColour(juce::Colours::white);
+        g.drawLine(r.getX(), lineY, r.getRight(), lineY);
+        if (r.getHeight() > 10) {
+            g.setColour(juce::Colours::silver);
+            auto lineY2 = topRect.getBottom() + (lineY - topRect.getBottom()) / 3 + 1;
+            g.drawLine(r.getX() + 1, lineY2, r.getRight() - 1, lineY2, 0.5);
+            lineY2 = topRect.getBottom() + (lineY - topRect.getBottom()) * 2 / 3;
+            g.drawLine(r.getX() + 1, lineY2, r.getRight() - 1, lineY2, 0.5);
+            g.setColour(juce::Colours::darkgrey);
+            lineY2 = lineY + (lineY - topRect.getBottom()) / 3 + 1;
+            g.drawLine(r.getX() + 1, lineY2, r.getRight() - 1, lineY2, 0.5);
+            lineY2 = lineY + (lineY - topRect.getBottom()) * 2 / 3;
+            g.drawLine(r.getX() + 1, lineY2, r.getRight() - 1, lineY2, 0.5);
+        }
+
         g.setColour(juce::Colours::grey);
         g.setFont(g.getCurrentFont().withHeight(10));
         auto tickX = width - 15;

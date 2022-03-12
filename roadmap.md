@@ -1,9 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Finish gain sliders
-  - Ticks
-  - Custom image
 - Drop multiple files
 - Sample info popup
 - Use undo manager
