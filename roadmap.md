@@ -4,6 +4,9 @@
 - Drop multiple files
 - Sample info popup
 - Use undo manager
+- Bug fixes
+  - Track level meter scale
+
 
 ## Long Term
 
