@@ -1,8 +1,8 @@
 # Roadmap
 
 ## Short-Term
-- Zoom track lanes
 - Mixer horizontal scroll
+- Redo move dragging
 - Drop multiple files
 - Prompt for delete track/sample
 - Prompt for save on exit
