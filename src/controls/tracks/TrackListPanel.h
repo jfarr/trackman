@@ -61,7 +61,6 @@ class TrackListPanel : public juce::Component,
 
     //==============================================================================
     // DragAndDropContainer
-    void dragOperationStarted(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
     void dragOperationEnded(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
 
     //==============================================================================
