@@ -3,7 +3,7 @@
 
 //==============================================================================
 TransportControl::TransportControl(juce::AudioTransportSource &transportSource, bool enabled)
-    : transportSource(transportSource), enabled(enabled) {
+    : stopButtonImage(juce::Image::ARGB, 50, 21, true), stopButton("stop"), transportSource(transportSource), enabled(enabled) {
     transportSource.addChangeListener(this);
     createControls();
     startTimer(20);
@@ -12,41 +12,49 @@ TransportControl::TransportControl(juce::AudioTransportSource &transportSource, 
 TransportControl::~TransportControl() {}
 
 void TransportControl::createControls() {
-    addAndMakeVisible(&playButton);
     playButton.setButtonText(">");
     playButton.onClick = [this] { playButtonClicked(); };
     playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     playButton.setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     playButton.setEnabled(enabled);
+    addAndMakeVisible(&playButton);
 
-    addAndMakeVisible(&stopButton);
-    stopButton.setButtonText("[]");
+    juce::Graphics g(stopButtonImage);
+    g.setColour(juce::Colours::steelblue);
+    g.fillRect(0, 0, 50, 21);
+    g.setColour(juce::Colours::grey.brighter(0.3f));
+    g.drawRect(0, 0, 50, 21);
+    g.setColour(juce::Colours::white);
+    g.fillRect(20, 5, 11, 11);
+    stopButton.setImages(true, false, false, stopButtonImage, 0.9, juce::Colours::transparentWhite, juce::Image(), 1.0,
+        juce::Colours::transparentWhite, juce::Image(), 1.0, juce::Colours::transparentWhite);
+
     stopButton.onClick = [this] { stopButtonClicked(); };
-    stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     stopButton.setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     stopButton.setEnabled(enabled);
+    addAndMakeVisible(&stopButton);
 
-    addAndMakeVisible(&pauseButton);
     pauseButton.setButtonText("||");
     pauseButton.onClick = [this] { pauseButtonClicked(); };
     pauseButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     pauseButton.setConnectedEdges(juce::Button::ConnectedOnLeft);
     pauseButton.setEnabled(enabled);
+    addAndMakeVisible(&pauseButton);
 
-    addAndMakeVisible(&startButton);
     startButton.setButtonText("|<");
     startButton.onClick = [this] { startButtonClicked(); };
     startButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     startButton.setConnectedEdges(juce::Button::ConnectedOnRight);
     startButton.setEnabled(enabled);
+    addAndMakeVisible(&startButton);
 
-    addAndMakeVisible(&loopingToggle);
     loopingToggle.setButtonText("loop");
     loopingToggle.onClick = [this] { loopButtonClicked(); };
     loopingToggle.setEnabled(enabled);
+    addAndMakeVisible(&loopingToggle);
 
-    addAndMakeVisible(&currentPositionLabel);
     currentPositionLabel.setEnabled(enabled);
+    addAndMakeVisible(&currentPositionLabel);
 }
 
 void TransportControl::setEnabled(bool isEnabled) {

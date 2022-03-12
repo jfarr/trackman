@@ -51,11 +51,14 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
     void loopButtonClicked();
 
     juce::TextButton playButton;
-    juce::TextButton stopButton;
+//    juce::TextButton stopButton;
+    juce::ImageButton stopButton;
     juce::TextButton pauseButton;
     juce::TextButton startButton;
     juce::ToggleButton loopingToggle;
     juce::Label currentPositionLabel;
+
+    juce::Image stopButtonImage;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TransportControl)
 };
