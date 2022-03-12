@@ -187,10 +187,8 @@ void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int sc
     auto track = trackListPanel.getTrackAtPos(x, y);
     if (track != currentDragTrack) {
         currentDragTrack = track;
-        DBG("track: " << juce::String::toHexString((long)track));
         TrackLaneController *lane;
         if (track == nullptr) {
-            DBG("newDragTrack: " << juce::String::toHexString((long)newDragLane));
             if (newDragLane == nullptr) {
                 track = new Track(trackList);
                 newDragLane = new TrackLaneController(project, *track, *this, transport, formatManager);
