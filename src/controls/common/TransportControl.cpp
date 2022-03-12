@@ -3,7 +3,8 @@
 
 //==============================================================================
 TransportControl::TransportControl(juce::AudioTransportSource &transportSource, bool enabled)
-    : stopButtonImage(juce::Image::ARGB, 50, 21, true), stopButton("stop"), transportSource(transportSource), enabled(enabled) {
+    : playButtonImage(juce::Image::ARGB, 50, 21, true), stopButtonImage(juce::Image::ARGB, 50, 21, true),
+      playButton("play"), stopButton("stop"), transportSource(transportSource), enabled(enabled) {
     transportSource.addChangeListener(this);
     createControls();
     startTimer(20);
@@ -12,20 +13,32 @@ TransportControl::TransportControl(juce::AudioTransportSource &transportSource, 
 TransportControl::~TransportControl() {}
 
 void TransportControl::createControls() {
-    playButton.setButtonText(">");
+
+    juce::Graphics g(playButtonImage);
+    g.setColour(juce::Colours::steelblue);
+    g.fillRect(0, 0, 50, 21);
+    g.setColour(juce::Colours::grey.brighter(0.3f));
+    g.drawRect(0, 0, 50, 21);
+    g.setColour(juce::Colours::white);
+    juce::Path p;
+    p.addTriangle(21, 5, 21, 17, 32, 11);
+    g.fillPath(p);
+    playButton.setImages(true, false, false, playButtonImage, 0.9, juce::Colours::transparentWhite, juce::Image(), 1.0,
+        juce::Colours::transparentWhite, juce::Image(), 1.0, juce::Colours::transparentWhite);
+
     playButton.onClick = [this] { playButtonClicked(); };
     playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::steelblue);
     playButton.setConnectedEdges(juce::Button::ConnectedOnLeft | juce::Button::ConnectedOnRight);
     playButton.setEnabled(enabled);
     addAndMakeVisible(&playButton);
 
-    juce::Graphics g(stopButtonImage);
-    g.setColour(juce::Colours::steelblue);
-    g.fillRect(0, 0, 50, 21);
-    g.setColour(juce::Colours::grey.brighter(0.3f));
-    g.drawRect(0, 0, 50, 21);
-    g.setColour(juce::Colours::white);
-    g.fillRect(20, 5, 11, 11);
+    juce::Graphics g2(stopButtonImage);
+    g2.setColour(juce::Colours::steelblue);
+    g2.fillRect(0, 0, 50, 21);
+    g2.setColour(juce::Colours::grey.brighter(0.3f));
+    g2.drawRect(0, 0, 50, 21);
+    g2.setColour(juce::Colours::white);
+    g2.fillRect(20, 5, 11, 11);
     stopButton.setImages(true, false, false, stopButtonImage, 0.9, juce::Colours::transparentWhite, juce::Image(), 1.0,
         juce::Colours::transparentWhite, juce::Image(), 1.0, juce::Colours::transparentWhite);
 
