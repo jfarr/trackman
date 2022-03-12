@@ -1,7 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Mixer horizontal scroll
 - Redo move dragging
 - Drop multiple files
 - Prompt for delete track/sample
