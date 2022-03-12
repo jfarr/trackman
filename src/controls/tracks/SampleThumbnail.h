@@ -62,6 +62,8 @@ class SampleThumbnail : public juce::Component {
     StretchHandle stretchHandle;
     bool dragging = false;
     int xPos = 0;
+    juce::Image dragImage;
+    juce::ScaledImage scaledDragImage;
 
     // TODO: make thumbnailCache a singleton
     juce::AudioThumbnailCache thumbnailCache;
@@ -73,7 +75,6 @@ class SampleThumbnail : public juce::Component {
     void createControls();
     void paintWithoutOverlay(juce::Graphics &g);
     void paintOverlay(juce::Graphics &g);
-    juce::ScaledImage *getImage();
 
     void notifySampleSelected(Track &track, Sample &selected);
     void notifyMouseDragged(SampleThumbnail &thumbnail, int x, int y);

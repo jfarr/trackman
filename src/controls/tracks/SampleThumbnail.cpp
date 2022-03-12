@@ -28,7 +28,8 @@ void StretchHandle::mouseUp(const juce::MouseEvent &event) {}
 SampleThumbnail::SampleThumbnail(Project &project, Track &track, Sample &sample, juce::AudioTransportSource &transport,
     juce::AudioFormatManager &formatManager)
     : project(project), track(track), sample(sample), transport(transport), thumbnailCache(5),
-      thumbnail(512, formatManager, thumbnailCache), stretchHandle(*this) {
+      thumbnail(512, formatManager, thumbnailCache), stretchHandle(*this), dragImage(juce::Image::ARGB, 1, 1, true),
+      scaledDragImage(dragImage) {
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     createControls();
     setSize(200, 81);
@@ -46,14 +47,6 @@ void SampleThumbnail::createControls() {
         missingFileLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
         addAndMakeVisible(missingFileLabel);
     }
-}
-
-juce::ScaledImage *SampleThumbnail::getImage() {
-    image = std::make_unique<juce::Image>(juce::Image::ARGB, getWidth(), getHeight(), false);
-    juce::Graphics g(*image);
-    paintWithoutOverlay(g);
-    scaledImage = std::make_unique<juce::ScaledImage>(*image);
-    return scaledImage.get();
 }
 
 void SampleThumbnail::paint(juce::Graphics &g) {
@@ -117,10 +110,9 @@ void SampleThumbnail::mouseUp(const juce::MouseEvent &event) { dragging = false;
 void SampleThumbnail::mouseDrag(const juce::MouseEvent &event) {
     auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
     if (container != nullptr) {
-        container->startDragging("clip", this);
+        container->startDragging("clip", this, scaledDragImage);
     }
     auto d = event.getDistanceFromDragStartX();
-//    setTopLeftPosition(getPosition().withX(xPos + d));
     notifyMouseDragged(*this, xPos + d, event.getScreenY());
 }
 
