@@ -51,9 +51,11 @@ class Track {
     void undeleteSample(Sample *sample);
 
   private:
+    const juce::String defaultName = "untitled";
+
     TrackList& trackList;
     int number = 0;
-    juce::String name = "";
+    juce::String name = defaultName;
     std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
     std::shared_ptr<MeteredAudioSource> meteredSource;
     std::shared_ptr<GainAudioSource> gainSource;
