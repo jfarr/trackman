@@ -75,6 +75,7 @@ class TrackListPanel : public juce::Component,
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
     juce::AudioFormatManager &formatManager;
+    TimeMeter timeMeter;
     std::list<TrackLaneControl *> lanes;
 
     DropBox dropBox;

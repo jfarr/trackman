@@ -3,7 +3,9 @@
 
 TrackListPanel::TrackListPanel(Project &project, TrackList &trackList, juce::Viewport &viewport,
     juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
-    : project(project), trackList(trackList), viewport(viewport), transport(transport), formatManager(formatManager) {
+    : project(project), trackList(trackList), viewport(viewport), transport(transport), formatManager(formatManager),
+      timeMeter(project) {
+    update();
     resize();
     startTimer(20);
 }
@@ -12,6 +14,7 @@ TrackListPanel::~TrackListPanel() {}
 
 void TrackListPanel::update() {
     removeAllChildren();
+    addAndMakeVisible(timeMeter);
     for (TrackLaneControl *lane : lanes) {
         lane->update();
         addAndMakeVisible(lane);
@@ -105,6 +108,9 @@ void TrackListPanel::paint(juce::Graphics &g) {
 
 void TrackListPanel::resized() {
     auto area = getLocalBounds();
+    auto topStripWidth = 20;
+    timeMeter.setBounds(area.removeFromTop(topStripWidth));
+    timeMeter.repaint();
     for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(lane->getHeight() * project.getVerticalScale()));
     }

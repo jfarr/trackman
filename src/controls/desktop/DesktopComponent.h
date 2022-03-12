@@ -176,7 +176,6 @@ class DesktopComponent : public juce::AudioAppComponent,
     juce::Viewport &trackListViewport;
     MixerPanel &mixerPanel;
     Mixer &mixer;
-    TimeMeter timeMeter;
     ScaleButtonPanel horizontalScaleButtonPanel;
     ScaleButtonPanel verticalScaleButtonPanel;
     std::list<FileDragDropTarget *> listeners;
