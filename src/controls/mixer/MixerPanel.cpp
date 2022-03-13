@@ -4,7 +4,7 @@
 MixerPanel::MixerPanel(
     DesktopController &desktopController, /*TrackList &trackList, Mixer &mixer,*/ foleys::LevelMeterSource &meterSource)
     : desktopController(desktopController), masterTrackControl(desktopController.getMixer(), meterSource),
-//      mixerViewport(desktopController.getMixerController().getViewport()),
+      mixerViewport(desktopController.getMixerController().getViewport()),
       transportControl(desktopController.getMixer().getTransportSource()) {
     createControls();
     masterTrackControl.addListener(&desktopController);
@@ -14,10 +14,10 @@ MixerPanel::MixerPanel(
 MixerPanel::~MixerPanel() { masterTrackControl.removeListener(&desktopController); }
 
 void MixerPanel::createControls() {
-//    mixerViewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
+    mixerViewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
     addAndMakeVisible(transportControl);
     addAndMakeVisible(masterTrackControl);
-//    addAndMakeVisible(mixerViewport);
+    addAndMakeVisible(mixerViewport);
 }
 
 //==============================================================================
@@ -38,5 +38,5 @@ void MixerPanel::resized() {
     transportControl.setBounds(area.removeFromTop(buttonHeight).reduced(transportMargin));
     area.removeFromTop(1);
     masterTrackControl.setBounds(area.removeFromLeft(masterTrackControl.getPreferredWidth()));
-//    mixerViewport.setBounds(area);
+    mixerViewport.setBounds(area);
 }
