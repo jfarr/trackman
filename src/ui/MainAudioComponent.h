@@ -2,7 +2,7 @@
 
 #include <JuceHeader.h>
 
-#include "controls/desktop/DesktopController.h"
+#include "ui/desktop/DesktopController.h"
 
 class MainWindow;
 

@@ -1,6 +1,6 @@
 #include "TrackController.h"
 #include "common/listutil.h"
-#include "controls/desktop/DesktopController.h"
+#include "ui/desktop/DesktopController.h"
 
 TrackController::TrackController(DesktopController &desktopController, Track &track)
     : desktopController(desktopController), track(track), trackControl(track) {

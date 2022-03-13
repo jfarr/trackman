@@ -6,12 +6,12 @@
 #include "MixerPanel.h"
 #include "TrackControl.h"
 #include "TrackController.h"
-#include "controls/common/TransportControl.h"
-#include "controls/desktop/TrackListListener.h"
-#include "controls/mixer/MasterTrackListener.h"
+#include "TrackPanel.h"
 #include "model/Mixer.h"
 #include "model/TrackList.h"
-#include "TrackPanel.h"
+#include "ui/common/TransportControl.h"
+#include "ui/desktop/TrackListListener.h"
+#include "ui/mixer/MasterTrackListener.h"
 
 class DesktopController;
 

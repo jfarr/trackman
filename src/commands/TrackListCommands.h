@@ -3,14 +3,13 @@
 #include <JuceHeader.h>
 
 #include "Command.h"
-#include "controls/desktop/DesktopController.h"
-#include "controls/mixer/TrackController.h"
 #include "model/Track.h"
+#include "ui/desktop/DesktopController.h"
+#include "ui/mixer/TrackController.h"
 
 class AddTrackCommand : public Command {
   public:
-    AddTrackCommand(DesktopController &controller)
-        : Command("add track"), controller(controller) {}
+    AddTrackCommand(DesktopController &controller) : Command("add track"), controller(controller) {}
     ~AddTrackCommand() override {}
 
     void execute() override { track = controller.addTrack(); }

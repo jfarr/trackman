@@ -5,12 +5,12 @@
 #include "ChildWindow.h"
 #include "FileDragDropTarget.h"
 #include "ScaleButtonPanel.h"
-#include "controls/AudioPlayer.h"
-#include "controls/common/TimeMeter.h"
-#include "controls/mixer/MixerPanel.h"
-#include "controls/tracks/TrackListPanel.h"
-#include "controls/tracks/TrackListViewport.h"
 #include "model/Mixer.h"
+#include "ui/AudioPlayer.h"
+#include "ui/common/TimeMeter.h"
+#include "ui/mixer/MixerPanel.h"
+#include "ui/tracks/TrackListPanel.h"
+#include "ui/tracks/TrackListViewport.h"
 
 class DesktopController;
 

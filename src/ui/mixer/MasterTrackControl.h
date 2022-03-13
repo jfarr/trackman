@@ -3,10 +3,10 @@
 #include <JuceHeader.h>
 #include <ff_meters.h>
 
-#include "MasterTrackListener.h"
-#include "controls/common/DecibelSlider.h"
-#include "model/Mixer.h"
 #include "MasterLevelMeterLookAndFeel.h"
+#include "MasterTrackListener.h"
+#include "model/Mixer.h"
+#include "ui/common/DecibelSlider.h"
 
 class MasterTrackControl : public juce::Component, public SliderListener {
   public:

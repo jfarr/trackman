@@ -5,11 +5,11 @@
 #include "TrackListListener.h"
 #include "TrackScaleListener.h"
 #include "commands/CommandList.h"
-#include "controls/mixer/MixerController.h"
-#include "controls/mixer/TrackControlListener.h"
-#include "controls/tracks/TrackListController.h"
 #include "model/Project.h"
 #include "model/TrackList.h"
+#include "ui/mixer/MixerController.h"
+#include "ui/mixer/TrackControlListener.h"
+#include "ui/tracks/TrackListController.h"
 
 class MainWindow;
 

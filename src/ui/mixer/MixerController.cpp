@@ -1,6 +1,6 @@
 #include "MixerController.h"
-#include "controls/desktop/DesktopController.h"
-#include "controls/mixer/TrackController.h"
+#include "ui/desktop/DesktopController.h"
+#include "ui/mixer/TrackController.h"
 
 MixerController::MixerController(DesktopController &desktopController)
     : desktopController(desktopController), trackList(desktopController.getProject().getTrackList()),

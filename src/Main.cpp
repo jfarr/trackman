@@ -2,9 +2,9 @@
 
 #include <memory>
 
-#include "controls/MainWindow.h"
-#include "controls/desktop/DesktopComponent.h"
-#include "controls/desktop/DesktopController.h"
+#include "ui/MainWindow.h"
+#include "ui/desktop/DesktopComponent.h"
+#include "ui/desktop/DesktopController.h"
 
 class TrackmanApplication : public juce::JUCEApplication {
   public:

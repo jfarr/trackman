@@ -32,63 +32,6 @@ target_sources(Trackman PRIVATE
         commands/MixerCommands.h
         commands/TrackCommands.h
         commands/TrackListCommands.h
-        controls/AudioPlayer.cpp
-        controls/AudioPlayer.h
-        controls/MainAudioComponent.cpp
-        controls/MainAudioComponent.h
-        controls/MainWindow.cpp
-        controls/MainWindow.h
-        controls/common/DecibelSlider.h
-        controls/common/FileChooserControl.cpp
-        controls/common/FileChooserControl.h
-        controls/common/PositionOverlay.cpp
-        controls/common/PositionOverlay.h
-        controls/common/ThumbnailComponent.cpp
-        controls/common/ThumbnailComponent.h
-        controls/common/TimeMeter.cpp
-        controls/common/TimeMeter.h
-        controls/common/TransportControl.cpp
-        controls/common/TransportControl.h
-        controls/desktop/ChildWindow.cpp
-        controls/desktop/ChildWindow.h
-        controls/desktop/DesktopComponent.cpp
-        controls/desktop/DesktopComponent.h
-        controls/desktop/DesktopController.cpp
-        controls/desktop/DesktopController.h
-        controls/desktop/FileDragDropTarget.h
-        controls/desktop/ScaleButtonPanel.cpp
-        controls/desktop/ScaleButtonPanel.h
-        controls/desktop/TrackScaleListener.h
-        controls/desktop/TrackListListener.h
-        controls/mixer/LevelMeterLookAndFeel.h
-        controls/mixer/MasterLevelMeterLookAndFeel.h
-        controls/mixer/MasterTrackControl.cpp
-        controls/mixer/MasterTrackControl.h
-        controls/mixer/MasterTrackListener.h
-        controls/mixer/MixerPanel.cpp
-        controls/mixer/MixerPanel.h
-        controls/mixer/MixerController.cpp
-        controls/mixer/MixerController.h
-        controls/mixer/TrackControl.cpp
-        controls/mixer/TrackControl.h
-        controls/mixer/TrackController.cpp
-        controls/mixer/TrackController.h
-        controls/mixer/TrackControlListener.h
-        controls/mixer/TrackPanel.cpp
-        controls/mixer/TrackPanel.h
-        controls/tracks/SampleListener.h
-        controls/tracks/SampleThumbnail.cpp
-        controls/tracks/SampleThumbnail.h
-        controls/tracks/TrackLaneControl.cpp
-        controls/tracks/TrackLaneControl.h
-        controls/tracks/TrackLaneController.cpp
-        controls/tracks/TrackLaneController.h
-        controls/tracks/TrackListController.cpp
-        controls/tracks/TrackListController.h
-        controls/tracks/TrackListPanel.cpp
-        controls/tracks/TrackListPanel.h
-        controls/tracks/TrackListViewport.cpp
-        controls/tracks/TrackListViewport.h
         model/Mixer.cpp
         model/Mixer.h
         model/Project.cpp
@@ -99,6 +42,63 @@ target_sources(Trackman PRIVATE
         model/Track.h
         model/TrackList.cpp
         model/TrackList.h
+        ui/AudioPlayer.cpp
+        ui/AudioPlayer.h
+        ui/MainAudioComponent.cpp
+        ui/MainAudioComponent.h
+        ui/MainWindow.cpp
+        ui/MainWindow.h
+        ui/common/DecibelSlider.h
+        ui/common/FileChooserControl.cpp
+        ui/common/FileChooserControl.h
+        ui/common/PositionOverlay.cpp
+        ui/common/PositionOverlay.h
+        ui/common/ThumbnailComponent.cpp
+        ui/common/ThumbnailComponent.h
+        ui/common/TimeMeter.cpp
+        ui/common/TimeMeter.h
+        ui/common/TransportControl.cpp
+        ui/common/TransportControl.h
+        ui/desktop/ChildWindow.cpp
+        ui/desktop/ChildWindow.h
+        ui/desktop/DesktopComponent.cpp
+        ui/desktop/DesktopComponent.h
+        ui/desktop/DesktopController.cpp
+        ui/desktop/DesktopController.h
+        ui/desktop/FileDragDropTarget.h
+        ui/desktop/ScaleButtonPanel.cpp
+        ui/desktop/ScaleButtonPanel.h
+        ui/desktop/TrackScaleListener.h
+        ui/desktop/TrackListListener.h
+        ui/mixer/LevelMeterLookAndFeel.h
+        ui/mixer/MasterLevelMeterLookAndFeel.h
+        ui/mixer/MasterTrackControl.cpp
+        ui/mixer/MasterTrackControl.h
+        ui/mixer/MasterTrackListener.h
+        ui/mixer/MixerPanel.cpp
+        ui/mixer/MixerPanel.h
+        ui/mixer/MixerController.cpp
+        ui/mixer/MixerController.h
+        ui/mixer/TrackControl.cpp
+        ui/mixer/TrackControl.h
+        ui/mixer/TrackController.cpp
+        ui/mixer/TrackController.h
+        ui/mixer/TrackControlListener.h
+        ui/mixer/TrackPanel.cpp
+        ui/mixer/TrackPanel.h
+        ui/tracks/SampleListener.h
+        ui/tracks/SampleThumbnail.cpp
+        ui/tracks/SampleThumbnail.h
+        ui/tracks/TrackLaneControl.cpp
+        ui/tracks/TrackLaneControl.h
+        ui/tracks/TrackLaneController.cpp
+        ui/tracks/TrackLaneController.h
+        ui/tracks/TrackListController.cpp
+        ui/tracks/TrackListController.h
+        ui/tracks/TrackListPanel.cpp
+        ui/tracks/TrackListPanel.h
+        ui/tracks/TrackListViewport.cpp
+        ui/tracks/TrackListViewport.h
         )
 
 target_include_directories(Trackman PRIVATE

@@ -3,8 +3,8 @@
 #include <JuceHeader.h>
 
 #include "TrackLaneControl.h"
-#include "controls/desktop/TrackListListener.h"
 #include "model/Track.h"
+#include "ui/desktop/TrackListListener.h"
 
 class TrackListController;
 

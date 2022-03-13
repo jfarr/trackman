@@ -4,15 +4,16 @@
 
 #include "MasterTrackControl.h"
 #include "TrackControl.h"
-#include "controls/common/TransportControl.h"
 #include "model/Mixer.h"
 #include "model/TrackList.h"
+#include "ui/common/TransportControl.h"
 
 class DesktopController;
 
 class MixerPanel : public juce::Component {
   public:
-    MixerPanel(DesktopController &desktopController, /*TrackList &trackList, Mixer &mixer,*/ foleys::LevelMeterSource &meterSource);
+    MixerPanel(DesktopController &desktopController,
+        /*TrackList &trackList, Mixer &mixer,*/ foleys::LevelMeterSource &meterSource);
     ~MixerPanel() override;
 
     int getPreferredHeight() const { return std::max(getHeight(), 280); }

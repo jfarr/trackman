@@ -1,7 +1,8 @@
 #pragma once
 
-#include "TrackScaleListener.h"
 #include <JuceHeader.h>
+
+#include "TrackScaleListener.h"
 
 class ScaleButtonPanel : public juce::Component {
   public:

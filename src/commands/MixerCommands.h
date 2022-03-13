@@ -3,7 +3,7 @@
 #include <JuceHeader.h>
 
 #include "Command.h"
-#include "controls/desktop/DesktopController.h"
+#include "ui/desktop/DesktopController.h"
 
 class ChangeMasterVolumeCommand : public Command {
   public:
