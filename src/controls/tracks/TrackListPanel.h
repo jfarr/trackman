@@ -4,8 +4,6 @@
 
 #include "SampleListener.h"
 #include "TrackLaneControl.h"
-#include "controls/common/PositionOverlay.h"
-#include "controls/common/TimeMeter.h"
 #include "controls/desktop/TrackListListener.h"
 #include "model/Track.h"
 #include "model/TrackList.h"
@@ -27,39 +25,6 @@ class DropBox : public juce::Component {
     std::unique_ptr<juce::AudioFormatReaderSource> source;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DropBox)
 };
-
-//class InnerTrackPanel : public juce::Component {
-//  public:
-//    InnerTrackPanel(Project &project, juce::Viewport &viewport, juce::AudioTransportSource &transport);
-//    ~InnerTrackPanel() = default;
-//
-//    Track *getTrackAtPos(int x, int y);
-//
-//    void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
-//    void removeLane(TrackLaneControl *lane) { lanes.remove(lane); }
-//    void clear() { lanes.clear(); }
-//    void resize();
-//    void update();
-//
-//    //==============================================================================
-//    // Component
-//    void paint(juce::Graphics &g) override;
-//    void resized() override;
-//
-//    int getPanelWidth() const;
-//    int getPanelHeight() const;
-//
-//  private:
-//    Project &project;
-//    juce::Viewport &viewport;
-//    juce::AudioTransportSource &transport;
-//    TimeMeter timeMeter;
-//    std::list<TrackLaneControl *> lanes;
-//
-//    int getTrackLaneHeight() const;
-//
-//    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InnerTrackPanel)
-//};
 
 class TrackListPanel : public juce::Component,
                        public juce::DragAndDropContainer,
@@ -109,10 +74,7 @@ class TrackListPanel : public juce::Component,
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
     juce::AudioFormatManager &formatManager;
-//    TimeMeter timeMeter;
-//    juce::Viewport innerViewport;
-//    InnerTrackPanel innerPanel;
-        std::list<TrackLaneControl *> lanes;
+    std::list<TrackLaneControl *> lanes;
 
     DropBox dropBox;
     int dragSourceOffset;
@@ -120,9 +82,9 @@ class TrackListPanel : public juce::Component,
     std::list<SampleListener *> sampleListeners;
     std::list<TrackListListener *> trackListListeners;
 
-        int getPanelWidth() const;
-        int getPanelHeight() const;
-        int getTrackLaneHeight() const;
+    int getPanelWidth() const;
+    int getPanelHeight() const;
+    int getTrackLaneHeight() const;
 
     void notifySampleDropped(SampleThumbnail *thumbnail, int x, int y);
     void notifySampleResized(SampleThumbnail *thumbnail, int width);
