@@ -62,8 +62,38 @@ void DesktopComponent::closeAllWindows() {
     windows.clear();
 }
 
+juce::StringArray DesktopComponent::getMenuBarNames() { return {"file", "edit", "new", "track"}; }
+
+juce::PopupMenu DesktopComponent::getMenuForIndex(int menuIndex, const juce::String & /*menuName*/) {
+    juce::PopupMenu menu;
+
+    if (menuIndex == 0) {
+        menu.addCommandItem(&commandManager, CommandIDs::openProject);
+        menu.addCommandItem(&commandManager, CommandIDs::saveProject);
+        menu.addCommandItem(&commandManager, CommandIDs::saveProjectAs);
+        menu.addSeparator();
+        menu.addCommandItem(&commandManager, CommandIDs::exportProject);
+    } else if (menuIndex == 1) {
+        menu.addCommandItem(&commandManager, CommandIDs::editUndo);
+    } else if (menuIndex == 2) {
+        menu.addCommandItem(&commandManager, CommandIDs::newTrack);
+        menu.addCommandItem(&commandManager, CommandIDs::newAudioPlayer);
+    } else if (menuIndex == 3) {
+        menu.addCommandItem(&commandManager, CommandIDs::deleteTrackSelection);
+    }
+
+    return menu;
+}
+
 void DesktopComponent::visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea) {
     timeMeter.setBounds(timeMeter.getBounds().withLeft(-newVisibleArea.getX()));
+}
+
+void DesktopComponent::getAllCommands(juce::Array<juce::CommandID> &c) {
+    juce::Array<juce::CommandID> commands{CommandIDs::openProject, CommandIDs::saveProject, CommandIDs::saveProjectAs,
+        CommandIDs::exportProject, CommandIDs::editUndo, CommandIDs::newTrack, CommandIDs::newAudioPlayer,
+        CommandIDs::deleteTrackSelection};
+    c.addArray(commands);
 }
 
 void DesktopComponent::getCommandInfo(juce::CommandID commandID, juce::ApplicationCommandInfo &result) {
