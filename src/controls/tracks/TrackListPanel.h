@@ -8,6 +8,8 @@
 #include "model/Track.h"
 #include "model/TrackList.h"
 
+class DesktopController;
+
 class DropBox : public juce::Component {
   public:
     DropBox() { setSize(200, 60); }
@@ -31,9 +33,8 @@ class TrackListPanel : public juce::Component,
                        public juce::DragAndDropTarget,
                        private juce::Timer {
   public:
-    TrackListPanel(Project &project, juce::Viewport &viewport, juce::AudioTransportSource &transport,
-        juce::AudioFormatManager &formatManager);
-    ~TrackListPanel();
+    TrackListPanel(DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport);
+    ~TrackListPanel() override;
 
     Track *getTrackAtPos(int x, int y);
 
@@ -69,10 +70,10 @@ class TrackListPanel : public juce::Component,
     void mouseDown(const juce::MouseEvent &event) override;
 
   private:
-    Project &project;
+    DesktopController &desktopController;
+//    Project &project;
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
-    juce::AudioFormatManager &formatManager;
     std::list<TrackLaneControl *> lanes;
 
     DropBox dropBox;

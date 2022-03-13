@@ -6,8 +6,7 @@
 TrackListController::TrackListController(DesktopController &desktopController, juce::AudioTransportSource &transport)
     : desktopController(desktopController), project(desktopController.getProject()), transport(transport),
       trackListViewport(desktopController.getDesktopComponent()),
-      trackListPanel(project, trackListViewport, transport,
-          desktopController.getMainWindow().getMainAudioComponent().getFormatManager()) {
+      trackListPanel(desktopController, trackListViewport, transport) {
 
     trackListPanel.addListener((SampleListener *)this);
     trackListPanel.addListener((TrackListListener *)this);

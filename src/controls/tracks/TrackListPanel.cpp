@@ -1,9 +1,11 @@
 #include "TrackListPanel.h"
 #include "common/listutil.h"
+#include "controls/MainWindow.h"
+#include "controls/desktop/DesktopController.h"
 
-TrackListPanel::TrackListPanel(Project &project, juce::Viewport &viewport,
-    juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
-    : project(project), viewport(viewport), transport(transport), formatManager(formatManager) {
+TrackListPanel::TrackListPanel(
+    DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport)
+    : desktopController(desktopController), viewport(viewport), transport(transport) {
 
     viewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
     viewport.getHorizontalScrollBar().setAutoHide(false);
@@ -29,10 +31,11 @@ Track *TrackListPanel::getTrackAtPos(int x, int y) {
 }
 
 void TrackListPanel::fileDragEnter(const juce::StringArray &files, int x, int y) {
-    auto *reader = formatManager.createReaderFor(juce::File(files[0]));
+    auto *reader = desktopController.getMainWindow().getMainAudioComponent().getFormatManager().createReaderFor(
+        juce::File(files[0]));
     auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
     auto length = newSource->getTotalLength() / reader->sampleRate;
-    auto width = length * project.getHorizontalScale();
+    auto width = length * desktopController.getProject().getHorizontalScale();
     addAndMakeVisible(dropBox);
     auto bounds = dropBox.getLocalBounds();
     dropBox.setBounds(bounds.withWidth(width).withCentre(juce::Point(x, y)));
@@ -90,19 +93,22 @@ void TrackListPanel::resize() {
 
 int TrackListPanel::getPanelWidth() const {
     auto leftPanelWidth = 25;
-    int trackWidth = project.getTrackList().getTotalLengthSeconds() * project.getHorizontalScale();
+    int trackWidth = desktopController.getProject().getTrackList().getTotalLengthSeconds() *
+                     desktopController.getProject().getHorizontalScale();
     return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
 }
 
 int TrackListPanel::getPanelHeight() const {
-    int trackHeight =
-        lanes.size() > 0 ? (lanes.size() + 1) * lanes.back()->getPreferredHeight() * project.getVerticalScale() : 0;
+    int trackHeight = lanes.size() > 0 ? (lanes.size() + 1) * lanes.back()->getPreferredHeight() *
+                                             desktopController.getProject().getVerticalScale()
+                                       : 0;
     return std::max(trackHeight, viewport.getHeight());
 }
 
 int TrackListPanel::getTrackLaneHeight() const {
-    int trackHeight =
-        lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() * project.getVerticalScale() : 0;
+    int trackHeight = lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() *
+                                             desktopController.getProject().getVerticalScale()
+                                       : 0;
     return trackHeight;
 }
 
@@ -113,7 +119,8 @@ void TrackListPanel::paint(juce::Graphics &g) {
 
     if (duration > 0.0) {
         auto audioPosition = (float)transport.getCurrentPosition();
-        auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
+        float drawPosition =
+            audioPosition * (float)desktopController.getProject().getHorizontalScale() + (float)leftPanelWidth;
 
         g.setColour(juce::Colour{0xff282828});
         g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);

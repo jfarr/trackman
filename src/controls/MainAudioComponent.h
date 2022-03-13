@@ -8,8 +8,8 @@ class MainWindow;
 
 class MainAudioComponent : public juce::AudioAppComponent {
   public:
-    MainAudioComponent(MainWindow &mainWindow);
-    ~MainAudioComponent();
+    explicit MainAudioComponent(MainWindow &mainWindow);
+    ~MainAudioComponent() override;
 
     juce::AudioFormatManager &getFormatManager() { return formatManager; }
     juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
