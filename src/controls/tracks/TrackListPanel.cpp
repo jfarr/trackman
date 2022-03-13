@@ -1,109 +1,112 @@
 #include "TrackListPanel.h"
 #include "common/listutil.h"
 
-InnerTrackPanel::InnerTrackPanel(Project &project, juce::Viewport &viewport, juce::AudioTransportSource &transport)
-    : project(project), viewport(viewport), transport(transport), timeMeter(project) {
-    addAndMakeVisible(timeMeter);
-}
+// InnerTrackPanel::InnerTrackPanel(Project &project, juce::Viewport &viewport, juce::AudioTransportSource &transport)
+//     : project(project), viewport(viewport), transport(transport), timeMeter(project) {
+//     addAndMakeVisible(timeMeter);
+// }
 
-void InnerTrackPanel::update() {
-    removeAllChildren();
-    addAndMakeVisible(timeMeter);
-    for (TrackLaneControl *lane : lanes) {
-        lane->update();
-        addAndMakeVisible(lane);
-    }
-    resize();
-}
+// void InnerTrackPanel::update() {
+//     removeAllChildren();
+//     addAndMakeVisible(timeMeter);
+//     for (TrackLaneControl *lane : lanes) {
+//         lane->update();
+//         addAndMakeVisible(lane);
+//     }
+//     resize();
+// }
+//
+// void InnerTrackPanel::resize() {
+//     auto w = getPanelWidth();
+//     auto h = getPanelHeight();
+//     DBG("InnerTrackPanel::resize: " << w << "," << h);
+//     setSize(w, h);
+//     for (TrackLaneControl *lane : lanes) {
+//         lane->resized();
+//     }
+//     resized();
+// }
+//
+// int InnerTrackPanel::getPanelWidth() const {
+//     auto leftPanelWidth = 25;
+//     int trackWidth = project.getTrackList().getTotalLengthSeconds() * project.getHorizontalScale();
+//     return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
+//     //    return 500;
+// }
+//
+// int InnerTrackPanel::getPanelHeight() const {
+//     auto topStripWidth = 20;
+//     int trackHeight =
+//         lanes.size() > 0
+//             ? (lanes.size() + 1) * lanes.back()->getPreferredHeight() * project.getVerticalScale() + topStripWidth
+//             : topStripWidth;
+//     return std::max(trackHeight, viewport.getHeight());
+//     //    return 500;
+// }
+//
+// int InnerTrackPanel::getTrackLaneHeight() const {
+//     int trackHeight =
+//         lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() * project.getVerticalScale() : 0;
+//     return trackHeight;
+// }
 
-void InnerTrackPanel::resize() {
-    auto w = getPanelWidth();
-    auto h = getPanelHeight();
-    DBG("InnerTrackPanel::resize: " << w << "," << h);
-    setSize(w, h);
-    for (TrackLaneControl *lane : lanes) {
-        lane->resized();
-    }
-    resized();
-}
+// void InnerTrackPanel::paint(juce::Graphics &g) {
+//     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+//     //    g.fillAll(juce::Colours::yellow);
+//
+//     auto leftPanelWidth = 25;
+//     auto duration = (float)transport.getLengthInSeconds();
+//
+//     if (duration > 0.0) {
+//         auto audioPosition = (float)transport.getCurrentPosition();
+//         auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
+//
+//         g.setColour(juce::Colour{0xff282828});
+//         g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
+//     }
+//
+//     g.setColour(juce::Colours::lightgrey);
+//     g.drawLine(leftPanelWidth, 0, leftPanelWidth, (float)getHeight(), 1.0f);
+// }
+//
+// void InnerTrackPanel::resized() {
+//     auto topStripWidth = 20;
+//     auto area = getLocalBounds();
+//     timeMeter.setBounds(area.removeFromTop(topStripWidth));
+//     timeMeter.repaint();
+//     auto laneHeight = getTrackLaneHeight() / lanes.size();
+//     for (auto &lane : lanes) {
+//         lane->setBounds(area.removeFromTop(laneHeight));
+//     }
+// }
 
-int InnerTrackPanel::getPanelWidth() const {
-    auto leftPanelWidth = 25;
-    int trackWidth = project.getTrackList().getTotalLengthSeconds() * project.getHorizontalScale();
-    return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
-    //    return 500;
-}
-
-int InnerTrackPanel::getPanelHeight() const {
-    auto topStripWidth = 20;
-    int trackHeight =
-        lanes.size() > 0
-            ? (lanes.size() + 1) * lanes.back()->getPreferredHeight() * project.getVerticalScale() + topStripWidth
-            : topStripWidth;
-    return std::max(trackHeight, viewport.getHeight());
-    //    return 500;
-}
-
-int InnerTrackPanel::getTrackLaneHeight() const {
-    int trackHeight =
-        lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() * project.getVerticalScale() : 0;
-    return trackHeight;
-}
-
-void InnerTrackPanel::paint(juce::Graphics &g) {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    //    g.fillAll(juce::Colours::yellow);
-
-    auto leftPanelWidth = 25;
-    auto duration = (float)transport.getLengthInSeconds();
-
-    if (duration > 0.0) {
-        auto audioPosition = (float)transport.getCurrentPosition();
-        auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
-
-        g.setColour(juce::Colour{0xff282828});
-        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
-    }
-
-    g.setColour(juce::Colours::lightgrey);
-    g.drawLine(leftPanelWidth, 0, leftPanelWidth, (float)getHeight(), 1.0f);
-}
-
-void InnerTrackPanel::resized() {
-    auto topStripWidth = 20;
-    auto area = getLocalBounds();
-    timeMeter.setBounds(area.removeFromTop(topStripWidth));
-    timeMeter.repaint();
-    auto laneHeight = getTrackLaneHeight() / lanes.size();
-    for (auto &lane : lanes) {
-        lane->setBounds(area.removeFromTop(laneHeight));
-    }
-}
-
-Track *InnerTrackPanel::getTrackAtPos(int x, int y) {
-    for (TrackLaneControl *lane : lanes) {
-        auto area = lane->getBoundsInParent();
-        if (area.contains(x, y)) {
-            return &lane->getTrack();
-        }
-    }
-    return nullptr;
-}
+// Track *InnerTrackPanel::getTrackAtPos(int x, int y) {
+//     for (TrackLaneControl *lane : lanes) {
+//         auto area = lane->getBoundsInParent();
+//         if (area.contains(x, y)) {
+//             return &lane->getTrack();
+//         }
+//     }
+//     return nullptr;
+// }
 
 TrackListPanel::TrackListPanel(Project &project, TrackList &trackList, juce::Viewport &viewport,
     juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
-    : project(project), trackList(trackList), viewport(viewport), innerPanel(project, viewport, transport),
-      transport(transport), formatManager(formatManager), timeMeter(project) {
+    : project(project), trackList(trackList), viewport(viewport), transport(transport), formatManager(formatManager) {
 
     viewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
     viewport.getHorizontalScrollBar().setAutoHide(false);
+    viewport.getVerticalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
+    viewport.getVerticalScrollBar().setAutoHide(false);
     viewport.setScrollBarsShown(true, true);
+//    trackListViewport.setScrollBarsShown(false, true);
+    viewport.setViewedComponent(this, false);
 
-    innerViewport.getVerticalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
-    innerViewport.getVerticalScrollBar().setAutoHide(false);
-    innerViewport.setScrollBarsShown(true, false);
-    innerViewport.setViewedComponent(&innerPanel, false);
-    addAndMakeVisible(innerViewport);
+    //    innerViewport.getVerticalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
+    //    innerViewport.getVerticalScrollBar().setAutoHide(false);
+    //    innerViewport.setScrollBarsShown(true, false);
+    //    innerViewport.setViewedComponent(&innerPanel, false);
+    //    addAndMakeVisible(innerViewport);
     update();
     //    resize();
     startTimer(20);
@@ -111,16 +114,26 @@ TrackListPanel::TrackListPanel(Project &project, TrackList &trackList, juce::Vie
 
 TrackListPanel::~TrackListPanel() {}
 
-void TrackListPanel::update() {
-    //    removeAllChildren();
-    //    addAndMakeVisible(timeMeter);
-    //    addAndMakeVisible(innerViewport);
-    //    for (TrackLaneControl *lane : lanes) {
-    //        lane->update();
-    //        addAndMakeVisible(lane);
-    //    }
-    resize();
-    innerPanel.update();
+// void TrackListPanel::update() {
+//     //    removeAllChildren();
+//     //    addAndMakeVisible(timeMeter);
+//     //    addAndMakeVisible(innerViewport);
+//     //    for (TrackLaneControl *lane : lanes) {
+//     //        lane->update();
+//     //        addAndMakeVisible(lane);
+//     //    }
+//     resize();
+//     innerPanel.update();
+// }
+
+Track *TrackListPanel::getTrackAtPos(int x, int y) {
+    for (TrackLaneControl *lane : lanes) {
+        auto area = lane->getBoundsInParent();
+        if (area.contains(x, y)) {
+            return &lane->getTrack();
+        }
+    }
+    return nullptr;
 }
 
 void TrackListPanel::fileDragEnter(const juce::StringArray &files, int x, int y) {
@@ -173,48 +186,103 @@ void TrackListPanel::dragOperationEnded(const DragAndDropTarget::SourceDetails &
     notifyDragEnded();
 }
 
+// void TrackListPanel::resize() {
+//     setBounds(juce::Rectangle<int>(innerPanel.getPanelWidth(), innerPanel.getPanelHeight()));
+//     innerPanel.resize();
+//     //    auto w = getPanelWidth();
+//     //    auto h = getPanelHeight();
+//     //    setSize(w, h);
+//     //    for (TrackLaneControl *lane : lanes) {
+//     //        lane->resized();
+//     //    }
+//     resized();
+// }
+
+void TrackListPanel::update() {
+    removeAllChildren();
+    //    addAndMakeVisible(timeMeter);
+    for (TrackLaneControl *lane : lanes) {
+        lane->update();
+        addAndMakeVisible(lane);
+    }
+    resize();
+}
+
 void TrackListPanel::resize() {
-    setBounds(juce::Rectangle<int>(innerPanel.getPanelWidth(), innerPanel.getPanelHeight()));
-    innerPanel.resize();
-    //    auto w = getPanelWidth();
-    //    auto h = getPanelHeight();
-    //    setSize(w, h);
-    //    for (TrackLaneControl *lane : lanes) {
-    //        lane->resized();
-    //    }
+    auto w = getPanelWidth();
+    auto h = getPanelHeight();
+    DBG("TrackListPanel::resize: " << w << "," << h);
+    setSize(w, h);
+    for (TrackLaneControl *lane : lanes) {
+        lane->resized();
+    }
     resized();
 }
 
-void TrackListPanel::paint(juce::Graphics &g) {
-    //        g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-//    g.fillAll(juce::Colours::green);
-//
-//    auto leftPanelWidth = 25;
-//    auto duration = (float)transport.getLengthInSeconds();
-//
-//    if (duration > 0.0) {
-//        auto audioPosition = (float)transport.getCurrentPosition();
-//        auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
-//
-//        g.setColour(juce::Colour{0xff282828});
-//        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
-//    }
-//
-//    g.setColour(juce::Colours::lightgrey);
-//    g.drawLine(leftPanelWidth, 0, leftPanelWidth, (float)getHeight(), 1.0f);
+int TrackListPanel::getPanelWidth() const {
+    auto leftPanelWidth = 25;
+    int trackWidth = project.getTrackList().getTotalLengthSeconds() * project.getHorizontalScale();
+    return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
+    //    return 500;
 }
 
+int TrackListPanel::getPanelHeight() const {
+    auto topStripWidth = 20;
+    int trackHeight =
+        lanes.size() > 0
+            ? (lanes.size() + 1) * lanes.back()->getPreferredHeight() * project.getVerticalScale()
+            : 0;
+    return std::max(trackHeight, viewport.getHeight());
+    //    return 500;
+}
+
+int TrackListPanel::getTrackLaneHeight() const {
+    int trackHeight =
+        lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() * project.getVerticalScale() : 0;
+    return trackHeight;
+}
+
+void TrackListPanel::paint(juce::Graphics &g) {
+    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    //    g.fillAll(juce::Colours::green);
+    //
+    auto leftPanelWidth = 25;
+    auto duration = (float)transport.getLengthInSeconds();
+
+    if (duration > 0.0) {
+        auto audioPosition = (float)transport.getCurrentPosition();
+        auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
+
+        g.setColour(juce::Colour{0xff282828});
+        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
+    }
+
+    g.setColour(juce::Colours::lightgrey);
+    g.drawLine(leftPanelWidth, 0, leftPanelWidth, (float)getHeight(), 1.0f);
+}
+
+// void TrackListPanel::resized() {
+//     auto area = getLocalBounds();
+//     innerViewport.setBounds(area);
+//     //    innerViewport.setBounds(0, 0, 500, 500);
+//     //    auto topStripWidth = 20;
+//     //    timeMeter.setBounds(area.removeFromTop(topStripWidth));
+//     //    timeMeter.repaint();
+//     //    auto laneHeight = getTrackLaneHeight() / lanes.size();
+//     //    for (auto &lane : lanes) {
+//     //        lane->setBounds(area.removeFromTop(laneHeight));
+//     //    }
+// }
+
 void TrackListPanel::resized() {
+    auto topStripWidth = 20;
     auto area = getLocalBounds();
-    innerViewport.setBounds(area);
-    //    innerViewport.setBounds(0, 0, 500, 500);
-    //    auto topStripWidth = 20;
     //    timeMeter.setBounds(area.removeFromTop(topStripWidth));
     //    timeMeter.repaint();
-    //    auto laneHeight = getTrackLaneHeight() / lanes.size();
-    //    for (auto &lane : lanes) {
-    //        lane->setBounds(area.removeFromTop(laneHeight));
-    //    }
+    auto laneHeight = getTrackLaneHeight() / lanes.size();
+    for (auto &lane : lanes) {
+        lane->setBounds(area.removeFromTop(laneHeight));
+    }
 }
 
 void TrackListPanel::mouseDown(const juce::MouseEvent &event) {

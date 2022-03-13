@@ -28,38 +28,38 @@ class DropBox : public juce::Component {
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DropBox)
 };
 
-class InnerTrackPanel : public juce::Component {
-  public:
-    InnerTrackPanel(Project &project, juce::Viewport &viewport, juce::AudioTransportSource &transport);
-    ~InnerTrackPanel() = default;
-
-    Track *getTrackAtPos(int x, int y);
-
-    void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
-    void removeLane(TrackLaneControl *lane) { lanes.remove(lane); }
-    void clear() { lanes.clear(); }
-    void resize();
-    void update();
-
-    //==============================================================================
-    // Component
-    void paint(juce::Graphics &g) override;
-    void resized() override;
-
-    int getPanelWidth() const;
-    int getPanelHeight() const;
-
-  private:
-    Project &project;
-    juce::Viewport &viewport;
-    juce::AudioTransportSource &transport;
-    TimeMeter timeMeter;
-    std::list<TrackLaneControl *> lanes;
-
-    int getTrackLaneHeight() const;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InnerTrackPanel)
-};
+//class InnerTrackPanel : public juce::Component {
+//  public:
+//    InnerTrackPanel(Project &project, juce::Viewport &viewport, juce::AudioTransportSource &transport);
+//    ~InnerTrackPanel() = default;
+//
+//    Track *getTrackAtPos(int x, int y);
+//
+//    void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
+//    void removeLane(TrackLaneControl *lane) { lanes.remove(lane); }
+//    void clear() { lanes.clear(); }
+//    void resize();
+//    void update();
+//
+//    //==============================================================================
+//    // Component
+//    void paint(juce::Graphics &g) override;
+//    void resized() override;
+//
+//    int getPanelWidth() const;
+//    int getPanelHeight() const;
+//
+//  private:
+//    Project &project;
+//    juce::Viewport &viewport;
+//    juce::AudioTransportSource &transport;
+//    TimeMeter timeMeter;
+//    std::list<TrackLaneControl *> lanes;
+//
+//    int getTrackLaneHeight() const;
+//
+//    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InnerTrackPanel)
+//};
 
 class TrackListPanel : public juce::Component,
                        public juce::DragAndDropContainer,
@@ -70,12 +70,12 @@ class TrackListPanel : public juce::Component,
         juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
     ~TrackListPanel();
 
-    Track *getTrackAtPos(int x, int y) { return innerPanel.getTrackAtPos(x, y); }
+    Track *getTrackAtPos(int x, int y);
 
-    void addLane(TrackLaneControl *lane) { innerPanel.addLane(lane); }
-    void removeLane(TrackLaneControl *lane) { innerPanel.removeLane(lane); }
+    void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
+    void removeLane(TrackLaneControl *lane) { lanes.remove(lane); }
+    void clear() { lanes.clear(); }
     void resize();
-    void clear() { innerPanel.clear(); }
     void update();
 
     void fileDragEnter(const juce::StringArray &files, int x, int y);
@@ -109,10 +109,10 @@ class TrackListPanel : public juce::Component,
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
     juce::AudioFormatManager &formatManager;
-    TimeMeter timeMeter;
-    juce::Viewport innerViewport;
-    InnerTrackPanel innerPanel;
-    //    std::list<TrackLaneControl *> lanes;
+//    TimeMeter timeMeter;
+//    juce::Viewport innerViewport;
+//    InnerTrackPanel innerPanel;
+        std::list<TrackLaneControl *> lanes;
 
     DropBox dropBox;
     int dragSourceOffset;
@@ -120,9 +120,9 @@ class TrackListPanel : public juce::Component,
     std::list<SampleListener *> sampleListeners;
     std::list<TrackListListener *> trackListListeners;
 
-    //    int getPanelWidth() const;
-    //    int getPanelHeight() const;
-    //    int getTrackLaneHeight() const;
+        int getPanelWidth() const;
+        int getPanelHeight() const;
+        int getTrackLaneHeight() const;
 
     void notifySampleDropped(SampleThumbnail *thumbnail, int x, int y);
     void notifySampleResized(SampleThumbnail *thumbnail, int width);
