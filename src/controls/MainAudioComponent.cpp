@@ -1,6 +1,7 @@
 #include "MainAudioComponent.h"
 
-MainAudioComponent::MainAudioComponent() {
+MainAudioComponent::MainAudioComponent(juce::DocumentWindow &mainWindow)
+    : juce::AudioAppComponent(), desktopController(mainWindow, deviceManager, formatManager) {
     setSize(800, 600);
     setAudioChannels(0, 2);
     formatManager.registerBasicFormats();

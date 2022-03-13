@@ -18,18 +18,18 @@ class DesktopController : public FileDragDropTarget,
                           public TrackControlListener,
                           public TrackScaleListener {
   public:
-    DesktopController(juce::DocumentWindow &mainWindow);
+    DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     ~DesktopController() override = default;
 
     juce::AudioFormatManager &getFormatManager() { return formatManager; }
     juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
 
-    DesktopComponent &getDesktop() { return desktopComponent; }
+//    DesktopComponent &getDesktop() { return desktopComponent; }
     Project &getProject() { return project; }
     TrackList &getTrackList() { return trackList; }
     Mixer &getMixer() { return mixer; }
-    MixerController &getMixerController() { return mixerController; }
-    TrackListController &getTrackListController() { return trackListController; }
+//    MixerController &getMixerController() { return mixerController; }
+//    TrackListController &getTrackListController() { return trackListController; }
 
     bool canUndo() const;
     void undoLast();
@@ -89,24 +89,25 @@ class DesktopController : public FileDragDropTarget,
     void horizontalScaleDecreased() override;
 
   private:
-    DesktopComponent &desktopComponent;
+    juce::DocumentWindow &mainWindow;
     juce::AudioDeviceManager &deviceManager;
+    juce::AudioFormatManager &formatManager;
+
+    //    DesktopComponent &desktopComponent;
 
     CommandList commandList;
     TrackList trackList;
     Mixer mixer;
     Project project;
-    MixerController mixerController;
-    TrackListController trackListController;
+//    MixerController mixerController;
+//    TrackListController trackListController;
 
     std::unique_ptr<juce::FileChooser> chooser;
     juce::File projectFile;
     bool dirty = false;
     Command *saveCommand = nullptr;
-    juce::DocumentWindow &mainWindow;
     juce::String applicationName;
 
-    juce::AudioFormatManager formatManager;
 
     void saveProjectFile(juce::File file);
     void updateTitleBar();

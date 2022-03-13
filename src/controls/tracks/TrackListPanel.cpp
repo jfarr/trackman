@@ -1,16 +1,16 @@
 #include "TrackListPanel.h"
 #include "common/listutil.h"
 
-TrackListPanel::TrackListPanel(Project &project, TrackList &trackList, juce::Viewport &viewport,
+TrackListPanel::TrackListPanel(Project &project, TrackList &trackList, /*juce::Viewport &viewport,*/
     juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
-    : project(project), trackList(trackList), viewport(viewport), transport(transport), formatManager(formatManager) {
+    : project(project), trackList(trackList), transport(transport), formatManager(formatManager) {
 
-    viewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
-    viewport.getHorizontalScrollBar().setAutoHide(false);
-    viewport.getVerticalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
-    viewport.getVerticalScrollBar().setAutoHide(false);
-    viewport.setScrollBarsShown(true, true);
-    viewport.setViewedComponent(this, false);
+//    viewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
+//    viewport.getHorizontalScrollBar().setAutoHide(false);
+//    viewport.getVerticalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
+//    viewport.getVerticalScrollBar().setAutoHide(false);
+//    viewport.setScrollBarsShown(true, true);
+//    viewport.setViewedComponent(this, false);
 
     update();
     startTimer(20);
@@ -89,15 +89,17 @@ void TrackListPanel::resize() {
 }
 
 int TrackListPanel::getPanelWidth() const {
-    auto leftPanelWidth = 25;
-    int trackWidth = project.getTrackList().getTotalLengthSeconds() * project.getHorizontalScale();
-    return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
+//    auto leftPanelWidth = 25;
+//    int trackWidth = project.getTrackList().getTotalLengthSeconds() * project.getHorizontalScale();
+//    return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
+    return 0;
 }
 
 int TrackListPanel::getPanelHeight() const {
-    int trackHeight =
-        lanes.size() > 0 ? (lanes.size() + 1) * lanes.back()->getPreferredHeight() * project.getVerticalScale() : 0;
-    return std::max(trackHeight, viewport.getHeight());
+//    int trackHeight =
+//        lanes.size() > 0 ? (lanes.size() + 1) * lanes.back()->getPreferredHeight() * project.getVerticalScale() : 0;
+//    return std::max(trackHeight, viewport.getHeight());
+    return 0;
 }
 
 int TrackListPanel::getTrackLaneHeight() const {

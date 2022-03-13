@@ -5,14 +5,11 @@
 #include "commands/TrackListCommands.h"
 #include "common/listutil.h"
 
-DesktopController::DesktopController(juce::DocumentWindow &mainWindow)
-    : mainWindow(mainWindow), mixerController(*this), desktopComponent(*new DesktopComponent(*this)),
-      deviceManager(desktopComponent.deviceManager), mixer(deviceManager.getAudioDeviceSetup().sampleRate),
-      project(trackList, mixer), trackListController(*this, mixer.getTransportSource()),
-      applicationName(mainWindow.getName()) {
+DesktopController::DesktopController(
+    juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
+    : mainWindow(mainWindow), deviceManager(deviceManager), formatManager(formatManager),
+      mixer(deviceManager.getAudioDeviceSetup().sampleRate), project(trackList, mixer) {
     updateTitleBar();
-
-    formatManager.registerBasicFormats();
 }
 //
 // DesktopComponent *DesktopController::createDesktop() {
@@ -30,17 +27,17 @@ void DesktopController::undoLast() {
 }
 
 void DesktopController::masterLevelChangeFinalized(float previousLevel) {
-    Command *command = new ChangeMasterVolumeCommand(mixerController, previousLevel);
-    commandList.pushCommand(command);
-    dirty = true;
-    updateTitleBar();
+//    Command *command = new ChangeMasterVolumeCommand(mixerController, previousLevel);
+//    commandList.pushCommand(command);
+//    dirty = true;
+//    updateTitleBar();
 }
 
 void DesktopController::masterMuteToggled() {
-    Command *command = new ToggleMasterMuteCommand(mixerController);
-    commandList.pushCommand(command);
-    dirty = true;
-    updateTitleBar();
+//    Command *command = new ToggleMasterMuteCommand(mixerController);
+//    commandList.pushCommand(command);
+//    dirty = true;
+//    updateTitleBar();
 }
 
 void DesktopController::trackNameChanged(Track &track, juce::String newName) {
@@ -51,27 +48,29 @@ void DesktopController::trackNameChanged(Track &track, juce::String newName) {
 }
 
 void DesktopController::trackLevelChangeFinalized(Track &track, float previousLevel) {
-    Command *command = new ChangeTrackVolumeCommand(mixerController, track, previousLevel);
-    commandList.pushCommand(command);
-    dirty = true;
-    updateTitleBar();
+//    Command *command = new ChangeTrackVolumeCommand(mixerController, track, previousLevel);
+//    commandList.pushCommand(command);
+//    dirty = true;
+//    updateTitleBar();
 }
 
 void DesktopController::trackMuteToggled(Track &track) {
-    Command *command = new ToggleMuteCommand(mixerController, track);
-    commandList.pushCommand(command);
-    dirty = true;
-    updateTitleBar();
+//    Command *command = new ToggleMuteCommand(mixerController, track);
+//    commandList.pushCommand(command);
+//    dirty = true;
+//    updateTitleBar();
 }
 
 void DesktopController::trackSoloToggled(Track &track) {
-    Command *command = new ToggleSoloCommand(mixerController, track);
-    commandList.pushCommand(command);
-    dirty = true;
-    updateTitleBar();
+//    Command *command = new ToggleSoloCommand(mixerController, track);
+//    commandList.pushCommand(command);
+//    dirty = true;
+//    updateTitleBar();
 }
 
-void DesktopController::resize() { getTrackListController().getTrackListPanel().resize(); }
+void DesktopController::resize() {
+//    getTrackListController().getTrackListPanel().resize();
+}
 
 void DesktopController::addNewTrack() {
     Command *command = new AddTrackCommand(*this);
@@ -96,35 +95,35 @@ void DesktopController::moveSelectedSample(
 }
 
 void DesktopController::resizeSample(Sample &sample, double prevLen, double newLen) {
-    Command *command = new ResizeSampleCommand(trackListController, sample, prevLen, newLen);
-    commandList.pushCommand(command);
-    dirty = true;
-    updateTitleBar();
+//    Command *command = new ResizeSampleCommand(trackListController, sample, prevLen, newLen);
+//    commandList.pushCommand(command);
+//    dirty = true;
+//    updateTitleBar();
 }
 
 void DesktopController::deleteSelected() {
-    Track *track = trackList.getSelected();
-    Sample *sample = trackList.getSelectedSample();
-    if (track != nullptr && sample != nullptr) {
-        Command *command = new DeleteSampleCommand(trackListController, *track, *sample);
-        commandList.pushCommand(command);
-        dirty = true;
-        updateTitleBar();
-        return;
-    }
-    Track *selected = trackList.getSelected();
-    if (selected != nullptr) {
-        juce::NativeMessageBox::showOkCancelBox(juce::MessageBoxIconType::QuestionIcon, "",
-            "Delete Track " + juce::String(selected->getNumber()) + "?", &desktopComponent,
-            juce::ModalCallbackFunction::create([this, selected](int result) {
-                if (result > 0) {
-                    Command *command = new DeleteTrackCommand(*this, selected);
-                    commandList.pushCommand(command);
-                    dirty = true;
-                    updateTitleBar();
-                }
-            }));
-    }
+//    Track *track = trackList.getSelected();
+//    Sample *sample = trackList.getSelectedSample();
+//    if (track != nullptr && sample != nullptr) {
+//        Command *command = new DeleteSampleCommand(trackListController, *track, *sample);
+//        commandList.pushCommand(command);
+//        dirty = true;
+//        updateTitleBar();
+//        return;
+//    }
+//    Track *selected = trackList.getSelected();
+//    if (selected != nullptr) {
+//        juce::NativeMessageBox::showOkCancelBox(juce::MessageBoxIconType::QuestionIcon, "",
+//            "Delete Track " + juce::String(selected->getNumber()) + "?", &desktopComponent,
+//            juce::ModalCallbackFunction::create([this, selected](int result) {
+//                if (result > 0) {
+//                    Command *command = new DeleteTrackCommand(*this, selected);
+//                    commandList.pushCommand(command);
+//                    dirty = true;
+//                    updateTitleBar();
+//                }
+//            }));
+//    }
 }
 
 juce::String DesktopController::getSelectionType() const {
@@ -139,8 +138,8 @@ juce::String DesktopController::getSelectionType() const {
 Track *DesktopController::addTrack() {
     auto track = trackList.addTrack();
     juce::MessageManager::callAsync([this]() {
-        trackListController.update();
-        mixerController.update();
+//        trackListController.update();
+//        mixerController.update();
     });
     return track;
 }
@@ -151,31 +150,36 @@ void DesktopController::deleteTrack(Track *track, bool purge) {
         trackList.removeTrack(track);
     }
     juce::MessageManager::callAsync([this]() {
-        trackListController.update();
-        mixerController.update();
+//        trackListController.update();
+//        mixerController.update();
     });
 }
 
 void DesktopController::undeleteTrack(Track *track) {
     trackList.undeleteTrack(track);
     juce::MessageManager::callAsync([this]() {
-        trackListController.update();
-        mixerController.update();
+//        trackListController.update();
+//        mixerController.update();
     });
 }
 
 void DesktopController::renameTrack(Track &track, juce::String newName) {
     track.setName(newName);
-    juce::MessageManager::callAsync([this]() { mixerController.update(); });
+    juce::MessageManager::callAsync([this]() {
+//        mixerController.update();
+    });
 }
 
 Sample *DesktopController::addSample(Track &track, juce::File file, int pos) {
-    Sample *sample = trackListController.addSample(track, file, pos);
-    juce::MessageManager::callAsync([this]() { mixerController.update(); });
-    return sample;
+//    Sample *sample = trackListController.addSample(track, file, pos);
+//    juce::MessageManager::callAsync([this]() { mixerController.update(); });
+//    return sample;
+    return nullptr;
 }
 
-void DesktopController::deleteSample(Track &track, Sample *sample) { trackListController.deleteSample(track, sample); }
+void DesktopController::deleteSample(Track &track, Sample *sample) {
+//    trackListController.deleteSample(track, sample);
+}
 
 void DesktopController::saveProject(std::function<void()> callback) {
     if (projectFile != juce::File{}) {
@@ -236,8 +240,8 @@ void DesktopController::openProject() {
         if (file != juce::File{}) {
             projectFile = file;
             project.from_json(deviceManager, formatManager, file.getFullPathName().toStdString());
-            trackListController.update();
-            mixerController.update();
+//            trackListController.update();
+//            mixerController.update();
             commandList.clear();
             saveCommand = nullptr;
             dirty = false;
@@ -268,53 +272,55 @@ void DesktopController::updateTitleBar() {
 void DesktopController::selectionChanged(Track *track) {
     trackList.setSelected(track);
     juce::MessageManager::callAsync([this]() {
-        trackListController.repaint();
-        mixerController.repaint();
+//        trackListController.repaint();
+//        mixerController.repaint();
     });
 }
 
 void DesktopController::fileDragEnter(const juce::StringArray &files, int x, int y) {
-    trackListController.fileDragEnter(files, x, y);
+//    trackListController.fileDragEnter(files, x, y);
 }
 
 void DesktopController::fileDragMove(const juce::StringArray &files, int x, int y) {
-    trackListController.fileDragMove(files, x, y);
+//    trackListController.fileDragMove(files, x, y);
 }
 
-void DesktopController::fileDragExit(const juce::StringArray &files) { trackListController.fileDragExit(files); }
+void DesktopController::fileDragExit(const juce::StringArray &files) {
+//    trackListController.fileDragExit(files);
+}
 
 void DesktopController::filesDropped(const juce::StringArray &files, int x, int y) {
-    trackListController.filesDropped(files, x, y);
+//    trackListController.filesDropped(files, x, y);
 }
 
 void DesktopController::verticalScaleIncreased() {
     project.incrementVerticalScale();
     juce::MessageManager::callAsync([this]() {
-        trackListController.update();
-        desktopComponent.resized();
+//        trackListController.update();
+//        desktopComponent.resized();
     });
 }
 
 void DesktopController::verticalScaleDecreased() {
     project.decrementVerticalScale();
     juce::MessageManager::callAsync([this]() {
-        trackListController.update();
-        desktopComponent.resized();
+//        trackListController.update();
+//        desktopComponent.resized();
     });
 }
 
 void DesktopController::horizontalScaleIncreased() {
     project.incrementHorizontalScale();
     juce::MessageManager::callAsync([this]() {
-        trackListController.update();
-        desktopComponent.resized();
+//        trackListController.update();
+//        desktopComponent.resized();
     });
 }
 
 void DesktopController::horizontalScaleDecreased() {
     project.decrementHorizontalScale();
     juce::MessageManager::callAsync([this]() {
-        trackListController.update();
-        desktopComponent.resized();
+//        trackListController.update();
+//        desktopComponent.resized();
     });
 }

@@ -79,15 +79,15 @@ void DesktopComponent::visibleAreaChanged(const juce::Rectangle<int> &newVisible
 }
 
 //==============================================================================
-void DesktopComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
-    desktopController.getMixer().prepareToPlay(samplesPerBlockExpected, sampleRate);
-}
-
-void DesktopComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    desktopController.getMixer().getNextAudioBlock(bufferToFill);
-}
-
-void DesktopComponent::releaseResources() { desktopController.getMixer().releaseResources(); }
+//void DesktopComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
+//    desktopController.getMixer().prepareToPlay(samplesPerBlockExpected, sampleRate);
+//}
+//
+//void DesktopComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+//    desktopController.getMixer().getNextAudioBlock(bufferToFill);
+//}
+//
+//void DesktopComponent::releaseResources() { desktopController.getMixer().releaseResources(); }
 
 //==============================================================================
 void DesktopComponent::paint(juce::Graphics &g) {
@@ -100,18 +100,19 @@ void DesktopComponent::resized() {
     }
     auto topStripHeight = 15;
     auto scaleButtonWidth = 12;
-    auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
+//    auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
+    auto scrollBarWidth = 15;
     auto area = getLocalBounds();
     area.removeFromTop(topStripHeight);
     timeMeter.setBounds(area.removeFromTop(topStripHeight));
     verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(
         area.getWidth() - (scaleButtonWidth + scrollBarWidth), area.getY(), scaleButtonWidth, scaleButtonWidth * 2));
-    auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
-    mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
-    horizontalScaleButtonPanel.setBounds(
-        juce::Rectangle<int>(0, area.getHeight() - (scaleButtonWidth + scrollBarWidth) + topStripHeight,
-            scaleButtonWidth * 2, scaleButtonWidth));
-    desktopController.getTrackListController().getViewport().setBounds(area);
+//    auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
+//    mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
+//    horizontalScaleButtonPanel.setBounds(
+//        juce::Rectangle<int>(0, area.getHeight() - (scaleButtonWidth + scrollBarWidth) + topStripHeight,
+//            scaleButtonWidth * 2, scaleButtonWidth));
+//    desktopController.getTrackListController().getViewport().setBounds(area);
     desktopController.resize();
 }
 

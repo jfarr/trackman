@@ -12,7 +12,7 @@ MainWindow::MainWindow(juce::String name)
         setResizeLimits(250, 250, r.getWidth(), r.getHeight());
     }
     //    desktop = desktopController.createDesktop();
-    setContentOwned(new MainAudioComponent(), true);
+    setContentOwned(new MainAudioComponent(*this), true);
 
 #if JUCE_IOS || JUCE_ANDROID
     setFullScreen(true);

@@ -4,14 +4,14 @@
 
 TrackController::TrackController(DesktopController &desktopController, Track &track)
     : desktopController(desktopController), track(track), trackControl(track) {
-    addListener(&desktopController.getTrackListController());
+//    addListener(&desktopController.getTrackListController());
     trackControl.addListener(&desktopController);
     trackControl.addListener(this);
     trackControl.addMouseListener(this, true);
 }
 
 TrackController::~TrackController() {
-    removeListener(&desktopController.getTrackListController());
+//    removeListener(&desktopController.getTrackListController());
     trackControl.removeListener(&desktopController);
     trackControl.removeListener(this);
     trackControl.removeMouseListener(this);

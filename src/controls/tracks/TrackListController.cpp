@@ -3,9 +3,9 @@
 #include "controls/desktop/DesktopController.h"
 
 TrackListController::TrackListController(DesktopController &desktopController, juce::AudioTransportSource &transport)
-    : desktopController(desktopController), trackListViewport(desktopController.getDesktop()),
+    : desktopController(desktopController),
       project(desktopController.getProject()), trackList(desktopController.getTrackList()), transport(transport),
-      trackListPanel(project, trackList, trackListViewport, transport, desktopController.getFormatManager()) {
+      trackListPanel(project, trackList, transport, desktopController.getFormatManager()) {
 
     trackListPanel.addListener((SampleListener *)this);
     trackListPanel.addListener((TrackListListener *)this);
@@ -219,4 +219,6 @@ void TrackListController::removeDragLane() {
     currentDragTrack = nullptr;
 }
 
-void TrackListController::updateMixerSource() { desktopController.getMixerController().updateAudioSource(); }
+void TrackListController::updateMixerSource() {
+//    desktopController.getMixerController().updateAudioSource();
+}
