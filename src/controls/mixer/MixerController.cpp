@@ -5,13 +5,15 @@
 
 MixerController::MixerController(DesktopController &desktopController)
     : desktopController(desktopController), trackList(desktopController.getProject().getTrackList()),
-      mixer(desktopController.getProject().getMixer()), mixerPanel(desktopController, trackList, mixer, mixer.getMeterSource()),
+      mixer(desktopController.getProject().getMixer()), mixerPanel(desktopController, mixer.getMeterSource()),
       trackPanel(mixerViewport) {
 
     mixerViewport.setViewedComponent(&trackPanel, false);
 
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
+
+    update();
 }
 
 MixerController::~MixerController() {

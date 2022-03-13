@@ -106,14 +106,15 @@ class DesktopComponent : public juce::Component,
 
   private:
     DesktopController &desktopController;
+
     //    TrackListViewport &trackListViewport;
-    //    MixerPanel &mixerPanel;
+//        MixerPanel &mixerPanel;
     //    Mixer &mixer;
-    TimeMeter timeMeter;
-    ScaleButtonPanel horizontalScaleButtonPanel;
-    ScaleButtonPanel verticalScaleButtonPanel;
+//    TimeMeter timeMeter;
+//    ScaleButtonPanel horizontalScaleButtonPanel;
+//    ScaleButtonPanel verticalScaleButtonPanel;
     std::list<FileDragDropTarget *> listeners;
-    bool initialized = false;
+//    bool initialized = false;
 
     juce::ApplicationCommandManager commandManager;
     juce::MenuBarComponent menuBar;

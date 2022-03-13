@@ -29,12 +29,13 @@ class DesktopController : public juce::AudioSource,
 
     //    DesktopComponent &getDesktop() { return desktopComponent; }
     MainWindow &getMainWindow() { return mainWindow; }
-    MainAudioComponent &getMainAudioComponent() { return mainAudioComponent; }
+    //    MainAudioComponent &getMainAudioComponent() { return mainAudioComponent; }
     DesktopComponent &getDesktopComponent() { return desktopComponent; }
     Project &getProject() { return project; }
 
     //    TrackList &getTrackList() { return trackList; }
-    //    Mixer &getMixer() { return mixer; }
+    MixerController &getMixerController() { return mixerController; }
+    Mixer &getMixer() { return project.getMixer(); }
     //    MixerController &getMixerController() { return mixerController; }
     //    TrackListController &getTrackListController() { return trackListController; }
 
@@ -111,7 +112,7 @@ class DesktopController : public juce::AudioSource,
     //    TrackList trackList;
     //    Mixer mixer;
     Project project;
-    //    MixerController mixerController;
+    MixerController mixerController;
     //    TrackListController trackListController;
 
     DesktopComponent desktopComponent;

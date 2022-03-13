@@ -12,7 +12,7 @@ class DesktopController;
 
 class MixerPanel : public juce::Component {
   public:
-    MixerPanel(DesktopController &desktopController, TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource);
+    MixerPanel(DesktopController &desktopController, /*TrackList &trackList, Mixer &mixer,*/ foleys::LevelMeterSource &meterSource);
     ~MixerPanel() override;
 
     int getPreferredHeight() const { return std::max(getHeight(), 280); }
@@ -27,8 +27,8 @@ class MixerPanel : public juce::Component {
 
   private:
     DesktopController &desktopController;
-    TrackList &trackList;
-    Mixer &mixer;
+//    TrackList &trackList;
+//    Mixer &mixer;
 //    juce::Viewport &mixerViewport;
 
     TransportControl transportControl;

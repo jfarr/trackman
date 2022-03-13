@@ -25,6 +25,8 @@ class MainAudioComponent : public juce::AudioAppComponent {
     void releaseResources() override;
 
   private:
+    const int topStripHeight = 15;
+
     juce::AudioFormatManager formatManager;
     DesktopController desktopController;
 

@@ -23,5 +23,5 @@ void MainAudioComponent::releaseResources() { desktopController.releaseResources
 
 //==============================================================================
 void MainAudioComponent::resized() {
-    desktopController.getDesktopComponent().setBounds(getLocalBounds());
+    desktopController.getDesktopComponent().setBounds(getLocalBounds().withTrimmedTop(topStripHeight));
 }

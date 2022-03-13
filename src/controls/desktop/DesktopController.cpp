@@ -7,9 +7,10 @@
 #include "controls/MainWindow.h"
 
 DesktopController::DesktopController(MainWindow &mainWindow, MainAudioComponent &mainAudioComponent, double sampleRate)
-    : mainWindow(mainWindow), mainAudioComponent(mainAudioComponent), desktopComponent(*this), project(sampleRate) {
+    : mainWindow(mainWindow), mainAudioComponent(mainAudioComponent), desktopComponent(*this), project(sampleRate),
+      mixerController((*this)) {
 
-//    mainAudioComponent.addAndMakeVisible(desktopComponent);
+    //    mainAudioComponent.addAndMakeVisible(desktopComponent);
     updateTitleBar();
 }
 //
