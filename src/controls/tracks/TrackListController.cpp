@@ -62,7 +62,6 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
         auto length = newSource->getTotalLength() / reader->sampleRate;
         auto scale = project.getHorizontalScale();
         auto width = length * scale;
-        auto leftPanelWidth = 25;
         double offset = width / 2;
         double startPos = std::max((pos - offset - leftPanelWidth), 0.0);
         double endPos = startPos + width;
@@ -163,12 +162,8 @@ void TrackListController::sampleSelected(Track &track, Sample &sample) {
 void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y) {
     removeDragLane();
     auto curPos = sample.getStartPos();
-    auto length = sample.getLengthSecs();
     auto scale = project.getHorizontalScale();
-    auto width = length * scale;
-    auto leftPanelWidth = 25;
-    double offset = width / 2;
-    double newPos = std::max((x - offset - leftPanelWidth), 0.0) / scale;
+    double newPos = std::max((double)(x - leftPanelWidth), 0.0) / scale;
     Track *toTrack = trackListPanel.getTrackAtPos(x, y);
     desktopController.moveSelectedSample(sample, track, toTrack, curPos, newPos);
 }

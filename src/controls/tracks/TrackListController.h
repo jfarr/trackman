@@ -47,6 +47,8 @@ class TrackListController : public TrackListListener, public SampleListener {
     void dragEnded() override;
 
   private:
+    const int leftPanelWidth = 25;
+
     DesktopController &desktopController;
     Project &project;
     juce::AudioTransportSource &transport;
