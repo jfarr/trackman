@@ -11,6 +11,4 @@ ChildWindow::ChildWindow(const juce::String &name, juce::Component *component)
     setContentOwned(component, true);
 }
 
-ChildWindow::~ChildWindow() {}
-
 void ChildWindow::closeButtonPressed() { delete this; }

@@ -5,7 +5,7 @@
 class ChildWindow : public juce::DocumentWindow {
   public:
     ChildWindow(const juce::String &name, juce::Component *component);
-    ~ChildWindow() override;
+    ~ChildWindow() override = default;
 
     void closeButtonPressed() override;
 

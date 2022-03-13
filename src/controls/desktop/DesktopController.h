@@ -42,7 +42,7 @@ class DesktopController : public juce::AudioSource,
     void resize();
 
     void addNewTrack();
-    void addNewSample(Track *track, juce::File file, int pos);
+    void addNewSample(Track *track, const juce::File &file, int pos);
     void moveSelectedSample(Sample &sample, Track &fromTrack, Track *toTrack, double prevPos, double newPos);
     void resizeSample(Sample &sample, double prevLen, double newLen);
     void deleteSelected();
@@ -53,12 +53,12 @@ class DesktopController : public juce::AudioSource,
     Track *addTrack();
     void deleteTrack(Track *track, bool purge);
     void undeleteTrack(Track *track);
-    void renameTrack(Track &track, juce::String newName);
+    void renameTrack(Track &track, const juce::String &newName);
 
-    Sample *addSample(Track &track, juce::File file, int pos);
+    Sample *addSample(Track &track, const juce::File &file, int pos);
     void deleteSample(Track &track, Sample *sample);
 
-    void saveProject(std::function<void(bool saved)> callback = nullptr);
+    void saveProject(const std::function<void(bool saved)>& callback = nullptr);
     void saveProjectAs(std::function<void(bool saved)> callback = nullptr);
     void openProject();
     void exportProject();
@@ -112,7 +112,7 @@ class DesktopController : public juce::AudioSource,
     bool dirty = false;
     Command *saveCommand = nullptr;
 
-    void saveProjectFile(juce::File file);
+    void saveProjectFile(const juce::File& file);
     void updateTitleBar();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DesktopController)

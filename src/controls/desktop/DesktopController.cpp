@@ -1,5 +1,4 @@
 #include "DesktopController.h"
-#include "DesktopComponent.h"
 #include "commands/MixerCommands.h"
 #include "commands/TrackCommands.h"
 #include "commands/TrackListCommands.h"
@@ -18,9 +17,7 @@ void DesktopController::prepareToPlay(int blockSize, double sampleRate) {
     project.getMixer().prepareToPlay(blockSize, sampleRate);
 }
 
-void DesktopController::releaseResources() {
-    project.getMixer().releaseResources();
-}
+void DesktopController::releaseResources() { project.getMixer().releaseResources(); }
 
 void DesktopController::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
     project.getMixer().getNextAudioBlock(bufferToFill);
@@ -93,7 +90,7 @@ void DesktopController::addNewTrack() {
     desktopComponent.menuItemsChanged();
 }
 
-void DesktopController::addNewSample(Track *track, juce::File file, int pos) {
+void DesktopController::addNewSample(Track *track, const juce::File &file, int pos) {
     Command *command = new AddSampleCommand(*this, track, file, pos);
     commandList.pushCommand(command);
     dirty = true;
@@ -183,12 +180,12 @@ void DesktopController::undeleteTrack(Track *track) {
     });
 }
 
-void DesktopController::renameTrack(Track &track, juce::String newName) {
+void DesktopController::renameTrack(Track &track, const juce::String &newName) {
     track.setName(newName);
     juce::MessageManager::callAsync([this]() { mixerController.update(); });
 }
 
-Sample *DesktopController::addSample(Track &track, juce::File file, int pos) {
+Sample *DesktopController::addSample(Track &track, const juce::File &file, int pos) {
     Sample *sample = trackListController.addSample(track, file, pos);
     juce::MessageManager::callAsync([this]() { mixerController.update(); });
     return sample;
@@ -196,7 +193,7 @@ Sample *DesktopController::addSample(Track &track, juce::File file, int pos) {
 
 void DesktopController::deleteSample(Track &track, Sample *sample) { trackListController.deleteSample(track, sample); }
 
-void DesktopController::saveProject(std::function<void(bool saved)> callback) {
+void DesktopController::saveProject(const std::function<void(bool saved)>& callback) {
     if (projectFile != juce::File{}) {
         saveProjectFile(projectFile);
         callback(true);
@@ -222,7 +219,7 @@ void DesktopController::saveProjectAs(std::function<void(bool saved)> callback) 
     });
 }
 
-void DesktopController::saveProjectFile(juce::File file) {
+void DesktopController::saveProjectFile(const juce::File& file) {
     std::string json = project.to_json();
     juce::TemporaryFile tempFile(file);
     juce::FileOutputStream output(tempFile.getFile());

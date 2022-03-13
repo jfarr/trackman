@@ -66,6 +66,9 @@ class DesktopComponent : public juce::Component,
     bool perform(const InvocationInfo &info) override;
 
   private:
+    const int initialWidth = 800;
+    const int initialHeight = 600;
+
     DesktopController &desktopController;
 
     TimeMeter timeMeter;
@@ -76,9 +79,6 @@ class DesktopComponent : public juce::Component,
     juce::ApplicationCommandManager commandManager;
     juce::MenuBarComponent menuBar;
 
-    // Because the windows delete themselves, we'll use the
-    // Component::SafePointer class to point to them, which automatically
-    // becomes null when the component that it points to is deleted.
     juce::Array<Component::SafePointer<Component>> windows;
 
     void createChildWindow(const juce::String &name, juce::Component *component);

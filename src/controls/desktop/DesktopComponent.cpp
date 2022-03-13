@@ -7,7 +7,7 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
     : desktopController(desktopController), timeMeter(desktopController.getProject()),
       horizontalScaleButtonPanel(false), verticalScaleButtonPanel(true) {
 
-    setSize(800, 600);
+    setSize(initialWidth, initialHeight);
 
     addListener(&desktopController);
     verticalScaleButtonPanel.addListener(&desktopController);
@@ -21,13 +21,7 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
 
     setApplicationCommandManagerToWatch(&commandManager);
     commandManager.registerAllCommandsForTarget(this);
-
-    // this ensures that commands invoked on the application are correctly
-    // forwarded to this component
     commandManager.setFirstCommandTarget(this);
-
-    // this lets the command manager use keypresses that arrive in our window to
-    // send out commands
     addKeyListener(commandManager.getKeyMappings());
     setWantsKeyboardFocus(true);
 
@@ -49,6 +43,10 @@ DesktopComponent::~DesktopComponent() {
     commandManager.setFirstCommandTarget(nullptr);
 }
 
+void DesktopComponent::visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea) {
+    timeMeter.setBounds(timeMeter.getBounds().withLeft(-newVisibleArea.getX()));
+}
+
 void DesktopComponent::createChildWindow(const juce::String &name, juce::Component *component) {
     auto *window = new ChildWindow(name, component);
     windows.add(window);
@@ -62,6 +60,7 @@ void DesktopComponent::closeAllWindows() {
     windows.clear();
 }
 
+//==============================================================================
 juce::StringArray DesktopComponent::getMenuBarNames() { return {"file", "edit", "new", "track"}; }
 
 juce::PopupMenu DesktopComponent::getMenuForIndex(int menuIndex, const juce::String & /*menuName*/) {
@@ -85,10 +84,7 @@ juce::PopupMenu DesktopComponent::getMenuForIndex(int menuIndex, const juce::Str
     return menu;
 }
 
-void DesktopComponent::visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea) {
-    timeMeter.setBounds(timeMeter.getBounds().withLeft(-newVisibleArea.getX()));
-}
-
+//==============================================================================
 void DesktopComponent::getAllCommands(juce::Array<juce::CommandID> &c) {
     juce::Array<juce::CommandID> commands{CommandIDs::openProject, CommandIDs::saveProject, CommandIDs::saveProjectAs,
         CommandIDs::exportProject, CommandIDs::editUndo, CommandIDs::newTrack, CommandIDs::newAudioPlayer,
