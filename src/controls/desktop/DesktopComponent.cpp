@@ -43,6 +43,9 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
     addKeyListener(commandManager.getKeyMappings());
     setWantsKeyboardFocus(true);
 
+//    desktopController.getMainWindow().setMenuBar(this);
+//    addAndMakeVisible(menuBar);
+
 #if JUCE_MAC
     MenuBarModel::setMacMainMenu(this);
 #else

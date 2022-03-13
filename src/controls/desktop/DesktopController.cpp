@@ -7,8 +7,8 @@
 #include "controls/MainWindow.h"
 
 DesktopController::DesktopController(MainWindow &mainWindow, MainAudioComponent &mainAudioComponent, double sampleRate)
-    : mainWindow(mainWindow), mainAudioComponent(mainAudioComponent), desktopComponent(*this), project(sampleRate),
-      mixerController((*this)) {
+    : mainWindow(mainWindow), mainAudioComponent(mainAudioComponent), applicationName(mainWindow.getName()),
+      desktopComponent(*this), project(sampleRate), mixerController((*this)) {
 
     //    mainAudioComponent.addAndMakeVisible(desktopComponent);
     updateTitleBar();
@@ -41,17 +41,17 @@ void DesktopController::undoLast() {
 }
 
 void DesktopController::masterLevelChangeFinalized(float previousLevel) {
-    //    Command *command = new ChangeMasterVolumeCommand(mixerController, previousLevel);
-    //    commandList.pushCommand(command);
-    //    dirty = true;
-    //    updateTitleBar();
+    Command *command = new ChangeMasterVolumeCommand(mixerController, previousLevel);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
 }
 
 void DesktopController::masterMuteToggled() {
-    //    Command *command = new ToggleMasterMuteCommand(mixerController);
-    //    commandList.pushCommand(command);
-    //    dirty = true;
-    //    updateTitleBar();
+    Command *command = new ToggleMasterMuteCommand(mixerController);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
 }
 
 void DesktopController::trackNameChanged(Track &track, juce::String newName) {
@@ -62,24 +62,24 @@ void DesktopController::trackNameChanged(Track &track, juce::String newName) {
 }
 
 void DesktopController::trackLevelChangeFinalized(Track &track, float previousLevel) {
-    //    Command *command = new ChangeTrackVolumeCommand(mixerController, track, previousLevel);
-    //    commandList.pushCommand(command);
-    //    dirty = true;
-    //    updateTitleBar();
+    Command *command = new ChangeTrackVolumeCommand(mixerController, track, previousLevel);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
 }
 
 void DesktopController::trackMuteToggled(Track &track) {
-    //    Command *command = new ToggleMuteCommand(mixerController, track);
-    //    commandList.pushCommand(command);
-    //    dirty = true;
-    //    updateTitleBar();
+    Command *command = new ToggleMuteCommand(mixerController, track);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
 }
 
 void DesktopController::trackSoloToggled(Track &track) {
-    //    Command *command = new ToggleSoloCommand(mixerController, track);
-    //    commandList.pushCommand(command);
-    //    dirty = true;
-    //    updateTitleBar();
+    Command *command = new ToggleSoloCommand(mixerController, track);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
 }
 
 void DesktopController::resize() {
@@ -282,7 +282,7 @@ void DesktopController::updateTitleBar() {
     mainWindow.setName(
         (projectFile != juce::File{} ? projectFile.getFileNameWithoutExtension() + (dirty ? " [modified]" : "")
                                      : "[untitled]") +
-        " - " + mainWindow.getName());
+        " - " + applicationName);
 }
 
 void DesktopController::selectionChanged(Track *track) {

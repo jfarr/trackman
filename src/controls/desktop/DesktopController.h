@@ -105,6 +105,7 @@ class DesktopController : public juce::AudioSource,
   private:
     MainWindow &mainWindow;
     MainAudioComponent &mainAudioComponent;
+    juce::String applicationName;
     //    juce::AudioDeviceManager &deviceManager;
     //    juce::AudioFormatManager &formatManager;
 

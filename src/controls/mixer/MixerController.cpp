@@ -10,6 +10,7 @@ MixerController::MixerController(DesktopController &desktopController)
 
     mixerViewport.setViewedComponent(&trackPanel, false);
 
+//    mixerPanel.getMasterTrackControl().addListener(&desktopController);
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
 
