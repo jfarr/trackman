@@ -59,6 +59,7 @@ void Track::moveSampleTo(Sample &sample, Track &toTrack) {
             ++iter;
         }
     }
+    trackList.adjustTrackLengths();
 }
 
 void Track::adjustSampleLengthSecs(double newLen) {
@@ -110,6 +111,13 @@ void Track::updateGain() {
 void Track::setDeleted(bool newDeleted) {
     deleted = newDeleted;
     selected = false;
+    if (deleted) {
+        for (std::shared_ptr<Sample> &sample : samples) {
+            if (sample->getSource() != nullptr) {
+                mixerSource.removeInputSource(*sample->getSource());
+            }
+        }
+    }
 }
 
 void Track::selectSample(Sample *newSelected) {

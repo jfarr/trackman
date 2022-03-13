@@ -1,4 +1,5 @@
 #include "Mixer.h"
+#include "common/listutil.h"
 
 Mixer::Mixer(double sampleRate)
     : mixerSource(), gainSource(&mixerSource, false), meteredSource(gainSource, sampleRate) {
@@ -12,12 +13,14 @@ Mixer::~Mixer() {
 }
 
 void Mixer::addSource(juce::PositionableAudioSource &source) {
-    DBG("Mixer::addSource - add source with length: " << source.getTotalLength());
-    sources.push_back(&source);
-    auto pos = transportSource.getCurrentPosition();
-    mixerSource.addInputSource(source);
-    transportSource.setPosition(pos);
-    DBG("Mixer::addSource - set position: " << pos);
+    if (!listContains(sources, &source)) {
+        DBG("Mixer::addSource - add source with length: " << source.getTotalLength());
+        sources.push_back(&source);
+        auto pos = transportSource.getCurrentPosition();
+        mixerSource.addInputSource(source);
+        transportSource.setPosition(pos);
+        DBG("Mixer::addSource - set position: " << pos);
+    }
 }
 
 void Mixer::removeAllSources() {
