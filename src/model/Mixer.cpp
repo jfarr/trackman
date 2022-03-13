@@ -12,7 +12,7 @@ Mixer::~Mixer() {
 }
 
 void Mixer::addSource(
-    std::shared_ptr<juce::PositionableAudioSource> source, double sourceSampleRateToCorrectFor, int maxNumChannels) {
+    const std::shared_ptr<juce::PositionableAudioSource>& source, double sourceSampleRateToCorrectFor, int maxNumChannels) {
     DBG("Mixer::addSource - add source with length: " << source->getTotalLength());
     sources.push_back(source);
     auto pos = transportSource.getCurrentPosition();

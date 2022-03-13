@@ -12,27 +12,27 @@ class TrackList;
 
 class Track {
   public:
-    Track(TrackList& trackList);
+    explicit Track(TrackList& trackList);
     ~Track();
 
-    int getNumber() const { return number; }
-    juce::String getName() const { return name; }
-    std::shared_ptr<juce::PositionableAudioSource> getSource() const { return meteredSource; }
-    juce::uint64 getTotalLength() const;
-    double getTotalLengthSeconds() const;
-    double getSampleRate() const;
-    float getLevelGain() const { return level; }
-    bool isMuted() const { return muted; }
-    bool isSoloed() const { return soloed; }
-    bool isSilenced() const;
-    bool isSelected() const { return selected; }
-    bool isDeleted() const { return deleted; }
+    [[nodiscard]] int getNumber() const { return number; }
+    [[nodiscard]] juce::String getName() const { return name; }
+    [[nodiscard]] std::shared_ptr<juce::PositionableAudioSource> getSource() const { return meteredSource; }
+    [[nodiscard]] juce::uint64 getTotalLength() const;
+    [[nodiscard]] double getTotalLengthSeconds() const;
+    [[nodiscard]] double getSampleRate() const;
+    [[nodiscard]] float getLevelGain() const { return level; }
+    [[nodiscard]] bool isMuted() const { return muted; }
+    [[nodiscard]] bool isSoloed() const { return soloed; }
+    [[nodiscard]] bool isSilenced() const;
+    [[nodiscard]] bool isSelected() const { return selected; }
+    [[nodiscard]] bool isDeleted() const { return deleted; }
     foleys::LevelMeterSource *getMeterSource() { return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource(); }
 
-    void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate);
+    void setSource(const std::shared_ptr<juce::PositionableAudioSource>& newSource, double newSampleRate);
     void adjustSampleLengthSecs(double newLen);
     void loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
-    Sample *addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, juce::File file,
+    Sample *addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, const juce::File& file,
         double startPos, double endPos, double length, double sampleRate);
     void moveSampleTo(Sample &sample, Track &toTrack);
     Sample *getSelected() const;
@@ -46,7 +46,7 @@ class Track {
     void updateGain();
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted);
-    void selectSample(Sample *selected);
+    void selectSample(Sample *newSelected);
     void deleteSample(Sample *sample);
     void undeleteSample(Sample *sample);
 

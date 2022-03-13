@@ -27,8 +27,6 @@ class MixerPanel : public juce::Component {
 
   private:
     DesktopController &desktopController;
-//    TrackList &trackList;
-//    Mixer &mixer;
     juce::Viewport &mixerViewport;
 
     TransportControl transportControl;

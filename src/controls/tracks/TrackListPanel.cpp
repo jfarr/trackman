@@ -92,14 +92,12 @@ int TrackListPanel::getPanelWidth() const {
     auto leftPanelWidth = 25;
     int trackWidth = project.getTrackList().getTotalLengthSeconds() * project.getHorizontalScale();
     return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
-//    return 0;
 }
 
 int TrackListPanel::getPanelHeight() const {
     int trackHeight =
         lanes.size() > 0 ? (lanes.size() + 1) * lanes.back()->getPreferredHeight() * project.getVerticalScale() : 0;
     return std::max(trackHeight, viewport.getHeight());
-//    return 0;
 }
 
 int TrackListPanel::getTrackLaneHeight() const {

@@ -49,8 +49,8 @@ class TrackListController : public TrackListListener, public SampleListener {
   private:
     DesktopController &desktopController;
     Project &project;
-//    TrackList &trackList;
     juce::AudioTransportSource &transport;
+
     TrackListViewport trackListViewport;
     TrackListPanel trackListPanel;
     std::list<std::unique_ptr<TrackLaneController>> lanes;
@@ -58,9 +58,6 @@ class TrackListController : public TrackListListener, public SampleListener {
     bool selectingSample = false;
     Track *currentDragTrack = nullptr;
     TrackLaneController *newDragLane = nullptr;
-
-//    juce::AudioDeviceManager &deviceManager;
-//    juce::AudioFormatManager &formatManager;
 
     void updateMixerSource();
     void updateLane(Track &track);

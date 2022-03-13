@@ -4,21 +4,23 @@
 #include "audio/PositionableResamplingAudioSource.h"
 #include <JuceHeader.h>
 
+#include <utility>
+
 class Sample {
   public:
     Sample(juce::File file, double startPos, double endPos, double sourceLengthSecs, double sampleRate)
-        : file(file), startPos(startPos), endPos(endPos), length(sourceLengthSecs),
+        : file(std::move(file)), startPos(startPos), endPos(endPos), length(sourceLengthSecs),
           sourceLengthSecs(sourceLengthSecs), sourceSampleRate(sampleRate) {}
-    ~Sample() {}
+    ~Sample() = default;
 
-    juce::File getFile() const { return file; }
-    double getStartPos() const { return startPos; }
-    double getEndPos() const { return endPos; }
-    double getLengthSecs() const { return length; }
-    double getSourceLengthSecs() const { return sourceLengthSecs; }
-    double getSampleRate() const { return sourceSampleRate; }
-    bool isSelected() const { return selected; }
-    bool isDeleted() const { return deleted; }
+    [[nodiscard]] juce::File getFile() const { return file; }
+    [[nodiscard]] double getStartPos() const { return startPos; }
+    [[nodiscard]] double getEndPos() const { return endPos; }
+    [[nodiscard]] double getLengthSecs() const { return length; }
+    [[nodiscard]] double getSourceLengthSecs() const { return sourceLengthSecs; }
+    [[nodiscard]] double getSampleRate() const { return sourceSampleRate; }
+    [[nodiscard]] bool isSelected() const { return selected; }
+    [[nodiscard]] bool isDeleted() const { return deleted; }
 
     void loadFile(juce::AudioFormatManager &formatManager);
     juce::PositionableAudioSource *getSource() { return offsetSource.get(); }

@@ -57,6 +57,7 @@ class SampleThumbnail : public juce::Component {
     Track &track;
     Sample &sample;
     juce::AudioTransportSource &transport;
+
     juce::Label filenameLabel;
     juce::Label missingFileLabel;
     StretchHandle stretchHandle;

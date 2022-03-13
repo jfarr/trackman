@@ -224,6 +224,4 @@ void TrackListController::removeDragLane() {
     currentDragTrack = nullptr;
 }
 
-void TrackListController::updateMixerSource() {
-    //    desktopController.getMixerController().updateAudioSource();
-}
+void TrackListController::updateMixerSource() { desktopController.getMixerController().updateAudioSource(); }

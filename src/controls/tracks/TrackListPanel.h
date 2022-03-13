@@ -31,8 +31,8 @@ class TrackListPanel : public juce::Component,
                        public juce::DragAndDropTarget,
                        private juce::Timer {
   public:
-    TrackListPanel(Project &project, /*TrackList &trackList,*/ juce::Viewport &viewport,
-        juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
+    TrackListPanel(Project &project, juce::Viewport &viewport, juce::AudioTransportSource &transport,
+        juce::AudioFormatManager &formatManager);
     ~TrackListPanel();
 
     Track *getTrackAtPos(int x, int y);
@@ -70,7 +70,6 @@ class TrackListPanel : public juce::Component,
 
   private:
     Project &project;
-//    TrackList &trackList;
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
     juce::AudioFormatManager &formatManager;
@@ -82,9 +81,9 @@ class TrackListPanel : public juce::Component,
     std::list<SampleListener *> sampleListeners;
     std::list<TrackListListener *> trackListListeners;
 
-    int getPanelWidth() const;
-    int getPanelHeight() const;
-    int getTrackLaneHeight() const;
+    [[nodiscard]] int getPanelWidth() const;
+    [[nodiscard]] int getPanelHeight() const;
+    [[nodiscard]] int getTrackLaneHeight() const;
 
     void notifySampleDropped(SampleThumbnail *thumbnail, int x, int y);
     void notifySampleResized(SampleThumbnail *thumbnail, int width);

@@ -9,16 +9,13 @@ MixerController::MixerController(DesktopController &desktopController)
       trackPanel(mixerViewport) {
 
     mixerViewport.setViewedComponent(&trackPanel, false);
-
-//    mixerPanel.getMasterTrackControl().addListener(&desktopController);
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
-
     update();
 }
 
 MixerController::~MixerController() {
-    // TODO: fix this
+    // TODO: remove this listener, just call the controller directly
     for (std::unique_ptr<TrackController> &track : tracks) {
         track->removeListener((TrackListListener *)this);
     }
