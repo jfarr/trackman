@@ -46,10 +46,10 @@ void MixerController::repaint() {
 void MixerController::updateAudioSource() {
     mixer.removeAllSources();
     trackList.eachTrack([this](Track &track) {
-        if (track.getSource() != nullptr) {
+//        if (track.getSource() != nullptr) {
             DBG("MixerController::onSourceSet - add track source: " << track.getName());
             mixer.addSource(track.getSource(), track.getSampleRate(), 2);
-        }
+//        }
     });
 }
 

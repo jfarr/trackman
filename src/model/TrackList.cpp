@@ -82,7 +82,7 @@ void TrackList::renumber() {
     int i = 1;
     for (std::unique_ptr<Track> &track : tracks) {
         if (!track->isDeleted()) {
-            track->setNumber(i++);
+            track->setTrackNumber(i++);
         }
     }
 }

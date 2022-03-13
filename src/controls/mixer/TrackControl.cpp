@@ -56,7 +56,7 @@ void TrackControl::update() {
         track.isSoloed() ? juce::Colours::orange
                          : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     trackNameLabel.setText(track.getName(), juce::dontSendNotification);
-    trackNumberLabel.setText("Track " + juce::String(track.getNumber()), juce::dontSendNotification);
+    trackNumberLabel.setText("Track " + juce::String(track.getTrackNumber()), juce::dontSendNotification);
 }
 
 void TrackControl::paint(juce::Graphics &g) {

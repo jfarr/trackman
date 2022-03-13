@@ -5,7 +5,7 @@
 
 class Project {
   public:
-    Project(double sampleRate) : mixer(sampleRate) {}
+    Project(double sampleRate) : trackList(sampleRate), mixer(sampleRate) {}
     ~Project() = default;
 
     TrackList &getTrackList() { return trackList; }

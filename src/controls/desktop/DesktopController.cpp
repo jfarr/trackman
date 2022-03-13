@@ -128,7 +128,7 @@ void DesktopController::deleteSelected() {
     Track *selected = project.getTrackList().getSelectedTrack();
     if (selected != nullptr) {
         juce::NativeMessageBox::showOkCancelBox(juce::MessageBoxIconType::QuestionIcon, "",
-            "Delete Track " + juce::String(selected->getNumber()) + "?", &desktopComponent,
+            "Delete Track " + juce::String(selected->getTrackNumber()) + "?", &desktopComponent,
             juce::ModalCallbackFunction::create([this, selected](int result) {
                 if (result > 0) {
                     Command *command = new DeleteTrackCommand(*this, selected);
