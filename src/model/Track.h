@@ -13,7 +13,7 @@ class TrackList;
 class Track {
   public:
     explicit Track(TrackList &trackList);
-    ~Track() = default;
+    ~Track() { samples.clear(); }
 
     [[nodiscard]] int getTrackNumber() const { return trackNumber; }
     [[nodiscard]] juce::String getName() const { return name; }

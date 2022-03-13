@@ -3,17 +3,15 @@
 #include <memory>
 
 Sample::~Sample() {
-    if (offsetSource != nullptr) {
-        delete offsetSource;
-    }
-    if (resamplingSource != nullptr) {
-        delete resamplingSource;
-    }
+    delete offsetSource;
+    delete resamplingSource;
 }
 
 void Sample::loadFile(juce::AudioFormatManager &formatManager, double sampleRate) {
     auto *reader = formatManager.createReaderFor(file);
     if (reader != nullptr) {
+        delete offsetSource;
+        delete resamplingSource;
         fileSource = new juce::AudioFormatReaderSource(reader, true);
         resamplingSource = new PositionableResamplingAudioSource(fileSource, true, sampleRate, sourceSampleRate, 2);
         offsetSource = new OffsetAudioSource(*resamplingSource, startPos, sourceSampleRate);
