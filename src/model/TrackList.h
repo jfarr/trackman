@@ -13,7 +13,7 @@ class TrackList {
     void removeTrack(Track *track);
 
     int size() const { return tracks.size(); }
-    Track *getSelected() const;
+    Track *getSelectedTrack() const;
     Sample *getSelectedSample() const;
     juce::uint64 getTotalLength() const;
     double getTotalLengthSeconds() const;

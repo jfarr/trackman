@@ -8,7 +8,7 @@
 DesktopController::DesktopController(
     juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
     : mainWindow(mainWindow), deviceManager(deviceManager), formatManager(formatManager),
-      mixer(deviceManager.getAudioDeviceSetup().sampleRate), project(trackList, mixer) {
+      project(deviceManager.getAudioDeviceSetup().sampleRate) {
     updateTitleBar();
 }
 //
@@ -127,16 +127,16 @@ void DesktopController::deleteSelected() {
 }
 
 juce::String DesktopController::getSelectionType() const {
-    if (trackList.getSelectedSample() != nullptr) {
+    if (project.getSelectedSample() != nullptr) {
         return "sample";
-    } else if (trackList.getSelected() != nullptr) {
+    } else if (project.getSelectedTrack() != nullptr) {
         return "track";
     }
     return "";
 }
 
 Track *DesktopController::addTrack() {
-    auto track = trackList.addTrack();
+    auto track = project.getTrackList().addTrack();
     juce::MessageManager::callAsync([this]() {
 //        trackListController.update();
 //        mixerController.update();
@@ -145,9 +145,9 @@ Track *DesktopController::addTrack() {
 }
 
 void DesktopController::deleteTrack(Track *track, bool purge) {
-    trackList.deleteTrack(track);
+    project.getTrackList().deleteTrack(track);
     if (purge) {
-        trackList.removeTrack(track);
+        project.getTrackList().removeTrack(track);
     }
     juce::MessageManager::callAsync([this]() {
 //        trackListController.update();
@@ -156,7 +156,7 @@ void DesktopController::deleteTrack(Track *track, bool purge) {
 }
 
 void DesktopController::undeleteTrack(Track *track) {
-    trackList.undeleteTrack(track);
+    project.getTrackList().undeleteTrack(track);
     juce::MessageManager::callAsync([this]() {
 //        trackListController.update();
 //        mixerController.update();
@@ -257,7 +257,7 @@ void DesktopController::exportProject() {
     chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
         auto file = fc.getResult();
         if (file != juce::File{}) {
-            trackList.writeAudioFile(file, mixer.getSource(), deviceManager.getAudioDeviceSetup().sampleRate, 16);
+            project.getTrackList().writeAudioFile(file, project.getMixer().getSource(), deviceManager.getAudioDeviceSetup().sampleRate, 16);
         }
     });
 }
@@ -270,7 +270,7 @@ void DesktopController::updateTitleBar() {
 }
 
 void DesktopController::selectionChanged(Track *track) {
-    trackList.setSelected(track);
+    project.getTrackList().setSelected(track);
     juce::MessageManager::callAsync([this]() {
 //        trackListController.repaint();
 //        mixerController.repaint();

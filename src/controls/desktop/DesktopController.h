@@ -26,8 +26,8 @@ class DesktopController : public FileDragDropTarget,
 
 //    DesktopComponent &getDesktop() { return desktopComponent; }
     Project &getProject() { return project; }
-    TrackList &getTrackList() { return trackList; }
-    Mixer &getMixer() { return mixer; }
+//    TrackList &getTrackList() { return trackList; }
+//    Mixer &getMixer() { return mixer; }
 //    MixerController &getMixerController() { return mixerController; }
 //    TrackListController &getTrackListController() { return trackListController; }
 
@@ -96,8 +96,8 @@ class DesktopController : public FileDragDropTarget,
     //    DesktopComponent &desktopComponent;
 
     CommandList commandList;
-    TrackList trackList;
-    Mixer mixer;
+//    TrackList trackList;
+//    Mixer mixer;
     Project project;
 //    MixerController mixerController;
 //    TrackListController trackListController;

@@ -37,7 +37,7 @@ void TrackList::removeTrack(Track *track) {
     }
 }
 
-Track *TrackList::getSelected() const {
+Track *TrackList::getSelectedTrack() const {
     for (std::unique_ptr<Track> const &track : tracks) {
         if (!track->isDeleted() && track->isSelected()) {
             return track.get();

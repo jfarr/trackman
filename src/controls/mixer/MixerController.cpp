@@ -4,8 +4,8 @@
 #include "controls/mixer/TrackController.h"
 
 MixerController::MixerController(DesktopController &desktopController)
-    : desktopController(desktopController), trackList(desktopController.getTrackList()),
-      mixer(desktopController.getMixer()), mixerPanel(desktopController, trackList, mixer, mixer.getMeterSource()),
+    : desktopController(desktopController), trackList(desktopController.getProject().getTrackList()),
+      mixer(desktopController.getProject().getMixer()), mixerPanel(desktopController, trackList, mixer, mixer.getMeterSource()),
       trackPanel(mixerViewport) {
 
     mixerViewport.setViewedComponent(&trackPanel, false);
