@@ -1,23 +1,31 @@
 #include "DesktopComponent.h"
 #include "common/listutil.h"
 
-DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), desktopController(*parentWindow, *this, deviceManager, formatManager),
-      trackListViewport(desktopController.getTrackListController().getViewport()),
-      mixerPanel(desktopController.getMixerController().getMixerPanel()), mixer(desktopController.getMixer()),
-      timeMeter(desktopController.getProject()), horizontalScaleButtonPanel(false), verticalScaleButtonPanel(true) {
+DesktopComponent::DesktopComponent(DesktopController &desktopController)
+    : desktopController(desktopController), timeMeter(desktopController.getProject()),
+      horizontalScaleButtonPanel(false), verticalScaleButtonPanel(true) {
+    //    : formatManager(formatManager), timeMeter(desktopController.getProject()),
+    //      desktopController(*parentWindow, *this, deviceManager, formatManager),
+    //      trackListViewport(desktopController.getTrackListController().getViewport()),
+    //      mixerPanel(desktopController.getMixerController().getMixerPanel()), mixer(desktopController.getMixer()),
+    //      horizontalScaleButtonPanel(false), verticalScaleButtonPanel(true) {
 
-    setAudioChannels(0, 2);
+    setSize(800, 600);
+
+//    setAudioChannels(0, 2);
 
     addListener(&desktopController);
     verticalScaleButtonPanel.addListener(&desktopController);
     horizontalScaleButtonPanel.addListener(&desktopController);
 
     addAndMakeVisible(timeMeter);
-    addAndMakeVisible(trackListViewport);
-    addAndMakeVisible(mixerPanel);
     addAndMakeVisible(verticalScaleButtonPanel);
     addAndMakeVisible(horizontalScaleButtonPanel);
+
+//    auto &trackListViewport = desktopController.getTrackListController().getViewport();
+//    auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
+//    addAndMakeVisible(trackListViewport);
+//    addAndMakeVisible(mixerPanel);
 
     setApplicationCommandManagerToWatch(&commandManager);
     commandManager.registerAllCommandsForTarget(this);
@@ -31,18 +39,17 @@ DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::Aud
     addKeyListener(commandManager.getKeyMappings());
     setWantsKeyboardFocus(true);
 
-    setSize(800, 600);
-
 #if JUCE_MAC
     MenuBarModel::setMacMainMenu(this);
 #else
     parentWindow->setMenuBar(this);
     addAndMakeVisible(menuBar);
 #endif
+    initialized = true;
 }
 
 DesktopComponent::~DesktopComponent() {
-    shutdownAudio();
+//    shutdownAudio();
     closeAllWindows();
 
     removeListener(&desktopController);
@@ -66,16 +73,21 @@ void DesktopComponent::closeAllWindows() {
     windows.clear();
 }
 
+void DesktopComponent::visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea) {
+    DBG("DesktopComponent::visibleAreaChanged: " << newVisibleArea.getX() << "," << newVisibleArea.getY());
+    timeMeter.setBounds(timeMeter.getBounds().withLeft(-newVisibleArea.getX()));
+}
+
 //==============================================================================
 void DesktopComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
-    mixer.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    desktopController.getMixer().prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
 void DesktopComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    mixer.getNextAudioBlock(bufferToFill);
+    desktopController.getMixer().getNextAudioBlock(bufferToFill);
 }
 
-void DesktopComponent::releaseResources() { mixer.releaseResources(); }
+void DesktopComponent::releaseResources() { desktopController.getMixer().releaseResources(); }
 
 //==============================================================================
 void DesktopComponent::paint(juce::Graphics &g) {
@@ -83,19 +95,23 @@ void DesktopComponent::paint(juce::Graphics &g) {
 }
 
 void DesktopComponent::resized() {
+    if (!initialized) {
+        return;
+    }
     auto topStripHeight = 15;
     auto scaleButtonWidth = 12;
-    auto scrollBarWidth = trackListViewport.getScrollBarThickness();
+    auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
     auto area = getLocalBounds();
     area.removeFromTop(topStripHeight);
     timeMeter.setBounds(area.removeFromTop(topStripHeight));
     verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(
         area.getWidth() - (scaleButtonWidth + scrollBarWidth), area.getY(), scaleButtonWidth, scaleButtonWidth * 2));
+    auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
     horizontalScaleButtonPanel.setBounds(
         juce::Rectangle<int>(0, area.getHeight() - (scaleButtonWidth + scrollBarWidth) + topStripHeight,
             scaleButtonWidth * 2, scaleButtonWidth));
-    trackListViewport.setBounds(area);
+    desktopController.getTrackListController().getViewport().setBounds(area);
     desktopController.resize();
 }
 

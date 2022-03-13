@@ -7,6 +7,7 @@
   - Can't scroll mixer far enough to see the last track
   - Track level meter scale is off
   - Delete menu item not updating on native Mac menu
+- Rename `controls` -> `ui`
 - Sample info popup
 - Drop multiple files
   - Default one track

@@ -18,10 +18,13 @@ class DesktopController : public FileDragDropTarget,
                           public TrackControlListener,
                           public TrackScaleListener {
   public:
-    DesktopController(juce::DocumentWindow &mainWindow, DesktopComponent &desktopComponent,
-        juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
+    DesktopController(juce::DocumentWindow &mainWindow);
     ~DesktopController() override = default;
 
+    juce::AudioFormatManager &getFormatManager() { return formatManager; }
+    juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
+
+    DesktopComponent &getDesktop() { return desktopComponent; }
     Project &getProject() { return project; }
     TrackList &getTrackList() { return trackList; }
     Mixer &getMixer() { return mixer; }
@@ -34,6 +37,7 @@ class DesktopController : public FileDragDropTarget,
     bool hasSelection() const { return getSelectionType() != ""; }
     bool isDirty() const { return dirty; }
 
+//    DesktopComponent *createDesktop();
     void resize();
 
     void addNewTrack();
@@ -85,6 +89,9 @@ class DesktopController : public FileDragDropTarget,
     void horizontalScaleDecreased() override;
 
   private:
+    DesktopComponent &desktopComponent;
+    juce::AudioDeviceManager &deviceManager;
+
     CommandList commandList;
     TrackList trackList;
     Mixer mixer;
@@ -96,12 +103,10 @@ class DesktopController : public FileDragDropTarget,
     juce::File projectFile;
     bool dirty = false;
     Command *saveCommand = nullptr;
-    DesktopComponent &desktopComponent;
     juce::DocumentWindow &mainWindow;
     juce::String applicationName;
 
-    juce::AudioDeviceManager &deviceManager;
-    juce::AudioFormatManager &formatManager;
+    juce::AudioFormatManager formatManager;
 
     void saveProjectFile(juce::File file);
     void updateTitleBar();

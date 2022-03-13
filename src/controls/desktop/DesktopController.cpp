@@ -5,15 +5,21 @@
 #include "commands/TrackListCommands.h"
 #include "common/listutil.h"
 
-DesktopController::DesktopController(juce::DocumentWindow &mainWindow, DesktopComponent &desktopComponent,
-    juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
-    : mixer(deviceManager.getAudioDeviceSetup().sampleRate), project(trackList, mixer),
-      mixerController(*this, formatManager),
-      trackListController(*this, mixerController.getMixer().getTransportSource(), deviceManager, formatManager),
-      mainWindow(mainWindow), desktopComponent(desktopComponent), applicationName(mainWindow.getName()),
-      deviceManager(deviceManager), formatManager(formatManager) {
+DesktopController::DesktopController(juce::DocumentWindow &mainWindow)
+    : mainWindow(mainWindow), mixerController(*this), desktopComponent(*new DesktopComponent(*this)),
+      deviceManager(desktopComponent.deviceManager), mixer(deviceManager.getAudioDeviceSetup().sampleRate),
+      project(trackList, mixer), trackListController(*this, mixer.getTransportSource()),
+      applicationName(mainWindow.getName()) {
     updateTitleBar();
+
+    formatManager.registerBasicFormats();
 }
+//
+// DesktopComponent *DesktopController::createDesktop() {
+//    desktopComponent = new DesktopComponent(*this);
+//    deviceManager = &desktopComponent->deviceManager;
+//    return desktopComponent;
+//}
 
 bool DesktopController::canUndo() const { return !commandList.isEmpty(); }
 

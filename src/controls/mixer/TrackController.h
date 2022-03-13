@@ -12,7 +12,7 @@ class DesktopController;
 
 class TrackController : public TrackControlListener, public juce::MouseListener {
   public:
-    TrackController(DesktopController &desktopController, Track &track, juce::AudioFormatManager &formatManager);
+    TrackController(DesktopController &desktopController, Track &track);
     ~TrackController();
 
     TrackControl &getTrackControl() { return trackControl; }
@@ -37,7 +37,6 @@ class TrackController : public TrackControlListener, public juce::MouseListener 
   private:
     DesktopController &desktopController;
     Track &track;
-    juce::AudioFormatManager &formatManager;
 
     TrackControl trackControl;
     std::list<TrackListListener *> trackListListeners;

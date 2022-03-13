@@ -3,10 +3,10 @@
 #include "controls/desktop/DesktopController.h"
 #include "controls/mixer/TrackController.h"
 
-MixerController::MixerController(DesktopController &desktopController, juce::AudioFormatManager &formatManager)
+MixerController::MixerController(DesktopController &desktopController)
     : desktopController(desktopController), trackList(desktopController.getTrackList()),
-      mixer(desktopController.getMixer()), formatManager(formatManager),
-      mixerPanel(desktopController, trackList, mixer, mixer.getMeterSource()), trackPanel(mixerViewport) {
+      mixer(desktopController.getMixer()), mixerPanel(desktopController, trackList, mixer, mixer.getMeterSource()),
+      trackPanel(mixerViewport) {
 
     mixerViewport.setViewedComponent(&trackPanel, false);
 
@@ -28,7 +28,7 @@ void MixerController::update() {
     tracks.clear();
     trackPanel.clear();
     trackList.eachTrack([this](Track &track) {
-        auto controller = new TrackController(desktopController, track, formatManager);
+        auto controller = new TrackController(desktopController, track);
         tracks.push_back(std::unique_ptr<TrackController>(controller));
         trackPanel.addTrack(&controller->getTrackControl());
     });

@@ -7,10 +7,11 @@
 #include "FileDragDropTarget.h"
 #include "ScaleButtonPanel.h"
 #include "controls/AudioPlayer.h"
+#include "controls/common/TimeMeter.h"
 #include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
+#include "controls/tracks/TrackListViewport.h"
 #include "model/Mixer.h"
-#include "controls/common/TimeMeter.h"
 
 class DesktopComponent : public juce::AudioAppComponent,
                          public juce::ApplicationCommandTarget,
@@ -31,11 +32,13 @@ class DesktopComponent : public juce::AudioAppComponent,
     };
 
     //==============================================================================
-    DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager);
+    //    DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager);
+    DesktopComponent(DesktopController &desktopController);
     ~DesktopComponent() override;
 
-    DesktopController &getDesktopController() { return desktopController; }
-    bool isDirty() const { return desktopController.isDirty(); };
+//    DesktopController &getDesktopController() { return desktopController; }
+//    bool isDirty() const { return desktopController.isDirty(); };
+    void visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea);
 
     void addListener(FileDragDropTarget *listener);
     void removeListener(FileDragDropTarget *listener);
@@ -163,7 +166,7 @@ class DesktopComponent : public juce::AudioAppComponent,
             desktopController.addNewTrack();
             break;
         case CommandIDs::newAudioPlayer:
-            createChildWindow("audioplayer", new AudioPlayer(formatManager));
+            createChildWindow("audioplayer", new AudioPlayer(desktopController.getFormatManager()));
             break;
         case CommandIDs::deleteTrackSelection:
             desktopController.deleteSelected();
@@ -175,14 +178,15 @@ class DesktopComponent : public juce::AudioAppComponent,
     }
 
   private:
-    DesktopController desktopController;
-    juce::Viewport &trackListViewport;
-    MixerPanel &mixerPanel;
-    Mixer &mixer;
+    DesktopController &desktopController;
+//    TrackListViewport &trackListViewport;
+//    MixerPanel &mixerPanel;
+//    Mixer &mixer;
     TimeMeter timeMeter;
     ScaleButtonPanel horizontalScaleButtonPanel;
     ScaleButtonPanel verticalScaleButtonPanel;
     std::list<FileDragDropTarget *> listeners;
+    bool initialized = false;
 
     juce::ApplicationCommandManager commandManager;
     juce::MenuBarComponent menuBar;
@@ -192,7 +196,7 @@ class DesktopComponent : public juce::AudioAppComponent,
     // becomes null when the component that it points to is deleted.
     juce::Array<Component::SafePointer<Component>> windows;
 
-    juce::AudioFormatManager &formatManager;
+//    juce::AudioFormatManager &formatManager;
 
     void createChildWindow(const juce::String &name, juce::Component *component);
     void closeAllWindows();

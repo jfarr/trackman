@@ -2,9 +2,8 @@
 #include "common/listutil.h"
 #include "controls/desktop/DesktopController.h"
 
-TrackController::TrackController(
-    DesktopController &desktopController, Track &track, juce::AudioFormatManager &formatManager)
-    : desktopController(desktopController), track(track), formatManager(formatManager), trackControl(track) {
+TrackController::TrackController(DesktopController &desktopController, Track &track)
+    : desktopController(desktopController), track(track), trackControl(track) {
     addListener(&desktopController.getTrackListController());
     trackControl.addListener(&desktopController);
     trackControl.addListener(this);
