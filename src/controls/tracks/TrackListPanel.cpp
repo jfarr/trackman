@@ -1,14 +1,9 @@
 #include "TrackListPanel.h"
 #include "common/listutil.h"
 
-InnerTrackPanel::InnerTrackPanel(Project &project, juce::Viewport &viewport)
-    : project(project), viewport(viewport), timeMeter(project) {
-    //        viewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
-    //        viewport.getHorizontalScrollBar().setAutoHide(false);
-    //        viewport.setScrollBarsShown(true, false);
-    //        viewport.setViewedComponent(&trackListPanel, false);
+InnerTrackPanel::InnerTrackPanel(Project &project, juce::Viewport &viewport, juce::AudioTransportSource &transport)
+    : project(project), viewport(viewport), transport(transport), timeMeter(project) {
     addAndMakeVisible(timeMeter);
-    //        addAndMakeVisible(viewport);
 }
 
 void InnerTrackPanel::update() {
@@ -24,6 +19,7 @@ void InnerTrackPanel::update() {
 void InnerTrackPanel::resize() {
     auto w = getPanelWidth();
     auto h = getPanelHeight();
+    DBG("InnerTrackPanel::resize: " << w << "," << h);
     setSize(w, h);
     for (TrackLaneControl *lane : lanes) {
         lane->resized();
@@ -55,8 +51,22 @@ int InnerTrackPanel::getTrackLaneHeight() const {
 }
 
 void InnerTrackPanel::paint(juce::Graphics &g) {
-    //    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    g.fillAll(juce::Colours::yellow);
+    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    //    g.fillAll(juce::Colours::yellow);
+
+    auto leftPanelWidth = 25;
+    auto duration = (float)transport.getLengthInSeconds();
+
+    if (duration > 0.0) {
+        auto audioPosition = (float)transport.getCurrentPosition();
+        auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
+
+        g.setColour(juce::Colour{0xff282828});
+        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
+    }
+
+    g.setColour(juce::Colours::lightgrey);
+    g.drawLine(leftPanelWidth, 0, leftPanelWidth, (float)getHeight(), 1.0f);
 }
 
 void InnerTrackPanel::resized() {
@@ -82,13 +92,18 @@ Track *InnerTrackPanel::getTrackAtPos(int x, int y) {
 
 TrackListPanel::TrackListPanel(Project &project, TrackList &trackList, juce::Viewport &viewport,
     juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
-    : project(project), trackList(trackList), viewport(viewport), innerPanel(project, viewport), transport(transport),
-      formatManager(formatManager), timeMeter(project) {
+    : project(project), trackList(trackList), viewport(viewport), innerPanel(project, viewport, transport),
+      transport(transport), formatManager(formatManager), timeMeter(project) {
 
-    innerViewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
-    innerViewport.getHorizontalScrollBar().setAutoHide(false);
+    viewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
+    viewport.getHorizontalScrollBar().setAutoHide(false);
+    viewport.setScrollBarsShown(true, true);
+
+    innerViewport.getVerticalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
+    innerViewport.getVerticalScrollBar().setAutoHide(false);
     innerViewport.setScrollBarsShown(true, false);
     innerViewport.setViewedComponent(&innerPanel, false);
+    addAndMakeVisible(innerViewport);
     update();
     //    resize();
     startTimer(20);
@@ -171,27 +186,28 @@ void TrackListPanel::resize() {
 }
 
 void TrackListPanel::paint(juce::Graphics &g) {
-    //    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    g.fillAll(juce::Colours::green);
-
-    auto leftPanelWidth = 25;
-    auto duration = (float)transport.getLengthInSeconds();
-
-    if (duration > 0.0) {
-        auto audioPosition = (float)transport.getCurrentPosition();
-        auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
-
-        g.setColour(juce::Colour{0xff282828});
-        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
-    }
-
-    g.setColour(juce::Colours::lightgrey);
-    g.drawLine(leftPanelWidth, 0, leftPanelWidth, (float)getHeight(), 1.0f);
+    //        g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+//    g.fillAll(juce::Colours::green);
+//
+//    auto leftPanelWidth = 25;
+//    auto duration = (float)transport.getLengthInSeconds();
+//
+//    if (duration > 0.0) {
+//        auto audioPosition = (float)transport.getCurrentPosition();
+//        auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
+//
+//        g.setColour(juce::Colour{0xff282828});
+//        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
+//    }
+//
+//    g.setColour(juce::Colours::lightgrey);
+//    g.drawLine(leftPanelWidth, 0, leftPanelWidth, (float)getHeight(), 1.0f);
 }
 
 void TrackListPanel::resized() {
     auto area = getLocalBounds();
     innerViewport.setBounds(area);
+    //    innerViewport.setBounds(0, 0, 500, 500);
     //    auto topStripWidth = 20;
     //    timeMeter.setBounds(area.removeFromTop(topStripWidth));
     //    timeMeter.repaint();

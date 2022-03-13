@@ -30,7 +30,7 @@ class DropBox : public juce::Component {
 
 class InnerTrackPanel : public juce::Component {
   public:
-    InnerTrackPanel(Project &project, juce::Viewport &viewport);
+    InnerTrackPanel(Project &project, juce::Viewport &viewport, juce::AudioTransportSource &transport);
     ~InnerTrackPanel() = default;
 
     Track *getTrackAtPos(int x, int y);
@@ -52,6 +52,7 @@ class InnerTrackPanel : public juce::Component {
   private:
     Project &project;
     juce::Viewport &viewport;
+    juce::AudioTransportSource &transport;
     TimeMeter timeMeter;
     std::list<TrackLaneControl *> lanes;
 
@@ -119,9 +120,9 @@ class TrackListPanel : public juce::Component,
     std::list<SampleListener *> sampleListeners;
     std::list<TrackListListener *> trackListListeners;
 
-//    int getPanelWidth() const;
-//    int getPanelHeight() const;
-//    int getTrackLaneHeight() const;
+    //    int getPanelWidth() const;
+    //    int getPanelHeight() const;
+    //    int getTrackLaneHeight() const;
 
     void notifySampleDropped(SampleThumbnail *thumbnail, int x, int y);
     void notifySampleResized(SampleThumbnail *thumbnail, int width);

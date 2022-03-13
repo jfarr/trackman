@@ -51,8 +51,8 @@ class TrackListController : public TrackListListener, public SampleListener {
     Project &project;
     TrackList &trackList;
     juce::AudioTransportSource &transport;
-    TrackListPanel trackListPanel;
     juce::Viewport trackListViewport;
+    TrackListPanel trackListPanel;
     std::list<std::unique_ptr<TrackLaneController>> lanes;
     Track *selected = nullptr;
     bool selectingSample = false;
