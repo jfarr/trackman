@@ -8,7 +8,8 @@
 
 DesktopController::DesktopController(MainWindow &mainWindow, MainAudioComponent &mainAudioComponent, double sampleRate)
     : mainWindow(mainWindow), mainAudioComponent(mainAudioComponent), applicationName(mainWindow.getName()),
-      desktopComponent(*this), project(sampleRate), mixerController((*this)) {
+      desktopComponent(*this), project(sampleRate), mixerController(*this),
+      trackListController(*this, project.getMixer().getTransportSource()) {
 
     //    mainAudioComponent.addAndMakeVisible(desktopComponent);
     updateTitleBar();

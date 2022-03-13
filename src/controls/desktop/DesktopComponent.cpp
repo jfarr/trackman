@@ -4,7 +4,7 @@
 #include "controls/MainWindow.h"
 
 DesktopComponent::DesktopComponent(DesktopController &desktopController)
-    : desktopController(desktopController) /*, timeMeter(desktopController.getProject()),
+    : desktopController(desktopController) , timeMeter(desktopController.getProject())/*
       horizontalScaleButtonPanel(false), verticalScaleButtonPanel(true)*/ {
     //    : formatManager(formatManager), timeMeter(desktopController.getProject()),
     //      desktopController(*parentWindow, *this, deviceManager, formatManager),
@@ -22,7 +22,7 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
 //    verticalScaleButtonPanel.addListener(&desktopController);
 //    horizontalScaleButtonPanel.addListener(&desktopController);
 //
-//    addAndMakeVisible(timeMeter);
+    addAndMakeVisible(timeMeter);
 //    addAndMakeVisible(verticalScaleButtonPanel);
 //    addAndMakeVisible(horizontalScaleButtonPanel);
 
@@ -191,8 +191,8 @@ void DesktopComponent::resized() {
     //    auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
     auto scrollBarWidth = 15;
     auto area = getLocalBounds();
-    area.removeFromTop(topStripHeight);
-//    timeMeter.setBounds(area.removeFromTop(topStripHeight));
+//    area.removeFromTop(topStripHeight);
+    timeMeter.setBounds(area.removeFromTop(topStripHeight));
 //    verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(
 //        area.getWidth() - (scaleButtonWidth + scrollBarWidth), area.getY(), scaleButtonWidth, scaleButtonWidth * 2));
     //    auto &mixerPanel = desktopController.getMixerController().getMixerPanel();

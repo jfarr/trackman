@@ -49,7 +49,7 @@ class TrackListController : public TrackListListener, public SampleListener {
   private:
     DesktopController &desktopController;
     Project &project;
-    TrackList &trackList;
+//    TrackList &trackList;
     juce::AudioTransportSource &transport;
 //    TrackListViewport trackListViewport;
     TrackListPanel trackListPanel;

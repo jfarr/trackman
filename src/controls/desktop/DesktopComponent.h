@@ -110,7 +110,7 @@ class DesktopComponent : public juce::Component,
     //    TrackListViewport &trackListViewport;
 //        MixerPanel &mixerPanel;
     //    Mixer &mixer;
-//    TimeMeter timeMeter;
+    TimeMeter timeMeter;
 //    ScaleButtonPanel horizontalScaleButtonPanel;
 //    ScaleButtonPanel verticalScaleButtonPanel;
     std::list<FileDragDropTarget *> listeners;

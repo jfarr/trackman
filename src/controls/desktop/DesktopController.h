@@ -114,7 +114,7 @@ class DesktopController : public juce::AudioSource,
     //    Mixer mixer;
     Project project;
     MixerController mixerController;
-    //    TrackListController trackListController;
+    TrackListController trackListController;
 
     DesktopComponent desktopComponent;
 

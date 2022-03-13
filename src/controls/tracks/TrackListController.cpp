@@ -4,10 +4,9 @@
 #include "controls/desktop/DesktopController.h"
 
 TrackListController::TrackListController(DesktopController &desktopController, juce::AudioTransportSource &transport)
-    : desktopController(desktopController), project(desktopController.getProject()),
-      trackList(desktopController.getProject().getTrackList()), transport(transport),
-      trackListPanel(
-          project, trackList, transport, desktopController.getMainWindow().getMainAudioComponent().getFormatManager()) {
+    : desktopController(desktopController), project(desktopController.getProject()), transport(transport),
+      trackListPanel(project, project.getTrackList(), transport,
+          desktopController.getMainWindow().getMainAudioComponent().getFormatManager()) {
 
     trackListPanel.addListener((SampleListener *)this);
     trackListPanel.addListener((TrackListListener *)this);
@@ -22,7 +21,7 @@ TrackListController::~TrackListController() {
 void TrackListController::update() {
     lanes.clear();
     trackListPanel.clear();
-    trackList.eachTrack([this](Track &track) {
+    project.getTrackList().eachTrack([this](Track &track) {
         auto lane = new TrackLaneController(project, track, *this, transport,
             desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
         lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
@@ -30,7 +29,7 @@ void TrackListController::update() {
         lane->update();
     });
     trackListPanel.update();
-    trackList.adjustTrackLengths();
+    project.getTrackList().adjustTrackLengths();
 }
 
 void TrackListController::repaint() {
@@ -70,7 +69,7 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
         auto sample = track.addSample(desktopController.getMainWindow().getMainAudioComponent().getDeviceManager(),
             desktopController.getMainWindow().getMainAudioComponent().getFormatManager(), file, startPos / scale,
             endPos / scale, length, reader->sampleRate);
-        trackList.adjustTrackLengths();
+        project.getTrackList().adjustTrackLengths();
         selectionChanged(&track);
         updateLane(track);
         updateMixerSource();
@@ -87,13 +86,13 @@ void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &to
         toTrack.selectSample(&sample);
     }
     sample.setPosition(pos);
-    trackList.adjustTrackLengths();
+    project.getTrackList().adjustTrackLengths();
     trackListPanel.resize();
 }
 
 void TrackListController::resizeSample(Sample &sample, double length) {
     sample.setLength(length);
-    trackList.adjustTrackLengths();
+    project.getTrackList().adjustTrackLengths();
     trackListPanel.resize();
 }
 
@@ -105,7 +104,7 @@ void TrackListController::deleteSample(Track &track, Sample *sample) {
     track.deleteSample(sample);
     updateLane(track);
     updateMixerSource();
-    trackList.adjustTrackLengths();
+    project.getTrackList().adjustTrackLengths();
     pos = std::max(pos, transport.getLengthInSeconds());
     transport.setPosition(pos);
 }
@@ -119,7 +118,7 @@ void TrackListController::undeleteSample(Track &track, Sample *sample) {
     updateLane(track);
     updateMixerSource();
     transport.setPosition(pos);
-    trackList.adjustTrackLengths();
+    project.getTrackList().adjustTrackLengths();
 }
 
 void TrackListController::updateLane(Track &track) {
@@ -146,7 +145,7 @@ void TrackListController::updateLanes() {
 
 void TrackListController::selectionChanged(Track *track) {
     if (!selectingSample) {
-        trackList.selectSample(nullptr);
+        project.getTrackList().selectSample(nullptr);
     }
     selectingSample = false;
     if (track != selected) {
@@ -157,7 +156,7 @@ void TrackListController::selectionChanged(Track *track) {
 
 void TrackListController::sampleSelected(Track &track, Sample &sample) {
     selectingSample = true;
-    trackList.selectSample(&sample);
+    project.getTrackList().selectSample(&sample);
     selectionChanged(&track);
 }
 
@@ -189,9 +188,9 @@ void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int sc
         TrackLaneController *lane;
         if (track == nullptr) {
             if (newDragLane == nullptr) {
-                track = new Track(trackList);
-                newDragLane =
-                    new TrackLaneController(project, *track, *this, transport, desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
+                track = new Track(project.getTrackList());
+                newDragLane = new TrackLaneController(project, *track, *this, transport,
+                    desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
                 trackListPanel.addLane(&newDragLane->getTrackLaneControl());
                 trackListPanel.addAndMakeVisible(&newDragLane->getTrackLaneControl());
                 trackListPanel.resize();
