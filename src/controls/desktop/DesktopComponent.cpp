@@ -1,6 +1,7 @@
 #include "DesktopComponent.h"
 #include "DesktopController.h"
 #include "common/listutil.h"
+#include "controls/MainWindow.h"
 
 DesktopComponent::DesktopComponent(DesktopController &desktopController)
     : desktopController(desktopController), timeMeter(desktopController.getProject()),
@@ -146,7 +147,7 @@ bool DesktopComponent::perform(const InvocationInfo &info) {
         desktopController.addNewTrack();
         break;
     case CommandIDs::newAudioPlayer:
-        createChildWindow("audioplayer", new AudioPlayer(desktopController.getFormatManager()));
+        createChildWindow("audioplayer", new AudioPlayer(desktopController.getMainWindow().getMainAudioComponent().getFormatManager()));
         break;
     case CommandIDs::deleteTrackSelection:
         desktopController.deleteSelected();

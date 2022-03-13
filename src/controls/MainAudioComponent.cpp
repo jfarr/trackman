@@ -1,10 +1,11 @@
 #include "MainAudioComponent.h"
 
-MainAudioComponent::MainAudioComponent(juce::DocumentWindow &mainWindow)
-    : juce::AudioAppComponent(), desktopController(mainWindow, deviceManager, formatManager) {
+MainAudioComponent::MainAudioComponent(MainWindow &mainWindow)
+    : juce::AudioAppComponent(), desktopController(mainWindow, *this, deviceManager.getAudioDeviceSetup().sampleRate) {
     setSize(800, 600);
     setAudioChannels(0, 2);
     formatManager.registerBasicFormats();
+    addAndMakeVisible(desktopController.getDesktopComponent());
 }
 
 MainAudioComponent::~MainAudioComponent() { shutdownAudio(); }
@@ -19,3 +20,8 @@ void MainAudioComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &b
 }
 
 void MainAudioComponent::releaseResources() { desktopController.releaseResources(); }
+
+//==============================================================================
+void MainAudioComponent::resized() {
+    desktopController.getDesktopComponent().setBounds(getLocalBounds());
+}

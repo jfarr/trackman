@@ -4,11 +4,12 @@
 #include "commands/TrackCommands.h"
 #include "commands/TrackListCommands.h"
 #include "common/listutil.h"
+#include "controls/MainWindow.h"
 
-DesktopController::DesktopController(
-    juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager)
-    : mainWindow(mainWindow), deviceManager(deviceManager), formatManager(formatManager),
-      project(deviceManager.getAudioDeviceSetup().sampleRate), desktopComponent(*this) {
+DesktopController::DesktopController(MainWindow &mainWindow, MainAudioComponent &mainAudioComponent, double sampleRate)
+    : mainWindow(mainWindow), mainAudioComponent(mainAudioComponent), desktopComponent(*this), project(sampleRate) {
+
+//    mainAudioComponent.addAndMakeVisible(desktopComponent);
     updateTitleBar();
 }
 //
@@ -251,7 +252,8 @@ void DesktopController::openProject() {
         auto file = fc.getResult();
         if (file != juce::File{}) {
             projectFile = file;
-            project.from_json(deviceManager, formatManager, file.getFullPathName().toStdString());
+            project.from_json(mainWindow.getMainAudioComponent().getDeviceManager(),
+                mainWindow.getMainAudioComponent().getFormatManager(), file.getFullPathName().toStdString());
             //            trackListController.update();
             //            mixerController.update();
             commandList.clear();
@@ -269,8 +271,8 @@ void DesktopController::exportProject() {
     chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
         auto file = fc.getResult();
         if (file != juce::File{}) {
-            project.getTrackList().writeAudioFile(
-                file, project.getMixer().getSource(), deviceManager.getAudioDeviceSetup().sampleRate, 16);
+            project.getTrackList().writeAudioFile(file, project.getMixer().getSource(),
+                mainWindow.getMainAudioComponent().getDeviceManager().getAudioDeviceSetup().sampleRate, 16);
         }
     });
 }

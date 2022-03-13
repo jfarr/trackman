@@ -11,6 +11,9 @@
 #include "model/Project.h"
 #include "model/TrackList.h"
 
+class MainWindow;
+class MainAudioComponent;
+
 // TODO: consider using juce::FileBasedDocument
 class DesktopController : public juce::AudioSource,
                           public FileDragDropTarget,
@@ -18,15 +21,18 @@ class DesktopController : public juce::AudioSource,
                           public TrackControlListener,
                           public TrackScaleListener {
   public:
-    DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager,
-        juce::AudioFormatManager &formatManager);
+    DesktopController(MainWindow &mainWindow, MainAudioComponent &mainAudioComponent, double sampleRate);
     ~DesktopController() override = default;
 
-    juce::AudioFormatManager &getFormatManager() { return formatManager; }
-    juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
+    //    juce::AudioFormatManager &getFormatManager() { return formatManager; }
+    //    juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
 
     //    DesktopComponent &getDesktop() { return desktopComponent; }
+    MainWindow &getMainWindow() { return mainWindow; }
+    MainAudioComponent &getMainAudioComponent() { return mainAudioComponent; }
+    DesktopComponent &getDesktopComponent() { return desktopComponent; }
     Project &getProject() { return project; }
+
     //    TrackList &getTrackList() { return trackList; }
     //    Mixer &getMixer() { return mixer; }
     //    MixerController &getMixerController() { return mixerController; }
@@ -96,9 +102,10 @@ class DesktopController : public juce::AudioSource,
     void horizontalScaleDecreased() override;
 
   private:
-    juce::DocumentWindow &mainWindow;
-    juce::AudioDeviceManager &deviceManager;
-    juce::AudioFormatManager &formatManager;
+    MainWindow &mainWindow;
+    MainAudioComponent &mainAudioComponent;
+    //    juce::AudioDeviceManager &deviceManager;
+    //    juce::AudioFormatManager &formatManager;
 
     CommandList commandList;
     //    TrackList trackList;

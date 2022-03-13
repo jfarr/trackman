@@ -1,11 +1,13 @@
 #include "TrackListController.h"
 #include "common/listutil.h"
+#include "controls/MainWindow.h"
 #include "controls/desktop/DesktopController.h"
 
 TrackListController::TrackListController(DesktopController &desktopController, juce::AudioTransportSource &transport)
-    : desktopController(desktopController),
-      project(desktopController.getProject()), trackList(desktopController.getProject().getTrackList()), transport(transport),
-      trackListPanel(project, trackList, transport, desktopController.getFormatManager()) {
+    : desktopController(desktopController), project(desktopController.getProject()),
+      trackList(desktopController.getProject().getTrackList()), transport(transport),
+      trackListPanel(
+          project, trackList, transport, desktopController.getMainWindow().getMainAudioComponent().getFormatManager()) {
 
     trackListPanel.addListener((SampleListener *)this);
     trackListPanel.addListener((TrackListListener *)this);
@@ -21,7 +23,8 @@ void TrackListController::update() {
     lanes.clear();
     trackListPanel.clear();
     trackList.eachTrack([this](Track &track) {
-        auto lane = new TrackLaneController(project, track, *this, transport, desktopController.getFormatManager());
+        auto lane = new TrackLaneController(project, track, *this, transport,
+            desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
         lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
         trackListPanel.addLane(&lane->getTrackLaneControl());
         lane->update();
@@ -53,7 +56,8 @@ void TrackListController::filesDropped(const juce::StringArray &files, int x, in
 }
 
 Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
-    auto *reader = desktopController.getFormatManager().createReaderFor(juce::File(file));
+    auto *reader =
+        desktopController.getMainWindow().getMainAudioComponent().getFormatManager().createReaderFor(juce::File(file));
     if (reader != nullptr) {
         auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
         auto length = newSource->getTotalLength() / reader->sampleRate;
@@ -63,8 +67,9 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
         double offset = width / 2;
         double startPos = std::max((pos - offset - leftPanelWidth), 0.0);
         double endPos = startPos + width;
-        auto sample = track.addSample(desktopController.getDeviceManager(), desktopController.getFormatManager(), file,
-            startPos / scale, endPos / scale, length, reader->sampleRate);
+        auto sample = track.addSample(desktopController.getMainWindow().getMainAudioComponent().getDeviceManager(),
+            desktopController.getMainWindow().getMainAudioComponent().getFormatManager(), file, startPos / scale,
+            endPos / scale, length, reader->sampleRate);
         trackList.adjustTrackLengths();
         selectionChanged(&track);
         updateLane(track);
@@ -186,7 +191,7 @@ void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int sc
             if (newDragLane == nullptr) {
                 track = new Track(trackList);
                 newDragLane =
-                    new TrackLaneController(project, *track, *this, transport, desktopController.getFormatManager());
+                    new TrackLaneController(project, *track, *this, transport, desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
                 trackListPanel.addLane(&newDragLane->getTrackLaneControl());
                 trackListPanel.addAndMakeVisible(&newDragLane->getTrackLaneControl());
                 trackListPanel.resize();
@@ -220,5 +225,5 @@ void TrackListController::removeDragLane() {
 }
 
 void TrackListController::updateMixerSource() {
-//    desktopController.getMixerController().updateAudioSource();
+    //    desktopController.getMixerController().updateAudioSource();
 }

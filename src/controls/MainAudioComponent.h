@@ -4,10 +4,19 @@
 
 #include "controls/desktop/DesktopController.h"
 
+class MainWindow;
+
 class MainAudioComponent : public juce::AudioAppComponent {
   public:
-    MainAudioComponent(juce::DocumentWindow &mainWindow);
+    MainAudioComponent(MainWindow &mainWindow);
     ~MainAudioComponent();
+
+    juce::AudioFormatManager &getFormatManager() { return formatManager; }
+    juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
+
+    //==============================================================================
+    // Component
+    void resized() override;
 
     //==============================================================================
     // AudioAppComponent
