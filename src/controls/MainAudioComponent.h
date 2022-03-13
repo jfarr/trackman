@@ -11,12 +11,11 @@ class MainAudioComponent : public juce::AudioAppComponent {
 
     //==============================================================================
     // AudioAppComponent
-    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    void prepareToPlay(int blockSize, double sampleRate) override;
     void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
     void releaseResources() override;
 
   private:
-//    juce::DocumentWindow &mainWindow;
     juce::AudioFormatManager formatManager;
     DesktopController desktopController;
 

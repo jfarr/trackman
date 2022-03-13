@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DesktopComponent.h"
 #include "FileDragDropTarget.h"
 #include "TrackListListener.h"
 #include "TrackScaleListener.h"
@@ -10,26 +11,26 @@
 #include "model/Project.h"
 #include "model/TrackList.h"
 
-class DesktopComponent;
-
 // TODO: consider using juce::FileBasedDocument
-class DesktopController : public FileDragDropTarget,
+class DesktopController : public juce::AudioSource,
+                          public FileDragDropTarget,
                           public MasterTrackListener,
                           public TrackControlListener,
                           public TrackScaleListener {
   public:
-    DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
+    DesktopController(juce::DocumentWindow &mainWindow, juce::AudioDeviceManager &deviceManager,
+        juce::AudioFormatManager &formatManager);
     ~DesktopController() override = default;
 
     juce::AudioFormatManager &getFormatManager() { return formatManager; }
     juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
 
-//    DesktopComponent &getDesktop() { return desktopComponent; }
+    //    DesktopComponent &getDesktop() { return desktopComponent; }
     Project &getProject() { return project; }
-//    TrackList &getTrackList() { return trackList; }
-//    Mixer &getMixer() { return mixer; }
-//    MixerController &getMixerController() { return mixerController; }
-//    TrackListController &getTrackListController() { return trackListController; }
+    //    TrackList &getTrackList() { return trackList; }
+    //    Mixer &getMixer() { return mixer; }
+    //    MixerController &getMixerController() { return mixerController; }
+    //    TrackListController &getTrackListController() { return trackListController; }
 
     bool canUndo() const;
     void undoLast();
@@ -37,7 +38,7 @@ class DesktopController : public FileDragDropTarget,
     bool hasSelection() const { return getSelectionType() != ""; }
     bool isDirty() const { return dirty; }
 
-//    DesktopComponent *createDesktop();
+    //    DesktopComponent *createDesktop();
     void resize();
 
     void addNewTrack();
@@ -61,6 +62,12 @@ class DesktopController : public FileDragDropTarget,
     void saveProjectAs(std::function<void()> callback = nullptr);
     void openProject();
     void exportProject();
+
+    //==============================================================================
+    // AudioSource
+    void prepareToPlay(int blockSize, double sampleRate) override;
+    void releaseResources() override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
 
     //==============================================================================
     // FileDragDropTarget
@@ -93,20 +100,19 @@ class DesktopController : public FileDragDropTarget,
     juce::AudioDeviceManager &deviceManager;
     juce::AudioFormatManager &formatManager;
 
-    //    DesktopComponent &desktopComponent;
-
     CommandList commandList;
-//    TrackList trackList;
-//    Mixer mixer;
+    //    TrackList trackList;
+    //    Mixer mixer;
     Project project;
-//    MixerController mixerController;
-//    TrackListController trackListController;
+    //    MixerController mixerController;
+    //    TrackListController trackListController;
+
+    DesktopComponent desktopComponent;
 
     std::unique_ptr<juce::FileChooser> chooser;
     juce::File projectFile;
     bool dirty = false;
     Command *saveCommand = nullptr;
-
 
     void saveProjectFile(juce::File file);
     void updateTitleBar();

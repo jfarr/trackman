@@ -10,8 +10,12 @@ MainAudioComponent::MainAudioComponent(juce::DocumentWindow &mainWindow)
 MainAudioComponent::~MainAudioComponent() { shutdownAudio(); }
 
 //==============================================================================
-void MainAudioComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {}
+void MainAudioComponent::prepareToPlay(int blockSize, double sampleRate) {
+    desktopController.prepareToPlay(blockSize, sampleRate);
+}
 
-void MainAudioComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {}
+void MainAudioComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+    desktopController.getNextAudioBlock(bufferToFill);
+}
 
-void MainAudioComponent::releaseResources() {}
+void MainAudioComponent::releaseResources() { desktopController.releaseResources(); }

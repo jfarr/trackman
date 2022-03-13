@@ -3,7 +3,6 @@
 #include <JuceHeader.h>
 
 #include "ChildWindow.h"
-#include "DesktopController.h"
 #include "FileDragDropTarget.h"
 #include "ScaleButtonPanel.h"
 #include "controls/AudioPlayer.h"
@@ -12,6 +11,8 @@
 #include "controls/tracks/TrackListPanel.h"
 #include "controls/tracks/TrackListViewport.h"
 #include "model/Mixer.h"
+
+class DesktopController;
 
 class DesktopComponent : public juce::Component,
                          public juce::ApplicationCommandTarget,
@@ -36,8 +37,8 @@ class DesktopComponent : public juce::Component,
     DesktopComponent(DesktopController &desktopController);
     ~DesktopComponent() override;
 
-//    DesktopController &getDesktopController() { return desktopController; }
-//    bool isDirty() const { return desktopController.isDirty(); };
+    //    DesktopController &getDesktopController() { return desktopController; }
+    //    bool isDirty() const { return desktopController.isDirty(); };
     void visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea);
 
     void addListener(FileDragDropTarget *listener);
@@ -50,9 +51,9 @@ class DesktopComponent : public juce::Component,
 
     //==============================================================================
     // AudioAppComponent
-//    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-//    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
-//    void releaseResources() override;
+    //    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    //    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    //    void releaseResources() override;
 
     //==============================================================================
     // FileDragAndDropTarget
@@ -100,88 +101,14 @@ class DesktopComponent : public juce::Component,
         c.addArray(commands);
     }
 
-    void getCommandInfo(juce::CommandID commandID, juce::ApplicationCommandInfo &result) override {
-        switch (commandID) {
-        case CommandIDs::openProject:
-            result.setInfo("open project...", "Open a saved project", "Menu", 0);
-            result.addDefaultKeypress('o', juce::ModifierKeys::commandModifier);
-            break;
-        case CommandIDs::saveProject:
-            result.setInfo("save project", "Save the current project", "Menu", 0);
-            result.addDefaultKeypress('s', juce::ModifierKeys::commandModifier);
-            break;
-        case CommandIDs::saveProjectAs:
-            result.setInfo("save project as...", "Save the current project as a new file", "Menu", 0);
-            result.addDefaultKeypress('s', juce::ModifierKeys::commandModifier | juce::ModifierKeys::altModifier);
-            break;
-        case CommandIDs::exportProject:
-            result.setInfo("export project...", "Export the current project as an audio file", "Menu", 0);
-            result.addDefaultKeypress('e', juce::ModifierKeys::commandModifier | juce::ModifierKeys::shiftModifier);
-            break;
-        case CommandIDs::editUndo:
-            result.setInfo(
-                (desktopController.getLastCommandName() == "" ? "undo"
-                                                              : "undo " + desktopController.getLastCommandName()),
-                "Undo the last edit", "Menu", 0);
-            result.addDefaultKeypress('z', juce::ModifierKeys::commandModifier);
-            result.setActive(desktopController.canUndo());
-            break;
-        case CommandIDs::newTrack:
-            result.setInfo("track", "Create a new track", "Menu", 0);
-            result.addDefaultKeypress('t', juce::ModifierKeys::commandModifier);
-            break;
-        case CommandIDs::newAudioPlayer:
-            result.setInfo("audioplayer", "Create a new audioplayer component", "Menu", 0);
-            result.addDefaultKeypress('p', juce::ModifierKeys::commandModifier);
-            break;
-        case CommandIDs::deleteTrackSelection:
-            result.setInfo("delete " + desktopController.getSelectionType(),
-                "Delete the selected " + desktopController.getSelectionType(), "Menu", 0);
-            result.addDefaultKeypress(juce::KeyPress::backspaceKey, juce::ModifierKeys::noModifiers);
-            result.setActive(desktopController.hasSelection());
-            break;
-        default:
-            break;
-        }
-    }
-
-    bool perform(const InvocationInfo &info) override {
-        switch (info.commandID) {
-        case CommandIDs::openProject:
-            desktopController.openProject();
-            break;
-        case CommandIDs::saveProject:
-            desktopController.saveProject();
-            break;
-        case CommandIDs::saveProjectAs:
-            desktopController.saveProjectAs();
-            break;
-        case CommandIDs::exportProject:
-            desktopController.exportProject();
-            break;
-        case CommandIDs::editUndo:
-            desktopController.undoLast();
-            break;
-        case CommandIDs::newTrack:
-            desktopController.addNewTrack();
-            break;
-        case CommandIDs::newAudioPlayer:
-            createChildWindow("audioplayer", new AudioPlayer(desktopController.getFormatManager()));
-            break;
-        case CommandIDs::deleteTrackSelection:
-            desktopController.deleteSelected();
-            break;
-        default:
-            return false;
-        }
-        return true;
-    }
+    void getCommandInfo(juce::CommandID commandID, juce::ApplicationCommandInfo &result) override;
+    bool perform(const InvocationInfo &info) override;
 
   private:
     DesktopController &desktopController;
-//    TrackListViewport &trackListViewport;
-//    MixerPanel &mixerPanel;
-//    Mixer &mixer;
+    //    TrackListViewport &trackListViewport;
+    //    MixerPanel &mixerPanel;
+    //    Mixer &mixer;
     TimeMeter timeMeter;
     ScaleButtonPanel horizontalScaleButtonPanel;
     ScaleButtonPanel verticalScaleButtonPanel;
@@ -196,7 +123,7 @@ class DesktopComponent : public juce::Component,
     // becomes null when the component that it points to is deleted.
     juce::Array<Component::SafePointer<Component>> windows;
 
-//    juce::AudioFormatManager &formatManager;
+    //    juce::AudioFormatManager &formatManager;
 
     void createChildWindow(const juce::String &name, juce::Component *component);
     void closeAllWindows();
