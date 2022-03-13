@@ -12,7 +12,6 @@
 #include "model/TrackList.h"
 
 class MainWindow;
-class MainAudioComponent;
 
 // TODO: consider using juce::FileBasedDocument
 class DesktopController : public juce::AudioSource,
@@ -21,11 +20,10 @@ class DesktopController : public juce::AudioSource,
                           public TrackControlListener,
                           public TrackScaleListener {
   public:
-    DesktopController(MainWindow &mainWindow, MainAudioComponent &mainAudioComponent, double sampleRate);
+    DesktopController(MainWindow &mainWindow, double sampleRate);
     ~DesktopController() override = default;
 
     MainWindow &getMainWindow() { return mainWindow; }
-    //    MainAudioComponent &getMainAudioComponent() { return mainAudioComponent; }
     DesktopComponent &getDesktopComponent() { return desktopComponent; }
     Project &getProject() { return project; }
 
@@ -58,7 +56,7 @@ class DesktopController : public juce::AudioSource,
     Sample *addSample(Track &track, const juce::File &file, int pos);
     void deleteSample(Track &track, Sample *sample);
 
-    void saveProject(const std::function<void(bool saved)>& callback = nullptr);
+    void saveProject(const std::function<void(bool saved)> &callback = nullptr);
     void saveProjectAs(std::function<void(bool saved)> callback = nullptr);
     void openProject();
     void exportProject();
@@ -97,7 +95,6 @@ class DesktopController : public juce::AudioSource,
 
   private:
     MainWindow &mainWindow;
-    MainAudioComponent &mainAudioComponent;
     juce::String applicationName;
 
     CommandList commandList;
@@ -112,7 +109,7 @@ class DesktopController : public juce::AudioSource,
     bool dirty = false;
     Command *saveCommand = nullptr;
 
-    void saveProjectFile(const juce::File& file);
+    void saveProjectFile(const juce::File &file);
     void updateTitleBar();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DesktopController)

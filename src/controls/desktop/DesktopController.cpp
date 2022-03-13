@@ -5,10 +5,9 @@
 #include "common/listutil.h"
 #include "controls/MainWindow.h"
 
-DesktopController::DesktopController(MainWindow &mainWindow, MainAudioComponent &mainAudioComponent, double sampleRate)
-    : mainWindow(mainWindow), mainAudioComponent(mainAudioComponent), applicationName(mainWindow.getName()),
-      desktopComponent(*this), project(sampleRate), mixerController(*this),
-      trackListController(*this, project.getMixer().getTransportSource()) {
+DesktopController::DesktopController(MainWindow &mainWindow, double sampleRate)
+    : mainWindow(mainWindow), applicationName(mainWindow.getName()), desktopComponent(*this), project(sampleRate),
+      mixerController(*this), trackListController(*this, project.getMixer().getTransportSource()) {
 
     updateTitleBar();
 }
@@ -193,7 +192,7 @@ Sample *DesktopController::addSample(Track &track, const juce::File &file, int p
 
 void DesktopController::deleteSample(Track &track, Sample *sample) { trackListController.deleteSample(track, sample); }
 
-void DesktopController::saveProject(const std::function<void(bool saved)>& callback) {
+void DesktopController::saveProject(const std::function<void(bool saved)> &callback) {
     if (projectFile != juce::File{}) {
         saveProjectFile(projectFile);
         callback(true);
@@ -219,7 +218,7 @@ void DesktopController::saveProjectAs(std::function<void(bool saved)> callback) 
     });
 }
 
-void DesktopController::saveProjectFile(const juce::File& file) {
+void DesktopController::saveProjectFile(const juce::File &file) {
     std::string json = project.to_json();
     juce::TemporaryFile tempFile(file);
     juce::FileOutputStream output(tempFile.getFile());
