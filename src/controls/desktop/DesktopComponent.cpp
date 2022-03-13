@@ -50,7 +50,6 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
     MenuBarModel::setMacMainMenu(this);
 #else
     parentWindow->setMenuBar(this);
-    addAndMakeVisible(menuBar);
 #endif
 //    initialized = true;
 }

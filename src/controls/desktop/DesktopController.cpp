@@ -38,6 +38,7 @@ void DesktopController::undoLast() {
     commandList.undoLast();
     dirty = (commandList.peek() != saveCommand);
     updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::masterLevelChangeFinalized(float previousLevel) {
@@ -45,6 +46,7 @@ void DesktopController::masterLevelChangeFinalized(float previousLevel) {
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::masterMuteToggled() {
@@ -52,6 +54,7 @@ void DesktopController::masterMuteToggled() {
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::trackNameChanged(Track &track, juce::String newName) {
@@ -59,6 +62,7 @@ void DesktopController::trackNameChanged(Track &track, juce::String newName) {
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::trackLevelChangeFinalized(Track &track, float previousLevel) {
@@ -66,6 +70,7 @@ void DesktopController::trackLevelChangeFinalized(Track &track, float previousLe
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::trackMuteToggled(Track &track) {
@@ -73,6 +78,7 @@ void DesktopController::trackMuteToggled(Track &track) {
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::trackSoloToggled(Track &track) {
@@ -80,6 +86,7 @@ void DesktopController::trackSoloToggled(Track &track) {
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::resize() {
@@ -91,6 +98,7 @@ void DesktopController::addNewTrack() {
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::addNewSample(Track *track, juce::File file, int pos) {
@@ -98,6 +106,7 @@ void DesktopController::addNewSample(Track *track, juce::File file, int pos) {
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::moveSelectedSample(
@@ -106,6 +115,7 @@ void DesktopController::moveSelectedSample(
     commandList.pushCommand(command);
     dirty = true;
     updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::resizeSample(Sample &sample, double prevLen, double newLen) {
@@ -113,6 +123,7 @@ void DesktopController::resizeSample(Sample &sample, double prevLen, double newL
     //    commandList.pushCommand(command);
     //    dirty = true;
     //    updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::deleteSelected() {
@@ -138,6 +149,7 @@ void DesktopController::deleteSelected() {
     //                }
     //            }));
     //    }
+    desktopComponent.menuItemsChanged();
 }
 
 juce::String DesktopController::getSelectionType() const {
@@ -165,7 +177,7 @@ void DesktopController::deleteTrack(Track *track, bool purge) {
     }
     juce::MessageManager::callAsync([this]() {
         //        trackListController.update();
-        //        mixerController.update();
+        mixerController.update();
     });
 }
 
@@ -173,15 +185,13 @@ void DesktopController::undeleteTrack(Track *track) {
     project.getTrackList().undeleteTrack(track);
     juce::MessageManager::callAsync([this]() {
         //        trackListController.update();
-        //        mixerController.update();
+        mixerController.update();
     });
 }
 
 void DesktopController::renameTrack(Track &track, juce::String newName) {
     track.setName(newName);
-    juce::MessageManager::callAsync([this]() {
-        //        mixerController.update();
-    });
+    juce::MessageManager::callAsync([this]() { mixerController.update(); });
 }
 
 Sample *DesktopController::addSample(Track &track, juce::File file, int pos) {
@@ -256,7 +266,7 @@ void DesktopController::openProject() {
             project.from_json(mainWindow.getMainAudioComponent().getDeviceManager(),
                 mainWindow.getMainAudioComponent().getFormatManager(), file.getFullPathName().toStdString());
             //            trackListController.update();
-            //            mixerController.update();
+            mixerController.update();
             commandList.clear();
             saveCommand = nullptr;
             dirty = false;
@@ -289,7 +299,7 @@ void DesktopController::selectionChanged(Track *track) {
     project.getTrackList().setSelected(track);
     juce::MessageManager::callAsync([this]() {
         //        trackListController.repaint();
-        //        mixerController.repaint();
+        mixerController.repaint();
     });
 }
 
@@ -313,7 +323,7 @@ void DesktopController::verticalScaleIncreased() {
     project.incrementVerticalScale();
     juce::MessageManager::callAsync([this]() {
         //        trackListController.update();
-        //        desktopComponent.resized();
+        desktopComponent.resized();
     });
 }
 
@@ -321,7 +331,7 @@ void DesktopController::verticalScaleDecreased() {
     project.decrementVerticalScale();
     juce::MessageManager::callAsync([this]() {
         //        trackListController.update();
-        //        desktopComponent.resized();
+        desktopComponent.resized();
     });
 }
 
@@ -329,7 +339,7 @@ void DesktopController::horizontalScaleIncreased() {
     project.incrementHorizontalScale();
     juce::MessageManager::callAsync([this]() {
         //        trackListController.update();
-        //        desktopComponent.resized();
+        desktopComponent.resized();
     });
 }
 
@@ -337,6 +347,6 @@ void DesktopController::horizontalScaleDecreased() {
     project.decrementHorizontalScale();
     juce::MessageManager::callAsync([this]() {
         //        trackListController.update();
-        //        desktopComponent.resized();
+        desktopComponent.resized();
     });
 }
