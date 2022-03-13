@@ -111,8 +111,8 @@ class DesktopComponent : public juce::Component,
 //        MixerPanel &mixerPanel;
     //    Mixer &mixer;
     TimeMeter timeMeter;
-//    ScaleButtonPanel horizontalScaleButtonPanel;
-//    ScaleButtonPanel verticalScaleButtonPanel;
+    ScaleButtonPanel horizontalScaleButtonPanel;
+    ScaleButtonPanel verticalScaleButtonPanel;
     std::list<FileDragDropTarget *> listeners;
 //    bool initialized = false;
 

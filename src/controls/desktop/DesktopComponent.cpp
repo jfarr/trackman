@@ -4,8 +4,8 @@
 #include "controls/MainWindow.h"
 
 DesktopComponent::DesktopComponent(DesktopController &desktopController)
-    : desktopController(desktopController) , timeMeter(desktopController.getProject())/*
-      horizontalScaleButtonPanel(false), verticalScaleButtonPanel(true)*/ {
+    : desktopController(desktopController), timeMeter(desktopController.getProject()),
+      horizontalScaleButtonPanel(false), verticalScaleButtonPanel(true) {
     //    : formatManager(formatManager), timeMeter(desktopController.getProject()),
     //      desktopController(*parentWindow, *this, deviceManager, formatManager),
     //      trackListViewport(desktopController.getTrackListController().getViewport()),
@@ -17,15 +17,14 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
     //    setAudioChannels(0, 2);
 
     addListener(&desktopController);
+    verticalScaleButtonPanel.addListener(&desktopController);
+    horizontalScaleButtonPanel.addListener(&desktopController);
 
+    addAndMakeVisible(timeMeter);
     addAndMakeVisible(desktopController.getTrackListController().getViewport());
     addAndMakeVisible(desktopController.getMixerController().getMixerPanel());
-//    verticalScaleButtonPanel.addListener(&desktopController);
-//    horizontalScaleButtonPanel.addListener(&desktopController);
-//
-    addAndMakeVisible(timeMeter);
-//    addAndMakeVisible(verticalScaleButtonPanel);
-//    addAndMakeVisible(horizontalScaleButtonPanel);
+    addAndMakeVisible(verticalScaleButtonPanel);
+    addAndMakeVisible(horizontalScaleButtonPanel);
 
     //    auto &trackListViewport = desktopController.getTrackListController().getViewport();
     //    auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
@@ -44,15 +43,15 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
     addKeyListener(commandManager.getKeyMappings());
     setWantsKeyboardFocus(true);
 
-//    desktopController.getMainWindow().setMenuBar(this);
-//    addAndMakeVisible(menuBar);
+    //    desktopController.getMainWindow().setMenuBar(this);
+    //    addAndMakeVisible(menuBar);
 
 #if JUCE_MAC
     MenuBarModel::setMacMainMenu(this);
 #else
     parentWindow->setMenuBar(this);
 #endif
-//    initialized = true;
+    //    initialized = true;
 }
 
 DesktopComponent::~DesktopComponent() {
@@ -82,9 +81,8 @@ void DesktopComponent::closeAllWindows() {
 
 void DesktopComponent::visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea) {
     DBG("DesktopComponent::visibleAreaChanged: " << newVisibleArea.getX() << "," << newVisibleArea.getY());
-//    timeMeter.setBounds(timeMeter.getBounds().withLeft(-newVisibleArea.getX()));
+    //    timeMeter.setBounds(timeMeter.getBounds().withLeft(-newVisibleArea.getX()));
 }
-
 
 void DesktopComponent::getCommandInfo(juce::CommandID commandID, juce::ApplicationCommandInfo &result) {
     switch (commandID) {
@@ -106,8 +104,7 @@ void DesktopComponent::getCommandInfo(juce::CommandID commandID, juce::Applicati
         break;
     case CommandIDs::editUndo:
         result.setInfo(
-            (desktopController.getLastCommandName() == "" ? "undo"
-                                                          : "undo " + desktopController.getLastCommandName()),
+            (desktopController.getLastCommandName() == "" ? "undo" : "undo " + desktopController.getLastCommandName()),
             "Undo the last edit", "Menu", 0);
         result.addDefaultKeypress('z', juce::ModifierKeys::commandModifier);
         result.setActive(desktopController.canUndo());
@@ -152,7 +149,8 @@ bool DesktopComponent::perform(const InvocationInfo &info) {
         desktopController.addNewTrack();
         break;
     case CommandIDs::newAudioPlayer:
-        createChildWindow("audioplayer", new AudioPlayer(desktopController.getMainWindow().getMainAudioComponent().getFormatManager()));
+        createChildWindow("audioplayer",
+            new AudioPlayer(desktopController.getMainWindow().getMainAudioComponent().getFormatManager()));
         break;
     case CommandIDs::deleteTrackSelection:
         desktopController.deleteSelected();
@@ -162,9 +160,6 @@ bool DesktopComponent::perform(const InvocationInfo &info) {
     }
     return true;
 }
-
-
-
 
 //==============================================================================
 // void DesktopComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
@@ -180,32 +175,32 @@ bool DesktopComponent::perform(const InvocationInfo &info) {
 //==============================================================================
 void DesktopComponent::paint(juce::Graphics &g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-//    g.fillAll(juce::Colours::green);
+    //    g.fillAll(juce::Colours::green);
 }
 
 void DesktopComponent::resized() {
-//    if (!initialized) {
-//        return;
-//    }
+    //    if (!initialized) {
+    //        return;
+    //    }
     auto topStripHeight = 15;
     auto scaleButtonWidth = 12;
-    //    auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
-    auto scrollBarWidth = 15;
+    auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
+    //    auto scrollBarWidth = 15;
     auto area = getLocalBounds();
     DBG("DesktopComponent::resized: " << area.getWidth() << ", " << area.getHeight());
-//    area.removeFromTop(topStripHeight);
+    //    area.removeFromTop(topStripHeight);
     timeMeter.setBounds(area.removeFromTop(topStripHeight));
-//    verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(
-//        area.getWidth() - (scaleButtonWidth + scrollBarWidth), area.getY(), scaleButtonWidth, scaleButtonWidth * 2));
-    //    auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
-    //    mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
-    //    horizontalScaleButtonPanel.setBounds(
-    //        juce::Rectangle<int>(0, area.getHeight() - (scaleButtonWidth + scrollBarWidth) + topStripHeight,
-    //            scaleButtonWidth * 2, scaleButtonWidth));
-        desktopController.getTrackListController().getViewport().setBounds(area);
-    desktopController.resize();
+    verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(
+        area.getWidth() - (scaleButtonWidth + scrollBarWidth), area.getY(), scaleButtonWidth, scaleButtonWidth * 2));
     auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
+    horizontalScaleButtonPanel.setBounds(
+        juce::Rectangle<int>(0, area.getHeight() - (scaleButtonWidth + scrollBarWidth) + topStripHeight,
+            scaleButtonWidth * 2, scaleButtonWidth));
+    desktopController.getTrackListController().getViewport().setBounds(area);
+    desktopController.resize();
+    //    auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
+    //    mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
 }
 
 //==============================================================================
