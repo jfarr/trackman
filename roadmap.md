@@ -2,17 +2,15 @@
 
 ## Short-Term
 - Bug fixes
-  - Dropped samples snap to center point
   - Move sample to new lane then delete causes crash
-  - Track level meter scale is off
 - Rename `controls` -> `ui`
+- Click to move transport
 - Sample info popup
 - Drop multiple files
   - Default one track
   - Ctrl-drag multiple tracks
 - Use undo manager
 - Stereo panner
-- Click to move transport
 - Song start / end position
 - Loop start / end position
 
