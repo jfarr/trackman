@@ -32,7 +32,7 @@ target_sources(Trackman PRIVATE
         commands/MixerCommands.h
         commands/TrackCommands.h
         commands/TrackListCommands.h
-       model/Mixer.cpp
+        model/Mixer.cpp
         model/Mixer.h
         model/Project.cpp
         model/Project.h
