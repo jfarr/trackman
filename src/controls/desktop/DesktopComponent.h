@@ -10,6 +10,7 @@
 #include "controls/mixer/MixerPanel.h"
 #include "controls/tracks/TrackListPanel.h"
 #include "model/Mixer.h"
+#include "controls/common/TimeMeter.h"
 
 class DesktopComponent : public juce::AudioAppComponent,
                          public juce::ApplicationCommandTarget,
@@ -178,6 +179,7 @@ class DesktopComponent : public juce::AudioAppComponent,
     juce::Viewport &trackListViewport;
     MixerPanel &mixerPanel;
     Mixer &mixer;
+    TimeMeter timeMeter;
     ScaleButtonPanel horizontalScaleButtonPanel;
     ScaleButtonPanel verticalScaleButtonPanel;
     std::list<FileDragDropTarget *> listeners;
