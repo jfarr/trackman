@@ -62,7 +62,6 @@ class Track {
     GainAudioSource gainSource;
     std::unique_ptr<MeteredAudioSource> meteredSource;
 
-    //    double sampleRate = 0;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
     bool soloed = false;
