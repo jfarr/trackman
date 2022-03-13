@@ -4,11 +4,11 @@
 
 #include "SampleListener.h"
 #include "TrackLaneControl.h"
-#include "controls/common/PositionOverlay.h"
-#include "controls/common/TimeMeter.h"
 #include "controls/desktop/TrackListListener.h"
 #include "model/Track.h"
 #include "model/TrackList.h"
+
+class DesktopController;
 
 class DropBox : public juce::Component {
   public:
@@ -25,6 +25,7 @@ class DropBox : public juce::Component {
 
   private:
     std::unique_ptr<juce::AudioFormatReaderSource> source;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DropBox)
 };
 
 class TrackListPanel : public juce::Component,
@@ -32,16 +33,15 @@ class TrackListPanel : public juce::Component,
                        public juce::DragAndDropTarget,
                        private juce::Timer {
   public:
-    TrackListPanel(Project &project, TrackList &trackList, juce::Viewport &viewport, juce::AudioTransportSource &transport,
-        juce::AudioFormatManager &formatManager);
-    ~TrackListPanel();
+    TrackListPanel(DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport);
+    ~TrackListPanel() override;
 
     Track *getTrackAtPos(int x, int y);
 
     void addLane(TrackLaneControl *lane) { lanes.push_back(lane); }
     void removeLane(TrackLaneControl *lane) { lanes.remove(lane); }
-    void resize();
     void clear() { lanes.clear(); }
+    void resize();
     void update();
 
     void fileDragEnter(const juce::StringArray &files, int x, int y);
@@ -70,12 +70,10 @@ class TrackListPanel : public juce::Component,
     void mouseDown(const juce::MouseEvent &event) override;
 
   private:
-    Project &project;
-    TrackList &trackList;
+    DesktopController &desktopController;
+//    Project &project;
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
-    juce::AudioFormatManager &formatManager;
-    TimeMeter timeMeter;
     std::list<TrackLaneControl *> lanes;
 
     DropBox dropBox;
@@ -84,8 +82,9 @@ class TrackListPanel : public juce::Component,
     std::list<SampleListener *> sampleListeners;
     std::list<TrackListListener *> trackListListeners;
 
-    int getTrackLaneWidth() const;
-    int getTrackLaneHeight() const;
+    [[nodiscard]] int getPanelWidth() const;
+    [[nodiscard]] int getPanelHeight() const;
+    [[nodiscard]] int getTrackLaneHeight() const;
 
     void notifySampleDropped(SampleThumbnail *thumbnail, int x, int y);
     void notifySampleResized(SampleThumbnail *thumbnail, int width);

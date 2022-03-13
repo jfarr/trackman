@@ -11,7 +11,7 @@ class TrackLaneControl : public juce::Component {
     ~TrackLaneControl();
 
     Track &getTrack() { return track; }
-    int getPreferredHeight() const { return std::max(getHeight(), 100); }
+    int getPreferredHeight() const { return preferredHeight; }
 
     void addThumbnail(SampleThumbnail *thumbnail);
     void clear() { thumbnails.clear(); }
@@ -23,6 +23,9 @@ class TrackLaneControl : public juce::Component {
     void resized() override;
 
   private:
+    const int preferredWidth = 800;
+    const int preferredHeight = 75;
+
     Project &project;
     Track &track;
     juce::AudioTransportSource &transport;

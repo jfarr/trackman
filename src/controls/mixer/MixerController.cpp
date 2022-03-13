@@ -3,19 +3,19 @@
 #include "controls/desktop/DesktopController.h"
 #include "controls/mixer/TrackController.h"
 
-MixerController::MixerController(DesktopController &desktopController, juce::AudioFormatManager &formatManager)
-    : desktopController(desktopController), trackList(desktopController.getTrackList()),
-      mixer(desktopController.getMixer()), formatManager(formatManager),
-      mixerPanel(desktopController, trackList, mixer, mixer.getMeterSource()), trackPanel(mixerViewport) {
+MixerController::MixerController(DesktopController &desktopController)
+    : desktopController(desktopController), trackList(desktopController.getProject().getTrackList()),
+      mixer(desktopController.getProject().getMixer()), mixerPanel(desktopController, mixer.getMeterSource()),
+      trackPanel(mixerViewport) {
 
     mixerViewport.setViewedComponent(&trackPanel, false);
-
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
+    update();
 }
 
 MixerController::~MixerController() {
-    // TODO: fix this
+    // TODO: remove this listener, just call the controller directly
     for (std::unique_ptr<TrackController> &track : tracks) {
         track->removeListener((TrackListListener *)this);
     }
@@ -28,7 +28,7 @@ void MixerController::update() {
     tracks.clear();
     trackPanel.clear();
     trackList.eachTrack([this](Track &track) {
-        auto controller = new TrackController(desktopController, track, formatManager);
+        auto controller = new TrackController(desktopController, track);
         tracks.push_back(std::unique_ptr<TrackController>(controller));
         trackPanel.addTrack(&controller->getTrackControl());
     });

@@ -1,11 +1,7 @@
 #include "TrackList.h"
 
-TrackList::TrackList() {}
-
-TrackList::~TrackList() {}
-
 Track *TrackList::addTrack() {
-    Track *track = new Track(*this);
+    auto *track = new Track(*this);
     tracks.push_back(std::unique_ptr<Track>(track));
     renumber();
     return track;
@@ -37,7 +33,7 @@ void TrackList::removeTrack(Track *track) {
     }
 }
 
-Track *TrackList::getSelected() const {
+Track *TrackList::getSelectedTrack() const {
     for (std::unique_ptr<Track> const &track : tracks) {
         if (!track->isDeleted() && track->isSelected()) {
             return track.get();
@@ -48,9 +44,9 @@ Track *TrackList::getSelected() const {
 
 juce::uint64 TrackList::getTotalLength() const {
     juce::uint64 total = 0;
-    for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
-        if (!(*iter)->isDeleted()) {
-            juce::uint64 length = (*iter)->getTotalLength();
+    for (const auto & track : tracks) {
+        if (!track->isDeleted()) {
+            juce::uint64 length = track->getTotalLength();
             total = std::max(total, length);
         }
     }
@@ -59,9 +55,9 @@ juce::uint64 TrackList::getTotalLength() const {
 
 double TrackList::getTotalLengthSeconds() const {
     double total = 0;
-    for (auto iter = tracks.begin(); iter != tracks.end(); iter++) {
-        if (!(*iter)->isDeleted()) {
-            double length = (*iter)->getTotalLengthSeconds();
+    for (const auto & track : tracks) {
+        if (!track->isDeleted()) {
+            double length = track->getTotalLengthSeconds();
             total = std::max(total, length);
         }
     }
@@ -129,13 +125,13 @@ std::list<const Track *> TrackList::getSoloed() {
     return soloed;
 }
 
-void TrackList::writeAudioFile(juce::File file, juce::AudioSource &source, double sampleRate, int bitsPerSample) {
+void TrackList::writeAudioFile(const juce::File& file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const {
     file.deleteFile();
     if (auto fileStream = std::unique_ptr<juce::FileOutputStream> (file.createOutputStream())) {
         juce::WavAudioFormat wavFormat;
         if (auto writer = wavFormat.createWriterFor (fileStream.get(), sampleRate, 2, bitsPerSample, {}, 0)) {
             fileStream.release();
-            writer->writeFromAudioSource(source, getTotalLength());
+            writer->writeFromAudioSource(source, (int) getTotalLength());
             writer->flush();
             delete writer;
         }

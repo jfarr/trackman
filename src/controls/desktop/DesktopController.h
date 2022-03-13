@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DesktopComponent.h"
 #include "FileDragDropTarget.h"
 #include "TrackListListener.h"
 #include "TrackScaleListener.h"
@@ -10,22 +11,24 @@
 #include "model/Project.h"
 #include "model/TrackList.h"
 
-class DesktopComponent;
+class MainWindow;
 
 // TODO: consider using juce::FileBasedDocument
-class DesktopController : public FileDragDropTarget,
+class DesktopController : public juce::AudioSource,
+                          public FileDragDropTarget,
                           public MasterTrackListener,
                           public TrackControlListener,
                           public TrackScaleListener {
   public:
-    DesktopController(juce::DocumentWindow &mainWindow, DesktopComponent &desktopComponent,
-        juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
+    DesktopController(MainWindow &mainWindow, double sampleRate);
     ~DesktopController() override = default;
 
+    MainWindow &getMainWindow() { return mainWindow; }
+    DesktopComponent &getDesktopComponent() { return desktopComponent; }
     Project &getProject() { return project; }
-    TrackList &getTrackList() { return trackList; }
-    Mixer &getMixer() { return mixer; }
+
     MixerController &getMixerController() { return mixerController; }
+    Mixer &getMixer() { return project.getMixer(); }
     TrackListController &getTrackListController() { return trackListController; }
 
     bool canUndo() const;
@@ -37,7 +40,7 @@ class DesktopController : public FileDragDropTarget,
     void resize();
 
     void addNewTrack();
-    void addNewSample(Track *track, juce::File file, int pos);
+    void addNewSample(Track *track, const juce::File &file, int pos);
     void moveSelectedSample(Sample &sample, Track &fromTrack, Track *toTrack, double prevPos, double newPos);
     void resizeSample(Sample &sample, double prevLen, double newLen);
     void deleteSelected();
@@ -48,15 +51,21 @@ class DesktopController : public FileDragDropTarget,
     Track *addTrack();
     void deleteTrack(Track *track, bool purge);
     void undeleteTrack(Track *track);
-    void renameTrack(Track &track, juce::String newName);
+    void renameTrack(Track &track, const juce::String &newName);
 
-    Sample *addSample(Track &track, juce::File file, int pos);
+    Sample *addSample(Track &track, const juce::File &file, int pos);
     void deleteSample(Track &track, Sample *sample);
 
-    void saveProject(std::function<void()> callback = nullptr);
-    void saveProjectAs(std::function<void()> callback = nullptr);
+    void saveProject(const std::function<void(bool saved)> &callback = nullptr);
+    void saveProjectAs(std::function<void(bool saved)> callback = nullptr);
     void openProject();
     void exportProject();
+
+    //==============================================================================
+    // AudioSource
+    void prepareToPlay(int blockSize, double sampleRate) override;
+    void releaseResources() override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
 
     //==============================================================================
     // FileDragDropTarget
@@ -85,25 +94,22 @@ class DesktopController : public FileDragDropTarget,
     void horizontalScaleDecreased() override;
 
   private:
+    MainWindow &mainWindow;
+    juce::String applicationName;
+
     CommandList commandList;
-    TrackList trackList;
-    Mixer mixer;
     Project project;
     MixerController mixerController;
     TrackListController trackListController;
+
+    DesktopComponent desktopComponent;
 
     std::unique_ptr<juce::FileChooser> chooser;
     juce::File projectFile;
     bool dirty = false;
     Command *saveCommand = nullptr;
-    DesktopComponent &desktopComponent;
-    juce::DocumentWindow &mainWindow;
-    juce::String applicationName;
 
-    juce::AudioDeviceManager &deviceManager;
-    juce::AudioFormatManager &formatManager;
-
-    void saveProjectFile(juce::File file);
+    void saveProjectFile(const juce::File &file);
     void updateTitleBar();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DesktopController)

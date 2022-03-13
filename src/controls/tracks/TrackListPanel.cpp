@@ -1,32 +1,41 @@
 #include "TrackListPanel.h"
 #include "common/listutil.h"
+#include "controls/MainWindow.h"
+#include "controls/desktop/DesktopController.h"
 
-TrackListPanel::TrackListPanel(Project &project, TrackList &trackList, juce::Viewport &viewport,
-    juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
-    : project(project), trackList(trackList), viewport(viewport), transport(transport), formatManager(formatManager),
-      timeMeter(project) {
+TrackListPanel::TrackListPanel(
+    DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport)
+    : desktopController(desktopController), viewport(viewport), transport(transport) {
+
+    viewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
+    viewport.getHorizontalScrollBar().setAutoHide(false);
+    viewport.getVerticalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
+    viewport.getVerticalScrollBar().setAutoHide(false);
+    viewport.setScrollBarsShown(true, true);
+    viewport.setViewedComponent(this, false);
+
     update();
-    resize();
     startTimer(20);
 }
 
 TrackListPanel::~TrackListPanel() {}
 
-void TrackListPanel::update() {
-    removeAllChildren();
-    addAndMakeVisible(timeMeter);
+Track *TrackListPanel::getTrackAtPos(int x, int y) {
     for (TrackLaneControl *lane : lanes) {
-        lane->update();
-        addAndMakeVisible(lane);
+        auto area = lane->getBoundsInParent();
+        if (area.contains(x, y)) {
+            return &lane->getTrack();
+        }
     }
-    resize();
+    return nullptr;
 }
 
 void TrackListPanel::fileDragEnter(const juce::StringArray &files, int x, int y) {
-    auto *reader = formatManager.createReaderFor(juce::File(files[0]));
+    auto *reader = desktopController.getMainWindow().getMainAudioComponent().getFormatManager().createReaderFor(
+        juce::File(files[0]));
     auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
-    auto length = newSource->getTotalLength() / reader->sampleRate;
-    auto width = length * project.getHorizontalScale();
+    auto length = (double)newSource->getTotalLength() / reader->sampleRate;
+    auto width = (int)(length * desktopController.getProject().getHorizontalScale());
     addAndMakeVisible(dropBox);
     auto bounds = dropBox.getLocalBounds();
     dropBox.setBounds(bounds.withWidth(width).withCentre(juce::Point(x, y)));
@@ -40,16 +49,6 @@ void TrackListPanel::fileDragMove(const juce::StringArray &files, int x, int y) 
 void TrackListPanel::fileDragExit(const juce::StringArray &files) { removeChildComponent(&dropBox); }
 
 void TrackListPanel::filesDropped(const juce::StringArray &files, int x, int y) { removeChildComponent(&dropBox); }
-
-Track *TrackListPanel::getTrackAtPos(int x, int y) {
-    for (TrackLaneControl *lane : lanes) {
-        auto area = lane->getBoundsInParent();
-        if (area.contains(x, y)) {
-            return &lane->getTrack();
-        }
-    }
-    return nullptr;
-}
 
 void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
     auto sourceComponent = dragSourceDetails.sourceComponent.get();
@@ -72,56 +71,75 @@ void TrackListPanel::dragOperationEnded(const DragAndDropTarget::SourceDetails &
     notifyDragEnded();
 }
 
+void TrackListPanel::update() {
+    removeAllChildren();
+    for (TrackLaneControl *lane : lanes) {
+        lane->update();
+        addAndMakeVisible(lane);
+    }
+    resize();
+}
+
 void TrackListPanel::resize() {
-    setSize(getTrackLaneWidth(), getTrackLaneHeight());
+    auto w = getPanelWidth();
+    auto h = getPanelHeight();
+    setSize(w, h);
     for (TrackLaneControl *lane : lanes) {
         lane->resized();
     }
     resized();
 }
 
+int TrackListPanel::getPanelWidth() const {
+    auto leftPanelWidth = 25;
+    int trackWidth = (int)(desktopController.getProject().getTrackList().getTotalLengthSeconds() *
+                           desktopController.getProject().getHorizontalScale());
+    return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
+}
+
+int TrackListPanel::getPanelHeight() const {
+    int trackHeight = !lanes.empty() ? (int)((double)(lanes.size() + 1) * (double)lanes.back()->getPreferredHeight() *
+                                             desktopController.getProject().getVerticalScale())
+                                     : 0;
+    return std::max(trackHeight, viewport.getHeight());
+}
+
+int TrackListPanel::getTrackLaneHeight() const {
+    int trackHeight = !lanes.empty() ? (int)((double)lanes.size() * (double)lanes.back()->getPreferredHeight() *
+                                             desktopController.getProject().getVerticalScale())
+                                     : 0;
+    return trackHeight;
+}
+
 void TrackListPanel::paint(juce::Graphics &g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-
     auto leftPanelWidth = 25;
     auto duration = (float)transport.getLengthInSeconds();
 
     if (duration > 0.0) {
         auto audioPosition = (float)transport.getCurrentPosition();
-        auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
+        float drawPosition =
+            audioPosition * (float)desktopController.getProject().getHorizontalScale() + (float)leftPanelWidth;
 
         g.setColour(juce::Colour{0xff282828});
         g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
     }
 
     g.setColour(juce::Colours::lightgrey);
-    g.drawLine(leftPanelWidth, 0, leftPanelWidth, (float)getHeight(), 1.0f);
+    g.drawLine((float)leftPanelWidth, 0.0f, (float)leftPanelWidth, (float)getHeight(), 1.0f);
 }
 
 void TrackListPanel::resized() {
     auto area = getLocalBounds();
-    auto topStripWidth = 20;
-    timeMeter.setBounds(area.removeFromTop(topStripWidth));
-    timeMeter.repaint();
+    auto laneHeight = (int)(getTrackLaneHeight() / lanes.size());
     for (auto &lane : lanes) {
-        lane->setBounds(area.removeFromTop(lane->getHeight() * project.getVerticalScale()));
+        lane->setBounds(area.removeFromTop(laneHeight));
     }
 }
 
 void TrackListPanel::mouseDown(const juce::MouseEvent &event) {
     Component::mouseDown(event);
     notifySelectionChanged();
-}
-
-int TrackListPanel::getTrackLaneWidth() const {
-    int trackWidth = trackList.getTotalLengthSeconds() * project.getHorizontalScale();
-    auto leftPanelWidth = 25;
-    return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
-}
-
-int TrackListPanel::getTrackLaneHeight() const {
-    int trackHeight = lanes.size() > 0 ? lanes.size() * lanes.back()->getPreferredHeight() : 0;
-    return std::max(trackHeight, viewport.getHeight());
 }
 
 void TrackListPanel::addListener(SampleListener *listener) {

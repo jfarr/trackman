@@ -34,6 +34,8 @@ target_sources(Trackman PRIVATE
         commands/TrackListCommands.h
         controls/AudioPlayer.cpp
         controls/AudioPlayer.h
+        controls/MainAudioComponent.cpp
+        controls/MainAudioComponent.h
         controls/MainWindow.cpp
         controls/MainWindow.h
         controls/common/DecibelSlider.h
@@ -85,6 +87,8 @@ target_sources(Trackman PRIVATE
         controls/tracks/TrackListController.h
         controls/tracks/TrackListPanel.cpp
         controls/tracks/TrackListPanel.h
+        controls/tracks/TrackListViewport.cpp
+        controls/tracks/TrackListViewport.h
         model/Mixer.cpp
         model/Mixer.h
         model/Project.cpp

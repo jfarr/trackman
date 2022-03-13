@@ -17,13 +17,12 @@ class DesktopController;
 
 class MixerController : public TransportControlListener, public MasterTrackListener {
   public:
-    MixerController(DesktopController &desktopController, juce::AudioFormatManager &formatManager);
+    MixerController(DesktopController &desktopController);
     ~MixerController();
 
     bool isMasterMuted() const { return mixer.isMasterMuted(); }
 
     MixerPanel &getMixerPanel() { return mixerPanel; }
-    Mixer &getMixer() { return mixer; }
     juce::Viewport &getViewport() { return mixerViewport; }
 
     void update();
@@ -48,7 +47,6 @@ class MixerController : public TransportControlListener, public MasterTrackListe
     DesktopController &desktopController;
     TrackList &trackList;
     Mixer &mixer;
-    juce::AudioFormatManager &formatManager;
 
     juce::Viewport mixerViewport;
     MixerPanel mixerPanel;

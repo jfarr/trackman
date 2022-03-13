@@ -1,11 +1,10 @@
 #include "MixerPanel.h"
 #include "controls/desktop/DesktopController.h"
 
-MixerPanel::MixerPanel(
-    DesktopController &desktopController, TrackList &trackList, Mixer &mixer, foleys::LevelMeterSource &meterSource)
-    : desktopController(desktopController), trackList(trackList), mixer(mixer), masterTrackControl(mixer, meterSource),
+MixerPanel::MixerPanel(DesktopController &desktopController, foleys::LevelMeterSource &meterSource)
+    : desktopController(desktopController), masterTrackControl(desktopController.getMixer(), meterSource),
       mixerViewport(desktopController.getMixerController().getViewport()),
-      transportControl(mixer.getTransportSource()) {
+      transportControl(desktopController.getMixer().getTransportSource()) {
     createControls();
     masterTrackControl.addListener(&desktopController);
     setSize(800, 280);

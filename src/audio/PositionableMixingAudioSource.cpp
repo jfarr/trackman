@@ -7,6 +7,7 @@ PositionableMixingAudioSource::~PositionableMixingAudioSource() { removeAllInput
 
 void PositionableMixingAudioSource::addInputSource(PositionableAudioSource *input, const bool deleteWhenRemoved,
     double sourceSampleRateToCorrectFor, int maxNumChannels) {
+    DBG("PositionableMixingAudioSource::addInputSource: " << juce::String::toHexString((long)input));
     jassert(input != nullptr);
     if (sourceSampleRateToCorrectFor > 0) {
         input = new PositionableResamplingAudioSource(
@@ -19,6 +20,7 @@ void PositionableMixingAudioSource::addInputSource(PositionableAudioSource *inpu
 }
 
 void PositionableMixingAudioSource::removeInputSource(PositionableAudioSource *input) {
+    DBG("PositionableMixingAudioSource::removeInputSource: " << juce::String::toHexString((long)input));
     if (input != nullptr) {
         for (int i = inputs.size(); --i >= 0;) {
             PositionableAudioSource *thisInput = inputs.getUnchecked(i);
@@ -38,6 +40,7 @@ void PositionableMixingAudioSource::removeInputSource(PositionableAudioSource *i
 }
 
 void PositionableMixingAudioSource::removeAllInputs() {
+    DBG("PositionableMixingAudioSource::removeAllInputs");
     mixer.removeAllInputs();
     inputs.clear();
 }

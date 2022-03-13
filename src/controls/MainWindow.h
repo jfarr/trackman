@@ -1,18 +1,19 @@
 #pragma once
 #include <JuceHeader.h>
 
+#include "MainAudioComponent.h"
 #include "controls/desktop/DesktopComponent.h"
 
 class MainWindow : public juce::DocumentWindow {
   public:
-    MainWindow(juce::String name, juce::AudioFormatManager &formatManager);
+    MainWindow(juce::String name);
 
-    DesktopComponent *getDesktopComponent() { return desktop; }
+    MainAudioComponent &getMainAudioComponent() { return mainAudioComponent; }
 
     void closeButtonPressed() override;
 
   private:
-    DesktopComponent *desktop;
+    MainAudioComponent &mainAudioComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
 };

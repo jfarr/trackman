@@ -26,7 +26,7 @@ double Track::getSampleRate() const { return source == mixerSource ? 0.0 : sampl
 
 bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
 
-void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, double newSampleRate) {
+void Track::setSource(const std::shared_ptr<juce::PositionableAudioSource>& newSource, double newSampleRate) {
     DBG("Track::setSource - set track source: " << getName());
     if (source == newSource) {
         return;
@@ -41,7 +41,7 @@ void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource, 
 }
 
 void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {
-    if (samples.size() == 0) {
+    if (samples.empty()) {
         return;
     }
     mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager.getAudioDeviceSetup().sampleRate);
@@ -55,8 +55,8 @@ void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioForm
 }
 
 Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager,
-    juce::File file, double startPos, double endPos, double length, double sampleRate) {
-    samples.push_back(std::make_shared<Sample>(file, startPos, endPos, length, sampleRate));
+    const juce::File& file, double startPos, double endPos, double length, double fileSampleRate) {
+    samples.push_back(std::make_shared<Sample>(file, startPos, endPos, length, fileSampleRate));
     auto sample = &(*samples.back());
     sample->loadFile(formatManager);
     if (mixerSource == nullptr) {
@@ -127,7 +127,7 @@ void Track::setSolo(bool newSoloed) {
 
 void Track::updateGain() {
     if (gainSource != nullptr) {
-        bool play = (trackList.getSoloed().size() == 0 || soloed) && !muted;
+        bool play = (trackList.getSoloed().empty() || soloed) && !muted;
         DBG("Track " << number << " set gain: " << (play ? level : 0));
         gainSource->setGain(play ? level : 0);
     }
@@ -138,8 +138,8 @@ void Track::setDeleted(bool newDeleted) {
     selected = false;
 }
 
-void Track::selectSample(Sample *selected) {
-    eachSample([&selected](Sample &sample) { sample.setSelected(&sample == selected); });
+void Track::selectSample(Sample *newSelected) {
+    eachSample([&newSelected](Sample &sample) { sample.setSelected(&sample == newSelected); });
 }
 
 void Track::deleteSample(Sample *sample) {

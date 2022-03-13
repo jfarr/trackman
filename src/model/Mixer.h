@@ -8,7 +8,7 @@
 
 class Mixer {
   public:
-    Mixer(double sampleRate);
+    explicit Mixer(double sampleRate);
     ~Mixer();
 
     float getMasterLevelGain() const { return level; }
@@ -18,7 +18,7 @@ class Mixer {
     juce::AudioSource &getSource() { return *((PositionableMixingAudioSource *) &mixerSource); }
     foleys::LevelMeterSource &getMeterSource() { return meteredSource.getMeterSource(); }
 
-    void addSource(std::shared_ptr<juce::PositionableAudioSource> source, double sourceSampleRateToCorrectFor = 0.0,
+    void addSource(const std::shared_ptr<juce::PositionableAudioSource>& source, double sourceSampleRateToCorrectFor = 0.0,
         int maxNumChannels = 2);
     void removeAllSources();
 
@@ -38,6 +38,7 @@ class Mixer {
     juce::AudioTransportSource transportSource;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
+    bool initialized = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Mixer)
 };

@@ -1,5 +1,7 @@
 #include "AudioPlayer.h"
 
+#include <utility>
+
 AudioPlayer::AudioPlayer(juce::AudioFormatManager &formatManager)
     : formatManager(formatManager), transportControl(transportSource, false), thumbnailComponent(formatManager),
       positionOverlay(transportSource) {
@@ -63,13 +65,14 @@ void AudioPlayer::fileChosen(juce::File file) {
     if (reader != nullptr) {
         auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
         transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
-        readerSource.reset(newSource.release());
+        readerSource = std::move(newSource);
         thumbnailComponent.setSource(file);
         transportControl.setEnabled(true);
     }
 }
 
 void AudioPlayer::loopingChanged(bool shouldLoop) {
-    if (readerSource.get() != nullptr)
+    if (readerSource != nullptr) {
         readerSource->setLooping(shouldLoop);
+    }
 }

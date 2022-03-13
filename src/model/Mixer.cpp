@@ -3,6 +3,7 @@
 Mixer::Mixer(double sampleRate)
     : mixerSource(sampleRate), gainSource(&mixerSource, false), meteredSource(gainSource, sampleRate) {
     transportSource.setSource(&meteredSource);
+    initialized = true;
 }
 
 Mixer::~Mixer() {
@@ -11,7 +12,7 @@ Mixer::~Mixer() {
 }
 
 void Mixer::addSource(
-    std::shared_ptr<juce::PositionableAudioSource> source, double sourceSampleRateToCorrectFor, int maxNumChannels) {
+    const std::shared_ptr<juce::PositionableAudioSource>& source, double sourceSampleRateToCorrectFor, int maxNumChannels) {
     DBG("Mixer::addSource - add source with length: " << source->getTotalLength());
     sources.push_back(source);
     auto pos = transportSource.getCurrentPosition();
@@ -38,11 +39,19 @@ void Mixer::setMasterMute(bool newMuted) {
 }
 
 void Mixer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
-    transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    if (initialized) {
+        transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    }
 }
 
 void Mixer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    transportSource.getNextAudioBlock(bufferToFill);
+    if (initialized) {
+        transportSource.getNextAudioBlock(bufferToFill);
+    }
 }
 
-void Mixer::releaseResources() { transportSource.releaseResources(); }
+void Mixer::releaseResources() {
+    if (initialized) {
+        transportSource.releaseResources();
+    }
+}

@@ -1,51 +1,38 @@
 #include "DesktopComponent.h"
+#include "DesktopController.h"
 #include "common/listutil.h"
+#include "controls/MainWindow.h"
 
-DesktopComponent::DesktopComponent(juce::DocumentWindow *parentWindow, juce::AudioFormatManager &formatManager)
-    : formatManager(formatManager), desktopController(*parentWindow, *this, deviceManager, formatManager),
-      trackListViewport(desktopController.getTrackListController().getViewport()),
-      mixerPanel(desktopController.getMixerController().getMixerPanel()), mixer(desktopController.getMixer()),
+DesktopComponent::DesktopComponent(DesktopController &desktopController)
+    : desktopController(desktopController), timeMeter(desktopController.getProject()),
       horizontalScaleButtonPanel(false), verticalScaleButtonPanel(true) {
 
-    setAudioChannels(0, 2);
+    setSize(initialWidth, initialHeight);
 
     addListener(&desktopController);
     verticalScaleButtonPanel.addListener(&desktopController);
     horizontalScaleButtonPanel.addListener(&desktopController);
 
-    trackListViewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
-    trackListViewport.getVerticalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
-    trackListViewport.getHorizontalScrollBar().setAutoHide(false);
-    trackListViewport.getVerticalScrollBar().setAutoHide(false);
-    addAndMakeVisible(trackListViewport);
-    addAndMakeVisible(mixerPanel);
+    addAndMakeVisible(timeMeter);
+    addAndMakeVisible(desktopController.getTrackListController().getViewport());
+    addAndMakeVisible(desktopController.getMixerController().getMixerPanel());
     addAndMakeVisible(verticalScaleButtonPanel);
     addAndMakeVisible(horizontalScaleButtonPanel);
 
     setApplicationCommandManagerToWatch(&commandManager);
     commandManager.registerAllCommandsForTarget(this);
-
-    // this ensures that commands invoked on the application are correctly
-    // forwarded to this component
     commandManager.setFirstCommandTarget(this);
-
-    // this lets the command manager use keypresses that arrive in our window to
-    // send out commands
     addKeyListener(commandManager.getKeyMappings());
     setWantsKeyboardFocus(true);
-
-    setSize(800, 600);
 
 #if JUCE_MAC
     MenuBarModel::setMacMainMenu(this);
 #else
     parentWindow->setMenuBar(this);
-    addAndMakeVisible(menuBar);
 #endif
 }
 
 DesktopComponent::~DesktopComponent() {
-    shutdownAudio();
     closeAllWindows();
 
     removeListener(&desktopController);
@@ -54,6 +41,10 @@ DesktopComponent::~DesktopComponent() {
     juce::MenuBarModel::setMacMainMenu(nullptr);
 #endif
     commandManager.setFirstCommandTarget(nullptr);
+}
+
+void DesktopComponent::visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea) {
+    timeMeter.setBounds(timeMeter.getBounds().withLeft(-newVisibleArea.getX()));
 }
 
 void DesktopComponent::createChildWindow(const juce::String &name, juce::Component *component) {
@@ -70,15 +61,113 @@ void DesktopComponent::closeAllWindows() {
 }
 
 //==============================================================================
-void DesktopComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
-    mixer.prepareToPlay(samplesPerBlockExpected, sampleRate);
+juce::StringArray DesktopComponent::getMenuBarNames() { return {"file", "edit", "new", "track"}; }
+
+juce::PopupMenu DesktopComponent::getMenuForIndex(int menuIndex, const juce::String & /*menuName*/) {
+    juce::PopupMenu menu;
+
+    if (menuIndex == 0) {
+        menu.addCommandItem(&commandManager, CommandIDs::openProject);
+        menu.addCommandItem(&commandManager, CommandIDs::saveProject);
+        menu.addCommandItem(&commandManager, CommandIDs::saveProjectAs);
+        menu.addSeparator();
+        menu.addCommandItem(&commandManager, CommandIDs::exportProject);
+    } else if (menuIndex == 1) {
+        menu.addCommandItem(&commandManager, CommandIDs::editUndo);
+    } else if (menuIndex == 2) {
+        menu.addCommandItem(&commandManager, CommandIDs::newTrack);
+        menu.addCommandItem(&commandManager, CommandIDs::newAudioPlayer);
+    } else if (menuIndex == 3) {
+        menu.addCommandItem(&commandManager, CommandIDs::deleteTrackSelection);
+    }
+
+    return menu;
 }
 
-void DesktopComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    mixer.getNextAudioBlock(bufferToFill);
+//==============================================================================
+void DesktopComponent::getAllCommands(juce::Array<juce::CommandID> &c) {
+    juce::Array<juce::CommandID> commands{CommandIDs::openProject, CommandIDs::saveProject, CommandIDs::saveProjectAs,
+        CommandIDs::exportProject, CommandIDs::editUndo, CommandIDs::newTrack, CommandIDs::newAudioPlayer,
+        CommandIDs::deleteTrackSelection};
+    c.addArray(commands);
 }
 
-void DesktopComponent::releaseResources() { mixer.releaseResources(); }
+void DesktopComponent::getCommandInfo(juce::CommandID commandID, juce::ApplicationCommandInfo &result) {
+    switch (commandID) {
+    case CommandIDs::openProject:
+        result.setInfo("open project...", "Open a saved project", "Menu", 0);
+        result.addDefaultKeypress('o', juce::ModifierKeys::commandModifier);
+        break;
+    case CommandIDs::saveProject:
+        result.setInfo("save project", "Save the current project", "Menu", 0);
+        result.addDefaultKeypress('s', juce::ModifierKeys::commandModifier);
+        break;
+    case CommandIDs::saveProjectAs:
+        result.setInfo("save project as...", "Save the current project as a new file", "Menu", 0);
+        result.addDefaultKeypress('s', juce::ModifierKeys::commandModifier | juce::ModifierKeys::altModifier);
+        break;
+    case CommandIDs::exportProject:
+        result.setInfo("export project...", "Export the current project as an audio file", "Menu", 0);
+        result.addDefaultKeypress('e', juce::ModifierKeys::commandModifier | juce::ModifierKeys::shiftModifier);
+        break;
+    case CommandIDs::editUndo:
+        result.setInfo(
+            (desktopController.getLastCommandName() == "" ? "undo" : "undo " + desktopController.getLastCommandName()),
+            "Undo the last edit", "Menu", 0);
+        result.addDefaultKeypress('z', juce::ModifierKeys::commandModifier);
+        result.setActive(desktopController.canUndo());
+        break;
+    case CommandIDs::newTrack:
+        result.setInfo("track", "Create a new track", "Menu", 0);
+        result.addDefaultKeypress('t', juce::ModifierKeys::commandModifier);
+        break;
+    case CommandIDs::newAudioPlayer:
+        result.setInfo("audioplayer", "Create a new audioplayer component", "Menu", 0);
+        result.addDefaultKeypress('p', juce::ModifierKeys::commandModifier);
+        break;
+    case CommandIDs::deleteTrackSelection:
+        result.setInfo("delete " + desktopController.getSelectionType(),
+            "Delete the selected " + desktopController.getSelectionType(), "Menu", 0);
+        result.addDefaultKeypress(juce::KeyPress::backspaceKey, juce::ModifierKeys::noModifiers);
+        result.setActive(desktopController.hasSelection());
+        break;
+    default:
+        break;
+    }
+}
+
+bool DesktopComponent::perform(const InvocationInfo &info) {
+    switch (info.commandID) {
+    case CommandIDs::openProject:
+        desktopController.openProject();
+        break;
+    case CommandIDs::saveProject:
+        desktopController.saveProject();
+        break;
+    case CommandIDs::saveProjectAs:
+        desktopController.saveProjectAs();
+        break;
+    case CommandIDs::exportProject:
+        desktopController.exportProject();
+        break;
+    case CommandIDs::editUndo:
+        desktopController.undoLast();
+        break;
+    case CommandIDs::newTrack:
+        desktopController.addNewTrack();
+        break;
+    case CommandIDs::newAudioPlayer:
+        createChildWindow("audioplayer",
+            new AudioPlayer(desktopController.getMainWindow().getMainAudioComponent().getFormatManager()));
+        break;
+    case CommandIDs::deleteTrackSelection:
+        desktopController.deleteSelected();
+        break;
+    default:
+        return false;
+    }
+    return true;
+}
 
 //==============================================================================
 void DesktopComponent::paint(juce::Graphics &g) {
@@ -88,15 +177,18 @@ void DesktopComponent::paint(juce::Graphics &g) {
 void DesktopComponent::resized() {
     auto topStripHeight = 15;
     auto scaleButtonWidth = 12;
-    auto scrollBarWidth = trackListViewport.getScrollBarThickness();
+    auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
     auto area = getLocalBounds();
-    area.removeFromTop(topStripHeight);
+    timeMeter.setBounds(area.removeFromTop(topStripHeight));
+    timeMeter.repaint();
     verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(
         area.getWidth() - (scaleButtonWidth + scrollBarWidth), area.getY(), scaleButtonWidth, scaleButtonWidth * 2));
+    auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
-    horizontalScaleButtonPanel.setBounds(juce::Rectangle<int>(
-        0, area.getHeight() - (scaleButtonWidth + scrollBarWidth) + topStripHeight, scaleButtonWidth * 2, scaleButtonWidth));
-    trackListViewport.setBounds(area);
+    horizontalScaleButtonPanel.setBounds(
+        juce::Rectangle<int>(0, area.getHeight() - (scaleButtonWidth + scrollBarWidth) + topStripHeight,
+            scaleButtonWidth * 2, scaleButtonWidth));
+    desktopController.getTrackListController().getViewport().setBounds(area);
     desktopController.resize();
 }
 

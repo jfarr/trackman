@@ -25,7 +25,7 @@ void TrackPanel::mouseDown(const juce::MouseEvent &event) {
     Component::mouseDown(event);
 }
 
-int TrackPanel::getTrackWidth() const { return std::max((int)(100 * tracks.size()), viewport.getWidth()); }
+int TrackPanel::getTrackWidth() const { return TrackControl::getPreferredWidth() * tracks.size(); }
 
 void TrackPanel::paint(juce::Graphics &g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));

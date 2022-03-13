@@ -25,7 +25,7 @@ class RenameTrackCommand : public Command {
 
 class AddSampleCommand : public Command {
   public:
-    AddSampleCommand(DesktopController &desktopController, Track *track, juce::File file, int pos)
+    AddSampleCommand(DesktopController &desktopController, Track *track, const juce::File &file, int pos)
         : Command("add sample"), desktopController(desktopController), track(track), file(file), pos(pos) {}
     ~AddSampleCommand() override {}
 

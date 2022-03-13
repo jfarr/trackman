@@ -4,6 +4,7 @@
 
 #include "TrackLaneController.h"
 #include "TrackListPanel.h"
+#include "TrackListViewport.h"
 #include "controls/desktop/TrackListListener.h"
 #include "controls/tracks/SampleListener.h"
 #include "model/Project.h"
@@ -13,12 +14,11 @@ class DesktopController;
 
 class TrackListController : public TrackListListener, public SampleListener {
   public:
-    TrackListController(DesktopController &desktopController, juce::AudioTransportSource &transport,
-        juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
+    TrackListController(DesktopController &desktopController, juce::AudioTransportSource &transport);
     ~TrackListController();
 
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
-    juce::Viewport &getViewport() { return trackListViewport; }
+    TrackListViewport &getViewport() { return trackListViewport; }
 
     Sample *addSample(Track &track, juce::File file, int pos);
     void moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos);
@@ -49,18 +49,15 @@ class TrackListController : public TrackListListener, public SampleListener {
   private:
     DesktopController &desktopController;
     Project &project;
-    TrackList &trackList;
     juce::AudioTransportSource &transport;
+
+    TrackListViewport trackListViewport;
     TrackListPanel trackListPanel;
-    juce::Viewport trackListViewport;
     std::list<std::unique_ptr<TrackLaneController>> lanes;
     Track *selected = nullptr;
     bool selectingSample = false;
     Track *currentDragTrack = nullptr;
     TrackLaneController *newDragLane = nullptr;
-
-    juce::AudioDeviceManager &deviceManager;
-    juce::AudioFormatManager &formatManager;
 
     void updateMixerSource();
     void updateLane(Track &track);

@@ -2,11 +2,10 @@
 
 ## Short-Term
 - Bug fixes
-  - Meter strip scrolls out of view when vscrolling
-  - Tracks that zoom out of view when vertical scrolling won't expand again
   - Dropped samples snap to center point
+  - Move sample to new lane then delete causes crash
   - Track level meter scale is off
-  - Delete menu item not updating on native Mac menu
+- Rename `controls` -> `ui`
 - Sample info popup
 - Drop multiple files
   - Default one track
