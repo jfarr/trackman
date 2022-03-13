@@ -37,7 +37,7 @@ class DesktopController : public juce::AudioSource,
     MixerController &getMixerController() { return mixerController; }
     Mixer &getMixer() { return project.getMixer(); }
     //    MixerController &getMixerController() { return mixerController; }
-    //    TrackListController &getTrackListController() { return trackListController; }
+    TrackListController &getTrackListController() { return trackListController; }
 
     bool canUndo() const;
     void undoLast();

@@ -18,6 +18,7 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
 
     addListener(&desktopController);
 
+    addAndMakeVisible(desktopController.getTrackListController().getViewport());
     addAndMakeVisible(desktopController.getMixerController().getMixerPanel());
 //    verticalScaleButtonPanel.addListener(&desktopController);
 //    horizontalScaleButtonPanel.addListener(&desktopController);
@@ -178,8 +179,8 @@ bool DesktopComponent::perform(const InvocationInfo &info) {
 
 //==============================================================================
 void DesktopComponent::paint(juce::Graphics &g) {
-//    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    g.fillAll(juce::Colours::green);
+    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+//    g.fillAll(juce::Colours::green);
 }
 
 void DesktopComponent::resized() {
@@ -191,6 +192,7 @@ void DesktopComponent::resized() {
     //    auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
     auto scrollBarWidth = 15;
     auto area = getLocalBounds();
+    DBG("DesktopComponent::resized: " << area.getWidth() << ", " << area.getHeight());
 //    area.removeFromTop(topStripHeight);
     timeMeter.setBounds(area.removeFromTop(topStripHeight));
 //    verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(
@@ -200,8 +202,8 @@ void DesktopComponent::resized() {
     //    horizontalScaleButtonPanel.setBounds(
     //        juce::Rectangle<int>(0, area.getHeight() - (scaleButtonWidth + scrollBarWidth) + topStripHeight,
     //            scaleButtonWidth * 2, scaleButtonWidth));
-    //    desktopController.getTrackListController().getViewport().setBounds(area);
-//    desktopController.resize();
+        desktopController.getTrackListController().getViewport().setBounds(area);
+    desktopController.resize();
     auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
 }

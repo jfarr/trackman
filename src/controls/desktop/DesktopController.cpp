@@ -90,9 +90,7 @@ void DesktopController::trackSoloToggled(Track &track) {
     desktopComponent.menuItemsChanged();
 }
 
-void DesktopController::resize() {
-    //    getTrackListController().getTrackListPanel().resize();
-}
+void DesktopController::resize() { getTrackListController().getTrackListPanel().resize(); }
 
 void DesktopController::addNewTrack() {
     Command *command = new AddTrackCommand(*this);

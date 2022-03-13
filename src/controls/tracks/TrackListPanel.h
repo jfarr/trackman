@@ -31,7 +31,7 @@ class TrackListPanel : public juce::Component,
                        public juce::DragAndDropTarget,
                        private juce::Timer {
   public:
-    TrackListPanel(Project &project, TrackList &trackList, /*juce::Viewport &viewport,*/
+    TrackListPanel(Project &project, /*TrackList &trackList,*/ juce::Viewport &viewport,
         juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
     ~TrackListPanel();
 
@@ -70,8 +70,8 @@ class TrackListPanel : public juce::Component,
 
   private:
     Project &project;
-    TrackList &trackList;
-//    juce::Viewport &viewport;
+//    TrackList &trackList;
+    juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
     juce::AudioFormatManager &formatManager;
     std::list<TrackLaneControl *> lanes;
