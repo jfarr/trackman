@@ -266,7 +266,7 @@ void DesktopController::updateTitleBar() {
     mainWindow.setName(
         (projectFile != juce::File{} ? projectFile.getFileNameWithoutExtension() + (dirty ? " [modified]" : "")
                                      : "[untitled]") +
-        " - " + applicationName);
+        " - " + mainWindow.getName());
 }
 
 void DesktopController::selectionChanged(Track *track) {

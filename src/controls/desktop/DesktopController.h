@@ -106,7 +106,6 @@ class DesktopController : public FileDragDropTarget,
     juce::File projectFile;
     bool dirty = false;
     Command *saveCommand = nullptr;
-    juce::String applicationName;
 
 
     void saveProjectFile(juce::File file);
