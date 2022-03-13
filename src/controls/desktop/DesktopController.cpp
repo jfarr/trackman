@@ -15,15 +15,15 @@ DesktopController::DesktopController(MainWindow &mainWindow, MainAudioComponent 
 }
 
 void DesktopController::prepareToPlay(int blockSize, double sampleRate) {
-    // TBD
+    project.getMixer().prepareToPlay(blockSize, sampleRate);
 }
 
 void DesktopController::releaseResources() {
-    // TBD
+    project.getMixer().releaseResources();
 }
 
 void DesktopController::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    // TBD
+    project.getMixer().getNextAudioBlock(bufferToFill);
 }
 
 bool DesktopController::canUndo() const { return !commandList.isEmpty(); }

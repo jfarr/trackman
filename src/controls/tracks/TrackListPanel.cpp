@@ -131,7 +131,6 @@ void TrackListPanel::paint(juce::Graphics &g) {
 
 void TrackListPanel::resized() {
     auto area = getLocalBounds();
-    DBG("TrackListPanel::resized: " << area.getWidth() << ", " << area.getHeight());
     auto laneHeight = (int)(getTrackLaneHeight() / lanes.size());
     for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(laneHeight));

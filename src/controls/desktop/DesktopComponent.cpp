@@ -153,7 +153,6 @@ void DesktopComponent::resized() {
     auto scaleButtonWidth = 12;
     auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
     auto area = getLocalBounds();
-    DBG("DesktopComponent::resized: " << area.getWidth() << ", " << area.getHeight());
     timeMeter.setBounds(area.removeFromTop(topStripHeight));
     timeMeter.repaint();
     verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(
