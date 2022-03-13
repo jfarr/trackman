@@ -63,8 +63,7 @@ void DesktopComponent::closeAllWindows() {
 }
 
 void DesktopComponent::visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea) {
-    DBG("DesktopComponent::visibleAreaChanged: " << newVisibleArea.getX() << "," << newVisibleArea.getY());
-    //    timeMeter.setBounds(timeMeter.getBounds().withLeft(-newVisibleArea.getX()));
+    timeMeter.setBounds(timeMeter.getBounds().withLeft(-newVisibleArea.getX()));
 }
 
 void DesktopComponent::getCommandInfo(juce::CommandID commandID, juce::ApplicationCommandInfo &result) {

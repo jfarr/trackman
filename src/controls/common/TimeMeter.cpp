@@ -1,7 +1,6 @@
 #include "TimeMeter.h"
 
 void TimeMeter::paint(juce::Graphics &g) {
-    DBG("TimeMeter::paint");
     auto bounds = getLocalBounds();
     auto leftPanelWidth = 25;
     auto labelY = -7;
