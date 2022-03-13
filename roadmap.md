@@ -3,6 +3,7 @@
 ## Short-Term
 - Bug fixes
   - Dropped samples snap to center point
+  - Move sample to new lane then delete causes crash
   - Track level meter scale is off
 - Rename `controls` -> `ui`
 - Sample info popup
