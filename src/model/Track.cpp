@@ -2,9 +2,9 @@
 #include "TrackList.h"
 #include "audio/PositionableMixingAudioSource.h"
 
-Track::Track(TrackList &trackList)
-    : trackList(trackList), mixerSource(), gainSource(&mixerSource, false),
-      meteredSource(gainSource, trackList.getSampleRate()) {}
+Track::Track(TrackList &trackList) : trackList(trackList), gainSource(&mixerSource, false) {
+    meteredSource = std::make_unique<MeteredAudioSource>(gainSource, trackList.getSampleRate());
+}
 
 juce::uint64 Track::getTotalLength() const {
     return (juce::uint64)getTotalLengthSeconds() * (juce::uint64)trackList.getSampleRate();
@@ -31,7 +31,7 @@ void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioForm
     for (std::shared_ptr<Sample> &sample : samples) {
         sample->loadFile(formatManager, deviceManager.getAudioDeviceSetup().sampleRate);
         if (sample->getSource() != nullptr) {
-            mixerSource.addInputSource(*sample->getSource());
+            mixerSource.addInputSource(sample->getSource());
         }
     }
 }
@@ -42,7 +42,7 @@ Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFor
     auto sample = &(*samples.back());
     sample->loadFile(formatManager, deviceManager.getAudioDeviceSetup().sampleRate);
     if (sample->getSource() != nullptr) {
-        mixerSource.addInputSource(*sample->getSource());
+        mixerSource.addInputSource(sample->getSource());
     }
     if (name == defaultName) {
         name = file.getFileName();
@@ -55,8 +55,8 @@ void Track::moveSampleTo(Sample &sample, Track &toTrack) {
         if (&sample == iter->get()) {
             auto source = sample.getSource();
             if (source != nullptr) {
-                mixerSource.removeInputSource(*source);
-                toTrack.mixerSource.addInputSource(*source);
+                mixerSource.removeInputSource(source);
+                toTrack.mixerSource.addInputSource(source);
             }
             toTrack.samples.push_back(*iter);
             samples.erase(iter++);
@@ -119,7 +119,7 @@ void Track::setDeleted(bool newDeleted) {
     if (deleted) {
         for (std::shared_ptr<Sample> &sample : samples) {
             if (sample->getSource() != nullptr) {
-                mixerSource.removeInputSource(*sample->getSource());
+                mixerSource.removeInputSource(sample->getSource());
             }
         }
     }
@@ -134,7 +134,10 @@ void Track::deleteSample(Sample *sample) {
         return;
     }
     sample->setDeleted(true);
-    mixerSource.removeInputSource(*sample->getSource());
+    auto source = sample->getSource();
+    if (source != nullptr) {
+        mixerSource.removeInputSource(source);
+    }
 }
 
 void Track::undeleteSample(Sample *sample) {
@@ -142,5 +145,8 @@ void Track::undeleteSample(Sample *sample) {
         return;
     }
     sample->setDeleted(false);
-    mixerSource.addInputSource(*sample->getSource());
+    auto source = sample->getSource();
+    if (source != nullptr) {
+        mixerSource.addInputSource(source);
+    }
 }

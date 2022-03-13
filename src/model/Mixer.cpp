@@ -12,20 +12,21 @@ Mixer::~Mixer() {
     mixerSource.removeAllInputs();
 }
 
-void Mixer::addSource(juce::PositionableAudioSource &source) {
-    if (!listContains(sources, &source)) {
-        DBG("Mixer::addSource - add source with length: " << source.getTotalLength());
-        sources.push_back(&source);
+void Mixer::addSource(juce::PositionableAudioSource *source) {
+    if (!listContains(sources, source)) {
+        DBG("Mixer::addSource - add source with length: " << source->getTotalLength());
+        sources.push_back(source);
         auto pos = transportSource.getCurrentPosition();
         mixerSource.addInputSource(source);
         transportSource.setPosition(pos);
         DBG("Mixer::addSource - set position: " << pos);
+        DBG("Mixer::addSource - length: " << transportSource.getTotalLength());
     }
 }
 
 void Mixer::removeAllSources() {
     for (juce::PositionableAudioSource *source : sources) {
-        mixerSource.removeInputSource(*source);
+        mixerSource.removeInputSource(source);
     }
     sources.clear();
 }

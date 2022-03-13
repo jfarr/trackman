@@ -1,22 +1,20 @@
 #include "PositionableMixingAudioSource.h"
 #include "PositionableResamplingAudioSource.h"
 
-PositionableMixingAudioSource::PositionableMixingAudioSource() {}
-
-PositionableMixingAudioSource::~PositionableMixingAudioSource() { removeAllInputs(); }
-
-void PositionableMixingAudioSource::addInputSource(PositionableAudioSource &input) {
-    DBG("PositionableMixingAudioSource::addInputSource: " << juce::String::toHexString((long)&input));
-    mixer.addInputSource(&input, false);
-    inputs.add(&input);
+void PositionableMixingAudioSource::addInputSource(PositionableAudioSource *input) {
+    if (input != nullptr) {
+        mixer.addInputSource(input, false);
+        inputs.add(input);
+    }
 }
 
-void PositionableMixingAudioSource::removeInputSource(PositionableAudioSource &input) {
-    DBG("PositionableMixingAudioSource::removeInputSource: " << juce::String::toHexString((long)&input));
-    mixer.removeInputSource(&input);
-    const int index = inputs.indexOf(&input);
-    if (index >= 0) {
-        inputs.remove(index);
+void PositionableMixingAudioSource::removeInputSource(PositionableAudioSource *input) {
+    if (input != nullptr) {
+        mixer.removeInputSource(input);
+        const int index = inputs.indexOf(input);
+        if (index >= 0) {
+            inputs.remove(index);
+        }
     }
 }
 

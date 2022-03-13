@@ -2,13 +2,21 @@
 
 #include <memory>
 
+Sample::~Sample() {
+    if (offsetSource != nullptr) {
+        delete offsetSource;
+    }
+    if (resamplingSource != nullptr) {
+        delete resamplingSource;
+    }
+}
+
 void Sample::loadFile(juce::AudioFormatManager &formatManager, double sampleRate) {
     auto *reader = formatManager.createReaderFor(file);
     if (reader != nullptr) {
-        fileSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
-        resamplingSource =
-            std::make_unique<PositionableResamplingAudioSource>(&*fileSource, false, sampleRate, sourceSampleRate, 2);
-        offsetSource = std::make_unique<OffsetAudioSource>(*resamplingSource, startPos, sourceSampleRate);
+        fileSource = new juce::AudioFormatReaderSource(reader, true);
+        resamplingSource = new PositionableResamplingAudioSource(fileSource, true, sampleRate, sourceSampleRate, 2);
+        offsetSource = new OffsetAudioSource(*resamplingSource, startPos, sourceSampleRate);
     }
 }
 

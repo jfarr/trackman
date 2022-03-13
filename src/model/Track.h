@@ -4,15 +4,15 @@
 
 #include "Sample.h"
 #include "audio/GainAudioSource.h"
+#include "audio/MeteredAudioSource.h"
 #include "audio/OffsetAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
-#include "audio/MeteredAudioSource.h"
 
 class TrackList;
 
 class Track {
   public:
-    explicit Track(TrackList& trackList);
+    explicit Track(TrackList &trackList);
     ~Track() = default;
 
     [[nodiscard]] int getTrackNumber() const { return trackNumber; }
@@ -27,13 +27,15 @@ class Track {
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
-    juce::PositionableAudioSource &getSource() { return meteredSource; }
-    foleys::LevelMeterSource *getMeterSource() { return &meteredSource.getMeterSource(); }
+    juce::PositionableAudioSource *getSource() { return meteredSource.get(); }
+    foleys::LevelMeterSource *getMeterSource() {
+        return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource();
+    }
 
     void adjustSampleLengthSecs(double newLen);
     void loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
-    Sample *addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, const juce::File& file,
-        double startPos, double endPos, double length, double sampleRate);
+    Sample *addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager,
+        const juce::File &file, double startPos, double endPos, double length, double sampleRate);
     void moveSampleTo(Sample &sample, Track &toTrack);
     Sample *getSelected() const;
     void eachSample(std::function<void(Sample &sample)> f);
@@ -53,14 +55,14 @@ class Track {
   private:
     const juce::String defaultName = "untitled";
 
-    TrackList& trackList;
+    TrackList &trackList;
     int trackNumber = 0;
     juce::String name = defaultName;
     PositionableMixingAudioSource mixerSource;
     GainAudioSource gainSource;
-    MeteredAudioSource meteredSource;
+    std::unique_ptr<MeteredAudioSource> meteredSource;
 
-//    double sampleRate = 0;
+    //    double sampleRate = 0;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
     bool soloed = false;

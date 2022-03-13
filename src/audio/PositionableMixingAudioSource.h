@@ -5,11 +5,11 @@
 
 class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   public:
-    PositionableMixingAudioSource();
-    ~PositionableMixingAudioSource() override;
+    PositionableMixingAudioSource() = default;
+    ~PositionableMixingAudioSource() override { removeAllInputs(); }
 
-    void addInputSource(PositionableAudioSource &input);
-    void removeInputSource(PositionableAudioSource &input);
+    void addInputSource(PositionableAudioSource *input);
+    void removeInputSource(PositionableAudioSource *input);
     void removeAllInputs();
 
     //==============================================================================
