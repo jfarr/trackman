@@ -6,15 +6,8 @@
 DesktopComponent::DesktopComponent(DesktopController &desktopController)
     : desktopController(desktopController), timeMeter(desktopController.getProject()),
       horizontalScaleButtonPanel(false), verticalScaleButtonPanel(true) {
-    //    : formatManager(formatManager), timeMeter(desktopController.getProject()),
-    //      desktopController(*parentWindow, *this, deviceManager, formatManager),
-    //      trackListViewport(desktopController.getTrackListController().getViewport()),
-    //      mixerPanel(desktopController.getMixerController().getMixerPanel()), mixer(desktopController.getMixer()),
-    //      horizontalScaleButtonPanel(false), verticalScaleButtonPanel(true) {
 
     setSize(800, 600);
-
-    //    setAudioChannels(0, 2);
 
     addListener(&desktopController);
     verticalScaleButtonPanel.addListener(&desktopController);
@@ -25,11 +18,6 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
     addAndMakeVisible(desktopController.getMixerController().getMixerPanel());
     addAndMakeVisible(verticalScaleButtonPanel);
     addAndMakeVisible(horizontalScaleButtonPanel);
-
-    //    auto &trackListViewport = desktopController.getTrackListController().getViewport();
-    //    auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
-    //    addAndMakeVisible(trackListViewport);
-    //    addAndMakeVisible(mixerPanel);
 
     setApplicationCommandManagerToWatch(&commandManager);
     commandManager.registerAllCommandsForTarget(this);
@@ -43,19 +31,14 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
     addKeyListener(commandManager.getKeyMappings());
     setWantsKeyboardFocus(true);
 
-    //    desktopController.getMainWindow().setMenuBar(this);
-    //    addAndMakeVisible(menuBar);
-
 #if JUCE_MAC
     MenuBarModel::setMacMainMenu(this);
 #else
     parentWindow->setMenuBar(this);
 #endif
-    //    initialized = true;
 }
 
 DesktopComponent::~DesktopComponent() {
-    //    shutdownAudio();
     closeAllWindows();
 
     removeListener(&desktopController);
@@ -162,34 +145,18 @@ bool DesktopComponent::perform(const InvocationInfo &info) {
 }
 
 //==============================================================================
-// void DesktopComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
-//    desktopController.getMixer().prepareToPlay(samplesPerBlockExpected, sampleRate);
-//}
-//
-// void DesktopComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-//    desktopController.getMixer().getNextAudioBlock(bufferToFill);
-//}
-//
-// void DesktopComponent::releaseResources() { desktopController.getMixer().releaseResources(); }
-
-//==============================================================================
 void DesktopComponent::paint(juce::Graphics &g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    //    g.fillAll(juce::Colours::green);
 }
 
 void DesktopComponent::resized() {
-    //    if (!initialized) {
-    //        return;
-    //    }
     auto topStripHeight = 15;
     auto scaleButtonWidth = 12;
     auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
-    //    auto scrollBarWidth = 15;
     auto area = getLocalBounds();
     DBG("DesktopComponent::resized: " << area.getWidth() << ", " << area.getHeight());
-    //    area.removeFromTop(topStripHeight);
     timeMeter.setBounds(area.removeFromTop(topStripHeight));
+    timeMeter.repaint();
     verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(
         area.getWidth() - (scaleButtonWidth + scrollBarWidth), area.getY(), scaleButtonWidth, scaleButtonWidth * 2));
     auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
@@ -199,8 +166,6 @@ void DesktopComponent::resized() {
             scaleButtonWidth * 2, scaleButtonWidth));
     desktopController.getTrackListController().getViewport().setBounds(area);
     desktopController.resize();
-    //    auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
-    //    mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
 }
 
 //==============================================================================
