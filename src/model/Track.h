@@ -60,7 +60,7 @@ class Track {
     GainAudioSource gainSource;
     MeteredAudioSource meteredSource;
 
-    double sampleRate = 0;
+//    double sampleRate = 0;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
     bool soloed = false;

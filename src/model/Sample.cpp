@@ -2,11 +2,12 @@
 
 #include <memory>
 
-void Sample::loadFile(juce::AudioFormatManager &formatManager) {
+void Sample::loadFile(juce::AudioFormatManager &formatManager, double sampleRate) {
     auto *reader = formatManager.createReaderFor(file);
     if (reader != nullptr) {
         fileSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
-        resamplingSource = std::make_unique<PositionableResamplingAudioSource>(&*fileSource, false, sourceSampleRate, 0, 2);
+        resamplingSource =
+            std::make_unique<PositionableResamplingAudioSource>(&*fileSource, false, sampleRate, sourceSampleRate, 2);
         offsetSource = std::make_unique<OffsetAudioSource>(*resamplingSource, startPos, sourceSampleRate);
     }
 }

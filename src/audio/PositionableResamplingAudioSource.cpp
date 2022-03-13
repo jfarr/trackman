@@ -3,7 +3,11 @@
 PositionableResamplingAudioSource::PositionableResamplingAudioSource(juce::PositionableAudioSource *source,
     const bool deleteWhenRemoved, double sampleRate, double sourceSampleRateToCorrectFor, int maxNumChannels)
     : source(source), resamplerSource(source, false, maxNumChannels), sampleRate(sampleRate),
-      sourceSampleRate(sourceSampleRateToCorrectFor), deleteWhenRemoved(deleteWhenRemoved) {}
+      sourceSampleRate(sourceSampleRateToCorrectFor), deleteWhenRemoved(deleteWhenRemoved) {
+    if (sourceSampleRate > 0) {
+        resamplerSource.setResamplingRatio(sourceSampleRate / sampleRate);
+    }
+}
 
 PositionableResamplingAudioSource::~PositionableResamplingAudioSource() {
     if (deleteWhenRemoved && source != nullptr) {

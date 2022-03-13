@@ -47,7 +47,7 @@ void MixerController::updateAudioSource() {
     mixer.removeAllSources();
     trackList.eachTrack([this](Track &track) {
         DBG("MixerController::onSourceSet - add track source: " << track.getName());
-        mixer.addSource(track.getSource(), track.getSampleRate(), 2);
+        mixer.addSource(track.getSource());
     });
 }
 
