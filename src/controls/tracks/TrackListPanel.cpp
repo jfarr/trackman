@@ -54,11 +54,7 @@ void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
     auto sourceComponent = dragSourceDetails.sourceComponent.get();
     auto *thumbnail = dynamic_cast<SampleThumbnail *>(sourceComponent);
     if (thumbnail != nullptr) {
-//        auto pos = juce::Point<int>(
-//            dragSourceDetails.localPosition.getX() /*+ dragSourceOffset*/, dragSourceDetails.localPosition.getY());
-//        notifySampleDropped(thumbnail, pos.getX(), pos.getY());
         auto pos = dragSourceDetails.localPosition;
-//        auto offset = 0;
         notifySampleDropped(thumbnail, pos.getX() - dragSourceOffset, pos.getY());
         return;
     }
@@ -71,7 +67,6 @@ void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
 }
 
 void TrackListPanel::dragOperationStarted(const DragAndDropTarget::SourceDetails &dragSourceDetails) {
-    DBG("dragOperationStarted: " << dragSourceDetails.localPosition.getX() << ", " << dragSourceDetails.localPosition.getY());
     dragSourceOffset = dragSourceDetails.localPosition.getX();
 }
 
