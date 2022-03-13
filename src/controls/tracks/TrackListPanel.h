@@ -33,7 +33,8 @@ class TrackListPanel : public juce::Component,
                        public juce::DragAndDropTarget,
                        private juce::Timer {
   public:
-    TrackListPanel(DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport);
+    TrackListPanel(
+        DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport);
     ~TrackListPanel() override;
 
     Track *getTrackAtPos(int x, int y);
@@ -61,6 +62,7 @@ class TrackListPanel : public juce::Component,
 
     //==============================================================================
     // DragAndDropContainer
+    void dragOperationStarted(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
     void dragOperationEnded(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
 
     //==============================================================================
@@ -71,13 +73,12 @@ class TrackListPanel : public juce::Component,
 
   private:
     DesktopController &desktopController;
-//    Project &project;
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
     std::list<TrackLaneControl *> lanes;
 
     DropBox dropBox;
-    int dragSourceOffset;
+    int dragSourceOffset = 0;
 
     std::list<SampleListener *> sampleListeners;
     std::list<TrackListListener *> trackListListeners;
