@@ -2,11 +2,8 @@
 
 ## Short-Term
 - Bug fixes
-  - Meter strip scrolls out of view when vscrolling
   - Dropped samples snap to center point
-  - Can't scroll mixer far enough to see the last track
   - Track level meter scale is off
-  - Delete menu item not updating on native Mac menu
 - Rename `controls` -> `ui`
 - Sample info popup
 - Drop multiple files

@@ -126,6 +126,7 @@ void DesktopController::deleteSelected() {
         commandList.pushCommand(command);
         dirty = true;
         updateTitleBar();
+        desktopComponent.menuItemsChanged();
         return;
     }
     Track *selected = project.getTrackList().getSelectedTrack();
@@ -138,6 +139,7 @@ void DesktopController::deleteSelected() {
                     commandList.pushCommand(command);
                     dirty = true;
                     updateTitleBar();
+                    desktopComponent.menuItemsChanged();
                 }
             }));
     }
@@ -242,6 +244,7 @@ void DesktopController::saveProjectFile(juce::File file) {
     saveCommand = commandList.peek();
     dirty = false;
     updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::openProject() {
@@ -260,6 +263,7 @@ void DesktopController::openProject() {
             saveCommand = nullptr;
             dirty = false;
             updateTitleBar();
+            desktopComponent.menuItemsChanged();
         }
     });
 }
@@ -290,6 +294,7 @@ void DesktopController::selectionChanged(Track *track) {
         trackListController.repaint();
         mixerController.repaint();
     });
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::fileDragEnter(const juce::StringArray &files, int x, int y) {
