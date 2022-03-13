@@ -13,11 +13,10 @@ class TrackList;
 class Track {
   public:
     explicit Track(TrackList& trackList);
-    ~Track();
+    ~Track() = default;
 
-    [[nodiscard]] int getNumber() const { return number; }
+    [[nodiscard]] int getTrackNumber() const { return trackNumber; }
     [[nodiscard]] juce::String getName() const { return name; }
-    [[nodiscard]] std::shared_ptr<juce::PositionableAudioSource> getSource() const { return meteredSource; }
     [[nodiscard]] juce::uint64 getTotalLength() const;
     [[nodiscard]] double getTotalLengthSeconds() const;
     [[nodiscard]] double getSampleRate() const;
@@ -27,9 +26,10 @@ class Track {
     [[nodiscard]] bool isSilenced() const;
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
-    foleys::LevelMeterSource *getMeterSource() { return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource(); }
 
-    void setSource(const std::shared_ptr<juce::PositionableAudioSource>& newSource, double newSampleRate);
+    juce::PositionableAudioSource &getSource() { return meteredSource; }
+    foleys::LevelMeterSource *getMeterSource() { return &meteredSource.getMeterSource(); }
+
     void adjustSampleLengthSecs(double newLen);
     void loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     Sample *addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, const juce::File& file,
@@ -38,7 +38,7 @@ class Track {
     Sample *getSelected() const;
     void eachSample(std::function<void(Sample &sample)> f);
 
-    void setNumber(int newNumber) { number = newNumber; }
+    void setTrackNumber(int newNumber) { trackNumber = newNumber; }
     void setName(juce::String newName) { name = newName; }
     void setLevelGain(float newLevel);
     void setMute(bool newMuted);
@@ -54,13 +54,12 @@ class Track {
     const juce::String defaultName = "untitled";
 
     TrackList& trackList;
-    int number = 0;
+    int trackNumber = 0;
     juce::String name = defaultName;
-    std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
-    std::shared_ptr<MeteredAudioSource> meteredSource;
-    std::shared_ptr<GainAudioSource> gainSource;
-    std::shared_ptr<OffsetAudioSource> offsetSource;
-    std::shared_ptr<PositionableMixingAudioSource> mixerSource;
+    PositionableMixingAudioSource mixerSource;
+    GainAudioSource gainSource;
+    MeteredAudioSource meteredSource;
+
     double sampleRate = 0;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;

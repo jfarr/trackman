@@ -4,7 +4,7 @@
 
 class TrackList {
   public:
-    TrackList() = default;
+    TrackList(double sampleRate) : sampleRate(sampleRate) {}
     ~TrackList() = default;
 
     Track *addTrack();
@@ -12,11 +12,12 @@ class TrackList {
     void undeleteTrack(Track *track);
     void removeTrack(Track *track);
 
-    [[nodiscard]] int size() const { return (int) tracks.size(); }
+    [[nodiscard]] int size() const { return (int)tracks.size(); }
     [[nodiscard]] Track *getSelectedTrack() const;
     [[nodiscard]] Sample *getSelectedSample() const;
     [[nodiscard]] juce::uint64 getTotalLength() const;
     [[nodiscard]] double getTotalLengthSeconds() const;
+    [[nodiscard]] double getSampleRate() const { return sampleRate; }
 
     void eachTrack(std::function<void(Track &track)> f);
 
@@ -28,9 +29,10 @@ class TrackList {
     void soloTracks();
     std::list<const Track *> getSoloed();
 
-    void writeAudioFile(const juce::File& file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const;
+    void writeAudioFile(const juce::File &file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const;
 
   private:
+    double sampleRate;
     std::list<std::unique_ptr<Track>> tracks;
 
     void renumber();

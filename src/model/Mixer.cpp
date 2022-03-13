@@ -12,18 +12,18 @@ Mixer::~Mixer() {
 }
 
 void Mixer::addSource(
-    const std::shared_ptr<juce::PositionableAudioSource>& source, double sourceSampleRateToCorrectFor, int maxNumChannels) {
-    DBG("Mixer::addSource - add source with length: " << source->getTotalLength());
-    sources.push_back(source);
+    juce::PositionableAudioSource &source, double sourceSampleRateToCorrectFor, int maxNumChannels) {
+    DBG("Mixer::addSource - add source with length: " << source.getTotalLength());
+    sources.push_back(&source);
     auto pos = transportSource.getCurrentPosition();
-    mixerSource.addInputSource(source.get(), false, sourceSampleRateToCorrectFor, maxNumChannels);
+    mixerSource.addInputSource(&source, false, sourceSampleRateToCorrectFor, maxNumChannels);
     transportSource.setPosition(pos);
     DBG("Mixer::addSource - set position: " << pos);
 }
 
 void Mixer::removeAllSources() {
-    for (std::shared_ptr<juce::PositionableAudioSource> &source : sources) {
-        mixerSource.removeInputSource(source.get());
+    for (juce::PositionableAudioSource *source : sources) {
+        mixerSource.removeInputSource(source);
     }
     sources.clear();
 }

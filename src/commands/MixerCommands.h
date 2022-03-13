@@ -23,8 +23,8 @@ class ChangeMasterVolumeCommand : public Command {
 class ToggleMasterMuteCommand : public Command {
   public:
     ToggleMasterMuteCommand(MixerController &controller)
-        : Command(juce::String(controller.isMasterMuted() ? "unmute" : "mute") + " master"),
-          controller(controller), muted(controller.isMasterMuted()) {}
+        : Command(juce::String(controller.isMasterMuted() ? "unmute" : "mute") + " master"), controller(controller),
+          muted(controller.isMasterMuted()) {}
     ~ToggleMasterMuteCommand() {}
 
     void execute() override { controller.setMasterMute(!muted); }
@@ -38,7 +38,7 @@ class ToggleMasterMuteCommand : public Command {
 class ChangeTrackVolumeCommand : public Command {
   public:
     ChangeTrackVolumeCommand(MixerController &mixerController, Track &track, float previousLevel)
-        : Command("change track " + juce::String(track.getNumber()) + " volume"), mixerController(mixerController),
+        : Command("change track " + juce::String(track.getTrackNumber()) + " volume"), mixerController(mixerController),
           track(track), previousLevel(previousLevel) {}
     ~ChangeTrackVolumeCommand() override {}
 
@@ -55,7 +55,7 @@ class ChangeTrackVolumeCommand : public Command {
 class ToggleMuteCommand : public Command {
   public:
     ToggleMuteCommand(MixerController &controller, Track &track)
-        : Command(juce::String(track.isMuted() ? "unmute" : "mute") + " Track " + juce::String(track.getNumber())),
+        : Command(juce::String(track.isMuted() ? "unmute" : "mute") + " Track " + juce::String(track.getTrackNumber())),
           controller(controller), track(track), muted(track.isMuted()) {}
     ~ToggleMuteCommand() {}
 
@@ -71,7 +71,7 @@ class ToggleMuteCommand : public Command {
 class ToggleSoloCommand : public Command {
   public:
     ToggleSoloCommand(MixerController &controller, Track &track)
-        : Command(juce::String(track.isSoloed() ? "unsolo" : "solo") + " Track " + juce::String(track.getNumber())),
+        : Command(juce::String(track.isSoloed() ? "unsolo" : "solo") + " Track " + juce::String(track.getTrackNumber())),
           controller(controller), track(track), soloed(track.isSoloed()) {}
     ~ToggleSoloCommand() {}
 

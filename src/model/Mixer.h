@@ -18,7 +18,7 @@ class Mixer {
     juce::AudioSource &getSource() { return *((PositionableMixingAudioSource *) &mixerSource); }
     foleys::LevelMeterSource &getMeterSource() { return meteredSource.getMeterSource(); }
 
-    void addSource(const std::shared_ptr<juce::PositionableAudioSource>& source, double sourceSampleRateToCorrectFor = 0.0,
+    void addSource(juce::PositionableAudioSource &source, double sourceSampleRateToCorrectFor = 0.0,
         int maxNumChannels = 2);
     void removeAllSources();
 
@@ -31,7 +31,7 @@ class Mixer {
     void releaseResources();
 
   private:
-    std::list<std::shared_ptr<juce::PositionableAudioSource>> sources;
+    std::list<juce::PositionableAudioSource *> sources;
     PositionableMixingAudioSource mixerSource;
     GainAudioSource gainSource;
     MeteredAudioSource meteredSource;
