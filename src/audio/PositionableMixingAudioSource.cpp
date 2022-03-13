@@ -1,36 +1,15 @@
 #include "PositionableMixingAudioSource.h"
 #include "PositionableResamplingAudioSource.h"
 
-PositionableMixingAudioSource::PositionableMixingAudioSource(double sampleRate) : sampleRate(sampleRate) {}
-
-PositionableMixingAudioSource::~PositionableMixingAudioSource() { removeAllInputs(); }
-
-void PositionableMixingAudioSource::addInputSource(PositionableAudioSource *input, const bool deleteWhenRemoved,
-    double sourceSampleRateToCorrectFor, int maxNumChannels) {
-    DBG("PositionableMixingAudioSource::addInputSource: " << juce::String::toHexString((long)input));
-    jassert(input != nullptr);
-    if (sourceSampleRateToCorrectFor > 0) {
-        input = new PositionableResamplingAudioSource(
-            input, deleteWhenRemoved, sampleRate, sourceSampleRateToCorrectFor, maxNumChannels);
-        mixer.addInputSource(input, true);
-    } else {
-        mixer.addInputSource(input, deleteWhenRemoved);
+void PositionableMixingAudioSource::addInputSource(PositionableAudioSource *input) {
+    if (input != nullptr) {
+        mixer.addInputSource(input, false);
+        inputs.add(input);
     }
-    inputs.add(input);
 }
 
 void PositionableMixingAudioSource::removeInputSource(PositionableAudioSource *input) {
-    DBG("PositionableMixingAudioSource::removeInputSource: " << juce::String::toHexString((long)input));
     if (input != nullptr) {
-        for (int i = inputs.size(); --i >= 0;) {
-            PositionableAudioSource *thisInput = inputs.getUnchecked(i);
-            PositionableResamplingAudioSource *wrapper = dynamic_cast<PositionableResamplingAudioSource *>(thisInput);
-            if (wrapper != nullptr && wrapper->getSource() == input) {
-                mixer.removeInputSource(thisInput);
-                inputs.remove(i);
-                break;
-            }
-        }
         mixer.removeInputSource(input);
         const int index = inputs.indexOf(input);
         if (index >= 0) {
@@ -47,8 +26,7 @@ void PositionableMixingAudioSource::removeAllInputs() {
 
 void PositionableMixingAudioSource::prepareToPlay(int blockSize, double newSampleRate) {
     DBG("PositionableMixingAudioSource::prepareToPlay - blocksize: " << blockSize << " sample rate: " << newSampleRate);
-    sampleRate = newSampleRate;
-    mixer.prepareToPlay(blockSize, sampleRate);
+    mixer.prepareToPlay(blockSize, newSampleRate);
 }
 
 void PositionableMixingAudioSource::releaseResources() { mixer.releaseResources(); }

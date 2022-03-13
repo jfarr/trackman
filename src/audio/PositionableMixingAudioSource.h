@@ -5,11 +5,10 @@
 
 class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   public:
-    PositionableMixingAudioSource(double sampleRate);
-    ~PositionableMixingAudioSource() override;
+    PositionableMixingAudioSource() = default;
+    ~PositionableMixingAudioSource() override { removeAllInputs(); }
 
-    void addInputSource(PositionableAudioSource *newInput, const bool deleteWhenRemoved,
-        double sourceSampleRateToCorrectFor = 0.0, int maxNumChannels = 2);
+    void addInputSource(PositionableAudioSource *input);
     void removeInputSource(PositionableAudioSource *input);
     void removeAllInputs();
 
@@ -30,7 +29,6 @@ class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   private:
     juce::MixerAudioSource mixer;
     juce::Array<PositionableAudioSource *> inputs;
-    double sampleRate;
     bool looping = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PositionableMixingAudioSource)

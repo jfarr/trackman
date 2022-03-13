@@ -1,5 +1,4 @@
 #include "MixerController.h"
-#include "common/listutil.h"
 #include "controls/desktop/DesktopController.h"
 #include "controls/mixer/TrackController.h"
 
@@ -25,6 +24,7 @@ MixerController::~MixerController() {
 
 void MixerController::update() {
     updateAudioSource();
+
     tracks.clear();
     trackPanel.clear();
     trackList.eachTrack([this](Track &track) {
@@ -46,8 +46,10 @@ void MixerController::repaint() {
 void MixerController::updateAudioSource() {
     mixer.removeAllSources();
     trackList.eachTrack([this](Track &track) {
-        DBG("MixerController::onSourceSet - add track source: " << track.getName());
-        mixer.addSource(track.getSource(), track.getSampleRate(), 2);
+        DBG("MixerController::updateAudioSource - add track source: " << track.getName());
+        if (track.getSource() != nullptr) {
+            mixer.addSource(track.getSource());
+        }
     });
 }
 

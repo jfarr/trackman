@@ -195,7 +195,9 @@ void DesktopController::deleteSample(Track &track, Sample *sample) { trackListCo
 void DesktopController::saveProject(const std::function<void(bool saved)> &callback) {
     if (projectFile != juce::File{}) {
         saveProjectFile(projectFile);
-        callback(true);
+        if (callback) {
+            callback(true);
+        }
     } else {
         saveProjectAs(callback);
     }
@@ -211,9 +213,11 @@ void DesktopController::saveProjectAs(std::function<void(bool saved)> callback) 
         if (file != juce::File{}) {
             projectFile = file;
             saveProjectFile(file);
-            cb(true);
+            if (cb)
+                cb(true);
         } else {
-            cb(false);
+            if (cb)
+                cb(false);
         }
     });
 }
@@ -255,8 +259,10 @@ void DesktopController::openProject() {
             projectFile = file;
             project.from_json(mainWindow.getMainAudioComponent().getDeviceManager(),
                 mainWindow.getMainAudioComponent().getFormatManager(), file.getFullPathName().toStdString());
-            trackListController.update();
-            mixerController.update();
+            juce::MessageManager::callAsync([this]() {
+                trackListController.update();
+                mixerController.update();
+            });
             commandList.clear();
             saveCommand = nullptr;
             dirty = false;

@@ -18,8 +18,7 @@ class Mixer {
     juce::AudioSource &getSource() { return *((PositionableMixingAudioSource *) &mixerSource); }
     foleys::LevelMeterSource &getMeterSource() { return meteredSource.getMeterSource(); }
 
-    void addSource(juce::PositionableAudioSource &source, double sourceSampleRateToCorrectFor = 0.0,
-        int maxNumChannels = 2);
+    void addSource(juce::PositionableAudioSource *source);
     void removeAllSources();
 
     void setMasterLevelGain(float newLevel);

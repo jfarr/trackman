@@ -61,7 +61,7 @@ void DesktopComponent::closeAllWindows() {
 }
 
 //==============================================================================
-juce::StringArray DesktopComponent::getMenuBarNames() { return {"file", "edit", "new", "track"}; }
+juce::StringArray DesktopComponent::getMenuBarNames() { return {"File", "Edit", "New", "Track"}; }
 
 juce::PopupMenu DesktopComponent::getMenuForIndex(int menuIndex, const juce::String & /*menuName*/) {
     juce::PopupMenu menu;

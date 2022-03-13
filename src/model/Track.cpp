@@ -2,11 +2,13 @@
 #include "TrackList.h"
 #include "audio/PositionableMixingAudioSource.h"
 
-Track::Track(TrackList &trackList)
-    : trackList(trackList), mixerSource(trackList.getSampleRate()), gainSource(&mixerSource, false),
-      meteredSource(gainSource, trackList.getSampleRate()) {}
+Track::Track(TrackList &trackList) : trackList(trackList), gainSource(&mixerSource, false) {
+    meteredSource = std::make_unique<MeteredAudioSource>(gainSource, trackList.getSampleRate());
+}
 
-juce::uint64 Track::getTotalLength() const { return (juce::uint64)getTotalLengthSeconds() * (juce::uint64)sampleRate; }
+juce::uint64 Track::getTotalLength() const {
+    return (juce::uint64)getTotalLengthSeconds() * (juce::uint64)trackList.getSampleRate();
+}
 
 double Track::getTotalLengthSeconds() const {
     double len = 0;
@@ -18,7 +20,7 @@ double Track::getTotalLengthSeconds() const {
     return len;
 }
 
-double Track::getSampleRate() const { return sampleRate; }
+double Track::getSampleRate() const { return trackList.getSampleRate(); }
 
 bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
 
@@ -27,9 +29,9 @@ void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioForm
         return;
     }
     for (std::shared_ptr<Sample> &sample : samples) {
-        sample->loadFile(formatManager);
+        sample->loadFile(formatManager, deviceManager.getAudioDeviceSetup().sampleRate);
         if (sample->getSource() != nullptr) {
-            mixerSource.addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+            mixerSource.addInputSource(sample->getSource());
         }
     }
 }
@@ -38,9 +40,9 @@ Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFor
     const juce::File &file, double startPos, double endPos, double length, double fileSampleRate) {
     samples.push_back(std::make_shared<Sample>(file, startPos, endPos, length, fileSampleRate));
     auto sample = &(*samples.back());
-    sample->loadFile(formatManager);
+    sample->loadFile(formatManager, deviceManager.getAudioDeviceSetup().sampleRate);
     if (sample->getSource() != nullptr) {
-        mixerSource.addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+        mixerSource.addInputSource(sample->getSource());
     }
     if (name == defaultName) {
         name = file.getFileName();
@@ -51,12 +53,18 @@ Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFor
 void Track::moveSampleTo(Sample &sample, Track &toTrack) {
     for (auto iter = samples.begin(); iter != samples.end();) {
         if (&sample == iter->get()) {
+            auto source = sample.getSource();
+            if (source != nullptr) {
+                mixerSource.removeInputSource(source);
+                toTrack.mixerSource.addInputSource(source);
+            }
             toTrack.samples.push_back(*iter);
             samples.erase(iter++);
         } else {
             ++iter;
         }
     }
+    trackList.adjustTrackLengths();
 }
 
 void Track::adjustSampleLengthSecs(double newLen) {
@@ -108,6 +116,13 @@ void Track::updateGain() {
 void Track::setDeleted(bool newDeleted) {
     deleted = newDeleted;
     selected = false;
+    if (deleted) {
+        for (std::shared_ptr<Sample> &sample : samples) {
+            if (sample->getSource() != nullptr) {
+                mixerSource.removeInputSource(sample->getSource());
+            }
+        }
+    }
 }
 
 void Track::selectSample(Sample *newSelected) {
@@ -119,7 +134,10 @@ void Track::deleteSample(Sample *sample) {
         return;
     }
     sample->setDeleted(true);
-    mixerSource.removeInputSource(sample->getSource());
+    auto source = sample->getSource();
+    if (source != nullptr) {
+        mixerSource.removeInputSource(source);
+    }
 }
 
 void Track::undeleteSample(Sample *sample) {
@@ -127,5 +145,8 @@ void Track::undeleteSample(Sample *sample) {
         return;
     }
     sample->setDeleted(false);
-    mixerSource.addInputSource(sample->getSource(), false, sample->getSampleRate(), 2);
+    auto source = sample->getSource();
+    if (source != nullptr) {
+        mixerSource.addInputSource(source);
+    }
 }
