@@ -29,7 +29,7 @@ void TrackListController::update() {
         lane->update();
     });
     trackListPanel.update();
-    project.getTrackList().adjustTrackLengths();
+//    project.getTrackList().adjustTrackLengths();
 }
 
 void TrackListController::repaint() {
@@ -68,7 +68,7 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
         auto sample = track.addSample(desktopController.getMainWindow().getMainAudioComponent().getDeviceManager(),
             desktopController.getMainWindow().getMainAudioComponent().getFormatManager(), file, startPos / scale,
             endPos / scale, length, reader->sampleRate);
-        project.getTrackList().adjustTrackLengths();
+//        project.getTrackList().adjustTrackLengths();
         selectionChanged(&track);
         updateLane(track);
         updateMixerSource();
@@ -85,13 +85,13 @@ void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &to
         toTrack.selectSample(&sample);
     }
     sample.setPosition(pos);
-    project.getTrackList().adjustTrackLengths();
+//    project.getTrackList().adjustTrackLengths();
     trackListPanel.resize();
 }
 
 void TrackListController::resizeSample(Sample &sample, double length) {
     sample.setLength(length);
-    project.getTrackList().adjustTrackLengths();
+//    project.getTrackList().adjustTrackLengths();
     trackListPanel.resize();
 }
 
@@ -103,7 +103,7 @@ void TrackListController::deleteSample(Track &track, Sample *sample) {
     track.deleteSample(sample);
     updateLane(track);
     updateMixerSource();
-    project.getTrackList().adjustTrackLengths();
+//    project.getTrackList().adjustTrackLengths();
     pos = std::max(pos, transport.getLengthInSeconds());
     transport.setPosition(pos);
 }
@@ -117,7 +117,7 @@ void TrackListController::undeleteSample(Track &track, Sample *sample) {
     updateLane(track);
     updateMixerSource();
     transport.setPosition(pos);
-    project.getTrackList().adjustTrackLengths();
+//    project.getTrackList().adjustTrackLengths();
 }
 
 void TrackListController::updateLane(Track &track) {

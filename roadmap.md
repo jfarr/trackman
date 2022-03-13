@@ -1,7 +1,8 @@
 # Roadmap
 
 ## Short-Term
-- Rename `controls` -> `ui`
+- Bugs:
+  - Incorrect play length
 - Click to move transport
 - Sample info popup
 - Drop multiple files

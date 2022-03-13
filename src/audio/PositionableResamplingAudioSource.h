@@ -30,7 +30,7 @@ class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
     juce::PositionableAudioSource *source;
     juce::ResamplingAudioSource resamplerSource;
     // juce::CriticalSection callbackLock;
-    double sampleRate = 44100.0, sourceSampleRate;
+    double sampleRate, sourceSampleRate;
     int blockSize = 128;
     const bool deleteWhenRemoved;
 

@@ -1,8 +1,10 @@
 #include "Mixer.h"
+#include "TrackList.h"
 #include "common/listutil.h"
 
-Mixer::Mixer(double sampleRate)
-    : mixerSource(), gainSource(&mixerSource, false), meteredSource(gainSource, sampleRate) {
+Mixer::Mixer(TrackList &trackList, double sampleRate)
+    : trackList(trackList), mixerSource(sampleRate), gainSource(&mixerSource, false),
+      meteredSource(gainSource, sampleRate) {
     transportSource.setSource(&meteredSource);
     initialized = true;
 }
@@ -18,6 +20,7 @@ void Mixer::addSource(juce::PositionableAudioSource *source) {
         sources.push_back(source);
         auto pos = transportSource.getCurrentPosition();
         mixerSource.addInputSource(source);
+        //        trackList.adjustTrackLengths();
         transportSource.setPosition(pos);
         DBG("Mixer::addSource - set position: " << pos);
         DBG("Mixer::addSource - length: " << transportSource.getTotalLength());
@@ -29,6 +32,7 @@ void Mixer::removeAllSources() {
         mixerSource.removeInputSource(source);
     }
     sources.clear();
+    //    trackList.adjustTrackLengths();
 }
 
 void Mixer::setMasterLevelGain(float newLevel) {
@@ -43,6 +47,7 @@ void Mixer::setMasterMute(bool newMuted) {
 
 void Mixer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
     if (initialized) {
+        //        trackList.adjustTrackLengths();
         transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
     }
 }

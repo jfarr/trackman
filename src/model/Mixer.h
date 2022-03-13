@@ -2,20 +2,22 @@
 
 #include <JuceHeader.h>
 
-#include "audio/PositionableMixingAudioSource.h"
 #include "audio/GainAudioSource.h"
 #include "audio/MeteredAudioSource.h"
+#include "audio/PositionableMixingAudioSource.h"
+
+class TrackList;
 
 class Mixer {
   public:
-    explicit Mixer(double sampleRate);
+    explicit Mixer(TrackList &trackList, double sampleRate);
     ~Mixer();
 
     float getMasterLevelGain() const { return level; }
     bool isMasterMuted() const { return muted; }
 
     juce::AudioTransportSource &getTransportSource() { return transportSource; }
-    juce::AudioSource &getSource() { return *((PositionableMixingAudioSource *) &mixerSource); }
+    juce::AudioSource &getSource() { return *((PositionableMixingAudioSource *)&mixerSource); }
     foleys::LevelMeterSource &getMeterSource() { return meteredSource.getMeterSource(); }
 
     void addSource(juce::PositionableAudioSource *source);
@@ -30,6 +32,11 @@ class Mixer {
     void releaseResources();
 
   private:
+    friend TrackList;
+
+    void setTotalLengthSecs(double newLen) { mixerSource.setTotalLengthSecs(newLen); }
+
+    TrackList &trackList;
     std::list<juce::PositionableAudioSource *> sources;
     PositionableMixingAudioSource mixerSource;
     GainAudioSource gainSource;

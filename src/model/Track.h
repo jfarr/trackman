@@ -19,7 +19,7 @@ class Track {
     [[nodiscard]] juce::String getName() const { return name; }
     [[nodiscard]] juce::uint64 getTotalLength() const;
     [[nodiscard]] double getTotalLengthSeconds() const;
-    [[nodiscard]] double getSampleRate() const;
+//    [[nodiscard]] double getSampleRate() const;
     [[nodiscard]] float getLevelGain() const { return level; }
     [[nodiscard]] bool isMuted() const { return muted; }
     [[nodiscard]] bool isSoloed() const { return soloed; }
@@ -32,13 +32,13 @@ class Track {
         return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource();
     }
 
-    void adjustSampleLengthSecs(double newLen);
+//    void adjustSampleLengthSecs(double newLen);
     void loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     Sample *addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager,
         const juce::File &file, double startPos, double endPos, double length, double sampleRate);
     void moveSampleTo(Sample &sample, Track &toTrack);
-    Sample *getSelected() const;
-    void eachSample(std::function<void(Sample &sample)> f);
+    void deleteSample(Sample *sample);
+    void undeleteSample(Sample *sample);
 
     void setTrackNumber(int newNumber) { trackNumber = newNumber; }
     void setName(juce::String newName) { name = newName; }
@@ -46,13 +46,16 @@ class Track {
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
     void updateGain();
-    void setSelected(bool newSelected) { selected = newSelected; }
-    void setDeleted(bool newDeleted);
+    Sample *getSelected() const;
     void selectSample(Sample *newSelected);
-    void deleteSample(Sample *sample);
-    void undeleteSample(Sample *sample);
+    void eachSample(std::function<void(Sample &sample)> f);
 
   private:
+    friend TrackList;
+
+    void setSelected(bool newSelected) { selected = newSelected; }
+    void setDeleted(bool newDeleted);
+
     const juce::String defaultName = "untitled";
 
     TrackList &trackList;
@@ -68,6 +71,9 @@ class Track {
     bool selected = false;
     bool deleted = false;
     std::list<std::shared_ptr<Sample>> samples;
+    double totalLengthSecs = 0;
+
+    void updateLength();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
 };

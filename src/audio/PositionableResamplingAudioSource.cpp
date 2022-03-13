@@ -5,6 +5,7 @@ PositionableResamplingAudioSource::PositionableResamplingAudioSource(juce::Posit
     : source(source), resamplerSource(source, false, maxNumChannels), sampleRate(sampleRate),
       sourceSampleRate(sourceSampleRateToCorrectFor), deleteWhenRemoved(deleteWhenRemoved) {
     if (sourceSampleRate > 0) {
+        DBG("setting resampling ratio to: " << sourceSampleRate / sampleRate);
         resamplerSource.setResamplingRatio(sourceSampleRate / sampleRate);
     }
 }
@@ -23,6 +24,10 @@ void PositionableResamplingAudioSource::setSourceSampleRateToCorrectFor(double n
         resamplerSource.setResamplingRatio(sourceSampleRate / sampleRate);
     }
 }
+//
+//void PositionableResamplingAudioSource::setTotalLengthSecs(double newLen) {
+//    totalLength = newLen * sampleRate;
+//}
 
 //==============================================================================
 void PositionableResamplingAudioSource::prepareToPlay(int samplesPerBlockExpected, double newSampleRate) {
@@ -49,15 +54,16 @@ void PositionableResamplingAudioSource::getNextAudioBlock(const juce::AudioSourc
 
 //==============================================================================
 void PositionableResamplingAudioSource::setNextReadPosition(juce::int64 newPosition) {
-    source->setNextReadPosition((juce::int64)(newPosition * getSampleRatio()));
+    source->setNextReadPosition(newPosition * getSampleRatio());
 }
 
 juce::int64 PositionableResamplingAudioSource::getNextReadPosition() const {
-    return (double)source->getNextReadPosition() * getSampleRatio();
+    return source->getNextReadPosition() * getSampleRatio();
 }
 
 juce::int64 PositionableResamplingAudioSource::getTotalLength() const {
-    return (juce::int64)((double)source->getTotalLength() * getSampleRatio());
+    //        DBG("resampled length at " << getSampleRatio() << ": " << source->getTotalLength() * getSampleRatio());
+    return source->getTotalLength() * getSampleRatio();
 }
 
 bool PositionableResamplingAudioSource::isLooping() const { return source->isLooping(); }

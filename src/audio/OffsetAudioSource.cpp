@@ -41,7 +41,9 @@ juce::int64 OffsetAudioSource::getNextReadPosition() const {
 juce::int64 OffsetAudioSource::getTotalLength() const {
     const juce::ScopedLock lock(mutex);
     auto len = source.getTotalLength() + offsetSamples;
-    return std::max(len, minLength);
+    auto clamped = std::max(len, minLength);
+//    DBG("offset source (min " << minLength << ") len: " << clamped);
+    return clamped;
 }
 
 bool OffsetAudioSource::isLooping() const { return false; }

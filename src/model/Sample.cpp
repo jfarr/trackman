@@ -22,7 +22,8 @@ void Sample::setMinLengthSecs(double newLength) {
     if (offsetSource == nullptr) {
         return;
     }
-    offsetSource->setMinLength((juce::int64)newLength * (juce::int64)sourceSampleRate);
+    DBG("min length based on sample rate " << sourceSampleRate << ": " << newLength * sourceSampleRate);
+    offsetSource->setMinLength(newLength * sourceSampleRate);
 }
 
 void Sample::setPosition(double pos) {

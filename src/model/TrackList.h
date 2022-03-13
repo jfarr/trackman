@@ -2,9 +2,11 @@
 
 #include "Track.h"
 
+class Mixer;
+
 class TrackList {
   public:
-    TrackList(double sampleRate) : sampleRate(sampleRate) {}
+    TrackList(Mixer &mixer, double sampleRate) : mixer(mixer), sampleRate(sampleRate) {}
     ~TrackList() = default;
 
     Track *addTrack();
@@ -22,7 +24,7 @@ class TrackList {
     void eachTrack(std::function<void(Track &track)> f);
 
     void clear() { tracks.clear(); }
-    void adjustTrackLengths();
+//    void adjustTrackLengths();
     void setSelected(Track *selected);
     void selectSample(Sample *selected);
 
@@ -32,8 +34,14 @@ class TrackList {
     void writeAudioFile(const juce::File &file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const;
 
   private:
+    friend Track;
+
+    void updateLength();
+
+    Mixer &mixer;
     double sampleRate;
     std::list<std::unique_ptr<Track>> tracks;
+    double totalLengthSecs = 0;
 
     void renumber();
 

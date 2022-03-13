@@ -1,4 +1,5 @@
 #include "TrackList.h"
+#include "Mixer.h"
 
 Track *TrackList::addTrack() {
     auto *track = new Track(*this);
@@ -44,7 +45,7 @@ Track *TrackList::getSelectedTrack() const {
 
 juce::uint64 TrackList::getTotalLength() const {
     juce::uint64 total = 0;
-    for (const auto & track : tracks) {
+    for (const auto &track : tracks) {
         if (!track->isDeleted()) {
             juce::uint64 length = track->getTotalLength();
             total = std::max(total, length);
@@ -54,20 +55,35 @@ juce::uint64 TrackList::getTotalLength() const {
 }
 
 double TrackList::getTotalLengthSeconds() const {
-    double total = 0;
-    for (const auto & track : tracks) {
-        if (!track->isDeleted()) {
-            double length = track->getTotalLengthSeconds();
-            total = std::max(total, length);
-        }
-    }
-    return total;
+    return totalLengthSecs;
+    //    double total = 0;
+    //    for (const auto & track : tracks) {
+    //        if (!track->isDeleted()) {
+    //            double length = track->getTotalLengthSeconds();
+    //            total = std::max(total, length);
+    //        }
+    //    }
+    //    return total;
 }
 
-void TrackList::adjustTrackLengths() {
-    auto len = getTotalLengthSeconds();
-    DBG("TrackList::adjustTrackLengths: " << len);
-    eachTrack([len](Track &track) { track.adjustSampleLengthSecs(len); });
+//void TrackList::adjustTrackLengths() {
+//    //    auto len = getTotalLengthSeconds();
+//    //    DBG("TrackList::adjustTrackLengths: " << len);
+//    //    eachTrack([len](Track &track) {
+//    //        DBG("adjusting length for track " << track.getName() << " to " << len);
+//    //        track.adjustSampleLengthSecs(len);
+//    //    });
+//}
+
+void TrackList::updateLength() {
+    double newLen = 0;
+    for (const auto &track : tracks) {
+        if (!track->isDeleted()) {
+            newLen = std::max(newLen, track->getTotalLengthSeconds());
+        }
+    }
+    totalLengthSecs = newLen;
+    mixer.setTotalLengthSecs(totalLengthSecs);
 }
 
 void TrackList::eachTrack(std::function<void(Track &track)> f) {
@@ -125,13 +141,14 @@ std::list<const Track *> TrackList::getSoloed() {
     return soloed;
 }
 
-void TrackList::writeAudioFile(const juce::File& file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const {
+void TrackList::writeAudioFile(
+    const juce::File &file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const {
     file.deleteFile();
-    if (auto fileStream = std::unique_ptr<juce::FileOutputStream> (file.createOutputStream())) {
+    if (auto fileStream = std::unique_ptr<juce::FileOutputStream>(file.createOutputStream())) {
         juce::WavAudioFormat wavFormat;
-        if (auto writer = wavFormat.createWriterFor (fileStream.get(), sampleRate, 2, bitsPerSample, {}, 0)) {
+        if (auto writer = wavFormat.createWriterFor(fileStream.get(), sampleRate, 2, bitsPerSample, {}, 0)) {
             fileStream.release();
-            writer->writeFromAudioSource(source, (int) getTotalLength());
+            writer->writeFromAudioSource(source, (int)getTotalLength());
             writer->flush();
             delete writer;
         }
