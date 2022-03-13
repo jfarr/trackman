@@ -82,14 +82,14 @@ class MoveSampleCommand : public Command {
             toTrack = controller.addTrack();
             newTrack = true;
         }
-//        controller.getTrackListController().moveSample(sample, fromTrack, *toTrack, newPos);
+        controller.getTrackListController().moveSample(sample, fromTrack, *toTrack, newPos);
     }
 
     void undo() override {
-//        controller.getTrackListController().moveSample(sample, *toTrack, fromTrack, prevPos);
-//        if (newTrack) {
-//            controller.deleteTrack(toTrack, true);
-//        }
+        controller.getTrackListController().moveSample(sample, *toTrack, fromTrack, prevPos);
+        if (newTrack) {
+            controller.deleteTrack(toTrack, true);
+        }
     }
 
   private:
