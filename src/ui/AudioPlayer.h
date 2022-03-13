@@ -2,10 +2,10 @@
 
 #include <JuceHeader.h>
 
-#include "controls/common/FileChooserControl.h"
-#include "controls/common/PositionOverlay.h"
-#include "controls/common/ThumbnailComponent.h"
-#include "controls/common/TransportControl.h"
+#include "ui/common/FileChooserControl.h"
+#include "ui/common/PositionOverlay.h"
+#include "ui/common/ThumbnailComponent.h"
+#include "ui/common/TransportControl.h"
 
 class AudioPlayer : public juce::AudioAppComponent, public FileListener, public TransportControlListener {
   public:

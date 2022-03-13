@@ -1,12 +1,12 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
 
 #include "LevelMeterLookAndFeel.h"
-#include "controls/common/DecibelSlider.h"
-#include "controls/common/FileChooserControl.h"
-#include "controls/mixer/TrackControlListener.h"
 #include "model/Track.h"
+#include "ui/common/DecibelSlider.h"
+#include "ui/common/FileChooserControl.h"
+#include "ui/mixer/TrackControlListener.h"
 
 class TrackControl : public juce::Component, public SliderListener {
   public:

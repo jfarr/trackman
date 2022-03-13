@@ -3,9 +3,9 @@
 #include <JuceHeader.h>
 
 #include "SampleListener.h"
-#include "controls/common/ThumbnailComponent.h"
 #include "model/Project.h"
 #include "model/Sample.h"
+#include "ui/common/ThumbnailComponent.h"
 
 class SampleThumbnail;
 

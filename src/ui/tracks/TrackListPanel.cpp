@@ -1,7 +1,7 @@
 #include "TrackListPanel.h"
 #include "common/listutil.h"
-#include "controls/MainWindow.h"
-#include "controls/desktop/DesktopController.h"
+#include "ui/MainWindow.h"
+#include "ui/desktop/DesktopController.h"
 
 TrackListPanel::TrackListPanel(
     DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport)

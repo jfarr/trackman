@@ -1,7 +1,7 @@
 #include "DesktopComponent.h"
 #include "DesktopController.h"
 #include "common/listutil.h"
-#include "controls/MainWindow.h"
+#include "ui/MainWindow.h"
 
 DesktopComponent::DesktopComponent(DesktopController &desktopController)
     : desktopController(desktopController), timeMeter(desktopController.getProject()),

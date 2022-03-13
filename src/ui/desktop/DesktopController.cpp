@@ -3,7 +3,7 @@
 #include "commands/TrackCommands.h"
 #include "commands/TrackListCommands.h"
 #include "common/listutil.h"
-#include "controls/MainWindow.h"
+#include "ui/MainWindow.h"
 
 DesktopController::DesktopController(MainWindow &mainWindow, double sampleRate)
     : mainWindow(mainWindow), applicationName(mainWindow.getName()), desktopComponent(*this), project(sampleRate),

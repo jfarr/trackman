@@ -3,8 +3,8 @@
 #include <JuceHeader.h>
 
 #include "Command.h"
-#include "controls/tracks/TrackListController.h"
 #include "model/Track.h"
+#include "ui/tracks/TrackListController.h"
 
 class RenameTrackCommand : public Command {
   public:
@@ -71,8 +71,8 @@ class DeleteSampleCommand : public Command {
 
 class MoveSampleCommand : public Command {
   public:
-    MoveSampleCommand(DesktopController &controller, Sample &sample, Track &fromTrack, Track *toTrack, double prevPos,
-        double newPos)
+    MoveSampleCommand(
+        DesktopController &controller, Sample &sample, Track &fromTrack, Track *toTrack, double prevPos, double newPos)
         : Command("move sample"), controller(controller), sample(sample), fromTrack(fromTrack), toTrack(toTrack),
           prevPos(prevPos), newPos(newPos) {}
     ~MoveSampleCommand() {}

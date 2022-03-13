@@ -2,7 +2,7 @@
 #include <JuceHeader.h>
 
 #include "MainAudioComponent.h"
-#include "controls/desktop/DesktopComponent.h"
+#include "ui/desktop/DesktopComponent.h"
 
 class MainWindow : public juce::DocumentWindow {
   public:

@@ -3,10 +3,10 @@
 #include "JuceHeader.h"
 
 #include "audio/GainAudioSource.h"
-#include "controls/desktop/TrackListListener.h"
-#include "controls/mixer/TrackControl.h"
-#include "controls/tracks/TrackLaneControl.h"
 #include "model/Track.h"
+#include "ui/desktop/TrackListListener.h"
+#include "ui/mixer/TrackControl.h"
+#include "ui/tracks/TrackLaneControl.h"
 
 class DesktopController;
 

@@ -5,10 +5,10 @@
 #include "TrackLaneController.h"
 #include "TrackListPanel.h"
 #include "TrackListViewport.h"
-#include "controls/desktop/TrackListListener.h"
-#include "controls/tracks/SampleListener.h"
 #include "model/Project.h"
 #include "model/TrackList.h"
+#include "ui/desktop/TrackListListener.h"
+#include "ui/tracks/SampleListener.h"
 
 class DesktopController;
 

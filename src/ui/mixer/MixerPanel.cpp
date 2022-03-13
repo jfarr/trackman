@@ -1,5 +1,5 @@
 #include "MixerPanel.h"
-#include "controls/desktop/DesktopController.h"
+#include "ui/desktop/DesktopController.h"
 
 MixerPanel::MixerPanel(DesktopController &desktopController, foleys::LevelMeterSource &meterSource)
     : desktopController(desktopController), masterTrackControl(desktopController.getMixer(), meterSource),

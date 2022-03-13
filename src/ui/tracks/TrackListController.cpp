@@ -1,7 +1,7 @@
 #include "TrackListController.h"
 #include "common/listutil.h"
-#include "controls/MainWindow.h"
-#include "controls/desktop/DesktopController.h"
+#include "ui/MainWindow.h"
+#include "ui/desktop/DesktopController.h"
 
 TrackListController::TrackListController(DesktopController &desktopController, juce::AudioTransportSource &transport)
     : desktopController(desktopController), project(desktopController.getProject()), transport(transport),

@@ -4,9 +4,9 @@
 
 #include "SampleListener.h"
 #include "TrackLaneControl.h"
-#include "controls/desktop/TrackListListener.h"
 #include "model/Track.h"
 #include "model/TrackList.h"
+#include "ui/desktop/TrackListListener.h"
 
 class DesktopController;
 

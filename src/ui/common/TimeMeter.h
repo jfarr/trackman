@@ -1,6 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+
 #include "model/Project.h"
 
 class TimeMeter : public juce::Component {
