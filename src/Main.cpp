@@ -1,5 +1,7 @@
 #include <JuceHeader.h>
 
+#include <memory>
+
 #include "controls/MainWindow.h"
 #include "controls/desktop/DesktopComponent.h"
 #include "controls/desktop/DesktopController.h"
@@ -16,10 +18,7 @@ class TrackmanApplication : public juce::JUCEApplication {
     void initialise(const juce::String & /*commandLine*/) override {
         // This method is where you should put your application's initialisation
         // code..
-
-//        formatManager.registerBasicFormats();
-
-        mainWindow.reset(new MainWindow(getApplicationName()));
+        mainWindow = std::make_unique<MainWindow>(getApplicationName());
     }
 
     void shutdown() override {
@@ -30,23 +29,23 @@ class TrackmanApplication : public juce::JUCEApplication {
 
     //==============================================================================
     void systemRequestedQuit() override {
-        quit();
         // This is called when the app is being asked to quit: you can ignore
         // this request and let the app carry on running, or call quit() to
         // allow the app to close.
-//        if (mainWindow == nullptr || !mainWindow->getDesktopController().isDirty()) {
-//            quit();
-//        } else {
-//            juce::NativeMessageBox::showYesNoCancelBox(juce::MessageBoxIconType::QuestionIcon, "",
-//                "Save project before closing?", &mainWindow->getDesktopController().getDesktop(),
-//                juce::ModalCallbackFunction::create([this](int result) {
-//                    if (result == 2) {
-//                        quit();
-//                    } else if (result == 1) {
-//                        mainWindow->getDesktopController().saveProject([]() { quit(); });
-//                    }
-//                }));
-//        }
+        if (mainWindow == nullptr || !mainWindow->getMainAudioComponent().getDesktopController().isDirty()) {
+            quit();
+        } else {
+            juce::NativeMessageBox::showYesNoCancelBox(juce::MessageBoxIconType::QuestionIcon, "",
+                "Save project before closing?",
+                &mainWindow->getMainAudioComponent().getDesktopController().getDesktopComponent(),
+                juce::ModalCallbackFunction::create([this](int result) {
+                    if (result == 2) {
+                        quit();
+                    } else if (result == 1) {
+                        mainWindow->getMainAudioComponent().getDesktopController().saveProject([](bool saved) { if (saved) { quit();} });
+                    }
+                }));
+        }
     }
 
     void anotherInstanceStarted(const juce::String & /*commandLine*/) override {
@@ -56,7 +55,6 @@ class TrackmanApplication : public juce::JUCEApplication {
     }
 
   private:
-//    juce::AudioFormatManager formatManager;
     std::unique_ptr<MainWindow> mainWindow;
 };
 

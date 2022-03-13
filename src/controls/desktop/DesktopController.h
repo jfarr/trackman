@@ -58,8 +58,8 @@ class DesktopController : public juce::AudioSource,
     Sample *addSample(Track &track, juce::File file, int pos);
     void deleteSample(Track &track, Sample *sample);
 
-    void saveProject(std::function<void()> callback = nullptr);
-    void saveProjectAs(std::function<void()> callback = nullptr);
+    void saveProject(std::function<void(bool saved)> callback = nullptr);
+    void saveProjectAs(std::function<void(bool saved)> callback = nullptr);
     void openProject();
     void exportProject();
 

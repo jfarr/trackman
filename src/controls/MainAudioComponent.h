@@ -13,6 +13,7 @@ class MainAudioComponent : public juce::AudioAppComponent {
 
     juce::AudioFormatManager &getFormatManager() { return formatManager; }
     juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
+    DesktopController &getDesktopController() { return desktopController; }
 
     //==============================================================================
     // Component
