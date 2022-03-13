@@ -1,8 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Bug fixes
-  - Move sample to new lane then delete doesn't remove audio source
 - Rename `controls` -> `ui`
 - Click to move transport
 - Sample info popup

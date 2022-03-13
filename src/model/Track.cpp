@@ -53,6 +53,11 @@ Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFor
 void Track::moveSampleTo(Sample &sample, Track &toTrack) {
     for (auto iter = samples.begin(); iter != samples.end();) {
         if (&sample == iter->get()) {
+            auto source = sample.getSource();
+            if (source != nullptr) {
+                mixerSource.removeInputSource(*source);
+                toTrack.mixerSource.addInputSource(*source);
+            }
             toTrack.samples.push_back(*iter);
             samples.erase(iter++);
         } else {
