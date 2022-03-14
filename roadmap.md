@@ -1,8 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Bugs:
-  - Incorrect play length
 - Click to move transport
 - Sample info popup
 - Drop multiple files
