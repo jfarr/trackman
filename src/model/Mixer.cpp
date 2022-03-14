@@ -2,8 +2,8 @@
 #include "TrackList.h"
 #include "common/listutil.h"
 
-Mixer::Mixer(TrackList &trackList, juce::AudioDeviceManager &deviceManager)
-    : trackList(trackList), deviceManager(deviceManager), mixerSource(deviceManager), gainSource(&mixerSource, false),
+Mixer::Mixer(juce::AudioDeviceManager &deviceManager)
+    : deviceManager(deviceManager), mixerSource(deviceManager), gainSource(&mixerSource, false),
       meteredSource(&gainSource, deviceManager.getAudioDeviceSetup().sampleRate) {
     transportSource.setSource(&meteredSource);
     initialized = true;

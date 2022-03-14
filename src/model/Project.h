@@ -5,8 +5,11 @@
 
 class Project {
   public:
-    Project(juce::AudioDeviceManager &deviceManager) : trackList(), mixer(trackList, deviceManager) {}
+    Project(juce::AudioDeviceManager &deviceManager) : mixer(deviceManager) {}
     ~Project() = default;
+
+    Sample *addSample(Track &track, const juce::File &file, double startPos, double endPos,
+        juce::AudioFormatManager &formatManager, double sampleRate);
 
     TrackList &getTrackList() { return trackList; }
     Mixer &getMixer() { return mixer; }

@@ -27,7 +27,7 @@ class Track {
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
-    //    juce::PositionableAudioSource *getSource() { return meteredSource.get(); }
+        juce::PositionableAudioSource *getSource() { return samplePlayer.get(); }
     //    foleys::LevelMeterSource *getMeterSource() {
     //        return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource();
     //    }

@@ -6,11 +6,11 @@
 #include "audio/MeteredAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
 
-class TrackList;
+//class TrackList;
 
 class Mixer {
   public:
-    Mixer(TrackList &trackList, juce::AudioDeviceManager &deviceManager);
+    Mixer(juce::AudioDeviceManager &deviceManager);
     ~Mixer();
 
     float getMasterLevelGain() const { return level; }
@@ -33,11 +33,11 @@ class Mixer {
     void releaseResources();
 
   private:
-    friend TrackList;
+//    friend TrackList;
 
-    void setTotalLengthSecs(double newLen) { mixerSource.setTotalLengthSecs(newLen); }
+//    void setTotalLengthSecs(double newLen) { mixerSource.setTotalLengthSecs(newLen); }
 
-    TrackList &trackList;
+//    TrackList &trackList;
     juce::AudioDeviceManager &deviceManager;
     std::list<juce::PositionableAudioSource *> sources;
     PositionableMixingAudioSource mixerSource;

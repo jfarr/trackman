@@ -7,6 +7,7 @@
 //class Mixer;
 //class Track;
 //class Sample;
+class Project;
 
 class TrackList {
   public:
@@ -18,9 +19,6 @@ class TrackList {
     void deleteTrack(Track *track);
     void undeleteTrack(Track *track);
     void removeTrack(Track *track);
-
-    Sample *addSample(Track &track, const juce::File &file, double startPos, double endPos,
-        juce::AudioFormatManager &formatManager, double sampleRate);
 
     [[nodiscard]] int size() const { return (int)tracks.size(); }
     [[nodiscard]] Track *getSelectedTrack() const;
@@ -41,6 +39,10 @@ class TrackList {
   private:
 //    friend Track;
 //    friend Mixer;
+friend Project;
+
+        Sample *addSample(Track &track, const juce::File &file, double startPos, double endPos,
+            juce::AudioFormatManager &formatManager, double sampleRate);
 
 //    void updateLength();
 //    void updateAudioSources();

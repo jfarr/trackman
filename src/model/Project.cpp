@@ -5,6 +5,13 @@
 
 using json = nlohmann::json;
 
+Sample *Project::addSample(Track &track, const juce::File &file, double startPos, double endPos,
+    juce::AudioFormatManager &formatManager, double sampleRate) {
+    auto sample = trackList.addSample(track, file, startPos, endPos, formatManager, sampleRate);
+    mixer.addSource(track.getSource());
+    return sample;
+}
+
 std::string Project::to_json() {
     json project_json = {{"horizontalScale", horizontalScale},
         {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};

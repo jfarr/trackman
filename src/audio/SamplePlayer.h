@@ -3,7 +3,7 @@
 #include <JuceHeader.h>
 #include "model/Sample.h"
 
-class SamplePlayer : juce::PositionableAudioSource {
+class SamplePlayer : public juce::PositionableAudioSource {
   public:
     SamplePlayer(std::list<std::shared_ptr<Sample>> &samples) : samples(samples) {}
     ~SamplePlayer() override = default;
