@@ -37,7 +37,6 @@ double PositionableMixingAudioSource::getSampleRate() {
 }
 
 void PositionableMixingAudioSource::prepareToPlay(int blockSize, double newSampleRate) {
-    DBG("PositionableMixingAudioSource::prepareToPlay - blocksize: " << blockSize << " sample rate: " << newSampleRate);
     const juce::ScopedLock lock(mutex);
     if (newSampleRate != sampleRate) {
         totalLength = totalLengthSecs * newSampleRate;
