@@ -11,7 +11,7 @@ class Track;
 class Sample {
   public:
     Sample(Track &track, juce::File file, double startPos, double endPos, double sourceLengthSecs, double sampleRate)
-        : track(track), file(std::move(file)), startPos(startPos), endPos(endPos), length(sourceLengthSecs),
+        : track(&track), file(std::move(file)), startPos(startPos), endPos(endPos), length(sourceLengthSecs),
           sourceLengthSecs(sourceLengthSecs), sourceSampleRate(sampleRate) {}
     ~Sample();
 
@@ -33,8 +33,13 @@ class Sample {
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
 
   private:
-    Track &track;
+    friend Track;
+
+    Track *track;
     juce::File file;
+
+    void setTrack(Track &newTrack);
+
     double startPos;
     double endPos;
     double length;

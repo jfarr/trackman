@@ -24,7 +24,7 @@ void Sample::setPosition(double pos) {
     startPos = pos;
     endPos = startPos + length;
     offsetSource->setOffsetSeconds(startPos);
-    track.updateLength();
+    track->updateLength();
 }
 
 void Sample::setLength(double newLength) {
@@ -32,5 +32,9 @@ void Sample::setLength(double newLength) {
     endPos = startPos + newLength;
     auto sourceSampleRateToCorrectFor = sourceSampleRate * sourceLengthSecs / newLength;
     resamplingSource->setSourceSampleRateToCorrectFor(sourceSampleRateToCorrectFor);
-    track.updateLength();
+    track->updateLength();
+}
+
+void Sample::setTrack(Track &newTrack) {
+    track = &newTrack;
 }
