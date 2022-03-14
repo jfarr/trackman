@@ -30,8 +30,8 @@ class Track {
         return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource();
     }
 
-    void loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
-    Sample *addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager,
+    void loadSamples(juce::AudioFormatManager &formatManager);
+    Sample *addSample(juce::AudioFormatManager &formatManager,
         const juce::File &file, double startPos, double endPos, double length, double sampleRate);
     void moveSampleTo(Sample &sample, Track &toTrack);
     void deleteSample(Sample *sample);
@@ -51,6 +51,7 @@ class Track {
     friend TrackList;
     friend Sample;
 
+    void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted);
 
@@ -60,9 +61,10 @@ class Track {
     juce::AudioDeviceManager &deviceManager;
     int trackNumber = 0;
     juce::String name = defaultName;
-    PositionableMixingAudioSource mixerSource;
-    GainAudioSource gainSource;
-    std::unique_ptr<MeteredAudioSource> meteredSource;
+    std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
+    std::shared_ptr<MeteredAudioSource> meteredSource;
+    std::shared_ptr<GainAudioSource> gainSource;
+    std::shared_ptr<PositionableMixingAudioSource> mixerSource;
 
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;

@@ -33,6 +33,7 @@ class TrackList {
 
   private:
     friend Track;
+    friend Mixer;
 
     void updateLength();
 
