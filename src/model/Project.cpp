@@ -41,7 +41,7 @@ void Project::from_json(
             track->addSample(formatManager, sample_json["file"], sample_json["startPos"],
                 sample_json["endPos"], sample_json["length"], sample_json["sampleRate"]);
         }
-        track->loadSamples(formatManager);
-        mixer.addSource(track->getSource());
+//        track->loadSamples(formatManager);
+//        mixer.addSource(track->getSource());
     }
 }

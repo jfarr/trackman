@@ -35,8 +35,8 @@ class TrackList {
     friend Track;
     friend Mixer;
 
-    void updateLength();
-    void updateAudioSources();
+//    void updateLength();
+//    void updateAudioSources();
 
     Mixer &mixer;
     juce::AudioDeviceManager &deviceManager;

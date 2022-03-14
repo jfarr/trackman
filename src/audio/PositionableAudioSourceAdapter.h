@@ -14,11 +14,11 @@ class PositionableAudioSourceAdapter : public juce::PositionableAudioSource {
         }
     }
 
-    void setNextReadPosition(juce::int64 position) override { source->setNextReadPosition(position); }
-    juce::int64 getNextReadPosition() const override { return source->getNextReadPosition(); }
-    juce::int64 getTotalLength() const override { return source->getTotalLength(); }
-    bool isLooping() const override { return source->isLooping(); }
-    void setLooping(bool shouldLoop) override { source->setLooping(shouldLoop); }
+    virtual void setNextReadPosition(juce::int64 position) override { source->setNextReadPosition(position); }
+    virtual juce::int64 getNextReadPosition() const override { return source->getNextReadPosition(); }
+    virtual juce::int64 getTotalLength() const override { return source->getTotalLength(); }
+    virtual bool isLooping() const override { return source->isLooping(); }
+    virtual void setLooping(bool shouldLoop) override { source->setLooping(shouldLoop); }
 
   protected:
     PositionableAudioSource *source;

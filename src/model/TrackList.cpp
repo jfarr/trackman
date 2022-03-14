@@ -17,9 +17,9 @@ void TrackList::deleteTrack(Track *track) {
         return;
     }
     track->setDeleted(true);
-    if (track->getSource() != nullptr) {
-        mixer.removeSource(track->getSource());
-    }
+//    if (track->getSource() != nullptr) {
+//        mixer.removeSource(track->getSource());
+//    }
     renumber();
 }
 
@@ -28,9 +28,9 @@ void TrackList::undeleteTrack(Track *track) {
         return;
     }
     track->setDeleted(false);
-    if (track->getSource() != nullptr) {
-        mixer.addSource(track->getSource());
-    }
+//    if (track->getSource() != nullptr) {
+//        mixer.addSource(track->getSource());
+//    }
     renumber();
 }
 
@@ -57,26 +57,26 @@ double TrackList::getTotalLengthSeconds() const {
     return totalLengthSecs;
 }
 
-void TrackList::updateLength() {
-    double newLen = 0;
-    for (const auto &track : tracks) {
-        if (!track->isDeleted()) {
-            newLen = std::max(newLen, track->getTotalLengthSeconds());
-        }
-    }
-    totalLengthSecs = newLen;
-    mixer.setTotalLengthSecs(totalLengthSecs);
-}
+//void TrackList::updateLength() {
+//    double newLen = 0;
+//    for (const auto &track : tracks) {
+//        if (!track->isDeleted()) {
+//            newLen = std::max(newLen, track->getTotalLengthSeconds());
+//        }
+//    }
+//    totalLengthSecs = newLen;
+//    mixer.setTotalLengthSecs(totalLengthSecs);
+//}
 
-void TrackList::updateAudioSources() {
-    mixer.removeAllSources();
-    for (std::unique_ptr<Track> &track : tracks) {
-        DBG("TrackList::updateAudioSources - add track source: " << track->getName());
-        if (track->getSource() != nullptr) {
-            mixer.addSource(track->getSource());
-        }
-    }
-}
+//void TrackList::updateAudioSources() {
+//    mixer.removeAllSources();
+//    for (std::unique_ptr<Track> &track : tracks) {
+//        DBG("TrackList::updateAudioSources - add track source: " << track->getName());
+////        if (track->getSource() != nullptr) {
+////            mixer.addSource(track->getSource());
+////        }
+//    }
+//}
 
 void TrackList::eachTrack(std::function<void(Track &track)> f) {
     for (std::unique_ptr<Track> &track : tracks) {

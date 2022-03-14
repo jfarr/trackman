@@ -16,6 +16,7 @@ class Sample {
     [[nodiscard]] juce::File getFile() const { return file; }
     [[nodiscard]] double getStartPos() const { return startPos; }
     [[nodiscard]] double getEndPos() const { return endPos; }
+    [[nodiscard]] juce::uint64 getTotalLength() const;
     [[nodiscard]] double getLengthSecs() const { return length; }
     [[nodiscard]] double getSourceLengthSecs() const { return sourceLengthSecs; }
     [[nodiscard]] double getSampleRate() const { return sourceSampleRate; }
