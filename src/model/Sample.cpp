@@ -14,7 +14,7 @@ juce::uint64 Sample::getTotalLength() const { return reader == nullptr ? 0 : rea
 void Sample::loadFile(juce::AudioFormatManager &formatManager, double sampleRate) {
     reader.reset(formatManager.createReaderFor(file));
     if (reader != nullptr) {
-        fileSource = std::make_unique<juce::AudioFormatReaderSource>(reader.get(), true);
+        fileSource = std::make_unique<juce::AudioFormatReaderSource>(reader.get(), false);
         //        offsetSource = std::make_unique<OffsetAudioSource>(*fileSource, startPos, sourceSampleRate);
         //        resamplingSource =
         //            std::make_unique<PositionableResamplingAudioSource>(&*offsetSource, false, sampleRate,
