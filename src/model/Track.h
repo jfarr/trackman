@@ -8,20 +8,20 @@
 #include "audio/OffsetAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
 
-class TrackList;
+//class TrackList;
 
 class Track {
   public:
-    explicit Track(TrackList &trackList, juce::AudioDeviceManager &deviceManager);
+    explicit Track();
     ~Track();
 
     [[nodiscard]] int getTrackNumber() const { return trackNumber; }
     [[nodiscard]] juce::String getName() const { return name; }
-    [[nodiscard]] double getTotalLengthSeconds() const;
+    [[nodiscard]] double getTotalLengthSeconds() const { return 0; }
     [[nodiscard]] float getLevelGain() const { return level; }
     [[nodiscard]] bool isMuted() const { return muted; }
     [[nodiscard]] bool isSoloed() const { return soloed; }
-    [[nodiscard]] bool isSilenced() const;
+//    [[nodiscard]] bool isSilenced() const;
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
@@ -46,18 +46,18 @@ class Track {
     Sample *getSelected() const;
     void selectSample(Sample *newSelected);
     void eachSample(std::function<void(Sample &sample)> f);
-
-  private:
-    friend TrackList;
-    friend Sample;
-
-//    void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted);
 
+  private:
+//    friend TrackList;
+//    friend Sample;
+
+//    void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource);
+
     const juce::String defaultName = "untitled";
 
-    TrackList &trackList;
+//    TrackList &trackList;
 //    juce::AudioDeviceManager &deviceManager;
     int trackNumber = 0;
     juce::String name = defaultName;

@@ -23,8 +23,8 @@ class Sample {
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
-    void loadFile(juce::AudioFormatManager &formatManager, double sampleRate);
-    juce::PositionableAudioSource *getSource() { return resamplingSource.get(); }
+//    void loadFile(juce::AudioFormatManager &formatManager, double sampleRate);
+//    juce::PositionableAudioSource *getSource() { return resamplingSource.get(); }
 
     void setPosition(double pos);
     void setLength(double newLength);
@@ -32,21 +32,21 @@ class Sample {
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
 
   private:
-    friend Track;
+//    friend Track;
 
-    Track *track;
+//    Track *track;
     juce::File file;
 
-    void setTrack(Track &newTrack);
+//    void setTrack(Track &newTrack);
 
     double startPos;
     double endPos;
     double length;
     double sourceLengthSecs;
     double sourceSampleRate;
-    std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
-    std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
-    std::unique_ptr<OffsetAudioSource> offsetSource;
+//    std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
+//    std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
+//    std::unique_ptr<OffsetAudioSource> offsetSource;
     bool selected = false;
     bool deleted = false;
 };

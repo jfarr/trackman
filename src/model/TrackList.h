@@ -6,11 +6,11 @@ class Mixer;
 
 class TrackList {
   public:
-    TrackList(Mixer &mixer, juce::AudioDeviceManager &deviceManager) : mixer(mixer), deviceManager(deviceManager) {}
+    TrackList() = default;
     ~TrackList() = default;
 
     Track *addTrack();
-    Track *createTempTrack();
+//    Track *createTempTrack();
     void deleteTrack(Track *track);
     void undeleteTrack(Track *track);
     void removeTrack(Track *track);
@@ -32,14 +32,14 @@ class TrackList {
     void writeAudioFile(const juce::File &file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const;
 
   private:
-    friend Track;
-    friend Mixer;
+//    friend Track;
+//    friend Mixer;
 
 //    void updateLength();
 //    void updateAudioSources();
 
-    Mixer &mixer;
-    juce::AudioDeviceManager &deviceManager;
+//    Mixer &mixer;
+//    juce::AudioDeviceManager &deviceManager;
     std::list<std::unique_ptr<Track>> tracks;
     double totalLengthSecs = 0;
 

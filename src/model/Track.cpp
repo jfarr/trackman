@@ -1,14 +1,12 @@
 #include "Track.h"
-#include "TrackList.h"
-#include "audio/PositionableMixingAudioSource.h"
 
-Track::Track(TrackList &trackList, juce::AudioDeviceManager &deviceManager) : trackList(trackList) {}
+Track::Track() {}
 
 Track::~Track() { samples.clear(); }
 
 //double Track::getTotalLengthSeconds() const { return totalLengthSecs; }
 
-bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
+//bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
 //
 // void Track::loadSamples(juce::AudioFormatManager &formatManager) {
 //    if (samples.empty()) {
@@ -63,7 +61,7 @@ Sample *Track::addSample(juce::AudioFormatManager &formatManager, const juce::Fi
 void Track::moveSampleTo(Sample &sample, Track &toTrack) {
     for (auto iter = samples.begin(); iter != samples.end();) {
         if (&sample == iter->get()) {
-            sample.setTrack(toTrack);
+//            sample.setTrack(toTrack);
             //            auto source = sample.getSource();
             //            if (source != nullptr) {
             //                if (mixerSource != nullptr) {
@@ -153,7 +151,7 @@ void Track::setMute(bool newMuted) {
 
 void Track::setSolo(bool newSoloed) {
     soloed = newSoloed;
-    trackList.soloTracks();
+//    trackList.soloTracks();
 }
 
 void Track::updateGain() {

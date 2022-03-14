@@ -2,15 +2,15 @@
 #include "Mixer.h"
 
 Track *TrackList::addTrack() {
-    auto *track = new Track(*this, deviceManager);
+    auto *track = new Track();
     tracks.push_back(std::unique_ptr<Track>(track));
     renumber();
     return track;
 }
-
-Track *TrackList::createTempTrack() {
-    return new Track(*this, deviceManager);
-}
+//
+//Track *TrackList::createTempTrack() {
+//    return new Track(*this, deviceManager);
+//}
 
 void TrackList::deleteTrack(Track *track) {
     if (track == nullptr) {
@@ -140,7 +140,7 @@ void TrackList::writeAudioFile(
         juce::WavAudioFormat wavFormat;
         if (auto writer = wavFormat.createWriterFor(fileStream.get(), sampleRate, 2, bitsPerSample, {}, 0)) {
             fileStream.release();
-            writer->writeFromAudioSource(source, (int)(getTotalLengthSeconds() * deviceManager.getAudioDeviceSetup().sampleRate));
+            writer->writeFromAudioSource(source, (int)(getTotalLengthSeconds() * sampleRate));
             writer->flush();
             delete writer;
         }
