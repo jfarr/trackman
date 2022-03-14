@@ -60,11 +60,6 @@ void TrackList::updateLength() {
     }
     totalLengthSecs = newLen;
     mixer.setTotalLengthSecs(totalLengthSecs);
-    for (const auto &track : tracks) {
-        if (!track->isDeleted()) {
-            track->setTotalLengthSecs(newLen);
-        }
-    }
 }
 
 void TrackList::eachTrack(std::function<void(Track &track)> f) {

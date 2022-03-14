@@ -52,12 +52,12 @@ void Track::moveSampleTo(Sample &sample, Track &toTrack) {
             }
             toTrack.samples.push_back(*iter);
             samples.erase(iter++);
-            updateLength();
-            toTrack.updateLength();
         } else {
             ++iter;
         }
     }
+    updateLength();
+    toTrack.updateLength();
 }
 
 void Track::deleteSample(Sample *sample) {

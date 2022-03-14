@@ -50,7 +50,6 @@ void MixerController::removeAudioSources() {
 void MixerController::updateAudioSource() {
     removeAudioSources();
     trackList.eachTrack([this](Track &track) {
-        DBG("MixerController::updateAudioSource - add track source: " << track.getName());
         if (track.getSource() != nullptr) {
             mixer.addSource(track.getSource());
         }
