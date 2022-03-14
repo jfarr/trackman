@@ -6,10 +6,11 @@ class Mixer;
 
 class TrackList {
   public:
-    TrackList(Mixer &mixer, double sampleRate) : mixer(mixer), sampleRate(sampleRate) {}
+    TrackList(Mixer &mixer, juce::AudioDeviceManager &deviceManager) : mixer(mixer), deviceManager(deviceManager) {}
     ~TrackList() = default;
 
     Track *addTrack();
+    Track *createTempTrack();
     void deleteTrack(Track *track);
     void undeleteTrack(Track *track);
     void removeTrack(Track *track);
@@ -17,14 +18,14 @@ class TrackList {
     [[nodiscard]] int size() const { return (int)tracks.size(); }
     [[nodiscard]] Track *getSelectedTrack() const;
     [[nodiscard]] Sample *getSelectedSample() const;
-    [[nodiscard]] juce::uint64 getTotalLength() const;
+//    [[nodiscard]] juce::uint64 getTotalLength() const;
     [[nodiscard]] double getTotalLengthSeconds() const;
-    [[nodiscard]] double getSampleRate() const { return sampleRate; }
+//    [[nodiscard]] double getSampleRate() const { return sampleRate; }
 
     void eachTrack(std::function<void(Track &track)> f);
 
     void clear() { tracks.clear(); }
-//    void adjustTrackLengths();
+    //    void adjustTrackLengths();
     void setSelected(Track *selected);
     void selectSample(Sample *selected);
 
@@ -39,7 +40,8 @@ class TrackList {
     void updateLength();
 
     Mixer &mixer;
-    double sampleRate;
+    juce::AudioDeviceManager &deviceManager;
+    //    double sampleRate;
     std::list<std::unique_ptr<Track>> tracks;
     double totalLengthSecs = 0;
 

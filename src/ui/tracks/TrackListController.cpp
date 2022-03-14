@@ -183,7 +183,7 @@ void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int sc
         TrackLaneController *lane;
         if (track == nullptr) {
             if (newDragLane == nullptr) {
-                track = new Track(project.getTrackList());
+                track = project.getTrackList().createTempTrack();
                 newDragLane = new TrackLaneController(project, *track, *this, transport,
                     desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
                 trackListPanel.addLane(&newDragLane->getTrackLaneControl());

@@ -10,7 +10,7 @@ class TrackList;
 
 class Mixer {
   public:
-    explicit Mixer(TrackList &trackList, double sampleRate);
+    explicit Mixer(TrackList &trackList, juce::AudioDeviceManager &deviceManager);
     ~Mixer();
 
     float getMasterLevelGain() const { return level; }

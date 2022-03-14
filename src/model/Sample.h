@@ -6,10 +6,12 @@
 
 #include <utility>
 
+class Track;
+
 class Sample {
   public:
-    Sample(juce::File file, double startPos, double endPos, double sourceLengthSecs, double sampleRate)
-        : file(std::move(file)), startPos(startPos), endPos(endPos), length(sourceLengthSecs),
+    Sample(Track &track, juce::File file, double startPos, double endPos, double sourceLengthSecs, double sampleRate)
+        : track(track), file(std::move(file)), startPos(startPos), endPos(endPos), length(sourceLengthSecs),
           sourceLengthSecs(sourceLengthSecs), sourceSampleRate(sampleRate) {}
     ~Sample();
 
@@ -25,13 +27,14 @@ class Sample {
     void loadFile(juce::AudioFormatManager &formatManager, double sampleRate);
     juce::PositionableAudioSource *getSource() { return offsetSource; }
 
-    void setMinLengthSecs(double newLength);
+//    void setMinLengthSecs(double newLength);
     void setPosition(double pos);
     void setLength(double newLength);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
 
   private:
+    Track &track;
     juce::File file;
     double startPos;
     double endPos;

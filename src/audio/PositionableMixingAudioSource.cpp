@@ -25,29 +25,53 @@ void PositionableMixingAudioSource::removeAllInputs() {
 }
 
 void PositionableMixingAudioSource::setTotalLengthSecs(double newLen) {
+    DBG("PositionableMixingAudioSource::setTotalLengthSecs: " << newLen);
     const juce::ScopedLock lock(mutex);
-    totalLength = newLen * sampleRate;
+    totalLengthSecs = newLen;
+    totalLength = newLen * getSampleRate();
+    if (totalLength <= 0) {
+        DBG("wtf mate");
+    } else if (totalLength > 1000000) {
+        DBG("wtf mate");
+    }
+}
+
+double PositionableMixingAudioSource::getSampleRate() {
+    return sampleRate == 0 ? deviceManager.getAudioDeviceSetup().sampleRate : sampleRate;
 }
 
 void PositionableMixingAudioSource::prepareToPlay(int blockSize, double newSampleRate) {
     DBG("PositionableMixingAudioSource::prepareToPlay - blocksize: " << blockSize << " sample rate: " << newSampleRate);
     const juce::ScopedLock lock(mutex);
-    sampleRate = newSampleRate;
+    if (newSampleRate != sampleRate) {
+        totalLength = totalLengthSecs * newSampleRate;
+        sampleRate = newSampleRate;
+    }
+    if (totalLength <= 0) {
+        DBG("wtf mate");
+    } else if (totalLength > 1000000) {
+        DBG("wtf mate");
+    }
     mixer.prepareToPlay(blockSize, newSampleRate);
 }
 
 void PositionableMixingAudioSource::releaseResources() { mixer.releaseResources(); }
 
 void PositionableMixingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+    if (totalLength <= 0) {
+        DBG("wtf mate");
+    } else if (totalLength > 1000000) {
+        DBG("wtf mate");
+    }
     juce::int64 currentPos = getNextReadPosition();
-    if (currentPos > getTotalLength()) {
+    if (currentPos > totalLength) {
         setNextReadPosition(currentPos);
     }
     mixer.getNextAudioBlock(bufferToFill);
 }
 
 void PositionableMixingAudioSource::setNextReadPosition(juce::int64 newPosition) {
-    newPosition = looping ? newPosition % getTotalLength() : newPosition;
+    newPosition = looping ? newPosition % totalLength : newPosition;
     for (int i = inputs.size(); --i >= 0;) {
         inputs.getUnchecked(i)->setNextReadPosition(newPosition);
     }
@@ -67,13 +91,16 @@ juce::int64 PositionableMixingAudioSource::getTotalLength() const {
     //    for (int i = inputs.size(); --i >= 0;) {
     //        auto inputLength = inputs.getUnchecked(i)->getTotalLength();
     ////        DBG("PositionableMixingAudioSource @" + juce::String::toHexString((long)this) << " got length: " <<
-    ///inputLength);
+    /// inputLength);
     //        if (inputLength > totalLength) {
     //            totalLength = inputLength;
     //        }
     //    }
     const juce::ScopedLock lock(mutex);
-    DBG("PositionableMixingAudioSource total length: " << totalLength);
+    //    DBG("PositionableMixingAudioSource total length: " << totalLength);
+    if (totalLength <= 0) {
+        DBG("wtf mate");
+    }
     return totalLength;
 }
 

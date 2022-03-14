@@ -5,9 +5,10 @@
 #include "common/listutil.h"
 #include "ui/MainWindow.h"
 
-DesktopController::DesktopController(MainWindow &mainWindow, double sampleRate)
-    : mainWindow(mainWindow), applicationName(mainWindow.getName()), desktopComponent(*this), project(sampleRate),
-      mixerController(*this), trackListController(*this, project.getMixer().getTransportSource()) {
+DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceManager &deviceManager)
+    : mainWindow(mainWindow), deviceManager(deviceManager), applicationName(mainWindow.getName()),
+      desktopComponent(*this), project(deviceManager), mixerController(*this),
+      trackListController(*this, project.getMixer().getTransportSource()) {
 
     updateTitleBar();
 }

@@ -12,12 +12,12 @@ class TrackList;
 
 class Track {
   public:
-    explicit Track(TrackList &trackList);
+    explicit Track(TrackList &trackList, juce::AudioDeviceManager &deviceManager);
     ~Track() { samples.clear(); }
 
     [[nodiscard]] int getTrackNumber() const { return trackNumber; }
     [[nodiscard]] juce::String getName() const { return name; }
-    [[nodiscard]] juce::uint64 getTotalLength() const;
+//    [[nodiscard]] juce::uint64 getTotalLength() const;
     [[nodiscard]] double getTotalLengthSeconds() const;
 //    [[nodiscard]] double getSampleRate() const;
     [[nodiscard]] float getLevelGain() const { return level; }
@@ -52,6 +52,7 @@ class Track {
 
   private:
     friend TrackList;
+    friend Sample;
 
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted);
@@ -74,6 +75,7 @@ class Track {
     double totalLengthSecs = 0;
 
     void updateLength();
+    void setTotalLengthSecs(double newLen);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
 };

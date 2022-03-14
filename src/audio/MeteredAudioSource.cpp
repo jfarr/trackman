@@ -19,6 +19,9 @@ void MeteredAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &b
     source.getNextAudioBlock(bufferToFill);
     meterSource.measureBlock(*bufferToFill.buffer);
     DBG("play length: " << source.getTotalLength());
+    if (source.getTotalLength() <= 0) {
+        DBG("wtf mate");
+    }
     DBG("play length / 48000: " << source.getTotalLength() / 48000.0);
     DBG("play length / 44100: " << source.getTotalLength() / 44100.0);
 }

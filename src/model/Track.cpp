@@ -2,14 +2,14 @@
 #include "TrackList.h"
 #include "audio/PositionableMixingAudioSource.h"
 
-Track::Track(TrackList &trackList)
-    : trackList(trackList), mixerSource(trackList.getSampleRate()), gainSource(&mixerSource, false) {
-    meteredSource = std::make_unique<MeteredAudioSource>(gainSource, trackList.getSampleRate());
+Track::Track(TrackList &trackList, juce::AudioDeviceManager &deviceManager)
+    : trackList(trackList), mixerSource(deviceManager), gainSource(&mixerSource, false) {
+    meteredSource = std::make_unique<MeteredAudioSource>(gainSource, deviceManager.getAudioDeviceSetup().sampleRate);
 }
 
-juce::uint64 Track::getTotalLength() const {
-    return (juce::uint64)getTotalLengthSeconds() * (juce::uint64)trackList.getSampleRate();
-}
+//juce::uint64 Track::getTotalLength() const {
+//    return (juce::uint64)getTotalLengthSeconds() * (juce::uint64)trackList.getSampleRate();
+//}
 
 double Track::getTotalLengthSeconds() const {
     //    double len = 0;
@@ -43,7 +43,7 @@ void Track::loadSamples(juce::AudioDeviceManager &deviceManager, juce::AudioForm
 
 Sample *Track::addSample(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager,
     const juce::File &file, double startPos, double endPos, double length, double fileSampleRate) {
-    samples.push_back(std::make_shared<Sample>(file, startPos, endPos, length, fileSampleRate));
+    samples.push_back(std::make_shared<Sample>(*this, file, startPos, endPos, length, fileSampleRate));
     auto sample = &(*samples.back());
     sample->loadFile(formatManager, deviceManager.getAudioDeviceSetup().sampleRate);
     if (sample->getSource() != nullptr) {
@@ -118,8 +118,13 @@ void Track::updateLength() {
             newLen = std::max(newLen, sample->getEndPos());
         }
     }
-    totalLengthSecs = newLen;
+    setTotalLengthSecs(newLen);
     trackList.updateLength();
+}
+
+void Track::setTotalLengthSecs(double newLen) {
+    totalLengthSecs = newLen;
+    mixerSource.setTotalLengthSecs(newLen);
 }
 
 // void Track::adjustSampleLengthSecs(double newLen) {

@@ -5,7 +5,9 @@
 
 class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   public:
-    PositionableMixingAudioSource(double sampleRate) : sampleRate(sampleRate) {}
+    PositionableMixingAudioSource(juce::AudioDeviceManager &deviceManager) : deviceManager(deviceManager) {
+        DBG("create mixer");
+    }
     ~PositionableMixingAudioSource() override { removeAllInputs(); }
 
     void addInputSource(PositionableAudioSource *input);
@@ -29,13 +31,17 @@ class PositionableMixingAudioSource : public juce::PositionableAudioSource {
     void setLooping(bool shouldLoop) override;
 
   private:
+    juce::AudioDeviceManager &deviceManager;
     juce::MixerAudioSource mixer;
     juce::Array<PositionableAudioSource *> inputs;
     bool looping = false;
-    double sampleRate;
+    double sampleRate = 0;
     juce::uint64 totalLength = 0;
+    double totalLengthSecs = 0;
 
     juce::CriticalSection mutex;
+
+    double getSampleRate();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PositionableMixingAudioSource)
 };

@@ -2,10 +2,14 @@
 #include "Mixer.h"
 
 Track *TrackList::addTrack() {
-    auto *track = new Track(*this);
+    auto *track = new Track(*this, deviceManager);
     tracks.push_back(std::unique_ptr<Track>(track));
     renumber();
     return track;
+}
+
+Track *TrackList::createTempTrack() {
+    return new Track(*this, deviceManager);
 }
 
 void TrackList::deleteTrack(Track *track) {
@@ -42,17 +46,17 @@ Track *TrackList::getSelectedTrack() const {
     }
     return nullptr;
 }
-
-juce::uint64 TrackList::getTotalLength() const {
-    juce::uint64 total = 0;
-    for (const auto &track : tracks) {
-        if (!track->isDeleted()) {
-            juce::uint64 length = track->getTotalLength();
-            total = std::max(total, length);
-        }
-    }
-    return total;
-}
+//
+//juce::uint64 TrackList::getTotalLength() const {
+//    juce::uint64 total = 0;
+//    for (const auto &track : tracks) {
+//        if (!track->isDeleted()) {
+//            juce::uint64 length = track->getTotalLength();
+//            total = std::max(total, length);
+//        }
+//    }
+//    return total;
+//}
 
 double TrackList::getTotalLengthSeconds() const {
     return totalLengthSecs;
@@ -84,6 +88,11 @@ void TrackList::updateLength() {
     }
     totalLengthSecs = newLen;
     mixer.setTotalLengthSecs(totalLengthSecs);
+    for (const auto &track : tracks) {
+        if (!track->isDeleted()) {
+            track->setTotalLengthSecs(newLen);
+        }
+    }
 }
 
 void TrackList::eachTrack(std::function<void(Track &track)> f) {
@@ -148,7 +157,7 @@ void TrackList::writeAudioFile(
         juce::WavAudioFormat wavFormat;
         if (auto writer = wavFormat.createWriterFor(fileStream.get(), sampleRate, 2, bitsPerSample, {}, 0)) {
             fileStream.release();
-            writer->writeFromAudioSource(source, (int)getTotalLength());
+            writer->writeFromAudioSource(source, (int)(getTotalLengthSeconds() * deviceManager.getAudioDeviceSetup().sampleRate));
             writer->flush();
             delete writer;
         }

@@ -15,4 +15,5 @@ void GainAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &buff
     for (int i = bufferToFill.buffer->getNumChannels(); --i >= 0;)
         bufferToFill.buffer->applyGainRamp(i, bufferToFill.startSample, bufferToFill.numSamples, lastGain, gain);
     lastGain = gain;
+    DBG("gain source length: " << source->getTotalLength());
 }

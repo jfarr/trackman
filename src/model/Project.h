@@ -5,7 +5,7 @@
 
 class Project {
   public:
-    Project(double sampleRate) : trackList(mixer, sampleRate), mixer(trackList, sampleRate) {}
+    Project(juce::AudioDeviceManager &deviceManager) : trackList(mixer, deviceManager), mixer(trackList, deviceManager) {}
     ~Project() = default;
 
     TrackList &getTrackList() { return trackList; }

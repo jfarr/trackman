@@ -2,9 +2,9 @@
 #include "TrackList.h"
 #include "common/listutil.h"
 
-Mixer::Mixer(TrackList &trackList, double sampleRate)
-    : trackList(trackList), mixerSource(sampleRate), gainSource(&mixerSource, false),
-      meteredSource(gainSource, sampleRate) {
+Mixer::Mixer(TrackList &trackList, juce::AudioDeviceManager &deviceManager)
+    : trackList(trackList), mixerSource(deviceManager), gainSource(&mixerSource, false),
+      meteredSource(gainSource, deviceManager.getAudioDeviceSetup().sampleRate) {
     transportSource.setSource(&meteredSource);
     initialized = true;
 }
