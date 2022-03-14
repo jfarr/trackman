@@ -258,6 +258,7 @@ void DesktopController::openProject() {
         auto file = fc.getResult();
         if (file != juce::File{}) {
             projectFile = file;
+            mixerController.removeAudioSources();
             project.from_json(mainWindow.getMainAudioComponent().getDeviceManager(),
                 mainWindow.getMainAudioComponent().getFormatManager(), file.getFullPathName().toStdString());
             juce::MessageManager::callAsync([this]() {
