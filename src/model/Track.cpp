@@ -3,13 +3,11 @@
 #include "audio/PositionableMixingAudioSource.h"
 
 Track::Track(TrackList &trackList, juce::AudioDeviceManager &deviceManager)
-    : trackList(trackList), mixerSource(deviceManager), gainSource(&mixerSource, false) {
+    : trackList(trackList), deviceManager(deviceManager), mixerSource(deviceManager), gainSource(&mixerSource, false) {
     meteredSource = std::make_unique<MeteredAudioSource>(gainSource, deviceManager.getAudioDeviceSetup().sampleRate);
 }
 
-double Track::getTotalLengthSeconds() const {
-    return totalLengthSecs;
-}
+double Track::getTotalLengthSeconds() const { return totalLengthSecs; }
 
 bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
 
@@ -80,6 +78,8 @@ void Track::undeleteSample(Sample *sample) {
     auto source = sample->getSource();
     if (source != nullptr) {
         mixerSource.addInputSource(source);
+        mixerSource.prepareToPlay(
+            deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
     }
     updateLength();
 }

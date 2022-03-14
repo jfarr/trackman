@@ -17,6 +17,9 @@ void TrackList::deleteTrack(Track *track) {
         return;
     }
     track->setDeleted(true);
+    if (track->getSource() != nullptr) {
+        mixer.removeSource(track->getSource());
+    }
     renumber();
 }
 
@@ -25,6 +28,9 @@ void TrackList::undeleteTrack(Track *track) {
         return;
     }
     track->setDeleted(false);
+    if (track->getSource() != nullptr) {
+        mixer.addSource(track->getSource());
+    }
     renumber();
 }
 

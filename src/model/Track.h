@@ -57,6 +57,7 @@ class Track {
     const juce::String defaultName = "untitled";
 
     TrackList &trackList;
+    juce::AudioDeviceManager &deviceManager;
     int trackNumber = 0;
     juce::String name = defaultName;
     PositionableMixingAudioSource mixerSource;

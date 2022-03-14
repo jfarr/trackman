@@ -14,7 +14,7 @@ void OffsetAudioSource::setOffsetSeconds(double offsetSeconds) {
 
 void OffsetAudioSource::prepareToPlay(int blockSize, double sampleRate) { source.prepareToPlay(blockSize, sampleRate); }
 
-void OffsetAudioSource::releaseResources() {}
+void OffsetAudioSource::releaseResources() { source.releaseResources(); }
 
 void OffsetAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
     source.getNextAudioBlock(bufferToFill);

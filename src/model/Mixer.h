@@ -10,7 +10,7 @@ class TrackList;
 
 class Mixer {
   public:
-    explicit Mixer(TrackList &trackList, juce::AudioDeviceManager &deviceManager);
+    Mixer(TrackList &trackList, juce::AudioDeviceManager &deviceManager);
     ~Mixer();
 
     float getMasterLevelGain() const { return level; }
@@ -21,6 +21,7 @@ class Mixer {
     foleys::LevelMeterSource &getMeterSource() { return meteredSource.getMeterSource(); }
 
     void addSource(juce::PositionableAudioSource *source);
+    void removeSource(juce::PositionableAudioSource *source);
     void removeAllSources();
 
     void setMasterLevelGain(float newLevel);
@@ -37,6 +38,7 @@ class Mixer {
     void setTotalLengthSecs(double newLen) { mixerSource.setTotalLengthSecs(newLen); }
 
     TrackList &trackList;
+    juce::AudioDeviceManager &deviceManager;
     std::list<juce::PositionableAudioSource *> sources;
     PositionableMixingAudioSource mixerSource;
     GainAudioSource gainSource;
