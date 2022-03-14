@@ -9,7 +9,7 @@ Sample::Sample(juce::File file, double startPos, double endPos)
 
 Sample::~Sample() {}
 
-juce::uint64 Sample::getTotalLength() const { return reader == nullptr ? 0 : reader->lengthInSamples; }
+juce::int64 Sample::getLengthInSamples() const { return reader == nullptr ? 0 : reader->lengthInSamples; }
 
 void Sample::loadFile(juce::AudioFormatManager &formatManager, double sampleRate) {
     reader.reset(formatManager.createReaderFor(file));

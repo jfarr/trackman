@@ -1,5 +1,6 @@
 #include "TrackList.h"
-#include "Mixer.h"
+//#include "Track.h"
+//#include "Mixer.h"
 
 Track *TrackList::addTrack() {
     auto *track = new Track();
@@ -42,6 +43,11 @@ void TrackList::removeTrack(Track *track) {
             ++iter;
         }
     }
+}
+
+Sample *TrackList::addSample(Track &track, const juce::File &file, double startPos, double endPos,
+    juce::AudioFormatManager &formatManager, double sampleRate) {
+    return track.addSample(file, startPos, endPos, formatManager, sampleRate);
 }
 
 Track *TrackList::getSelectedTrack() const {

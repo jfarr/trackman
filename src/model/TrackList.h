@@ -1,8 +1,12 @@
 #pragma once
 
+#include <JuceHeader.h>
+
 #include "Track.h"
 
-class Mixer;
+//class Mixer;
+//class Track;
+//class Sample;
 
 class TrackList {
   public:
@@ -14,6 +18,9 @@ class TrackList {
     void deleteTrack(Track *track);
     void undeleteTrack(Track *track);
     void removeTrack(Track *track);
+
+    Sample *addSample(Track &track, const juce::File &file, double startPos, double endPos,
+        juce::AudioFormatManager &formatManager, double sampleRate);
 
     [[nodiscard]] int size() const { return (int)tracks.size(); }
     [[nodiscard]] Track *getSelectedTrack() const;

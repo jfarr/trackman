@@ -1,4 +1,5 @@
 #include "Track.h"
+#include "TrackList.h"
 
 Track::Track() {}
 
@@ -8,29 +9,35 @@ Track::~Track() { samples.clear(); }
 
 // bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
 
-void Track::loadSamples(juce::AudioFormatManager &formatManager, double sampleRate) {
-    //    if (samples.empty()) {
-    //        return;
-    //    }
-    //    if (mixerSource == nullptr) {
-    //        mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager);
-    //    }
-    for (std::shared_ptr<Sample> &sample : samples) {
-        sample->loadFile(formatManager, sampleRate);
-        //        if (sample->getSource() != nullptr) {
-        //            mixerSource->addInputSource(sample->getSource());
-        //        }
-    }
-    //    setSource(mixerSource);
-    //    updateLength();
-}
+//void Track::loadSamples(juce::AudioFormatManager &formatManager, double sampleRate) {
+//    //    if (samples.empty()) {
+//    //        return;
+//    //    }
+//    //    if (mixerSource == nullptr) {
+//    //        mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager);
+//    //    }
+//    for (std::shared_ptr<Sample> &sample : samples) {
+//        sample->loadFile(formatManager, sampleRate);
+//        //        if (sample->getSource() != nullptr) {
+//        //            mixerSource->addInputSource(sample->getSource());
+//        //        }
+//    }
+//    if (samplePlayer == nullptr) {
+//        samplePlayer.reset(new SamplePlayer(samples));
+//    }
+//
+//    //    setSource(mixerSource);
+//    //    updateLength();
+//}
 
 Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
     juce::AudioFormatManager &formatManager, double sampleRate) {
     samples.push_back(std::make_shared<Sample>(file, startPos, endPos));
     auto sample = &(*samples.back());
     sample->loadFile(formatManager, sampleRate);
-
+    if (samplePlayer == nullptr) {
+        samplePlayer.reset(new SamplePlayer(samples));
+    }
 
     //    if (mixerSource == nullptr) {
     //        mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager);
@@ -46,6 +53,7 @@ Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
     //    trackList.updateAudioSources();
     return &(*samples.back());
 }
+
 //
 // void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource) {
 //    DBG("Track::setSource - set track source: " << getName());

@@ -7,8 +7,10 @@
 #include "audio/MeteredAudioSource.h"
 #include "audio/OffsetAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
+#include "audio/SamplePlayer.h"
 
-// class TrackList;
+class TrackList;
+//#include "TrackList.h"
 
 class Track {
   public:
@@ -30,9 +32,7 @@ class Track {
     //        return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource();
     //    }
     //
-    void loadSamples(juce::AudioFormatManager &formatManager, double sampleRate);
-    Sample *addSample(const juce::File &file, double startPos, double endPos,
-        juce::AudioFormatManager &formatManager, double sampleRate);
+    //    void loadSamples(juce::AudioFormatManager &formatManager, double sampleRate);
     void moveSampleTo(Sample &sample, Track &toTrack);
     void deleteSample(Sample *sample);
     void undeleteSample(Sample *sample);
@@ -50,8 +50,11 @@ class Track {
     void setDeleted(bool newDeleted);
 
   private:
-    //    friend TrackList;
+    friend TrackList;
     //    friend Sample;
+
+    Sample *addSample(const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager,
+        double sampleRate);
 
     //    void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource);
 
@@ -72,6 +75,8 @@ class Track {
     bool selected = false;
     bool deleted = false;
     std::list<std::shared_ptr<Sample>> samples;
+    std::unique_ptr<SamplePlayer> samplePlayer;
+
     //    double totalLengthSecs = 0;
 
     //    void updateLength();

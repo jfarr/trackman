@@ -31,7 +31,7 @@ juce::int64 SamplePlayer::getTotalLength() const {
     const juce::ScopedLock lock(mutex);
     juce::int64 totalLength = 0;
     for (std::shared_ptr<Sample> &sample : samples) {
-
+        totalLength = std::max(totalLength, sample->getLengthInSamples());
     }
     return totalLength;
 }

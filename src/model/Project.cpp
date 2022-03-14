@@ -6,7 +6,8 @@
 using json = nlohmann::json;
 
 std::string Project::to_json() {
-    json project_json = {{"horizontalScale", horizontalScale}, {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
+    json project_json = {{"horizontalScale", horizontalScale},
+        {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
     project_json["tracks"] = json::array();
     trackList.eachTrack([&project_json](Track &track) {
         json track_json = {
@@ -31,16 +32,17 @@ void Project::from_json(
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);
     trackList.clear();
+    auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
     for (auto track_json : project_json["tracks"]) {
         auto track = trackList.addTrack();
         track->setName(track_json["name"]);
         track->setLevelGain(track_json["gain"]);
         track->setMute(track_json["muted"]);
         for (auto sample_json : track_json["samples"]) {
-            track->addSample(sample_json["file"], sample_json["startPos"],
-                sample_json["endPos"], formatManager, deviceManager.getAudioDeviceSetup().sampleRate);
+            trackList.addSample(
+                *track, sample_json["file"], sample_json["startPos"], sample_json["endPos"], formatManager, sampleRate);
         }
-//        track->loadSamples(formatManager);
-//        mixer.addSource(track->getSource());
+        //        track->loadSamples(formatManager, sampleRate);
+        //        mixer.addSource(track->getSource());
     }
 }
