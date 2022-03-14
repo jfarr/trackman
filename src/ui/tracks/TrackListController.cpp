@@ -65,7 +65,12 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
         double startPos = std::max((pos - offset - leftPanelWidth), 0.0);
         double endPos = startPos + width;
         auto sample = project.addSample(track, file, startPos / scale, endPos / scale,
-            desktopController.getMainWindow().getMainAudioComponent().getFormatManager(), reader->sampleRate);
+            desktopController.getMainWindow().getMainAudioComponent().getFormatManager(),
+            desktopController.getMainWindow()
+                .getMainAudioComponent()
+                .getDeviceManager()
+                .getAudioDeviceSetup()
+                .sampleRate);
         selectionChanged(&track);
         updateLane(track);
         return sample;

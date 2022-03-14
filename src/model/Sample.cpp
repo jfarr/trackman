@@ -2,23 +2,25 @@
 
 #include <memory>
 
-#include "Track.h"
+//#include "Track.h"
 
 Sample::Sample(juce::File file, double startPos, double endPos)
     : file(std::move(file)), startPos(startPos), endPos(endPos), length(endPos - startPos) {}
 
 Sample::~Sample() {}
 
-juce::int64 Sample::getLengthInSamples() const { return reader == nullptr ? 0 : reader->lengthInSamples; }
+juce::int64 Sample::getLengthInSamples() const {
+    return resamplingSource == nullptr ? 0 : resamplingSource->getTotalLength();
+}
 
 void Sample::loadFile(juce::AudioFormatManager &formatManager, double sampleRate) {
     reader.reset(formatManager.createReaderFor(file));
     if (reader != nullptr) {
         fileSource = std::make_unique<juce::AudioFormatReaderSource>(reader.get(), false);
         //        offsetSource = std::make_unique<OffsetAudioSource>(*fileSource, startPos, sourceSampleRate);
-        //        resamplingSource =
-        //            std::make_unique<PositionableResamplingAudioSource>(&*offsetSource, false, sampleRate,
-        //            sourceSampleRate, 2);
+        sourceSampleRate = reader->sampleRate;
+        resamplingSource = std::make_unique<PositionableResamplingAudioSource>(
+            fileSource.get(), false, sampleRate, sourceSampleRate, 2);
     }
 }
 

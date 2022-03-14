@@ -19,12 +19,12 @@ class Sample {
     [[nodiscard]] juce::int64 getLengthInSamples() const;
     [[nodiscard]] double getLengthInSeconds() const { return length; }
     //    [[nodiscard]] double getSourceLengthInSeconds() const { return sourceLengthInSeconds; }
-    [[nodiscard]] double getSampleRate() const { return sourceSampleRate; }
+//    [[nodiscard]] double getSampleRate() const { return sourceSampleRate; }
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
     void loadFile(juce::AudioFormatManager &formatManager, double sampleRate);
-    juce::PositionableAudioSource *getSource() { return fileSource.get(); }
+    juce::PositionableAudioSource *getSource() { return resamplingSource.get(); }
 
     void setPosition(double pos);
     void setLength(double newLength);
@@ -42,11 +42,11 @@ class Sample {
     double startPos;
     double endPos;
     double length;
-    juce::int64 sourceLengthInSamples;
-    double sourceLengthInSeconds;
-    double sourceSampleRate;
+//    juce::int64 sourceLengthInSamples = 0;
+//    double sourceLengthInSeconds = 0;
+    double sourceSampleRate = 0;
     std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
-    //    std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
+    std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
     //    std::unique_ptr<OffsetAudioSource> offsetSource;
     bool selected = false;
     bool deleted = false;
