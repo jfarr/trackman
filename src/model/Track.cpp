@@ -7,24 +7,9 @@ Track::Track(TrackList &trackList, juce::AudioDeviceManager &deviceManager)
     meteredSource = std::make_unique<MeteredAudioSource>(gainSource, deviceManager.getAudioDeviceSetup().sampleRate);
 }
 
-//juce::uint64 Track::getTotalLength() const {
-//    return (juce::uint64)getTotalLengthSeconds() * (juce::uint64)trackList.getSampleRate();
-//}
-
 double Track::getTotalLengthSeconds() const {
-    //    double len = 0;
-    //    for (std::shared_ptr<Sample> const &sample : samples) {
-    //        if (!sample->isDeleted() && sample->getSource() != nullptr) {
-    //            len = std::max(len, sample->getEndPos());
-    //        }
-    //    }
-    //    DBG("track len secs: " << len);
-    //    return len;
-    DBG("track len secs: " << totalLengthSecs);
     return totalLengthSecs;
 }
-
-// double Track::getSampleRate() const { return trackList.getSampleRate(); }
 
 bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
 
@@ -72,7 +57,6 @@ void Track::moveSampleTo(Sample &sample, Track &toTrack) {
             ++iter;
         }
     }
-    //    trackList.adjustTrackLengths();
 }
 
 void Track::deleteSample(Sample *sample) {
@@ -127,32 +111,23 @@ void Track::setTotalLengthSecs(double newLen) {
     mixerSource.setTotalLengthSecs(newLen);
 }
 
-// void Track::adjustSampleLengthSecs(double newLen) {
-//     if (!deleted) {
-//         eachSample([newLen](Sample &sample) { sample.setMinLengthSecs(newLen); });
-//     }
-// }
-
 void Track::setLevelGain(float newLevel) {
     level = newLevel;
     gainSource.setGain(level);
 }
 
 void Track::setMute(bool newMuted) {
-    DBG("Track " << trackNumber << " mute: " << (newMuted ? "true" : "false"));
     muted = newMuted;
     updateGain();
 }
 
 void Track::setSolo(bool newSoloed) {
-    DBG("Track " << trackNumber << " solo: " << (newSoloed ? "true" : "false"));
     soloed = newSoloed;
     trackList.soloTracks();
 }
 
 void Track::updateGain() {
     bool play = (trackList.getSoloed().empty() || soloed) && !muted;
-    DBG("Track " << trackNumber << " set gain: " << (play ? level : 0));
     gainSource.setGain(play ? level : 0);
 }
 

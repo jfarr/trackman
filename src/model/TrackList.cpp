@@ -46,38 +46,10 @@ Track *TrackList::getSelectedTrack() const {
     }
     return nullptr;
 }
-//
-//juce::uint64 TrackList::getTotalLength() const {
-//    juce::uint64 total = 0;
-//    for (const auto &track : tracks) {
-//        if (!track->isDeleted()) {
-//            juce::uint64 length = track->getTotalLength();
-//            total = std::max(total, length);
-//        }
-//    }
-//    return total;
-//}
 
 double TrackList::getTotalLengthSeconds() const {
     return totalLengthSecs;
-    //    double total = 0;
-    //    for (const auto & track : tracks) {
-    //        if (!track->isDeleted()) {
-    //            double length = track->getTotalLengthSeconds();
-    //            total = std::max(total, length);
-    //        }
-    //    }
-    //    return total;
 }
-
-//void TrackList::adjustTrackLengths() {
-//    //    auto len = getTotalLengthSeconds();
-//    //    DBG("TrackList::adjustTrackLengths: " << len);
-//    //    eachTrack([len](Track &track) {
-//    //        DBG("adjusting length for track " << track.getName() << " to " << len);
-//    //        track.adjustSampleLengthSecs(len);
-//    //    });
-//}
 
 void TrackList::updateLength() {
     double newLen = 0;

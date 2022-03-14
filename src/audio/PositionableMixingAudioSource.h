@@ -5,9 +5,7 @@
 
 class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   public:
-    PositionableMixingAudioSource(juce::AudioDeviceManager &deviceManager) : deviceManager(deviceManager) {
-        DBG("create mixer");
-    }
+    PositionableMixingAudioSource(juce::AudioDeviceManager &deviceManager) : deviceManager(deviceManager) {}
     ~PositionableMixingAudioSource() override { removeAllInputs(); }
 
     void addInputSource(PositionableAudioSource *input);

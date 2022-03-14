@@ -42,7 +42,6 @@ juce::int64 OffsetAudioSource::getTotalLength() const {
     const juce::ScopedLock lock(mutex);
     auto len = source.getTotalLength() + offsetSamples;
     auto clamped = std::max(len, minLength);
-    DBG("offset source (min " << minLength << ") len: " << clamped);
     return clamped;
 }
 

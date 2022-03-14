@@ -24,10 +24,6 @@ void PositionableResamplingAudioSource::setSourceSampleRateToCorrectFor(double n
         resamplerSource.setResamplingRatio(sourceSampleRate / sampleRate);
     }
 }
-//
-//void PositionableResamplingAudioSource::setTotalLengthSecs(double newLen) {
-//    totalLength = newLen * sampleRate;
-//}
 
 //==============================================================================
 void PositionableResamplingAudioSource::prepareToPlay(int samplesPerBlockExpected, double newSampleRate) {
@@ -62,7 +58,6 @@ juce::int64 PositionableResamplingAudioSource::getNextReadPosition() const {
 }
 
 juce::int64 PositionableResamplingAudioSource::getTotalLength() const {
-    //        DBG("resampled length at " << getSampleRatio() << ": " << source->getTotalLength() * getSampleRatio());
     return source->getTotalLength() * getSampleRatio();
 }
 

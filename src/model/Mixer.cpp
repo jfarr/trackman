@@ -16,14 +16,10 @@ Mixer::~Mixer() {
 
 void Mixer::addSource(juce::PositionableAudioSource *source) {
     if (!listContains(sources, source)) {
-        DBG("Mixer::addSource - add source with length: " << source->getTotalLength());
         sources.push_back(source);
         auto pos = transportSource.getCurrentPosition();
         mixerSource.addInputSource(source);
-        //        trackList.adjustTrackLengths();
         transportSource.setPosition(pos);
-        DBG("Mixer::addSource - set position: " << pos);
-        DBG("Mixer::addSource - length: " << transportSource.getTotalLength());
     }
 }
 
@@ -32,7 +28,6 @@ void Mixer::removeAllSources() {
         mixerSource.removeInputSource(source);
     }
     sources.clear();
-    //    trackList.adjustTrackLengths();
 }
 
 void Mixer::setMasterLevelGain(float newLevel) {
@@ -47,7 +42,6 @@ void Mixer::setMasterMute(bool newMuted) {
 
 void Mixer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
     if (initialized) {
-        //        trackList.adjustTrackLengths();
         transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
     }
 }

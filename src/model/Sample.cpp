@@ -19,14 +19,6 @@ void Sample::loadFile(juce::AudioFormatManager &formatManager, double sampleRate
         offsetSource = new OffsetAudioSource(*resamplingSource, startPos, sourceSampleRate);
     }
 }
-//
-//void Sample::setMinLengthSecs(double newLength) {
-//    if (offsetSource == nullptr) {
-//        return;
-//    }
-//    DBG("min length based on sample rate " << sourceSampleRate << ": " << newLength * sourceSampleRate);
-//    offsetSource->setMinLength(newLength * sourceSampleRate);
-//}
 
 void Sample::setPosition(double pos) {
     startPos = pos;
