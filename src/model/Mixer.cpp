@@ -4,7 +4,7 @@
 
 Mixer::Mixer(TrackList &trackList, juce::AudioDeviceManager &deviceManager)
     : trackList(trackList), deviceManager(deviceManager), mixerSource(deviceManager), gainSource(&mixerSource, false),
-      meteredSource(gainSource, deviceManager.getAudioDeviceSetup().sampleRate) {
+      meteredSource(&gainSource, deviceManager.getAudioDeviceSetup().sampleRate) {
     transportSource.setSource(&meteredSource);
     initialized = true;
 }

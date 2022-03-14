@@ -7,7 +7,7 @@
 
 class MeteredAudioSource : public PositionableAudioSourceAdapter {
   public:
-    MeteredAudioSource(juce::PositionableAudioSource &source, double sampleRate);
+    MeteredAudioSource(juce::PositionableAudioSource *source, double sampleRate = 0);
     ~MeteredAudioSource();
 
     foleys::LevelMeterSource &getMeterSource() { return meterSource; }
@@ -19,7 +19,7 @@ class MeteredAudioSource : public PositionableAudioSourceAdapter {
     void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
 
   private:
-    juce::PositionableAudioSource &source;
+    juce::PositionableAudioSource *source;
     foleys::LevelMeterSource meterSource;
     double sampleRate;
     int blockSize = 512;

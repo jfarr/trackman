@@ -64,8 +64,8 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
         double offset = width / 2;
         double startPos = std::max((pos - offset - leftPanelWidth), 0.0);
         double endPos = startPos + width;
-        auto sample = track.addSample(desktopController.getMainWindow().getMainAudioComponent().getFormatManager(),
-            file, startPos / scale, endPos / scale, length, reader->sampleRate);
+        auto sample = track.addSample(file, startPos / scale, endPos / scale,
+            desktopController.getMainWindow().getMainAudioComponent().getFormatManager(), reader->sampleRate);
         selectionChanged(&track);
         updateLane(track);
         return sample;
@@ -159,7 +159,7 @@ void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y
 }
 
 void TrackListController::sampleResized(Sample &sample, int width) {
-    auto curLen = sample.getLengthSecs();
+    auto curLen = sample.getLengthInSeconds();
     auto newLen = std::max(width, 2) / project.getHorizontalScale();
     desktopController.resizeSample(sample, curLen, newLen);
 }
@@ -173,7 +173,7 @@ void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int sc
         TrackLaneController *lane;
         if (track == nullptr) {
             if (newDragLane == nullptr) {
-//                track = project.getTrackList().createTempTrack();
+                //                track = project.getTrackList().createTempTrack();
                 track = new Track();
                 newDragLane = new TrackLaneController(project, *track, *this, transport,
                     desktopController.getMainWindow().getMainAudioComponent().getFormatManager());

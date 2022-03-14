@@ -4,32 +4,34 @@ Track::Track() {}
 
 Track::~Track() { samples.clear(); }
 
-//double Track::getTotalLengthSeconds() const { return totalLengthSecs; }
+// double Track::getTotalLengthSeconds() const { return totalLengthSecs; }
 
-//bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
-//
-// void Track::loadSamples(juce::AudioFormatManager &formatManager) {
-//    if (samples.empty()) {
-//        return;
-//    }
-//    if (mixerSource == nullptr) {
-//        mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager);
-//    }
-//    for (std::shared_ptr<Sample> &sample : samples) {
-//        sample->loadFile(formatManager, deviceManager.getAudioDeviceSetup().sampleRate);
-//        if (sample->getSource() != nullptr) {
-//            mixerSource->addInputSource(sample->getSource());
-//        }
-//    }
-//    setSource(mixerSource);
-//    updateLength();
-//}
+// bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
 
-Sample *Track::addSample(juce::AudioFormatManager &formatManager, const juce::File &file, double startPos,
-    double endPos, double length, double fileSampleRate) {
-    samples.push_back(std::make_shared<Sample>(*this, file, startPos, endPos, length, fileSampleRate));
-    //    auto sample = &(*samples.back());
-    //    sample->loadFile(formatManager, deviceManager.getAudioDeviceSetup().sampleRate);
+void Track::loadSamples(juce::AudioFormatManager &formatManager, double sampleRate) {
+    //    if (samples.empty()) {
+    //        return;
+    //    }
+    //    if (mixerSource == nullptr) {
+    //        mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager);
+    //    }
+    for (std::shared_ptr<Sample> &sample : samples) {
+        sample->loadFile(formatManager, sampleRate);
+        //        if (sample->getSource() != nullptr) {
+        //            mixerSource->addInputSource(sample->getSource());
+        //        }
+    }
+    //    setSource(mixerSource);
+    //    updateLength();
+}
+
+Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
+    juce::AudioFormatManager &formatManager, double sampleRate) {
+    samples.push_back(std::make_shared<Sample>(file, startPos, endPos));
+    auto sample = &(*samples.back());
+    sample->loadFile(formatManager, sampleRate);
+
+
     //    if (mixerSource == nullptr) {
     //        mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager);
     //    }
@@ -61,7 +63,7 @@ Sample *Track::addSample(juce::AudioFormatManager &formatManager, const juce::Fi
 void Track::moveSampleTo(Sample &sample, Track &toTrack) {
     for (auto iter = samples.begin(); iter != samples.end();) {
         if (&sample == iter->get()) {
-//            sample.setTrack(toTrack);
+            //            sample.setTrack(toTrack);
             //            auto source = sample.getSource();
             //            if (source != nullptr) {
             //                if (mixerSource != nullptr) {
@@ -151,7 +153,7 @@ void Track::setMute(bool newMuted) {
 
 void Track::setSolo(bool newSoloed) {
     soloed = newSoloed;
-//    trackList.soloTracks();
+    //    trackList.soloTracks();
 }
 
 void Track::updateGain() {

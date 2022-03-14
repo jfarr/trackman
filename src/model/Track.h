@@ -8,7 +8,7 @@
 #include "audio/OffsetAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
 
-//class TrackList;
+// class TrackList;
 
 class Track {
   public:
@@ -21,18 +21,18 @@ class Track {
     [[nodiscard]] float getLevelGain() const { return level; }
     [[nodiscard]] bool isMuted() const { return muted; }
     [[nodiscard]] bool isSoloed() const { return soloed; }
-//    [[nodiscard]] bool isSilenced() const;
+    //    [[nodiscard]] bool isSilenced() const;
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
-//    juce::PositionableAudioSource *getSource() { return meteredSource.get(); }
-//    foleys::LevelMeterSource *getMeterSource() {
-//        return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource();
-//    }
-//
-//    void loadSamples(juce::AudioFormatManager &formatManager);
-    Sample *addSample(juce::AudioFormatManager &formatManager,
-        const juce::File &file, double startPos, double endPos, double length, double sampleRate);
+    //    juce::PositionableAudioSource *getSource() { return meteredSource.get(); }
+    //    foleys::LevelMeterSource *getMeterSource() {
+    //        return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource();
+    //    }
+    //
+    void loadSamples(juce::AudioFormatManager &formatManager, double sampleRate);
+    Sample *addSample(const juce::File &file, double startPos, double endPos,
+        juce::AudioFormatManager &formatManager, double sampleRate);
     void moveSampleTo(Sample &sample, Track &toTrack);
     void deleteSample(Sample *sample);
     void undeleteSample(Sample *sample);
@@ -50,21 +50,21 @@ class Track {
     void setDeleted(bool newDeleted);
 
   private:
-//    friend TrackList;
-//    friend Sample;
+    //    friend TrackList;
+    //    friend Sample;
 
-//    void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource);
+    //    void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource);
 
     const juce::String defaultName = "untitled";
 
-//    TrackList &trackList;
-//    juce::AudioDeviceManager &deviceManager;
+    //    TrackList &trackList;
+    //    juce::AudioDeviceManager &deviceManager;
     int trackNumber = 0;
     juce::String name = defaultName;
-//    std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
-//    std::shared_ptr<MeteredAudioSource> meteredSource;
-//    std::shared_ptr<GainAudioSource> gainSource;
-//    std::shared_ptr<PositionableMixingAudioSource> mixerSource;
+    //    std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
+    //    std::shared_ptr<MeteredAudioSource> meteredSource;
+    //    std::shared_ptr<GainAudioSource> gainSource;
+    //    std::shared_ptr<PositionableMixingAudioSource> mixerSource;
 
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
@@ -72,10 +72,10 @@ class Track {
     bool selected = false;
     bool deleted = false;
     std::list<std::shared_ptr<Sample>> samples;
-//    double totalLengthSecs = 0;
+    //    double totalLengthSecs = 0;
 
-//    void updateLength();
-//    void setTotalLengthSecs(double newLen);
+    //    void updateLength();
+    //    void setTotalLengthSecs(double newLen);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
 };

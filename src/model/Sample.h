@@ -10,21 +10,21 @@ class Track;
 
 class Sample {
   public:
-    Sample(Track &track, juce::File file, double startPos, double endPos, double sourceLengthSecs, double sampleRate);
+    Sample(juce::File file, double startPos, double endPos);
     ~Sample();
 
     [[nodiscard]] juce::File getFile() const { return file; }
     [[nodiscard]] double getStartPos() const { return startPos; }
     [[nodiscard]] double getEndPos() const { return endPos; }
     [[nodiscard]] juce::uint64 getTotalLength() const;
-    [[nodiscard]] double getLengthSecs() const { return length; }
-    [[nodiscard]] double getSourceLengthSecs() const { return sourceLengthSecs; }
+    [[nodiscard]] double getLengthInSeconds() const { return length; }
+    //    [[nodiscard]] double getSourceLengthInSeconds() const { return sourceLengthInSeconds; }
     [[nodiscard]] double getSampleRate() const { return sourceSampleRate; }
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
-//    void loadFile(juce::AudioFormatManager &formatManager, double sampleRate);
-//    juce::PositionableAudioSource *getSource() { return resamplingSource.get(); }
+    void loadFile(juce::AudioFormatManager &formatManager, double sampleRate);
+    juce::PositionableAudioSource *getSource() { return fileSource.get(); }
 
     void setPosition(double pos);
     void setLength(double newLength);
@@ -32,21 +32,24 @@ class Sample {
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
 
   private:
-//    friend Track;
+    //    friend Track;
 
-//    Track *track;
+    //    Track *track;
     juce::File file;
 
-//    void setTrack(Track &newTrack);
+    //    void setTrack(Track &newTrack);
 
     double startPos;
     double endPos;
     double length;
-    double sourceLengthSecs;
+    juce::int64 sourceLengthInSamples;
+    double sourceLengthInSeconds;
     double sourceSampleRate;
-//    std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
-//    std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
-//    std::unique_ptr<OffsetAudioSource> offsetSource;
+    std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
+    //    std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
+    //    std::unique_ptr<OffsetAudioSource> offsetSource;
     bool selected = false;
     bool deleted = false;
+
+    std::unique_ptr<juce::AudioFormatReader> reader;
 };
