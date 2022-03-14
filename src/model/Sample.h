@@ -10,9 +10,7 @@ class Track;
 
 class Sample {
   public:
-    Sample(Track &track, juce::File file, double startPos, double endPos, double sourceLengthSecs, double sampleRate)
-        : track(&track), file(std::move(file)), startPos(startPos), endPos(endPos), length(sourceLengthSecs),
-          sourceLengthSecs(sourceLengthSecs), sourceSampleRate(sampleRate) {}
+    Sample(Track &track, juce::File file, double startPos, double endPos, double sourceLengthSecs, double sampleRate);
     ~Sample();
 
     [[nodiscard]] juce::File getFile() const { return file; }
@@ -25,7 +23,7 @@ class Sample {
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
     void loadFile(juce::AudioFormatManager &formatManager, double sampleRate);
-    juce::PositionableAudioSource *getSource() { return offsetSource.get(); }
+    juce::PositionableAudioSource *getSource() { return resamplingSource.get(); }
 
     void setPosition(double pos);
     void setLength(double newLength);

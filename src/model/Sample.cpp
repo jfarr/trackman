@@ -4,8 +4,12 @@
 
 #include "Track.h"
 
-Sample::~Sample() {
-}
+Sample::Sample(
+    Track &track, juce::File file, double startPos, double endPos, double sourceLengthSecs, double sampleRate)
+    : track(&track), file(std::move(file)), startPos(startPos), endPos(endPos), length(sourceLengthSecs),
+      sourceLengthSecs(sourceLengthSecs), sourceSampleRate(sampleRate) {}
+
+Sample::~Sample() {}
 
 void Sample::loadFile(juce::AudioFormatManager &formatManager, double sampleRate) {
     auto *reader = formatManager.createReaderFor(file);
@@ -19,7 +23,9 @@ void Sample::loadFile(juce::AudioFormatManager &formatManager, double sampleRate
 void Sample::setPosition(double pos) {
     startPos = pos;
     endPos = startPos + length;
-    offsetSource->setOffsetSeconds(startPos);
+    if (offsetSource != nullptr) {
+        offsetSource->setOffsetSeconds(startPos);
+    }
     track->updateLength();
 }
 
@@ -31,6 +37,4 @@ void Sample::setLength(double newLength) {
     track->updateLength();
 }
 
-void Sample::setTrack(Track &newTrack) {
-    track = &newTrack;
-}
+void Sample::setTrack(Track &newTrack) { track = &newTrack; }

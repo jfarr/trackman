@@ -15,18 +15,18 @@ Mixer::~Mixer() {
 }
 
 void Mixer::addSource(juce::PositionableAudioSource *source) {
-//    if (!listContains(sources, source)) {
-//        sources.push_back(source);
-//        auto pos = transportSource.getCurrentPosition();
-//        mixerSource.addInputSource(source);
-//        source->prepareToPlay(deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
-//        transportSource.setPosition(pos);
-//    }
+    if (!listContains(sources, source)) {
+        sources.push_back(source);
+        auto pos = transportSource.getCurrentPosition();
+        mixerSource.addInputSource(source);
+        source->prepareToPlay(deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
+        transportSource.setPosition(pos);
+    }
 }
 
 void Mixer::removeSource(juce::PositionableAudioSource *source) {
-//    mixerSource.removeInputSource(source);
-//    sources.remove(source);
+    mixerSource.removeInputSource(source);
+    sources.remove(source);
 }
 
 void Mixer::removeAllSources() {

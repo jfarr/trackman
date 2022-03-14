@@ -68,6 +68,16 @@ void TrackList::updateLength() {
     mixer.setTotalLengthSecs(totalLengthSecs);
 }
 
+void TrackList::updateAudioSources() {
+    mixer.removeAllSources();
+    for (std::unique_ptr<Track> &track : tracks) {
+        DBG("TrackList::updateAudioSources - add track source: " << track->getName());
+        if (track->getSource() != nullptr) {
+            mixer.addSource(track->getSource());
+        }
+    }
+}
+
 void TrackList::eachTrack(std::function<void(Track &track)> f) {
     for (std::unique_ptr<Track> &track : tracks) {
         if (!track->isDeleted()) {

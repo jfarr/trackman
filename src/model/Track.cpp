@@ -44,6 +44,7 @@ Sample *Track::addSample(juce::AudioFormatManager &formatManager, const juce::Fi
         name = file.getFileName();
     }
     updateLength();
+    trackList.updateAudioSources();
     return &(*samples.back());
 }
 
