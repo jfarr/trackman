@@ -8,6 +8,8 @@ class Project {
     Project(juce::AudioDeviceManager &deviceManager) : mixer(deviceManager) {}
     ~Project() = default;
 
+    void deleteTrack(Track *track);
+
     Sample *addSample(Track &track, const juce::File &file, double startPos, double endPos,
         juce::AudioFormatManager &formatManager, double sampleRate);
 

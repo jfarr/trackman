@@ -162,7 +162,7 @@ Track *DesktopController::addTrack() {
 }
 
 void DesktopController::deleteTrack(Track *track, bool purge) {
-    project.getTrackList().deleteTrack(track);
+    project.deleteTrack(track);
     if (purge) {
         project.getTrackList().removeTrack(track);
     }

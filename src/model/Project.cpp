@@ -5,6 +5,14 @@
 
 using json = nlohmann::json;
 
+void Project::deleteTrack(Track *track) {
+    auto source = track->getSource();
+    if (source != nullptr) {
+        mixer.removeSource(track->getSource());
+    }
+    trackList.deleteTrack(track);
+}
+
 Sample *Project::addSample(Track &track, const juce::File &file, double startPos, double endPos,
     juce::AudioFormatManager &formatManager, double sampleRate) {
     auto sample = trackList.addSample(track, file, startPos, endPos, formatManager, sampleRate);
