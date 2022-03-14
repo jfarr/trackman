@@ -5,6 +5,8 @@
 Track::Track(TrackList &trackList, juce::AudioDeviceManager &deviceManager)
     : trackList(trackList), deviceManager(deviceManager) {}
 
+Track::~Track() { samples.clear(); }
+
 double Track::getTotalLengthSeconds() const { return totalLengthSecs; }
 
 bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
@@ -13,10 +15,12 @@ void Track::loadSamples(juce::AudioFormatManager &formatManager) {
     if (samples.empty()) {
         return;
     }
-    mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager);
+    if (mixerSource == nullptr) {
+        mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager);
+    }
     for (std::shared_ptr<Sample> &sample : samples) {
         sample->loadFile(formatManager, deviceManager.getAudioDeviceSetup().sampleRate);
-        if (sample->getSource() != nullptr && mixerSource != nullptr) {
+        if (sample->getSource() != nullptr) {
             mixerSource->addInputSource(sample->getSource());
         }
     }
@@ -60,15 +64,15 @@ void Track::moveSampleTo(Sample &sample, Track &toTrack) {
     for (auto iter = samples.begin(); iter != samples.end();) {
         if (&sample == iter->get()) {
             sample.setTrack(toTrack);
-//            auto source = sample.getSource();
-//            if (source != nullptr) {
-//                if (mixerSource != nullptr) {
-//                    mixerSource->removeInputSource(source);
-//                }
-//                if (toTrack.mixerSource != nullptr) {
-//                    toTrack.mixerSource->addInputSource(source);
-//                }
-//            }
+            //            auto source = sample.getSource();
+            //            if (source != nullptr) {
+            //                if (mixerSource != nullptr) {
+            //                    mixerSource->removeInputSource(source);
+            //                }
+            //                if (toTrack.mixerSource != nullptr) {
+            //                    toTrack.mixerSource->addInputSource(source);
+            //                }
+            //            }
             toTrack.samples.push_back(*iter);
             samples.erase(iter++);
         } else {
@@ -84,10 +88,10 @@ void Track::deleteSample(Sample *sample) {
         return;
     }
     sample->setDeleted(true);
-//    auto source = sample->getSource();
-//    if (source != nullptr && mixerSource != nullptr) {
-//        mixerSource->removeInputSource(source);
-//    }
+    //    auto source = sample->getSource();
+    //    if (source != nullptr && mixerSource != nullptr) {
+    //        mixerSource->removeInputSource(source);
+    //    }
     updateLength();
 }
 
@@ -96,12 +100,12 @@ void Track::undeleteSample(Sample *sample) {
         return;
     }
     sample->setDeleted(false);
-//    auto source = sample->getSource();
-//    if (source != nullptr && mixerSource != nullptr) {
-//        mixerSource->addInputSource(source);
-//        mixerSource->prepareToPlay(
-//            deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
-//    }
+    //    auto source = sample->getSource();
+    //    if (source != nullptr && mixerSource != nullptr) {
+    //        mixerSource->addInputSource(source);
+    //        mixerSource->prepareToPlay(
+    //            deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
+    //    }
     updateLength();
 }
 

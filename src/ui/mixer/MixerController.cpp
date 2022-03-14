@@ -23,8 +23,6 @@ MixerController::~MixerController() {
 }
 
 void MixerController::update() {
-    updateAudioSource();
-
     tracks.clear();
     trackPanel.clear();
     trackList.eachTrack([this](Track &track) {
@@ -41,19 +39,6 @@ void MixerController::repaint() {
     }
     mixerPanel.repaint();
     trackPanel.repaint();
-}
-
-void MixerController::removeAudioSources() {
-    mixer.removeAllSources();
-}
-
-void MixerController::updateAudioSource() {
-    removeAudioSources();
-    trackList.eachTrack([this](Track &track) {
-        if (track.getSource() != nullptr) {
-            mixer.addSource(track.getSource());
-        }
-    });
 }
 
 void MixerController::setMasterLevel(float newLevel) {

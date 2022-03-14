@@ -28,8 +28,6 @@ class MixerController : public TransportControlListener, public MasterTrackListe
     void update();
     void repaint();
 
-    void updateAudioSource();
-    void removeAudioSources();
     void setMasterLevel(float newLevel);
     void setMasterMute(bool newMute);
     void setLevel(Track &track, float newLevel);

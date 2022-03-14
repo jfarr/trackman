@@ -27,6 +27,7 @@ void Project::from_json(
     std::ifstream s(filename);
     json project_json;
     s >> project_json;
+    mixer.removeAllSources();
     horizontalScale = project_json["horizontalScale"];
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);
