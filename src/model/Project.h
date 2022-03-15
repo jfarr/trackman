@@ -5,13 +5,13 @@
 
 class Project {
   public:
-    Project(juce::AudioDeviceManager &deviceManager) : mixer(deviceManager) {}
+    Project(juce::AudioDeviceManager &deviceManager) : deviceManager(deviceManager), mixer(deviceManager) {}
     ~Project() = default;
 
     void deleteTrack(Track *track);
 
-    Sample *addSample(Track &track, const juce::File &file, double startPos, double endPos,
-        juce::AudioFormatManager &formatManager, double sampleRate);
+    Sample *addSample(
+        Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager);
 
     TrackList &getTrackList() { return trackList; }
     Mixer &getMixer() { return mixer; }
@@ -42,6 +42,7 @@ class Project {
     const double initialHorizontalScale = 100;
     const double scaleIncrement = 5;
 
+    juce::AudioDeviceManager &deviceManager;
     TrackList trackList;
     Mixer mixer;
     double verticalScale = initialVerticalScale;

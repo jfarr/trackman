@@ -31,10 +31,10 @@ Track::~Track() { samples.clear(); }
 //}
 
 Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
-    juce::AudioFormatManager &formatManager, double sampleRate) {
+    juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {
     samples.push_back(std::make_shared<Sample>(file, startPos, endPos));
     auto sample = &(*samples.back());
-    sample->loadFile(formatManager, sampleRate);
+    sample->loadFile(deviceManager, formatManager);
     if (samplePlayer == nullptr) {
         samplePlayer.reset(new SamplePlayer(samples));
         gainSource.reset(new GainAudioSource(samplePlayer.get(), false));

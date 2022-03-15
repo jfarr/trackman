@@ -13,9 +13,9 @@ void Project::deleteTrack(Track *track) {
     trackList.deleteTrack(track);
 }
 
-Sample *Project::addSample(Track &track, const juce::File &file, double startPos, double endPos,
-    juce::AudioFormatManager &formatManager, double sampleRate) {
-    auto sample = trackList.addSample(track, file, startPos, endPos, formatManager, sampleRate);
+Sample *Project::addSample(
+    Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager) {
+    auto sample = trackList.addSample(track, file, startPos, endPos, deviceManager, formatManager);
     mixer.addSource(track.getSource());
     return sample;
 }
@@ -54,8 +54,8 @@ void Project::from_json(
         track->setLevelGain(track_json["gain"]);
         track->setMute(track_json["muted"]);
         for (auto sample_json : track_json["samples"]) {
-            trackList.addSample(
-                *track, sample_json["file"], sample_json["startPos"], sample_json["endPos"], formatManager, sampleRate);
+            trackList.addSample(*track, sample_json["file"], sample_json["startPos"], sample_json["endPos"],
+                deviceManager, formatManager);
         }
         //        track->loadSamples(formatManager, sampleRate);
         //        mixer.addSource(track->getSource());

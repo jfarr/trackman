@@ -5,7 +5,6 @@ PositionableResamplingAudioSource::PositionableResamplingAudioSource(juce::Posit
     : source(source), resamplerSource(source, false, maxNumChannels), sampleRate(sampleRate),
       sourceSampleRate(sourceSampleRateToCorrectFor), deleteWhenRemoved(deleteWhenRemoved) {
     if (sourceSampleRate > 0) {
-        DBG("setting resampling ratio to: " << sourceSampleRate / sampleRate);
         resamplerSource.setResamplingRatio(sourceSampleRate / sampleRate);
     }
 }

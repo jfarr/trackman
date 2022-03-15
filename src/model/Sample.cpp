@@ -7,13 +7,19 @@
 Sample::Sample(juce::File file, double startPos, double endPos)
     : file(std::move(file)), startPos(startPos), endPos(endPos), length(endPos - startPos) {}
 
-Sample::~Sample() {}
+Sample::~Sample() {
+    if (resamplingSource != nullptr) {
+        resamplingSource->releaseResources();
+    }
+}
 
 juce::int64 Sample::getLengthInSamples() const {
     return resamplingSource == nullptr ? 0 : resamplingSource->getTotalLength();
 }
 
-void Sample::loadFile(juce::AudioFormatManager &formatManager, double sampleRate) {
+void Sample::loadFile(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {
+    auto blockSize = deviceManager.getAudioDeviceSetup().bufferSize;
+    auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
     reader.reset(formatManager.createReaderFor(file));
     if (reader != nullptr) {
         fileSource = std::make_unique<juce::AudioFormatReaderSource>(reader.get(), false);
@@ -21,6 +27,7 @@ void Sample::loadFile(juce::AudioFormatManager &formatManager, double sampleRate
         sourceSampleRate = reader->sampleRate;
         resamplingSource = std::make_unique<PositionableResamplingAudioSource>(
             fileSource.get(), false, sampleRate, sourceSampleRate, 2);
+        resamplingSource->prepareToPlay(blockSize, sampleRate);
     }
 }
 

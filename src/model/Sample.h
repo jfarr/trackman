@@ -23,7 +23,7 @@ class Sample {
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
-    void loadFile(juce::AudioFormatManager &formatManager, double sampleRate);
+    void loadFile(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
     juce::PositionableAudioSource *getSource() { return resamplingSource.get(); }
 
     void setPosition(double pos);

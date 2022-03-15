@@ -7,8 +7,8 @@
 
 class SamplePlayer : public juce::PositionableAudioSource {
   public:
-    SamplePlayer(std::list<std::shared_ptr<Sample>> &samples) : samples(samples) {}
-    ~SamplePlayer() override = default;
+    SamplePlayer(std::list<std::shared_ptr<Sample>> &samples);
+    ~SamplePlayer() override;
 
     //==============================================================================
     // AudioSource
@@ -30,10 +30,11 @@ class SamplePlayer : public juce::PositionableAudioSource {
     double currentSampleRate = 0;
     juce::int64 currentPos = 0;
     bool looping = false;
-    Timeline<Sample *> timeline;
+//    Timeline<Sample *> timeline;
     juce::AudioBuffer<float> tempBuffer;
 
-    void updateTimeline();
+    std::list<juce::PositionableAudioSource *> getSources();
+    Timeline<Sample *> getCurrentTimeline();
     double getTimeAtPosition(juce::int64 position) { return position / currentSampleRate; }
 
     juce::CriticalSection mutex;

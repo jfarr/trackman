@@ -53,8 +53,8 @@ class Track {
     friend TrackList;
     //    friend Sample;
 
-    Sample *addSample(const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager,
-        double sampleRate);
+    Sample *addSample(const juce::File &file, double startPos, double endPos, juce::AudioDeviceManager &deviceManager,
+        juce::AudioFormatManager &formatManager);
 
     //    void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource);
 

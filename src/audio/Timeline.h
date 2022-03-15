@@ -7,6 +7,7 @@
 template <class T> class Timeline {
   public:
     Timeline() = default;
+    Timeline(const Timeline &other) { timeRanges = other.timeRanges; }
     ~Timeline() = default;
 
     void reset() { timeRanges.clear(); }

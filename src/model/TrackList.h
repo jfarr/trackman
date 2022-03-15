@@ -42,7 +42,7 @@ class TrackList {
 
     void deleteTrack(Track *track);
     Sample *addSample(Track &track, const juce::File &file, double startPos, double endPos,
-        juce::AudioFormatManager &formatManager, double sampleRate);
+        juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
 
     //    void updateLength();
     //    void updateAudioSources();
