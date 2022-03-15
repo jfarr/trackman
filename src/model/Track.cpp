@@ -9,26 +9,26 @@ Track::~Track() { samples.clear(); }
 
 // bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
 
-//void Track::loadSamples(juce::AudioFormatManager &formatManager, double sampleRate) {
-//    //    if (samples.empty()) {
-//    //        return;
-//    //    }
-//    //    if (mixerSource == nullptr) {
-//    //        mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager);
-//    //    }
-//    for (std::shared_ptr<Sample> &sample : samples) {
-//        sample->loadFile(formatManager, sampleRate);
-//        //        if (sample->getSource() != nullptr) {
-//        //            mixerSource->addInputSource(sample->getSource());
-//        //        }
-//    }
-//    if (samplePlayer == nullptr) {
-//        samplePlayer.reset(new SamplePlayer(samples));
-//    }
+// void Track::loadSamples(juce::AudioFormatManager &formatManager, double sampleRate) {
+//     //    if (samples.empty()) {
+//     //        return;
+//     //    }
+//     //    if (mixerSource == nullptr) {
+//     //        mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager);
+//     //    }
+//     for (std::shared_ptr<Sample> &sample : samples) {
+//         sample->loadFile(formatManager, sampleRate);
+//         //        if (sample->getSource() != nullptr) {
+//         //            mixerSource->addInputSource(sample->getSource());
+//         //        }
+//     }
+//     if (samplePlayer == nullptr) {
+//         samplePlayer.reset(new SamplePlayer(samples));
+//     }
 //
-//    //    setSource(mixerSource);
-//    //    updateLength();
-//}
+//     //    setSource(mixerSource);
+//     //    updateLength();
+// }
 
 Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
     juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {
@@ -150,9 +150,9 @@ void Track::setDeleted(bool newDeleted) {
 
 void Track::setLevelGain(float newLevel) {
     level = newLevel;
-    //    if (gainSource != nullptr) {
-    //        gainSource->setGain(level);
-    //    }
+    if (gainSource != nullptr) {
+        gainSource->setGain(level);
+    }
 }
 
 void Track::setMute(bool newMuted) {
@@ -166,11 +166,11 @@ void Track::setSolo(bool newSoloed) {
 }
 
 void Track::updateGain() {
-//        bool play = (trackList.getSoloed().empty() || soloed) && !muted;
-        bool play = !muted;
-        if (gainSource != nullptr) {
-            gainSource->setGain(play ? level : 0);
-        }
+    //        bool play = (trackList.getSoloed().empty() || soloed) && !muted;
+    bool play = !muted;
+    if (gainSource != nullptr) {
+        gainSource->setGain(play ? level : 0);
+    }
 }
 
 Sample *Track::getSelected() const {
@@ -194,6 +194,4 @@ void Track::eachSample(std::function<void(Sample &sample)> f) {
     }
 }
 
-juce::int64 Track::getTotalLengthInSamples() const {
-    return gainSource == nullptr ? 0 : gainSource->getTotalLength();
-}
+juce::int64 Track::getTotalLengthInSamples() const { return gainSource == nullptr ? 0 : gainSource->getTotalLength(); }
