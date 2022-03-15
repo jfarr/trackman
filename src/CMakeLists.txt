@@ -28,9 +28,7 @@ target_sources(Trackman PRIVATE
         audio/ProcessingAudioSource.h
         audio/SamplePlayer.cpp
         audio/SamplePlayer.h
-        audio/Timeline.cpp
         audio/Timeline.h
-        audio/TimeRange.cpp
         audio/TimeRange.h
         commands/Command.h
         commands/CommandList.cpp
