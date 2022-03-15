@@ -2,7 +2,7 @@
 
 PositionOverlay::PositionOverlay(juce::AudioTransportSource &transportSource, Project *project) : transportSource(transportSource), project(project) {
     if (project != nullptr) {
-        setInterceptsMouseClicks(false, true);
+        setInterceptsMouseClicks(false, false);
     }
     startTimer(20);
 }

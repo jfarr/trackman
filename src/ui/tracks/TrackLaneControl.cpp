@@ -36,6 +36,8 @@ void TrackLaneControl::paint(juce::Graphics &g) {
     g.setColour(juce::Colours::slategrey);
     g.fillRect(0, getHeight() - 1, getWidth(), 1);
     g.fillRect(leftPanelWidth, 0, 1, getHeight());
+    g.setColour(juce::Colours::lightgrey);
+    g.fillRect(0, 1, leftPanelWidth, getHeight() - 1);
 
 //    auto duration = (float)transport.getLengthInSeconds();
 //
