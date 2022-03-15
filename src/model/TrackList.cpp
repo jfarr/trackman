@@ -1,7 +1,7 @@
 #include "TrackList.h"
 
 Track *TrackList::addTrack() {
-    auto *track = new Track(*this);
+    auto *track = new Track();
     tracks.push_back(std::unique_ptr<Track>(track));
     renumber();
     return track;
@@ -33,6 +33,11 @@ void TrackList::removeTrack(Track *track) {
     }
 }
 
+Sample *TrackList::addSample(
+    Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager) {
+    return track.addSample(file, startPos, endPos, deviceManager, formatManager);
+}
+
 Track *TrackList::getSelectedTrack() const {
     for (std::unique_ptr<Track> const &track : tracks) {
         if (!track->isDeleted() && track->isSelected()) {
@@ -42,32 +47,18 @@ Track *TrackList::getSelectedTrack() const {
     return nullptr;
 }
 
-juce::uint64 TrackList::getTotalLength() const {
-    juce::uint64 total = 0;
-    for (const auto & track : tracks) {
-        if (!track->isDeleted()) {
-            juce::uint64 length = track->getTotalLength();
-            total = std::max(total, length);
-        }
-    }
-    return total;
+double TrackList::getTotalLengthInSeconds() const {
+    return getTotalLengthInSamples() / deviceManager.getAudioDeviceSetup().sampleRate;
 }
 
-double TrackList::getTotalLengthSeconds() const {
-    double total = 0;
-    for (const auto & track : tracks) {
+juce::int64 TrackList::getTotalLengthInSamples() const {
+    juce::int64 length = 0;
+    for (const std::unique_ptr<Track> &track : tracks) {
         if (!track->isDeleted()) {
-            double length = track->getTotalLengthSeconds();
-            total = std::max(total, length);
+            length = std::max(length, track->getTotalLengthInSamples());
         }
     }
-    return total;
-}
-
-void TrackList::adjustTrackLengths() {
-    auto len = getTotalLengthSeconds();
-    DBG("TrackList::adjustTrackLengths: " << len);
-    eachTrack([len](Track &track) { track.adjustSampleLengthSecs(len); });
+    return length;
 }
 
 void TrackList::eachTrack(std::function<void(Track &track)> f) {
@@ -107,31 +98,38 @@ Sample *TrackList::getSelectedSample() const {
     return nullptr;
 }
 
-void TrackList::soloTracks() {
+void TrackList::setMute(Track &track, bool newMuted) {
+    track.setMute(newMuted);
+    track.updateGain(isAnySoloed());
+}
+
+void TrackList::setSolo(Track &track, bool newSoloed) {
+    track.setSolo(newSoloed);
+    auto anySoloed = isAnySoloed();
     for (std::unique_ptr<Track> const &track : tracks) {
         if (!track->isDeleted()) {
-            track->updateGain();
+            track->updateGain(anySoloed);
         }
     }
 }
 
-std::list<const Track *> TrackList::getSoloed() {
-    std::list<const Track *> soloed;
+bool TrackList::isAnySoloed() const {
     for (std::unique_ptr<Track> const &track : tracks) {
         if (!track->isDeleted() && track->isSoloed()) {
-            soloed.push_back(&*track);
+            return true;
         }
     }
-    return soloed;
+    return false;
 }
 
-void TrackList::writeAudioFile(const juce::File& file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const {
+void TrackList::writeAudioFile(
+    const juce::File &file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const {
     file.deleteFile();
-    if (auto fileStream = std::unique_ptr<juce::FileOutputStream> (file.createOutputStream())) {
+    if (auto fileStream = std::unique_ptr<juce::FileOutputStream>(file.createOutputStream())) {
         juce::WavAudioFormat wavFormat;
-        if (auto writer = wavFormat.createWriterFor (fileStream.get(), sampleRate, 2, bitsPerSample, {}, 0)) {
+        if (auto writer = wavFormat.createWriterFor(fileStream.get(), sampleRate, 2, bitsPerSample, {}, 0)) {
             fileStream.release();
-            writer->writeFromAudioSource(source, (int) getTotalLength());
+            writer->writeFromAudioSource(source, (int)(getTotalLengthInSamples()));
             writer->flush();
             delete writer;
         }

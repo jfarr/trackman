@@ -5,9 +5,10 @@
 #include "common/listutil.h"
 #include "ui/MainWindow.h"
 
-DesktopController::DesktopController(MainWindow &mainWindow, double sampleRate)
-    : mainWindow(mainWindow), applicationName(mainWindow.getName()), desktopComponent(*this), project(sampleRate),
-      mixerController(*this), trackListController(*this, project.getMixer().getTransportSource()) {
+DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceManager &deviceManager)
+    : mainWindow(mainWindow), deviceManager(deviceManager), applicationName(mainWindow.getName()),
+      desktopComponent(*this), project(deviceManager), mixerController(*this),
+      trackListController(*this, project.getMixer().getTransportSource()) {
 
     updateTitleBar();
 }
@@ -161,7 +162,7 @@ Track *DesktopController::addTrack() {
 }
 
 void DesktopController::deleteTrack(Track *track, bool purge) {
-    project.getTrackList().deleteTrack(track);
+    project.deleteTrack(track);
     if (purge) {
         project.getTrackList().removeTrack(track);
     }
@@ -257,7 +258,7 @@ void DesktopController::openProject() {
         auto file = fc.getResult();
         if (file != juce::File{}) {
             projectFile = file;
-            project.from_json(mainWindow.getMainAudioComponent().getDeviceManager(),
+            project.from_json(
                 mainWindow.getMainAudioComponent().getFormatManager(), file.getFullPathName().toStdString());
             juce::MessageManager::callAsync([this]() {
                 trackListController.update();
@@ -279,8 +280,7 @@ void DesktopController::exportProject() {
     chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
         auto file = fc.getResult();
         if (file != juce::File{}) {
-            project.getTrackList().writeAudioFile(file, project.getMixer().getSource(),
-                mainWindow.getMainAudioComponent().getDeviceManager().getAudioDeviceSetup().sampleRate, 16);
+            project.writeAudioFile(file);
         }
     });
 }

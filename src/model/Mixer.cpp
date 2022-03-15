@@ -1,8 +1,9 @@
 #include "Mixer.h"
 #include "common/listutil.h"
 
-Mixer::Mixer(double sampleRate)
-    : mixerSource(), gainSource(&mixerSource, false), meteredSource(gainSource, sampleRate) {
+Mixer::Mixer(juce::AudioDeviceManager &deviceManager)
+    : deviceManager(deviceManager), gainSource(&mixerSource, false),
+      meteredSource(&gainSource, deviceManager.getAudioDeviceSetup().sampleRate) {
     transportSource.setSource(&meteredSource);
     initialized = true;
 }
@@ -14,14 +15,18 @@ Mixer::~Mixer() {
 
 void Mixer::addSource(juce::PositionableAudioSource *source) {
     if (!listContains(sources, source)) {
-        DBG("Mixer::addSource - add source with length: " << source->getTotalLength());
         sources.push_back(source);
         auto pos = transportSource.getCurrentPosition();
         mixerSource.addInputSource(source);
+        source->prepareToPlay(
+            deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
         transportSource.setPosition(pos);
-        DBG("Mixer::addSource - set position: " << pos);
-        DBG("Mixer::addSource - length: " << transportSource.getTotalLength());
     }
+}
+
+void Mixer::removeSource(juce::PositionableAudioSource *source) {
+    mixerSource.removeInputSource(source);
+    sources.remove(source);
 }
 
 void Mixer::removeAllSources() {

@@ -49,15 +49,15 @@ void PositionableResamplingAudioSource::getNextAudioBlock(const juce::AudioSourc
 
 //==============================================================================
 void PositionableResamplingAudioSource::setNextReadPosition(juce::int64 newPosition) {
-    source->setNextReadPosition((juce::int64)(newPosition * getSampleRatio()));
+    source->setNextReadPosition(newPosition * getSampleRatio());
 }
 
 juce::int64 PositionableResamplingAudioSource::getNextReadPosition() const {
-    return (double)source->getNextReadPosition() * getSampleRatio();
+    return source->getNextReadPosition() * getSampleRatio();
 }
 
 juce::int64 PositionableResamplingAudioSource::getTotalLength() const {
-    return (juce::int64)((double)source->getTotalLength() * getSampleRatio());
+    return source->getTotalLength() * getSampleRatio();
 }
 
 bool PositionableResamplingAudioSource::isLooping() const { return source->isLooping(); }

@@ -5,16 +5,34 @@
 
 using json = nlohmann::json;
 
+Project::Project(juce::AudioDeviceManager &deviceManager)
+    : deviceManager(deviceManager), trackList(deviceManager), mixer(deviceManager) {}
+
+void Project::deleteTrack(Track *track) {
+    auto source = track->getSource();
+    if (source != nullptr) {
+        mixer.removeSource(track->getSource());
+    }
+    trackList.deleteTrack(track);
+}
+
+Sample *Project::addSample(
+    Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager) {
+    auto sample = trackList.addSample(track, file, startPos, endPos, formatManager);
+    mixer.addSource(track.getSource());
+    return sample;
+}
+
 std::string Project::to_json() {
-    json project_json = {{"horizontalScale", horizontalScale}, {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
+    json project_json = {{"horizontalScale", horizontalScale},
+        {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
     project_json["tracks"] = json::array();
     trackList.eachTrack([&project_json](Track &track) {
-        json track_json = {
-            {"name", track.getName().toStdString()}, {"gain", track.getLevelGain()}, {"muted", track.isMuted()}};
+        json track_json = {{"name", track.getName().toStdString()}, {"gain", track.getLevelGain()},
+            {"muted", track.isMuted()}, {"soloed", track.isSoloed()}};
         track.eachSample([&track_json](Sample &sample) {
             json sample_json = {{"file", sample.getFile().getFullPathName().toStdString()},
-                {"startPos", sample.getStartPos()}, {"endPos", sample.getEndPos()}, {"length", sample.getSourceLengthSecs()},
-                {"sampleRate", sample.getSampleRate()}};
+                {"startPos", sample.getStartPos()}, {"endPos", sample.getEndPos()}};
             track_json["samples"].push_back(sample_json);
         });
         project_json["tracks"].push_back(track_json);
@@ -22,11 +40,11 @@ std::string Project::to_json() {
     return project_json.dump();
 }
 
-void Project::from_json(
-    juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, std::string filename) {
+void Project::from_json(juce::AudioFormatManager &formatManager, std::string filename) {
     std::ifstream s(filename);
     json project_json;
     s >> project_json;
+    mixer.removeAllSources();
     horizontalScale = project_json["horizontalScale"];
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);
@@ -35,11 +53,14 @@ void Project::from_json(
         auto track = trackList.addTrack();
         track->setName(track_json["name"]);
         track->setLevelGain(track_json["gain"]);
-        track->setMute(track_json["muted"]);
+        trackList.setMute(*track, track_json["muted"]);
+        trackList.setSolo(*track, track_json["soloed"]);
         for (auto sample_json : track_json["samples"]) {
-            track->addSample(deviceManager, formatManager, sample_json["file"], sample_json["startPos"],
-                sample_json["endPos"], sample_json["length"], sample_json["sampleRate"]);
+            addSample(*track, sample_json["file"], sample_json["startPos"], sample_json["endPos"], formatManager);
         }
-        track->loadSamples(deviceManager, formatManager);
     }
+}
+
+void Project::writeAudioFile(const juce::File &file) {
+    trackList.writeAudioFile(file, mixer.getSource(), deviceManager.getAudioDeviceSetup().sampleRate, 16);
 }

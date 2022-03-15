@@ -29,7 +29,6 @@ void TrackListController::update() {
         lane->update();
     });
     trackListPanel.update();
-    project.getTrackList().adjustTrackLengths();
 }
 
 void TrackListController::repaint() {
@@ -65,13 +64,10 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
         double offset = width / 2;
         double startPos = std::max((pos - offset - leftPanelWidth), 0.0);
         double endPos = startPos + width;
-        auto sample = track.addSample(desktopController.getMainWindow().getMainAudioComponent().getDeviceManager(),
-            desktopController.getMainWindow().getMainAudioComponent().getFormatManager(), file, startPos / scale,
-            endPos / scale, length, reader->sampleRate);
-        project.getTrackList().adjustTrackLengths();
+        auto sample = project.addSample(track, file, startPos / scale, endPos / scale,
+            desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
         selectionChanged(&track);
         updateLane(track);
-        updateMixerSource();
         return sample;
     }
     return nullptr;
@@ -85,39 +81,26 @@ void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &to
         toTrack.selectSample(&sample);
     }
     sample.setPosition(pos);
-    project.getTrackList().adjustTrackLengths();
     trackListPanel.resize();
 }
 
 void TrackListController::resizeSample(Sample &sample, double length) {
     sample.setLength(length);
-    project.getTrackList().adjustTrackLengths();
     trackListPanel.resize();
 }
 
 void TrackListController::deleteSample(Track &track, Sample *sample) {
-    auto pos = transport.getCurrentPosition();
-    if (sample == nullptr) {
-        return;
+    if (sample != nullptr) {
+        sample->setDeleted(true);
+        updateLane(track);
     }
-    track.deleteSample(sample);
-    updateLane(track);
-    updateMixerSource();
-    project.getTrackList().adjustTrackLengths();
-    pos = std::max(pos, transport.getLengthInSeconds());
-    transport.setPosition(pos);
 }
 
 void TrackListController::undeleteSample(Track &track, Sample *sample) {
-    auto pos = transport.getCurrentPosition();
-    if (sample == nullptr) {
-        return;
+    if (sample != nullptr) {
+        sample->setDeleted(false);
+        updateLane(track);
     }
-    track.undeleteSample(sample);
-    updateLane(track);
-    updateMixerSource();
-    transport.setPosition(pos);
-    project.getTrackList().adjustTrackLengths();
 }
 
 void TrackListController::updateLane(Track &track) {
@@ -169,7 +152,7 @@ void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y
 }
 
 void TrackListController::sampleResized(Sample &sample, int width) {
-    auto curLen = sample.getLengthSecs();
+    auto curLen = sample.getLengthInSeconds();
     auto newLen = std::max(width, 2) / project.getHorizontalScale();
     desktopController.resizeSample(sample, curLen, newLen);
 }
@@ -183,7 +166,7 @@ void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int sc
         TrackLaneController *lane;
         if (track == nullptr) {
             if (newDragLane == nullptr) {
-                track = new Track(project.getTrackList());
+                track = new Track();
                 newDragLane = new TrackLaneController(project, *track, *this, transport,
                     desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
                 trackListPanel.addLane(&newDragLane->getTrackLaneControl());
@@ -217,5 +200,3 @@ void TrackListController::removeDragLane() {
     }
     currentDragTrack = nullptr;
 }
-
-void TrackListController::updateMixerSource() { desktopController.getMixerController().updateAudioSource(); }

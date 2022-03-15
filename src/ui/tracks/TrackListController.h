@@ -61,7 +61,6 @@ class TrackListController : public TrackListListener, public SampleListener {
     Track *currentDragTrack = nullptr;
     TrackLaneController *newDragLane = nullptr;
 
-    void updateMixerSource();
     void updateLane(Track &track);
     TrackLaneController *getLane(Track &track);
     void updateLanes();

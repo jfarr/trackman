@@ -9,6 +9,7 @@ class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
     ~PositionableResamplingAudioSource() override;
 
     juce::PositionableAudioSource *getSource() { return source; }
+    double getSampleRate() const { return sampleRate; }
 
     void setSourceSampleRateToCorrectFor(double newSampleRate);
 
@@ -29,8 +30,7 @@ class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
   private:
     juce::PositionableAudioSource *source;
     juce::ResamplingAudioSource resamplerSource;
-    // juce::CriticalSection callbackLock;
-    double sampleRate = 44100.0, sourceSampleRate;
+    double sampleRate, sourceSampleRate;
     int blockSize = 128;
     const bool deleteWhenRemoved;
 

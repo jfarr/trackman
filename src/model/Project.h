@@ -5,8 +5,13 @@
 
 class Project {
   public:
-    Project(double sampleRate) : trackList(sampleRate), mixer(sampleRate) {}
+    Project(juce::AudioDeviceManager &deviceManager);
     ~Project() = default;
+
+    void deleteTrack(Track *track);
+
+    Sample *addSample(
+        Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager);
 
     TrackList &getTrackList() { return trackList; }
     Mixer &getMixer() { return mixer; }
@@ -29,14 +34,16 @@ class Project {
     }
 
     std::string to_json();
-    void from_json(
-        juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, std::string filename);
+    void from_json(juce::AudioFormatManager &formatManager, std::string filename);
+
+    void writeAudioFile(const juce::File &file);
 
   private:
     const double initialVerticalScale = 1;
     const double initialHorizontalScale = 100;
     const double scaleIncrement = 5;
 
+    juce::AudioDeviceManager &deviceManager;
     TrackList trackList;
     Mixer mixer;
     double verticalScale = initialVerticalScale;

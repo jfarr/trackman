@@ -8,8 +8,8 @@
 class ChangeMasterVolumeCommand : public Command {
   public:
     ChangeMasterVolumeCommand(MixerController &mixerController, float previousLevel)
-        : Command("change master volume"), mixerController(mixerController), previousLevel(previousLevel) {}
-    ~ChangeMasterVolumeCommand() override {}
+        : Command("Change Master Volume"), mixerController(mixerController), previousLevel(previousLevel) {}
+    ~ChangeMasterVolumeCommand() override = default;
 
     void undo() override { mixerController.setMasterLevel(previousLevel); }
 
@@ -22,10 +22,10 @@ class ChangeMasterVolumeCommand : public Command {
 
 class ToggleMasterMuteCommand : public Command {
   public:
-    ToggleMasterMuteCommand(MixerController &controller)
-        : Command(juce::String(controller.isMasterMuted() ? "unmute" : "mute") + " master"), controller(controller),
+    explicit ToggleMasterMuteCommand(MixerController &controller)
+        : Command(juce::String(controller.isMasterMuted() ? "Unmute" : "Mute") + " Master"), controller(controller),
           muted(controller.isMasterMuted()) {}
-    ~ToggleMasterMuteCommand() {}
+    ~ToggleMasterMuteCommand() override = default;
 
     void execute() override { controller.setMasterMute(!muted); }
     void undo() override { controller.setMasterMute(muted); }
@@ -38,9 +38,9 @@ class ToggleMasterMuteCommand : public Command {
 class ChangeTrackVolumeCommand : public Command {
   public:
     ChangeTrackVolumeCommand(MixerController &mixerController, Track &track, float previousLevel)
-        : Command("change track " + juce::String(track.getTrackNumber()) + " volume"), mixerController(mixerController),
+        : Command("Change Track " + juce::String(track.getTrackNumber()) + " Volume"), mixerController(mixerController),
           track(track), previousLevel(previousLevel) {}
-    ~ChangeTrackVolumeCommand() override {}
+    ~ChangeTrackVolumeCommand() override = default;
 
     void undo() override { mixerController.setLevel(track, previousLevel); }
 
@@ -55,9 +55,9 @@ class ChangeTrackVolumeCommand : public Command {
 class ToggleMuteCommand : public Command {
   public:
     ToggleMuteCommand(MixerController &controller, Track &track)
-        : Command(juce::String(track.isMuted() ? "unmute" : "mute") + " Track " + juce::String(track.getTrackNumber())),
+        : Command(juce::String(track.isMuted() ? "Unmute" : "Mute") + " Track " + juce::String(track.getTrackNumber())),
           controller(controller), track(track), muted(track.isMuted()) {}
-    ~ToggleMuteCommand() {}
+    ~ToggleMuteCommand() override = default;
 
     void execute() override { controller.setMute(track, !muted); }
     void undo() override { controller.setMute(track, muted); }
@@ -71,9 +71,9 @@ class ToggleMuteCommand : public Command {
 class ToggleSoloCommand : public Command {
   public:
     ToggleSoloCommand(MixerController &controller, Track &track)
-        : Command(juce::String(track.isSoloed() ? "unsolo" : "solo") + " Track " + juce::String(track.getTrackNumber())),
+        : Command(juce::String(track.isSoloed() ? "Unsolo" : "Solo") + " Track " + juce::String(track.getTrackNumber())),
           controller(controller), track(track), soloed(track.isSoloed()) {}
-    ~ToggleSoloCommand() {}
+    ~ToggleSoloCommand() override = default;
 
     void execute() override { controller.setSolo(track, !soloed); }
     void undo() override { controller.setSolo(track, soloed); }

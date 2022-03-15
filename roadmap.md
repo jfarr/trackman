@@ -1,13 +1,13 @@
 # Roadmap
 
 ## Short-Term
-- Rename `controls` -> `ui`
 - Click to move transport
 - Sample info popup
 - Drop multiple files
   - Default one track
   - Ctrl-drag multiple tracks
 - Use undo manager
+- Use ListenerList
 - Stereo panner
 - Song start / end position
 - Loop start / end position

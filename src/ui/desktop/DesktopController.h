@@ -20,7 +20,7 @@ class DesktopController : public juce::AudioSource,
                           public TrackControlListener,
                           public TrackScaleListener {
   public:
-    DesktopController(MainWindow &mainWindow, double sampleRate);
+    DesktopController(MainWindow &mainWindow, juce::AudioDeviceManager &deviceManager);
     ~DesktopController() override = default;
 
     MainWindow &getMainWindow() { return mainWindow; }
@@ -95,6 +95,7 @@ class DesktopController : public juce::AudioSource,
 
   private:
     MainWindow &mainWindow;
+    juce::AudioDeviceManager &deviceManager;
     juce::String applicationName;
 
     CommandList commandList;

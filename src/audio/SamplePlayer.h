@@ -1,14 +1,14 @@
 #pragma once
 
+#include "TimeRange.h"
+#include "Timeline.h"
+#include "model/Sample.h"
 #include <JuceHeader.h>
 
-class OffsetAudioSource : public juce::PositionableAudioSource {
+class SamplePlayer : public juce::PositionableAudioSource {
   public:
-    OffsetAudioSource(PositionableAudioSource &source, double offsetSeconds, double sampleRate);
-    ~OffsetAudioSource();
-
-    void setOffsetSeconds(double offsetSeconds);
-    void setMinLength(juce::int64 newLength);
+    SamplePlayer(std::list<std::shared_ptr<Sample>> &samples);
+    ~SamplePlayer() override;
 
     //==============================================================================
     // AudioSource
@@ -25,12 +25,16 @@ class OffsetAudioSource : public juce::PositionableAudioSource {
     void setLooping(bool shouldLoop) override;
 
   private:
-    PositionableAudioSource &source;
-    juce::int64 offsetSamples;
-    double sampleRate;
-    juce::int64 minLength;
+    std::list<std::shared_ptr<Sample>> &samples;
+    double currentSampleRate = 0;
+    juce::int64 currentPos = 0;
+    bool looping = false;
+    juce::AudioBuffer<float> tempBuffer;
+
+    Timeline<Sample *> getCurrentTimeline();
+    double getTimeAtPosition(juce::int64 position) { return position / currentSampleRate; }
 
     juce::CriticalSection mutex;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OffsetAudioSource)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplePlayer)
 };
