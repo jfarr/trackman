@@ -132,23 +132,61 @@ Sample *TrackList::getSelectedSample() const {
     return nullptr;
 }
 
-void TrackList::soloTracks() {
+void TrackList::setMute(Track &track, bool newMuted) {
+    track.setMute(newMuted);
+//    bool anySoloed = false;
+//    for (std::unique_ptr<Track> const &track : tracks) {
+//        if (!track->isDeleted() && track->isSoloed()) {
+//            anySoloed = true;
+//            break;
+//        }
+//    }
+    track.updateGain(isAnySoloed());
+}
+
+void TrackList::setSolo(Track &track, bool newSoloed) {
+    track.setSolo(newSoloed);
+    auto anySoloed = isAnySoloed();
+//    for (std::unique_ptr<Track> const &track : tracks) {
+//        if (!track->isDeleted() && track->isSoloed()) {
+//            anySoloed = true;
+//            break;
+//        }
+//    }
     for (std::unique_ptr<Track> const &track : tracks) {
         if (!track->isDeleted()) {
-            track->updateGain();
+            track->updateGain(anySoloed);
         }
     }
 }
 
-std::list<const Track *> TrackList::getSoloed() {
-    std::list<const Track *> soloed;
+bool TrackList::isAnySoloed() const {
     for (std::unique_ptr<Track> const &track : tracks) {
         if (!track->isDeleted() && track->isSoloed()) {
-            soloed.push_back(&*track);
+            return true;
         }
     }
-    return soloed;
+    return false;
 }
+
+//
+// void TrackList::soloTracks() {
+//    for (std::unique_ptr<Track> const &track : tracks) {
+//        if (!track->isDeleted()) {
+//            track->updateGain();
+//        }
+//    }
+//}
+//
+// std::list<const Track *> TrackList::getSoloed() {
+//    std::list<const Track *> soloed;
+//    for (std::unique_ptr<Track> const &track : tracks) {
+//        if (!track->isDeleted() && track->isSoloed()) {
+//            soloed.push_back(&*track);
+//        }
+//    }
+//    return soloed;
+//}
 
 void TrackList::writeAudioFile(
     const juce::File &file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const {

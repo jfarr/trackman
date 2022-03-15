@@ -28,11 +28,13 @@ class TrackList {
     void eachTrack(std::function<void(Track &track)> f);
 
     void clear() { tracks.clear(); }
+    void setMute(Track &track, bool newMuted);
+    void setSolo(Track &track, bool newSoloed);
     void setSelected(Track *selected);
     void selectSample(Sample *selected);
 
-    void soloTracks();
-    std::list<const Track *> getSoloed();
+    //    void soloTracks();
+    //    std::list<const Track *> getSoloed();
 
     void writeAudioFile(const juce::File &file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const;
 
@@ -54,6 +56,7 @@ class TrackList {
     //    double totalLengthSecs = 0;
 
     void renumber();
+    bool isAnySoloed() const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackList)
 };

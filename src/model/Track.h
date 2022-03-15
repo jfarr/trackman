@@ -41,9 +41,6 @@ class Track {
     void setTrackNumber(int newNumber) { trackNumber = newNumber; }
     void setName(juce::String newName) { name = newName; }
     void setLevelGain(float newLevel);
-    void setMute(bool newMuted);
-    void setSolo(bool newSoloed);
-    void updateGain();
     Sample *getSelected() const;
     void selectSample(Sample *newSelected);
     void eachSample(std::function<void(Sample &sample)> f);
@@ -56,6 +53,9 @@ class Track {
 
     Sample *addSample(const juce::File &file, double startPos, double endPos, juce::AudioDeviceManager &deviceManager,
         juce::AudioFormatManager &formatManager);
+    void setMute(bool newMuted);
+    void setSolo(bool newSoloed);
+    void updateGain(bool anySoloed);
 
     //    void setSource(std::shared_ptr<juce::PositionableAudioSource> newSource);
 

@@ -157,17 +157,14 @@ void Track::setLevelGain(float newLevel) {
 
 void Track::setMute(bool newMuted) {
     muted = newMuted;
-    updateGain();
 }
 
 void Track::setSolo(bool newSoloed) {
     soloed = newSoloed;
-    //    trackList.soloTracks();
 }
 
-void Track::updateGain() {
-    //        bool play = (trackList.getSoloed().empty() || soloed) && !muted;
-    bool play = !muted;
+void Track::updateGain(bool anySoloed) {
+    bool play = (!anySoloed || soloed) && !muted;
     if (gainSource != nullptr) {
         gainSource->setGain(play ? level : 0);
     }

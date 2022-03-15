@@ -28,8 +28,8 @@ std::string Project::to_json() {
         {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
     project_json["tracks"] = json::array();
     trackList.eachTrack([&project_json](Track &track) {
-        json track_json = {
-            {"name", track.getName().toStdString()}, {"gain", track.getLevelGain()}, {"muted", track.isMuted()}};
+        json track_json = {{"name", track.getName().toStdString()}, {"gain", track.getLevelGain()},
+            {"muted", track.isMuted()}, {"soloed", track.isSoloed()}};
         track.eachSample([&track_json](Sample &sample) {
             json sample_json = {{"file", sample.getFile().getFullPathName().toStdString()},
                 {"startPos", sample.getStartPos()}, {"endPos", sample.getEndPos()}};
@@ -54,7 +54,9 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
         auto track = trackList.addTrack();
         track->setName(track_json["name"]);
         track->setLevelGain(track_json["gain"]);
-        track->setMute(track_json["muted"]);
+        trackList.setMute(*track, track_json["muted"]);
+        trackList.setSolo(*track, track_json["soloed"]);
+        //        track->setMute(track_json["muted"]);
         for (auto sample_json : track_json["samples"]) {
             addSample(*track, sample_json["file"], sample_json["startPos"], sample_json["endPos"], formatManager);
         }
