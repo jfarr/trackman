@@ -31,6 +31,7 @@ void Sample::loadFile(juce::AudioDeviceManager &deviceManager, juce::AudioFormat
         resamplingSource = std::make_unique<PositionableResamplingAudioSource>(
             fileSource.get(), false, sampleRate, getSampleRate(), 2);
         resamplingSource->prepareToPlay(blockSize, sampleRate);
+        loaded = true;
     }
 }
 

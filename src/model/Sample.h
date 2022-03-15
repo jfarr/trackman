@@ -17,6 +17,7 @@ class Sample : public juce::PositionableAudioSource {
     [[nodiscard]] double getEndPos() const { return endPos; }
     [[nodiscard]] juce::int64 getLengthInSamples() const;
     [[nodiscard]] double getLengthInSeconds() const { return length; }
+    [[nodiscard]] bool isLoaded() const { return loaded; }
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
@@ -49,6 +50,7 @@ class Sample : public juce::PositionableAudioSource {
     double sourceLengthInSeconds = 0;
     std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
     std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
+    bool loaded = false;
     bool selected = false;
     bool deleted = false;
 

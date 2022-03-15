@@ -41,12 +41,12 @@ void SampleThumbnail::createControls() {
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     addAndMakeVisible(filenameLabel);
     addAndMakeVisible(stretchHandle);
-//    if (sample.getSource() == nullptr) {
-//        missingFileLabel.setText("no file", juce::dontSendNotification);
-//        missingFileLabel.setFont(missingFileLabel.getFont().withHeight(10));
-//        missingFileLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
-//        addAndMakeVisible(missingFileLabel);
-//    }
+    if (!sample.isLoaded()) {
+        missingFileLabel.setText("no file", juce::dontSendNotification);
+        missingFileLabel.setFont(missingFileLabel.getFont().withHeight(10));
+        missingFileLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
+        addAndMakeVisible(missingFileLabel);
+    }
 }
 
 void SampleThumbnail::paint(juce::Graphics &g) {
@@ -91,9 +91,9 @@ void SampleThumbnail::resized() {
     auto handleSize = 12;
     stretchHandle.setBounds(getWidth() - handleSize, 0, handleSize, handleSize);
     filenameLabel.setBounds(area.removeFromTop(labelHeight).reduced(margin));
-//    if (sample.getSource() == nullptr) {
-//        missingFileLabel.centreWithSize(40, 15);
-//    }
+    if (!sample.isLoaded()) {
+        missingFileLabel.centreWithSize(40, 15);
+    }
 }
 
 void SampleThumbnail::mouseDown(const juce::MouseEvent &event) {
