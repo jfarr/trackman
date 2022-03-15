@@ -8,6 +8,7 @@ class Project {
     Project(juce::AudioDeviceManager &deviceManager);
     ~Project() = default;
 
+    Track *addTrack();
     void deleteTrack(Track *track);
 
     Sample *addSample(

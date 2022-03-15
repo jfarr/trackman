@@ -153,7 +153,7 @@ juce::String DesktopController::getSelectionType() const {
 }
 
 Track *DesktopController::addTrack() {
-    auto track = project.getTrackList().addTrack();
+    auto track = project.addTrack();
     juce::MessageManager::callAsync([this]() {
         trackListController.update();
         mixerController.update();

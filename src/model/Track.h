@@ -37,7 +37,7 @@ class Track {
     void setDeleted(bool newDeleted);
 
     void selectSample(Sample *newSelected);
-    void moveSampleTo(Sample &sample, Track &toTrack);
+    void moveSampleTo(Sample &sample, Track &toTrack, juce::AudioDeviceManager &deviceManager);
     void eachSample(std::function<void(Sample &sample)> f);
 
   private:
@@ -63,6 +63,8 @@ class Track {
     bool deleted = false;
     std::list<std::shared_ptr<Sample>> samples;
     std::unique_ptr<SamplePlayer> samplePlayer;
+
+    void createSamplePlayer(juce::AudioDeviceManager &deviceManager);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
 };

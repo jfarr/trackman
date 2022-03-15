@@ -11,7 +11,6 @@ class TrackList {
     TrackList(juce::AudioDeviceManager &deviceManager) : deviceManager(deviceManager) {}
     ~TrackList() = default;
 
-    Track *addTrack();
     void undeleteTrack(Track *track);
     void removeTrack(Track *track);
 
@@ -34,6 +33,7 @@ class TrackList {
   private:
     friend Project;
 
+    Track *addTrack();
     void deleteTrack(Track *track);
     Sample *addSample(
         Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager);
