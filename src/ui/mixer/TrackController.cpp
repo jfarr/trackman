@@ -24,13 +24,11 @@ void TrackController::setLevel(float newLevel) {
 
 void TrackController::setMute(Track &track, bool newMute) {
     desktopController.getProject().getTrackList().setMute(track, newMute);
-//    track.setMute(newMute);
     trackControl.update();
 }
 
 void TrackController::setSolo(Track &track, bool newSolo) {
     desktopController.getProject().getTrackList().setSolo(track, newSolo);
-//    track.setSolo(newSolo);
     trackControl.update();
 }
 

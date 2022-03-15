@@ -18,13 +18,10 @@ class Sample : public juce::PositionableAudioSource {
     [[nodiscard]] double getEndPos() const { return endPos; }
     [[nodiscard]] juce::int64 getLengthInSamples() const;
     [[nodiscard]] double getLengthInSeconds() const { return length; }
-    //    [[nodiscard]] double getSourceLengthInSeconds() const { return sourceLengthInSeconds; }
-    //    [[nodiscard]] double getSampleRate() const { return sourceSampleRate; }
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
     void loadFile(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
-    //    juce::PositionableAudioSource *getSource() { return resamplingSource.get(); }
 
     void setPosition(double pos);
     void setLength(double newLength);

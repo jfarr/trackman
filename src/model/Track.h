@@ -28,24 +28,24 @@ class Track {
     [[nodiscard]] bool isDeleted() const { return deleted; }
     [[nodiscard]] juce::int64 getTotalLengthInSamples() const;
 
-    juce::PositionableAudioSource *getSource() { return gainSource.get(); }
-    //    foleys::LevelMeterSource *getMeterSource() {
-    //        return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource();
-    //    }
-    //
-    //    void loadSamples(juce::AudioFormatManager &formatManager, double sampleRate);
-    void moveSampleTo(Sample &sample, Track &toTrack);
-    void deleteSample(Sample *sample);
-    void undeleteSample(Sample *sample);
+    juce::PositionableAudioSource *getSource() { return meteredSource.get(); }
+    foleys::LevelMeterSource *getMeterSource() {
+        return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource();
+    }
+
 
     void setTrackNumber(int newNumber) { trackNumber = newNumber; }
     void setName(juce::String newName) { name = newName; }
     void setLevelGain(float newLevel);
-    Sample *getSelected() const;
-    void selectSample(Sample *newSelected);
-    void eachSample(std::function<void(Sample &sample)> f);
     void setSelected(bool newSelected) { selected = newSelected; }
+    Sample *getSelected() const;
     void setDeleted(bool newDeleted);
+
+    void selectSample(Sample *newSelected);
+    void moveSampleTo(Sample &sample, Track &toTrack);
+//    void deleteSample(Sample *sample);
+//    void undeleteSample(Sample *sample);
+    void eachSample(std::function<void(Sample &sample)> f);
 
   private:
     friend TrackList;
@@ -66,8 +66,8 @@ class Track {
     int trackNumber = 0;
     juce::String name = defaultName;
     //    std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
-    //    std::shared_ptr<MeteredAudioSource> meteredSource;
-    std::shared_ptr<GainAudioSource> gainSource;
+    std::unique_ptr<MeteredAudioSource> meteredSource;
+    std::unique_ptr<GainAudioSource> gainSource;
     //    std::shared_ptr<PositionableMixingAudioSource> mixerSource;
 
     float level = juce::Decibels::decibelsToGain<float>(0.0);

@@ -35,9 +35,9 @@ void TrackControl::createControls() {
 
     levelMeter.setLookAndFeel(&levelMeterLookAndFeel);
     levelMeter.setFixedNumChannels(2);
-//    if (track.getMeterSource() != nullptr) {
-//        levelMeter.setMeterSource(track.getMeterSource());
-//    }
+    if (track.getMeterSource() != nullptr) {
+        levelMeter.setMeterSource(track.getMeterSource());
+    }
 
     addAndMakeVisible(decibelSlider);
     addAndMakeVisible(muteButton);

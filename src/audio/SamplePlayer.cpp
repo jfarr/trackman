@@ -8,7 +8,7 @@ SamplePlayer::~SamplePlayer() {
     }
 }
 //
-//std::list<juce::PositionableAudioSource *> SamplePlayer::getSources() {
+// std::list<juce::PositionableAudioSource *> SamplePlayer::getSources() {
 //    std::list<juce::PositionableAudioSource *> sources;
 //    for (auto &sample : samples) {
 //        if (sample->getSource() != nullptr) {
@@ -55,7 +55,12 @@ void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferT
         Timeline timeline = getCurrentTimeline();
         std::list<Sample *> samplesToPlay = timeline.getAt(getTimeAtPosition(currentPos));
         if (!samplesToPlay.empty()) {
-            samplesToPlay.front()->getNextAudioBlock(bufferToFill);
+            auto firstSample = samplesToPlay.front();
+            if (!firstSample->isDeleted()) {
+                firstSample->getNextAudioBlock(bufferToFill);
+            } else {
+                bufferToFill.clearActiveBufferRegion();
+            }
 
             if (samplesToPlay.size() > 1) {
                 tempBuffer.setSize(
@@ -64,11 +69,12 @@ void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferT
                 juce::AudioSourceChannelInfo info2(&tempBuffer, 0, bufferToFill.numSamples);
                 int i = 0;
                 for (auto *sample : samplesToPlay) {
-                    if (i > 0) {
+                    if (i > 0 && !sample->isDeleted()) {
                         sample->getNextAudioBlock(info2);
-                        for (int chan = 0; chan < bufferToFill.buffer->getNumChannels(); ++chan)
+                        for (int chan = 0; chan < bufferToFill.buffer->getNumChannels(); ++chan) {
                             bufferToFill.buffer->addFrom(
                                 chan, bufferToFill.startSample, tempBuffer, chan, 0, bufferToFill.numSamples);
+                        }
                     }
                     i++;
                 }
@@ -84,7 +90,9 @@ void SamplePlayer::setNextReadPosition(juce::int64 newPosition) {
     const juce::ScopedLock lock(mutex);
     currentPos = newPosition;
     for (auto &sample : samples) {
-        sample->setNextReadPosition(newPosition);
+        if (!sample->isDeleted()) {
+            sample->setNextReadPosition(newPosition);
+        }
     }
 }
 
@@ -99,7 +107,9 @@ juce::int64 SamplePlayer::getTotalLength() const {
     for (std::shared_ptr<Sample> &sample : samples) {
         //        DBG("got length " << sample->getLengthInSamples() << " for sample " <<
         //        sample->getFile().getFileName());
-        totalLength = std::max(totalLength, sample->getLengthInSamples());
+        if (!sample->isDeleted()) {
+            totalLength = std::max(totalLength, sample->getLengthInSamples());
+        }
     }
     return totalLength;
 }

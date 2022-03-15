@@ -90,24 +90,17 @@ void TrackListController::resizeSample(Sample &sample, double length) {
 }
 
 void TrackListController::deleteSample(Track &track, Sample *sample) {
-    auto pos = transport.getCurrentPosition();
-    if (sample == nullptr) {
-        return;
+    if (sample != nullptr) {
+        sample->setDeleted(true);
+        updateLane(track);
     }
-    track.deleteSample(sample);
-    updateLane(track);
-    pos = std::max(pos, transport.getLengthInSeconds());
-    transport.setPosition(pos);
 }
 
 void TrackListController::undeleteSample(Track &track, Sample *sample) {
-    auto pos = transport.getCurrentPosition();
-    if (sample == nullptr) {
-        return;
+    if (sample != nullptr) {
+        sample->setDeleted(false);
+        updateLane(track);
     }
-    track.undeleteSample(sample);
-    updateLane(track);
-    transport.setPosition(pos);
 }
 
 void TrackListController::updateLane(Track &track) {

@@ -1,34 +1,61 @@
 #include "Track.h"
+
+#include <memory>
 #include "TrackList.h"
 
 Track::Track() {}
 
 Track::~Track() { samples.clear(); }
 
-// double Track::getTotalLengthSeconds() const { return totalLengthSecs; }
+void Track::setLevelGain(float newLevel) {
+    level = newLevel;
+    if (gainSource != nullptr) {
+        gainSource->setGain(level);
+    }
+}
 
-// bool Track::isSilenced() const { return muted || (!trackList.getSoloed().empty() && !soloed); }
+Sample *Track::getSelected() const {
+    for (std::shared_ptr<Sample> const &sample : samples) {
+        if (!sample->isDeleted() && sample->isSelected()) {
+            return sample.get();
+        }
+    }
+    return nullptr;
+}
 
-// void Track::loadSamples(juce::AudioFormatManager &formatManager, double sampleRate) {
-//     //    if (samples.empty()) {
-//     //        return;
-//     //    }
-//     //    if (mixerSource == nullptr) {
-//     //        mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager);
-//     //    }
-//     for (std::shared_ptr<Sample> &sample : samples) {
-//         sample->loadFile(formatManager, sampleRate);
-//         //        if (sample->getSource() != nullptr) {
-//         //            mixerSource->addInputSource(sample->getSource());
-//         //        }
-//     }
-//     if (samplePlayer == nullptr) {
-//         samplePlayer.reset(new SamplePlayer(samples));
-//     }
+void Track::setDeleted(bool newDeleted) {
+    deleted = newDeleted;
+    selected = false;
+}
+
+void Track::selectSample(Sample *newSelected) {
+    eachSample([&newSelected](Sample &sample) { sample.setSelected(&sample == newSelected); });
+}
+
+void Track::moveSampleTo(Sample &sample, Track &toTrack) {
+    for (auto iter = samples.begin(); iter != samples.end();) {
+        if (&sample == iter->get()) {
+            toTrack.samples.push_back(*iter);
+            samples.erase(iter++);
+        } else {
+            ++iter;
+        }
+    }
+}
 //
-//     //    setSource(mixerSource);
-//     //    updateLength();
-// }
+//void Track::deleteSample(Sample *sample) {
+//    if (sample == nullptr) {
+//        return;
+//    }
+//    sample->setDeleted(true);
+//}
+//
+//void Track::undeleteSample(Sample *sample) {
+//    if (sample == nullptr) {
+//        return;
+//    }
+//    sample->setDeleted(false);
+//}
 
 Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
     juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {
@@ -36,123 +63,11 @@ Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
     auto sample = &(*samples.back());
     sample->loadFile(deviceManager, formatManager);
     if (samplePlayer == nullptr) {
-        samplePlayer.reset(new SamplePlayer(samples));
-        gainSource.reset(new GainAudioSource(samplePlayer.get(), false));
+        samplePlayer = std::make_unique<SamplePlayer>(samples);
+        gainSource = std::make_unique<GainAudioSource>(samplePlayer.get(), false);
+        meteredSource = std::make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
     }
-
-    //    if (mixerSource == nullptr) {
-    //        mixerSource = std::make_shared<PositionableMixingAudioSource>(deviceManager);
-    //    }
-    //    if (sample->getSource() != nullptr) {
-    //        mixerSource->addInputSource(sample->getSource());
-    //    }
-    //    setSource(mixerSource);
-    //    if (name == defaultName) {
-    //        name = file.getFileName();
-    //    }
-    //    updateLength();
-    //    trackList.updateAudioSources();
     return &(*samples.back());
-}
-
-//
-// void Track::setSource(std::shared_ptr<juce::PositionableAudioSource> newSource) {
-//    DBG("Track::setSource - set track source: " << getName());
-//    if (source == newSource) {
-//        return;
-//    }
-//    if (source != nullptr) {
-//        source->releaseResources();
-//    }
-//    source = newSource;
-//    gainSource = std::make_shared<GainAudioSource>(newSource.get(), false);
-//    meteredSource = std::make_shared<MeteredAudioSource>(*gainSource, deviceManager.getAudioDeviceSetup().sampleRate);
-//}
-
-void Track::moveSampleTo(Sample &sample, Track &toTrack) {
-    for (auto iter = samples.begin(); iter != samples.end();) {
-        if (&sample == iter->get()) {
-            //            sample.setTrack(toTrack);
-            //            auto source = sample.getSource();
-            //            if (source != nullptr) {
-            //                if (mixerSource != nullptr) {
-            //                    mixerSource->removeInputSource(source);
-            //                }
-            //                if (toTrack.mixerSource != nullptr) {
-            //                    toTrack.mixerSource->addInputSource(source);
-            //                }
-            //            }
-            toTrack.samples.push_back(*iter);
-            samples.erase(iter++);
-        } else {
-            ++iter;
-        }
-    }
-    //    updateLength();
-    //    toTrack.updateLength();
-}
-
-void Track::deleteSample(Sample *sample) {
-    if (sample == nullptr) {
-        return;
-    }
-    sample->setDeleted(true);
-    //    auto source = sample->getSource();
-    //    if (source != nullptr && mixerSource != nullptr) {
-    //        mixerSource->removeInputSource(source);
-    //    }
-    //    updateLength();
-}
-
-void Track::undeleteSample(Sample *sample) {
-    if (sample == nullptr) {
-        return;
-    }
-    sample->setDeleted(false);
-    //    auto source = sample->getSource();
-    //    if (source != nullptr && mixerSource != nullptr) {
-    //        mixerSource->addInputSource(source);
-    //        mixerSource->prepareToPlay(
-    //            deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
-    //    }
-    //    updateLength();
-}
-
-void Track::setDeleted(bool newDeleted) {
-    deleted = newDeleted;
-    selected = false;
-    //    if (deleted) {
-    //        for (std::shared_ptr<Sample> &sample : samples) {
-    //            if (sample->getSource() != nullptr && mixerSource != nullptr) {
-    //                mixerSource->removeInputSource(sample->getSource());
-    //            }
-    //        }
-    //    }
-}
-//
-// void Track::updateLength() {
-//    double newLen = 0;
-//    for (std::shared_ptr<Sample> &sample : samples) {
-//        if (!(*sample).isDeleted()) {
-//            newLen = std::max(newLen, sample->getEndPos());
-//        }
-//    }
-//    setTotalLengthSecs(newLen);
-//    trackList.updateLength();
-//}
-//
-// void Track::setTotalLengthSecs(double newLen) {
-//    totalLengthSecs = newLen;
-//    if (mixerSource != nullptr) {
-//        mixerSource->setTotalLengthSecs(newLen);
-//    }
-//}
-
-void Track::setLevelGain(float newLevel) {
-    level = newLevel;
-    if (gainSource != nullptr) {
-        gainSource->setGain(level);
-    }
 }
 
 void Track::setMute(bool newMuted) {
@@ -170,19 +85,6 @@ void Track::updateGain(bool anySoloed) {
     }
 }
 
-Sample *Track::getSelected() const {
-    for (std::shared_ptr<Sample> const &sample : samples) {
-        if (!sample->isDeleted() && sample->isSelected()) {
-            return sample.get();
-        }
-    }
-    return nullptr;
-}
-
-void Track::selectSample(Sample *newSelected) {
-    eachSample([&newSelected](Sample &sample) { sample.setSelected(&sample == newSelected); });
-}
-
 void Track::eachSample(std::function<void(Sample &sample)> f) {
     for (std::shared_ptr<Sample> &sample : samples) {
         if (!(*sample).isDeleted()) {
@@ -191,4 +93,4 @@ void Track::eachSample(std::function<void(Sample &sample)> f) {
     }
 }
 
-juce::int64 Track::getTotalLengthInSamples() const { return gainSource == nullptr ? 0 : gainSource->getTotalLength(); }
+juce::int64 Track::getTotalLengthInSamples() const { return meteredSource == nullptr ? 0 : meteredSource->getTotalLength(); }
