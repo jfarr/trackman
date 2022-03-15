@@ -48,4 +48,44 @@ void Sample::setLength(double newLength) {
     //    track->updateLength();
 }
 
-// void Sample::setTrack(Track &newTrack) { track = &newTrack; }
+//==============================================================================
+void Sample::prepareToPlay(int blockSize, double sampleRate) {
+    if (resamplingSource != nullptr) {
+        resamplingSource->prepareToPlay(blockSize, sampleRate);
+    }
+}
+
+void Sample::releaseResources() {
+    if (resamplingSource != nullptr) {
+        resamplingSource->releaseResources();
+    }
+}
+
+void Sample::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+    if (resamplingSource != nullptr) {
+        resamplingSource->getNextAudioBlock(bufferToFill);
+    }
+}
+
+//==============================================================================
+void Sample::setNextReadPosition(juce::int64 newPosition) {
+    if (resamplingSource != nullptr) {
+        resamplingSource->setNextReadPosition(newPosition);
+    }
+}
+
+juce::int64 Sample::getNextReadPosition() const {
+    return resamplingSource == nullptr ? 0 : resamplingSource->getNextReadPosition();
+}
+
+juce::int64 Sample::getTotalLength() const {
+    return resamplingSource == nullptr ? 0 : resamplingSource->getTotalLength();
+}
+
+bool Sample::isLooping() const {
+    return false;
+}
+
+void Sample::setLooping(bool shouldLoop) {
+}
+

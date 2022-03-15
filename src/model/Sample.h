@@ -8,7 +8,7 @@
 
 class Track;
 
-class Sample {
+class Sample : public juce::PositionableAudioSource {
   public:
     Sample(juce::File file, double startPos, double endPos);
     ~Sample();
@@ -24,12 +24,26 @@ class Sample {
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
     void loadFile(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
-    juce::PositionableAudioSource *getSource() { return resamplingSource.get(); }
+//    juce::PositionableAudioSource *getSource() { return resamplingSource.get(); }
 
     void setPosition(double pos);
     void setLength(double newLength);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
+
+    //==============================================================================
+    // AudioSource
+    void prepareToPlay(int blockSize, double sampleRate) override;
+    void releaseResources() override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+
+    //==============================================================================
+    // PositionableAudioSource
+    void setNextReadPosition(juce::int64 newPosition) override;
+    juce::int64 getNextReadPosition() const override;
+    juce::int64 getTotalLength() const override;
+    bool isLooping() const override;
+    void setLooping(bool shouldLoop) override;
 
   private:
     //    friend Track;

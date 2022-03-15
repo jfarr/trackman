@@ -3,20 +3,20 @@
 SamplePlayer::SamplePlayer(std::list<std::shared_ptr<Sample>> &samples) : samples(samples) {}
 
 SamplePlayer::~SamplePlayer() {
-    for (auto *source : getSources()) {
-        source->releaseResources();
-    }
-}
-
-std::list<juce::PositionableAudioSource *> SamplePlayer::getSources() {
-    std::list<juce::PositionableAudioSource *> sources;
     for (auto &sample : samples) {
-        if (sample->getSource() != nullptr) {
-            sources.push_back(sample->getSource());
-        }
+        sample->releaseResources();
     }
-    return sources;
 }
+//
+//std::list<juce::PositionableAudioSource *> SamplePlayer::getSources() {
+//    std::list<juce::PositionableAudioSource *> sources;
+//    for (auto &sample : samples) {
+//        if (sample->getSource() != nullptr) {
+//            sources.push_back(sample->getSource());
+//        }
+//    }
+//    return sources;
+//}
 
 Timeline<Sample *> SamplePlayer::getCurrentTimeline() {
     Timeline<Sample *> timeline;
@@ -33,15 +33,15 @@ void SamplePlayer::prepareToPlay(int blockSize, double sampleRate) {
     currentSampleRate = sampleRate;
     tempBuffer.setSize(2, sampleRate);
 
-    for (auto *source : getSources()) {
-        source->prepareToPlay(blockSize, sampleRate);
+    for (auto &sample : samples) {
+        sample->prepareToPlay(blockSize, sampleRate);
     }
 }
 
 void SamplePlayer::releaseResources() {
     const juce::ScopedLock lock(mutex);
-    for (auto *source : getSources()) {
-        source->releaseResources();
+    for (auto &sample : samples) {
+        sample->releaseResources();
     }
     tempBuffer.setSize(2, 0);
     currentSampleRate = 0;
@@ -54,13 +54,8 @@ void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferT
         currentPos += bufferToFill.numSamples;
         Timeline timeline = getCurrentTimeline();
         std::list<Sample *> samplesToPlay = timeline.getAt(getTimeAtPosition(currentPos));
-        for (auto iter = samplesToPlay.begin(); iter != samplesToPlay.end(); iter++) {
-            if ((*iter)->getSource() == nullptr) {
-                samplesToPlay.erase(iter);
-            }
-        }
         if (!samplesToPlay.empty()) {
-            samplesToPlay.front()->getSource()->getNextAudioBlock(bufferToFill);
+            samplesToPlay.front()->getNextAudioBlock(bufferToFill);
 
             if (samplesToPlay.size() > 1) {
                 tempBuffer.setSize(
@@ -70,7 +65,7 @@ void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferT
                 int i = 0;
                 for (auto *sample : samplesToPlay) {
                     if (i > 0) {
-                        sample->getSource()->getNextAudioBlock(info2);
+                        sample->getNextAudioBlock(info2);
                         for (int chan = 0; chan < bufferToFill.buffer->getNumChannels(); ++chan)
                             bufferToFill.buffer->addFrom(
                                 chan, bufferToFill.startSample, tempBuffer, chan, 0, bufferToFill.numSamples);
@@ -88,8 +83,8 @@ void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferT
 void SamplePlayer::setNextReadPosition(juce::int64 newPosition) {
     const juce::ScopedLock lock(mutex);
     currentPos = newPosition;
-    for (auto *source : getSources()) {
-        source->setNextReadPosition(newPosition);
+    for (auto &sample : samples) {
+        sample->setNextReadPosition(newPosition);
     }
 }
 
