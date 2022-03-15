@@ -52,6 +52,9 @@ Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
         gainSource = std::make_unique<GainAudioSource>(samplePlayer.get(), false);
         meteredSource = std::make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
     }
+    if (name == defaultName) {
+        name = file.getFileName();
+    }
     return &(*samples.back());
 }
 
