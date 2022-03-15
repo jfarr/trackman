@@ -5,7 +5,7 @@
 
 class PositionableMixingAudioSource : public juce::PositionableAudioSource {
   public:
-    PositionableMixingAudioSource(juce::AudioDeviceManager &deviceManager) : deviceManager(deviceManager) {}
+    PositionableMixingAudioSource() {}
     ~PositionableMixingAudioSource() override { removeAllInputs(); }
 
     void addInputSource(PositionableAudioSource *input);
@@ -27,7 +27,6 @@ class PositionableMixingAudioSource : public juce::PositionableAudioSource {
     void setLooping(bool shouldLoop) override;
 
   private:
-    juce::AudioDeviceManager &deviceManager;
     juce::MixerAudioSource mixer;
     juce::Array<PositionableAudioSource *> inputs;
     bool looping = false;

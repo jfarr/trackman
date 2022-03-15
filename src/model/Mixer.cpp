@@ -2,7 +2,7 @@
 #include "common/listutil.h"
 
 Mixer::Mixer(juce::AudioDeviceManager &deviceManager)
-    : deviceManager(deviceManager), mixerSource(deviceManager), gainSource(&mixerSource, false),
+    : deviceManager(deviceManager), gainSource(&mixerSource, false),
       meteredSource(&gainSource, deviceManager.getAudioDeviceSetup().sampleRate) {
     transportSource.setSource(&meteredSource);
     initialized = true;
@@ -18,7 +18,8 @@ void Mixer::addSource(juce::PositionableAudioSource *source) {
         sources.push_back(source);
         auto pos = transportSource.getCurrentPosition();
         mixerSource.addInputSource(source);
-        source->prepareToPlay(deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
+        source->prepareToPlay(
+            deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
         transportSource.setPosition(pos);
     }
 }
