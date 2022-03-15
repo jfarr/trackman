@@ -24,7 +24,7 @@ class Sample : public juce::PositionableAudioSource {
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
     void loadFile(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
-//    juce::PositionableAudioSource *getSource() { return resamplingSource.get(); }
+    //    juce::PositionableAudioSource *getSource() { return resamplingSource.get(); }
 
     void setPosition(double pos);
     void setLength(double newLength);
@@ -46,27 +46,18 @@ class Sample : public juce::PositionableAudioSource {
     void setLooping(bool shouldLoop) override;
 
   private:
-    //    friend Track;
-
-    //    Track *track;
     juce::File file;
-
-    //    void setTrack(Track &newTrack);
-
     double startPos;
     double endPos;
     double length;
-    //    juce::int64 sourceLengthInSamples = 0;
-        double sourceLengthInSeconds = 0;
-//    double sourceSampleRate = 0;
+    double sourceLengthInSeconds = 0;
     std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
     std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
-    //    std::unique_ptr<OffsetAudioSource> offsetSource;
     bool selected = false;
     bool deleted = false;
 
     juce::int64 getPositionFromTime(double t) const;
-    double getSampleRate() const { return reader->sampleRate * sourceLengthInSeconds / (endPos - startPos); }
+    double getSampleRate() const;
 
     std::unique_ptr<juce::AudioFormatReader> reader;
 };
