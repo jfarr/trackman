@@ -28,10 +28,11 @@ void Sample::loadFile(juce::AudioDeviceManager &deviceManager, juce::AudioFormat
     if (reader != nullptr) {
         fileSource = std::make_unique<juce::AudioFormatReaderSource>(reader.get(), false);
         //        offsetSource = std::make_unique<OffsetAudioSource>(*fileSource, startPos, sourceSampleRate);
-        sourceSampleRate = reader->sampleRate;
+//        sourceSampleRate = reader->sampleRate;
         resamplingSource = std::make_unique<PositionableResamplingAudioSource>(
-            fileSource.get(), false, sampleRate, sourceSampleRate, 2);
+            fileSource.get(), false, sampleRate, getSampleRate(), 2);
         resamplingSource->prepareToPlay(blockSize, sampleRate);
+        sourceLengthInSeconds = reader->lengthInSamples / reader->sampleRate;
     }
 }
 
@@ -47,6 +48,9 @@ void Sample::setPosition(double pos) {
 void Sample::setLength(double newLength) {
     length = newLength;
     endPos = startPos + newLength;
+    if (resamplingSource != nullptr) {
+        resamplingSource->setSourceSampleRateToCorrectFor(getSampleRate());
+    }
     //    auto sourceSampleRateToCorrectFor = sourceSampleRate * sourceLengthSecs / newLength;
     //    resamplingSource->setSourceSampleRateToCorrectFor(sourceSampleRateToCorrectFor);
     //    track->updateLength();

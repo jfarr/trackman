@@ -57,8 +57,8 @@ class Sample : public juce::PositionableAudioSource {
     double endPos;
     double length;
     //    juce::int64 sourceLengthInSamples = 0;
-    //    double sourceLengthInSeconds = 0;
-    double sourceSampleRate = 0;
+        double sourceLengthInSeconds = 0;
+//    double sourceSampleRate = 0;
     std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
     std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
     //    std::unique_ptr<OffsetAudioSource> offsetSource;
@@ -66,6 +66,7 @@ class Sample : public juce::PositionableAudioSource {
     bool deleted = false;
 
     juce::int64 getPositionFromTime(double t) const;
+    double getSampleRate() const { return reader->sampleRate * sourceLengthInSeconds / (endPos - startPos); }
 
     std::unique_ptr<juce::AudioFormatReader> reader;
 };
