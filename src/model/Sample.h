@@ -1,10 +1,10 @@
 #pragma once
 
+#include <JuceHeader.h>
+#include <utility>
+
 #include "audio/OffsetAudioSource.h"
 #include "audio/PositionableResamplingAudioSource.h"
-#include <JuceHeader.h>
-
-#include <utility>
 
 class Track;
 
@@ -19,7 +19,7 @@ class Sample {
     [[nodiscard]] juce::int64 getLengthInSamples() const;
     [[nodiscard]] double getLengthInSeconds() const { return length; }
     //    [[nodiscard]] double getSourceLengthInSeconds() const { return sourceLengthInSeconds; }
-//    [[nodiscard]] double getSampleRate() const { return sourceSampleRate; }
+    //    [[nodiscard]] double getSampleRate() const { return sourceSampleRate; }
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
@@ -42,8 +42,8 @@ class Sample {
     double startPos;
     double endPos;
     double length;
-//    juce::int64 sourceLengthInSamples = 0;
-//    double sourceLengthInSeconds = 0;
+    //    juce::int64 sourceLengthInSamples = 0;
+    //    double sourceLengthInSeconds = 0;
     double sourceSampleRate = 0;
     std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
     std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
