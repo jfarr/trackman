@@ -95,7 +95,7 @@ void TrackListPanel::resize() {
 
 int TrackListPanel::getPanelWidth() const {
     auto leftPanelWidth = 25;
-    int trackWidth = (int)(desktopController.getProject().getTrackList().getTotalLengthSeconds() *
+    int trackWidth = (int)(desktopController.getProject().getTrackList().getTotalLengthInSeconds() *
                            desktopController.getProject().getHorizontalScale());
     return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
 }

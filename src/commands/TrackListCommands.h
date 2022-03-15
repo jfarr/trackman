@@ -9,7 +9,7 @@
 
 class AddTrackCommand : public Command {
   public:
-    AddTrackCommand(DesktopController &controller) : Command("add track"), controller(controller) {}
+    AddTrackCommand(DesktopController &controller) : Command("Add Track"), controller(controller) {}
     ~AddTrackCommand() override {}
 
     void execute() override { track = controller.addTrack(); }
@@ -25,7 +25,7 @@ class AddTrackCommand : public Command {
 class DeleteTrackCommand : public Command {
   public:
     DeleteTrackCommand(DesktopController &controller, Track *track)
-        : Command("delete Track " + juce::String(track->getTrackNumber())), controller(controller), track(track) {}
+        : Command("Delete Track " + juce::String(track->getTrackNumber())), controller(controller), track(track) {}
     ~DeleteTrackCommand() override {}
 
     void execute() override { controller.deleteTrack(track, false); }

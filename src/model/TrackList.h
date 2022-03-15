@@ -11,7 +11,7 @@ class Project;
 
 class TrackList {
   public:
-    TrackList() = default;
+    TrackList(juce::AudioDeviceManager &deviceManager) : deviceManager(deviceManager) {}
     ~TrackList() = default;
 
     Track *addTrack();
@@ -22,7 +22,8 @@ class TrackList {
     [[nodiscard]] int size() const { return (int)tracks.size(); }
     [[nodiscard]] Track *getSelectedTrack() const;
     [[nodiscard]] Sample *getSelectedSample() const;
-    [[nodiscard]] double getTotalLengthSeconds() const;
+    [[nodiscard]] double getTotalLengthInSeconds() const;
+    [[nodiscard]] juce::int64 getTotalLengthInSamples() const;
 
     void eachTrack(std::function<void(Track &track)> f);
 
@@ -41,16 +42,16 @@ class TrackList {
     friend Project;
 
     void deleteTrack(Track *track);
-    Sample *addSample(Track &track, const juce::File &file, double startPos, double endPos,
-        juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
+    Sample *addSample(
+        Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager);
 
     //    void updateLength();
     //    void updateAudioSources();
 
     //    Mixer &mixer;
-    //    juce::AudioDeviceManager &deviceManager;
+    juce::AudioDeviceManager &deviceManager;
     std::list<std::unique_ptr<Track>> tracks;
-    double totalLengthSecs = 0;
+    //    double totalLengthSecs = 0;
 
     void renumber();
 

@@ -8,7 +8,7 @@
 class ChangeMasterVolumeCommand : public Command {
   public:
     ChangeMasterVolumeCommand(MixerController &mixerController, float previousLevel)
-        : Command("change master volume"), mixerController(mixerController), previousLevel(previousLevel) {}
+        : Command("Change Master Volume"), mixerController(mixerController), previousLevel(previousLevel) {}
     ~ChangeMasterVolumeCommand() override {}
 
     void undo() override { mixerController.setMasterLevel(previousLevel); }
@@ -23,7 +23,7 @@ class ChangeMasterVolumeCommand : public Command {
 class ToggleMasterMuteCommand : public Command {
   public:
     ToggleMasterMuteCommand(MixerController &controller)
-        : Command(juce::String(controller.isMasterMuted() ? "unmute" : "mute") + " master"), controller(controller),
+        : Command(juce::String(controller.isMasterMuted() ? "Unmute" : "Mute") + " Master"), controller(controller),
           muted(controller.isMasterMuted()) {}
     ~ToggleMasterMuteCommand() {}
 
@@ -38,7 +38,7 @@ class ToggleMasterMuteCommand : public Command {
 class ChangeTrackVolumeCommand : public Command {
   public:
     ChangeTrackVolumeCommand(MixerController &mixerController, Track &track, float previousLevel)
-        : Command("change track " + juce::String(track.getTrackNumber()) + " volume"), mixerController(mixerController),
+        : Command("Change Track " + juce::String(track.getTrackNumber()) + " Volume"), mixerController(mixerController),
           track(track), previousLevel(previousLevel) {}
     ~ChangeTrackVolumeCommand() override {}
 
@@ -55,7 +55,7 @@ class ChangeTrackVolumeCommand : public Command {
 class ToggleMuteCommand : public Command {
   public:
     ToggleMuteCommand(MixerController &controller, Track &track)
-        : Command(juce::String(track.isMuted() ? "unmute" : "mute") + " Track " + juce::String(track.getTrackNumber())),
+        : Command(juce::String(track.isMuted() ? "Unmute" : "Mute") + " Track " + juce::String(track.getTrackNumber())),
           controller(controller), track(track), muted(track.isMuted()) {}
     ~ToggleMuteCommand() {}
 
@@ -71,7 +71,7 @@ class ToggleMuteCommand : public Command {
 class ToggleSoloCommand : public Command {
   public:
     ToggleSoloCommand(MixerController &controller, Track &track)
-        : Command(juce::String(track.isSoloed() ? "unsolo" : "solo") + " Track " + juce::String(track.getTrackNumber())),
+        : Command(juce::String(track.isSoloed() ? "Unsolo" : "Solo") + " Track " + juce::String(track.getTrackNumber())),
           controller(controller), track(track), soloed(track.isSoloed()) {}
     ~ToggleSoloCommand() {}
 

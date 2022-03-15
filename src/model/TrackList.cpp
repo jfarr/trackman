@@ -9,7 +9,7 @@ Track *TrackList::addTrack() {
     return track;
 }
 //
-//Track *TrackList::createTempTrack() {
+// Track *TrackList::createTempTrack() {
 //    return new Track(*this, deviceManager);
 //}
 
@@ -18,9 +18,9 @@ void TrackList::deleteTrack(Track *track) {
         return;
     }
     track->setDeleted(true);
-//    if (track->getSource() != nullptr) {
-//        mixer.removeSource(track->getSource());
-//    }
+    //    if (track->getSource() != nullptr) {
+    //        mixer.removeSource(track->getSource());
+    //    }
     renumber();
 }
 
@@ -29,9 +29,9 @@ void TrackList::undeleteTrack(Track *track) {
         return;
     }
     track->setDeleted(false);
-//    if (track->getSource() != nullptr) {
-//        mixer.addSource(track->getSource());
-//    }
+    //    if (track->getSource() != nullptr) {
+    //        mixer.addSource(track->getSource());
+    //    }
     renumber();
 }
 
@@ -45,8 +45,8 @@ void TrackList::removeTrack(Track *track) {
     }
 }
 
-Sample *TrackList::addSample(Track &track, const juce::File &file, double startPos, double endPos,
-    juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {
+Sample *TrackList::addSample(
+    Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager) {
     return track.addSample(file, startPos, endPos, deviceManager, formatManager);
 }
 
@@ -59,25 +59,36 @@ Track *TrackList::getSelectedTrack() const {
     return nullptr;
 }
 
-double TrackList::getTotalLengthSeconds() const {
-    return totalLengthSecs;
+double TrackList::getTotalLengthInSeconds() const {
+    //    return totalLengthSecs;
+    return getTotalLengthInSamples() / deviceManager.getAudioDeviceSetup().sampleRate;
 }
 
-//void TrackList::updateLength() {
-//    double newLen = 0;
-//    for (const auto &track : tracks) {
-//        if (!track->isDeleted()) {
-//            newLen = std::max(newLen, track->getTotalLengthSeconds());
-//        }
-//    }
-//    totalLengthSecs = newLen;
-//    mixer.setTotalLengthSecs(totalLengthSecs);
-//}
+juce::int64 TrackList::getTotalLengthInSamples() const {
+    juce::int64 length = 0;
+    for (const std::unique_ptr<Track> &track : tracks) {
+        if (!track->isDeleted()) {
+            length = std::max(length, track->getTotalLengthInSamples());
+        }
+    }
+    return length;
+}
 
-//void TrackList::updateAudioSources() {
-//    mixer.removeAllSources();
-//    for (std::unique_ptr<Track> &track : tracks) {
-//        DBG("TrackList::updateAudioSources - add track source: " << track->getName());
+// void TrackList::updateLength() {
+//     double newLen = 0;
+//     for (const auto &track : tracks) {
+//         if (!track->isDeleted()) {
+//             newLen = std::max(newLen, track->getTotalLengthSeconds());
+//         }
+//     }
+//     totalLengthSecs = newLen;
+//     mixer.setTotalLengthSecs(totalLengthSecs);
+// }
+
+// void TrackList::updateAudioSources() {
+//     mixer.removeAllSources();
+//     for (std::unique_ptr<Track> &track : tracks) {
+//         DBG("TrackList::updateAudioSources - add track source: " << track->getName());
 ////        if (track->getSource() != nullptr) {
 ////            mixer.addSource(track->getSource());
 ////        }
@@ -146,7 +157,7 @@ void TrackList::writeAudioFile(
         juce::WavAudioFormat wavFormat;
         if (auto writer = wavFormat.createWriterFor(fileStream.get(), sampleRate, 2, bitsPerSample, {}, 0)) {
             fileStream.release();
-            writer->writeFromAudioSource(source, (int)(getTotalLengthSeconds() * sampleRate));
+            writer->writeFromAudioSource(source, (int)(getTotalLengthInSamples()));
             writer->flush();
             delete writer;
         }

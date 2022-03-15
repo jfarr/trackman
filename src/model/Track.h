@@ -26,6 +26,7 @@ class Track {
     //    [[nodiscard]] bool isSilenced() const;
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
+    [[nodiscard]] juce::int64 getTotalLengthInSamples() const;
 
     juce::PositionableAudioSource *getSource() { return gainSource.get(); }
     //    foleys::LevelMeterSource *getMeterSource() {

@@ -95,38 +95,38 @@ void DesktopComponent::getAllCommands(juce::Array<juce::CommandID> &c) {
 void DesktopComponent::getCommandInfo(juce::CommandID commandID, juce::ApplicationCommandInfo &result) {
     switch (commandID) {
     case CommandIDs::openProject:
-        result.setInfo("open project...", "Open a saved project", "Menu", 0);
+        result.setInfo("Open Project...", "Open a saved project", "Menu", 0);
         result.addDefaultKeypress('o', juce::ModifierKeys::commandModifier);
         break;
     case CommandIDs::saveProject:
-        result.setInfo("save project", "Save the current project", "Menu", 0);
+        result.setInfo("Save Project", "Save the current project", "Menu", 0);
         result.addDefaultKeypress('s', juce::ModifierKeys::commandModifier);
         break;
     case CommandIDs::saveProjectAs:
-        result.setInfo("save project as...", "Save the current project as a new file", "Menu", 0);
+        result.setInfo("Save Project As...", "Save the current project as a new file", "Menu", 0);
         result.addDefaultKeypress('s', juce::ModifierKeys::commandModifier | juce::ModifierKeys::altModifier);
         break;
     case CommandIDs::exportProject:
-        result.setInfo("export project...", "Export the current project as an audio file", "Menu", 0);
+        result.setInfo("Export Project...", "Export the current project as an audio file", "Menu", 0);
         result.addDefaultKeypress('e', juce::ModifierKeys::commandModifier | juce::ModifierKeys::shiftModifier);
         break;
     case CommandIDs::editUndo:
         result.setInfo(
-            (desktopController.getLastCommandName() == "" ? "undo" : "undo " + desktopController.getLastCommandName()),
+            (desktopController.getLastCommandName() == "" ? "Undo" : "Undo " + desktopController.getLastCommandName()),
             "Undo the last edit", "Menu", 0);
         result.addDefaultKeypress('z', juce::ModifierKeys::commandModifier);
         result.setActive(desktopController.canUndo());
         break;
     case CommandIDs::newTrack:
-        result.setInfo("track", "Create a new track", "Menu", 0);
+        result.setInfo("Track", "Create a new track", "Menu", 0);
         result.addDefaultKeypress('t', juce::ModifierKeys::commandModifier);
         break;
     case CommandIDs::newAudioPlayer:
-        result.setInfo("audioplayer", "Create a new audioplayer component", "Menu", 0);
+        result.setInfo("Audio Player", "Create a new audioplayer component", "Menu", 0);
         result.addDefaultKeypress('p', juce::ModifierKeys::commandModifier);
         break;
     case CommandIDs::deleteTrackSelection:
-        result.setInfo("delete " + desktopController.getSelectionType(),
+        result.setInfo("Delete " + desktopController.getSelectionType(),
             "Delete the selected " + desktopController.getSelectionType(), "Menu", 0);
         result.addDefaultKeypress(juce::KeyPress::backspaceKey, juce::ModifierKeys::noModifiers);
         result.setActive(desktopController.hasSelection());

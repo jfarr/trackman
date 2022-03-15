@@ -193,3 +193,7 @@ void Track::eachSample(std::function<void(Sample &sample)> f) {
         }
     }
 }
+
+juce::int64 Track::getTotalLengthInSamples() const {
+    return gainSource == nullptr ? 0 : gainSource->getTotalLength();
+}

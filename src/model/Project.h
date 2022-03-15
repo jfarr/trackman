@@ -5,7 +5,7 @@
 
 class Project {
   public:
-    Project(juce::AudioDeviceManager &deviceManager) : deviceManager(deviceManager), mixer(deviceManager) {}
+    Project(juce::AudioDeviceManager &deviceManager);
     ~Project() = default;
 
     void deleteTrack(Track *track);
@@ -34,8 +34,9 @@ class Project {
     }
 
     std::string to_json();
-    void from_json(
-        juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager, std::string filename);
+    void from_json(juce::AudioFormatManager &formatManager, std::string filename);
+
+    void writeAudioFile(const juce::File &file);
 
   private:
     const double initialVerticalScale = 1;

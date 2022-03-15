@@ -258,7 +258,7 @@ void DesktopController::openProject() {
         auto file = fc.getResult();
         if (file != juce::File{}) {
             projectFile = file;
-            project.from_json(mainWindow.getMainAudioComponent().getDeviceManager(),
+            project.from_json(
                 mainWindow.getMainAudioComponent().getFormatManager(), file.getFullPathName().toStdString());
             juce::MessageManager::callAsync([this]() {
                 trackListController.update();
@@ -280,8 +280,7 @@ void DesktopController::exportProject() {
     chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
         auto file = fc.getResult();
         if (file != juce::File{}) {
-            project.getTrackList().writeAudioFile(file, project.getMixer().getSource(),
-                mainWindow.getMainAudioComponent().getDeviceManager().getAudioDeviceSetup().sampleRate, 16);
+            project.writeAudioFile(file);
         }
     });
 }
