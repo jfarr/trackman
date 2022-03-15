@@ -6,8 +6,6 @@
 #include "audio/MeteredAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
 
-//class TrackList;
-
 class Mixer {
   public:
     Mixer(juce::AudioDeviceManager &deviceManager);
@@ -33,11 +31,6 @@ class Mixer {
     void releaseResources();
 
   private:
-//    friend TrackList;
-
-//    void setTotalLengthSecs(double newLen) { mixerSource.setTotalLengthSecs(newLen); }
-
-//    TrackList &trackList;
     juce::AudioDeviceManager &deviceManager;
     std::list<juce::PositionableAudioSource *> sources;
     PositionableMixingAudioSource mixerSource;

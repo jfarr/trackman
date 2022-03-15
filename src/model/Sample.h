@@ -3,7 +3,6 @@
 #include <JuceHeader.h>
 #include <utility>
 
-#include "audio/OffsetAudioSource.h"
 #include "audio/PositionableResamplingAudioSource.h"
 
 class Track;
@@ -11,7 +10,7 @@ class Track;
 class Sample : public juce::PositionableAudioSource {
   public:
     Sample(juce::File file, double startPos, double endPos);
-    ~Sample();
+    ~Sample() override;
 
     [[nodiscard]] juce::File getFile() const { return file; }
     [[nodiscard]] double getStartPos() const { return startPos; }
@@ -37,9 +36,9 @@ class Sample : public juce::PositionableAudioSource {
     //==============================================================================
     // PositionableAudioSource
     void setNextReadPosition(juce::int64 newPosition) override;
-    juce::int64 getNextReadPosition() const override;
-    juce::int64 getTotalLength() const override;
-    bool isLooping() const override;
+    [[nodiscard]] juce::int64 getNextReadPosition() const override;
+    [[nodiscard]] juce::int64 getTotalLength() const override;
+    [[nodiscard]] bool isLooping() const override;
     void setLooping(bool shouldLoop) override;
 
   private:
@@ -53,8 +52,8 @@ class Sample : public juce::PositionableAudioSource {
     bool selected = false;
     bool deleted = false;
 
-    juce::int64 getPositionFromTime(double t) const;
-    double getSampleRate() const;
+    [[nodiscard]] juce::int64 getPositionFromTime(double t) const;
+    [[nodiscard]] double getSampleRate() const;
 
     std::unique_ptr<juce::AudioFormatReader> reader;
 };

@@ -7,16 +7,6 @@ SamplePlayer::~SamplePlayer() {
         sample->releaseResources();
     }
 }
-//
-// std::list<juce::PositionableAudioSource *> SamplePlayer::getSources() {
-//    std::list<juce::PositionableAudioSource *> sources;
-//    for (auto &sample : samples) {
-//        if (sample->getSource() != nullptr) {
-//            sources.push_back(sample->getSource());
-//        }
-//    }
-//    return sources;
-//}
 
 Timeline<Sample *> SamplePlayer::getCurrentTimeline() {
     Timeline<Sample *> timeline;
@@ -29,7 +19,6 @@ Timeline<Sample *> SamplePlayer::getCurrentTimeline() {
 //==============================================================================
 void SamplePlayer::prepareToPlay(int blockSize, double sampleRate) {
     const juce::ScopedLock lock(mutex);
-    currentBlockSize = blockSize;
     currentSampleRate = sampleRate;
     tempBuffer.setSize(2, sampleRate);
 
@@ -45,7 +34,6 @@ void SamplePlayer::releaseResources() {
     }
     tempBuffer.setSize(2, 0);
     currentSampleRate = 0;
-    currentBlockSize = 0;
 }
 
 void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
@@ -105,8 +93,6 @@ juce::int64 SamplePlayer::getTotalLength() const {
     const juce::ScopedLock lock(mutex);
     juce::int64 totalLength = 0;
     for (std::shared_ptr<Sample> &sample : samples) {
-        //        DBG("got length " << sample->getLengthInSamples() << " for sample " <<
-        //        sample->getFile().getFileName());
         if (!sample->isDeleted()) {
             totalLength = std::max(totalLength, sample->getLengthInSamples());
         }

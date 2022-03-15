@@ -1,6 +1,6 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
 
 class PositionableAudioSourceAdapter : public juce::PositionableAudioSource {
   public:
@@ -14,11 +14,11 @@ class PositionableAudioSourceAdapter : public juce::PositionableAudioSource {
         }
     }
 
-    virtual void setNextReadPosition(juce::int64 position) override { source->setNextReadPosition(position); }
-    virtual juce::int64 getNextReadPosition() const override { return source->getNextReadPosition(); }
-    virtual juce::int64 getTotalLength() const override { return source->getTotalLength(); }
-    virtual bool isLooping() const override { return source->isLooping(); }
-    virtual void setLooping(bool shouldLoop) override { source->setLooping(shouldLoop); }
+    void setNextReadPosition(juce::int64 position) override { source->setNextReadPosition(position); }
+    [[nodiscard]] juce::int64 getNextReadPosition() const override { return source->getNextReadPosition(); }
+    [[nodiscard]] juce::int64 getTotalLength() const override { return source->getTotalLength(); }
+    [[nodiscard]] bool isLooping() const override { return source->isLooping(); }
+    void setLooping(bool shouldLoop) override { source->setLooping(shouldLoop); }
 
   protected:
     PositionableAudioSource *source;

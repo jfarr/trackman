@@ -12,8 +12,6 @@ class PositionableMixingAudioSource : public juce::PositionableAudioSource {
     void removeInputSource(PositionableAudioSource *input);
     void removeAllInputs();
 
-//    void setTotalLengthSecs(double newLen);
-
     //==============================================================================
     // AudioSource
     void prepareToPlay(int blockSize, double newSampleRate) override;
@@ -33,13 +31,8 @@ class PositionableMixingAudioSource : public juce::PositionableAudioSource {
     juce::MixerAudioSource mixer;
     juce::Array<PositionableAudioSource *> inputs;
     bool looping = false;
-//    double sampleRate = 0;
-//    juce::uint64 totalLength = 0;
-//    double totalLengthSecs = 0;
 
     juce::CriticalSection mutex;
-
-//    double getSampleRate();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PositionableMixingAudioSource)
 };

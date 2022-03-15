@@ -49,19 +49,15 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);
     trackList.clear();
-    //    auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
     for (auto track_json : project_json["tracks"]) {
         auto track = trackList.addTrack();
         track->setName(track_json["name"]);
         track->setLevelGain(track_json["gain"]);
         trackList.setMute(*track, track_json["muted"]);
         trackList.setSolo(*track, track_json["soloed"]);
-        //        track->setMute(track_json["muted"]);
         for (auto sample_json : track_json["samples"]) {
             addSample(*track, sample_json["file"], sample_json["startPos"], sample_json["endPos"], formatManager);
         }
-        //        track->loadSamples(formatManager, sampleRate);
-        //        mixer.addSource(track->getSource());
     }
 }
 

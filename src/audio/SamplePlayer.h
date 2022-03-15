@@ -26,14 +26,11 @@ class SamplePlayer : public juce::PositionableAudioSource {
 
   private:
     std::list<std::shared_ptr<Sample>> &samples;
-    int currentBlockSize = 0;
     double currentSampleRate = 0;
     juce::int64 currentPos = 0;
     bool looping = false;
-//    Timeline<Sample *> timeline;
     juce::AudioBuffer<float> tempBuffer;
 
-//    std::list<juce::PositionableAudioSource *> getSources();
     Timeline<Sample *> getCurrentTimeline();
     double getTimeAtPosition(juce::int64 position) { return position / currentSampleRate; }
 

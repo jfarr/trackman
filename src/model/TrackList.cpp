@@ -1,6 +1,4 @@
 #include "TrackList.h"
-//#include "Track.h"
-//#include "Mixer.h"
 
 Track *TrackList::addTrack() {
     auto *track = new Track();
@@ -8,19 +6,12 @@ Track *TrackList::addTrack() {
     renumber();
     return track;
 }
-//
-// Track *TrackList::createTempTrack() {
-//    return new Track(*this, deviceManager);
-//}
 
 void TrackList::deleteTrack(Track *track) {
     if (track == nullptr) {
         return;
     }
     track->setDeleted(true);
-    //    if (track->getSource() != nullptr) {
-    //        mixer.removeSource(track->getSource());
-    //    }
     renumber();
 }
 
@@ -29,9 +20,6 @@ void TrackList::undeleteTrack(Track *track) {
         return;
     }
     track->setDeleted(false);
-    //    if (track->getSource() != nullptr) {
-    //        mixer.addSource(track->getSource());
-    //    }
     renumber();
 }
 
@@ -60,7 +48,6 @@ Track *TrackList::getSelectedTrack() const {
 }
 
 double TrackList::getTotalLengthInSeconds() const {
-    //    return totalLengthSecs;
     return getTotalLengthInSamples() / deviceManager.getAudioDeviceSetup().sampleRate;
 }
 
@@ -73,27 +60,6 @@ juce::int64 TrackList::getTotalLengthInSamples() const {
     }
     return length;
 }
-
-// void TrackList::updateLength() {
-//     double newLen = 0;
-//     for (const auto &track : tracks) {
-//         if (!track->isDeleted()) {
-//             newLen = std::max(newLen, track->getTotalLengthSeconds());
-//         }
-//     }
-//     totalLengthSecs = newLen;
-//     mixer.setTotalLengthSecs(totalLengthSecs);
-// }
-
-// void TrackList::updateAudioSources() {
-//     mixer.removeAllSources();
-//     for (std::unique_ptr<Track> &track : tracks) {
-//         DBG("TrackList::updateAudioSources - add track source: " << track->getName());
-////        if (track->getSource() != nullptr) {
-////            mixer.addSource(track->getSource());
-////        }
-//    }
-//}
 
 void TrackList::eachTrack(std::function<void(Track &track)> f) {
     for (std::unique_ptr<Track> &track : tracks) {
@@ -134,25 +100,12 @@ Sample *TrackList::getSelectedSample() const {
 
 void TrackList::setMute(Track &track, bool newMuted) {
     track.setMute(newMuted);
-//    bool anySoloed = false;
-//    for (std::unique_ptr<Track> const &track : tracks) {
-//        if (!track->isDeleted() && track->isSoloed()) {
-//            anySoloed = true;
-//            break;
-//        }
-//    }
     track.updateGain(isAnySoloed());
 }
 
 void TrackList::setSolo(Track &track, bool newSoloed) {
     track.setSolo(newSoloed);
     auto anySoloed = isAnySoloed();
-//    for (std::unique_ptr<Track> const &track : tracks) {
-//        if (!track->isDeleted() && track->isSoloed()) {
-//            anySoloed = true;
-//            break;
-//        }
-//    }
     for (std::unique_ptr<Track> const &track : tracks) {
         if (!track->isDeleted()) {
             track->updateGain(anySoloed);
@@ -168,25 +121,6 @@ bool TrackList::isAnySoloed() const {
     }
     return false;
 }
-
-//
-// void TrackList::soloTracks() {
-//    for (std::unique_ptr<Track> const &track : tracks) {
-//        if (!track->isDeleted()) {
-//            track->updateGain();
-//        }
-//    }
-//}
-//
-// std::list<const Track *> TrackList::getSoloed() {
-//    std::list<const Track *> soloed;
-//    for (std::unique_ptr<Track> const &track : tracks) {
-//        if (!track->isDeleted() && track->isSoloed()) {
-//            soloed.push_back(&*track);
-//        }
-//    }
-//    return soloed;
-//}
 
 void TrackList::writeAudioFile(
     const juce::File &file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const {

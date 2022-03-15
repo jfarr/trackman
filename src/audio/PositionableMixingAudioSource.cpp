@@ -1,5 +1,4 @@
 #include "PositionableMixingAudioSource.h"
-#include "PositionableResamplingAudioSource.h"
 
 void PositionableMixingAudioSource::addInputSource(PositionableAudioSource *input) {
     const juce::ScopedLock lock(mutex);
@@ -26,29 +25,13 @@ void PositionableMixingAudioSource::removeAllInputs() {
     inputs.clear();
 }
 
-//void PositionableMixingAudioSource::setTotalLengthSecs(double newLen) {
-//    const juce::ScopedLock lock(mutex);
-//    totalLengthSecs = newLen;
-//    totalLength = newLen * getSampleRate();
-//}
-//
-//double PositionableMixingAudioSource::getSampleRate() {
-//    return sampleRate == 0 ? deviceManager.getAudioDeviceSetup().sampleRate : sampleRate;
-//}
-
 void PositionableMixingAudioSource::prepareToPlay(int blockSize, double newSampleRate) {
-//    const juce::ScopedLock lock(mutex);
-//    if (newSampleRate != sampleRate) {
-//        totalLength = totalLengthSecs * newSampleRate;
-//        sampleRate = newSampleRate;
-//    }
     mixer.prepareToPlay(blockSize, newSampleRate);
 }
 
 void PositionableMixingAudioSource::releaseResources() { mixer.releaseResources(); }
 
 void PositionableMixingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-//    const juce::ScopedLock lock(mutex);
     juce::int64 currentPos = getNextReadPosition();
     if (currentPos > getTotalLength()) {
         setNextReadPosition(currentPos);

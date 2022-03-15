@@ -1,7 +1,6 @@
 #include "Track.h"
 
 #include <memory>
-#include "TrackList.h"
 
 Track::Track() {}
 
@@ -42,20 +41,6 @@ void Track::moveSampleTo(Sample &sample, Track &toTrack) {
         }
     }
 }
-//
-//void Track::deleteSample(Sample *sample) {
-//    if (sample == nullptr) {
-//        return;
-//    }
-//    sample->setDeleted(true);
-//}
-//
-//void Track::undeleteSample(Sample *sample) {
-//    if (sample == nullptr) {
-//        return;
-//    }
-//    sample->setDeleted(false);
-//}
 
 Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
     juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {

@@ -18,8 +18,6 @@ target_sources(Trackman PRIVATE
         audio/GainAudioSource.h
         audio/MeteredAudioSource.cpp
         audio/MeteredAudioSource.h
-        audio/OffsetAudioSource.cpp
-        audio/OffsetAudioSource.h
         audio/PositionableAudioSourceAdapter.h
         audio/PositionableMixingAudioSource.cpp
         audio/PositionableMixingAudioSource.h
