@@ -75,10 +75,12 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
 
 void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos) {
     if (&fromTrack != &toTrack) {
-        fromTrack.moveSampleTo(sample, toTrack);
+        fromTrack.moveSampleTo(
+            sample, toTrack, desktopController.getMainWindow().getMainAudioComponent().getDeviceManager());
         selectionChanged(&toTrack);
         fromTrack.selectSample(nullptr);
         toTrack.selectSample(&sample);
+        project.getMixer().addSource(toTrack.getSource());
     }
     sample.setPosition(pos);
     trackListPanel.resize();

@@ -31,10 +31,11 @@ void Track::selectSample(Sample *newSelected) {
     eachSample([&newSelected](Sample &sample) { sample.setSelected(&sample == newSelected); });
 }
 
-void Track::moveSampleTo(Sample &sample, Track &toTrack) {
+void Track::moveSampleTo(Sample &sample, Track &toTrack, juce::AudioDeviceManager &deviceManager) {
     for (auto iter = samples.begin(); iter != samples.end();) {
         if (&sample == iter->get()) {
             toTrack.samples.push_back(*iter);
+            toTrack.createSamplePlayer(deviceManager);
             samples.erase(iter++);
         } else {
             ++iter;
@@ -47,24 +48,31 @@ Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
     samples.push_back(std::make_shared<Sample>(file, startPos, endPos));
     auto sample = &(*samples.back());
     sample->loadFile(deviceManager, formatManager);
-    if (samplePlayer == nullptr) {
-        samplePlayer = std::make_unique<SamplePlayer>(samples);
-        gainSource = std::make_unique<GainAudioSource>(samplePlayer.get(), false);
-        meteredSource = std::make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
-    }
+    createSamplePlayer(deviceManager);
+    //    if (samplePlayer == nullptr) {
+    //        samplePlayer = std::make_unique<SamplePlayer>(samples);
+    //        gainSource = std::make_unique<GainAudioSource>(samplePlayer.get(), false);
+    //        meteredSource = std::make_unique<MeteredAudioSource>(gainSource.get(),
+    //        deviceManager.getAudioDeviceSetup().sampleRate);
+    //    }
     if (name == defaultName) {
         name = file.getFileName();
     }
     return &(*samples.back());
 }
 
-void Track::setMute(bool newMuted) {
-    muted = newMuted;
+void Track::createSamplePlayer(juce::AudioDeviceManager &deviceManager) {
+    if (samplePlayer == nullptr) {
+        samplePlayer = std::make_unique<SamplePlayer>(samples);
+        gainSource = std::make_unique<GainAudioSource>(samplePlayer.get(), false);
+        meteredSource =
+            std::make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
+    }
 }
 
-void Track::setSolo(bool newSoloed) {
-    soloed = newSoloed;
-}
+void Track::setMute(bool newMuted) { muted = newMuted; }
+
+void Track::setSolo(bool newSoloed) { soloed = newSoloed; }
 
 void Track::updateGain(bool anySoloed) {
     bool play = (!anySoloed || soloed) && !muted;
@@ -81,4 +89,6 @@ void Track::eachSample(std::function<void(Sample &sample)> f) {
     }
 }
 
-juce::int64 Track::getTotalLengthInSamples() const { return meteredSource == nullptr ? 0 : meteredSource->getTotalLength(); }
+juce::int64 Track::getTotalLengthInSamples() const {
+    return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
+}

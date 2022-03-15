@@ -8,6 +8,11 @@ using json = nlohmann::json;
 Project::Project(juce::AudioDeviceManager &deviceManager)
     : deviceManager(deviceManager), trackList(deviceManager), mixer(deviceManager) {}
 
+Track *Project::addTrack() {
+    auto *track = trackList.addTrack();
+    return track;
+}
+
 void Project::deleteTrack(Track *track) {
     auto source = track->getSource();
     if (source != nullptr) {
