@@ -13,8 +13,12 @@ Sample::~Sample() {
     }
 }
 
+juce::int64 Sample::getPositionFromTime(double t) const {
+    return resamplingSource == nullptr ? 0 : t * resamplingSource->getSampleRate();
+}
+
 juce::int64 Sample::getLengthInSamples() const {
-    return resamplingSource == nullptr ? 0 : resamplingSource->getTotalLength();
+    return resamplingSource == nullptr ? 0 : getPositionFromTime(startPos) + resamplingSource->getTotalLength();
 }
 
 void Sample::loadFile(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {

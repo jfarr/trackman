@@ -65,5 +65,7 @@ class Sample : public juce::PositionableAudioSource {
     bool selected = false;
     bool deleted = false;
 
+    juce::int64 getPositionFromTime(double t) const;
+
     std::unique_ptr<juce::AudioFormatReader> reader;
 };
