@@ -26,7 +26,7 @@ class SamplePlayer : public juce::PositionableAudioSource {
 
   private:
     std::list<std::shared_ptr<Sample>> &samples;
-//    int currentBlockSize = 0;
+    int currentBlockSize = 0;
     double currentSampleRate = 0;
     juce::int64 currentPos = 0;
     bool looping = false;

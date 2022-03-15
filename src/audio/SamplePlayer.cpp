@@ -3,8 +3,10 @@
 //==============================================================================
 void SamplePlayer::prepareToPlay(int blockSize, double sampleRate) {
     const juce::ScopedLock lock(mutex);
-//    currentBlockSize = blockSize;
+    currentBlockSize = blockSize;
     currentSampleRate = sampleRate;
+    tempBuffer.setSize (2, sampleRate);
+
     for (std::shared_ptr<Sample> &sample : samples) {
         if (sample->getSource() != nullptr) {
             sample->getSource()->prepareToPlay(blockSize, sampleRate);
@@ -13,11 +15,15 @@ void SamplePlayer::prepareToPlay(int blockSize, double sampleRate) {
 }
 
 void SamplePlayer::releaseResources() {
+    const juce::ScopedLock lock(mutex);
     for (std::shared_ptr<Sample> &sample : samples) {
         if (sample->getSource() != nullptr) {
             sample->getSource()->releaseResources();
         }
     }
+    tempBuffer.setSize (2, 0);
+    currentSampleRate = 0;
+    currentBlockSize = 0;
 }
 
 void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
@@ -26,17 +32,28 @@ void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferT
         currentPos += bufferToFill.numSamples;
         updateTimeline();
         std::list<Sample *> samplesToPlay = timeline.getAt(getTimeAtPosition(currentPos));
+        for (auto iter = samplesToPlay.begin(); iter != samplesToPlay.end(); iter++) {
+            if ((*iter)->getSource() == nullptr) {
+                samplesToPlay.erase(iter);
+            }
+        }
         if (!samplesToPlay.empty()) {
-            tempBuffer.setSize(
-                juce::jmax(1, bufferToFill.buffer->getNumChannels()), bufferToFill.buffer->getNumSamples());
+            samplesToPlay.front()->getSource()->getNextAudioBlock(bufferToFill);
 
-            juce::AudioSourceChannelInfo info2(&tempBuffer, 0, bufferToFill.numSamples);
-            for (Sample *sample : samplesToPlay) {
-                if (sample->getSource() != nullptr) {
-                    sample->getSource()->getNextAudioBlock(info2);
-                    for (int chan = 0; chan < bufferToFill.buffer->getNumChannels(); ++chan)
-                        bufferToFill.buffer->addFrom(
-                            chan, bufferToFill.startSample, tempBuffer, chan, 0, bufferToFill.numSamples);
+            if (samplesToPlay.size() > 1) {
+                tempBuffer.setSize(
+                    juce::jmax(1, bufferToFill.buffer->getNumChannels()), bufferToFill.buffer->getNumSamples());
+
+                juce::AudioSourceChannelInfo info2(&tempBuffer, 0, bufferToFill.numSamples);
+                int i = 0;
+                for (Sample *sample : samplesToPlay) {
+                    if (i > 0) {
+                        sample->getSource()->getNextAudioBlock(info2);
+                        for (int chan = 0; chan < bufferToFill.buffer->getNumChannels(); ++chan)
+                            bufferToFill.buffer->addFrom(
+                                chan, bufferToFill.startSample, tempBuffer, chan, 0, bufferToFill.numSamples);
+                    }
+                    i++;
                 }
             }
         } else {
