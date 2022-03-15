@@ -37,6 +37,7 @@ Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
     sample->loadFile(formatManager, sampleRate);
     if (samplePlayer == nullptr) {
         samplePlayer.reset(new SamplePlayer(samples));
+        gainSource.reset(new GainAudioSource(samplePlayer.get(), false));
     }
 
     //    if (mixerSource == nullptr) {
@@ -165,10 +166,11 @@ void Track::setSolo(bool newSoloed) {
 }
 
 void Track::updateGain() {
-    //    bool play = (trackList.getSoloed().empty() || soloed) && !muted;
-    //    if (gainSource != nullptr) {
-    //        gainSource->setGain(play ? level : 0);
-    //    }
+//        bool play = (trackList.getSoloed().empty() || soloed) && !muted;
+        bool play = !muted;
+        if (gainSource != nullptr) {
+            gainSource->setGain(play ? level : 0);
+        }
 }
 
 Sample *Track::getSelected() const {

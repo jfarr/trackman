@@ -27,7 +27,7 @@ class Track {
     [[nodiscard]] bool isSelected() const { return selected; }
     [[nodiscard]] bool isDeleted() const { return deleted; }
 
-        juce::PositionableAudioSource *getSource() { return samplePlayer.get(); }
+    juce::PositionableAudioSource *getSource() { return gainSource.get(); }
     //    foleys::LevelMeterSource *getMeterSource() {
     //        return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource();
     //    }
@@ -66,7 +66,7 @@ class Track {
     juce::String name = defaultName;
     //    std::shared_ptr<juce::PositionableAudioSource> source = nullptr;
     //    std::shared_ptr<MeteredAudioSource> meteredSource;
-    //    std::shared_ptr<GainAudioSource> gainSource;
+    std::shared_ptr<GainAudioSource> gainSource;
     //    std::shared_ptr<PositionableMixingAudioSource> mixerSource;
 
     float level = juce::Decibels::decibelsToGain<float>(0.0);
