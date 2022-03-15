@@ -7,6 +7,7 @@
   - Default one track
   - Ctrl-drag multiple tracks
 - Use undo manager
+- Use ListenerList
 - Stereo panner
 - Song start / end position
 - Loop start / end position

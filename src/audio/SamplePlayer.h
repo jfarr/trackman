@@ -2,6 +2,8 @@
 
 #include <JuceHeader.h>
 #include "model/Sample.h"
+#include "TimeRange.h"
+#include "Timeline.h"
 
 class SamplePlayer : public juce::PositionableAudioSource {
   public:
@@ -28,6 +30,9 @@ class SamplePlayer : public juce::PositionableAudioSource {
     double currentSampleRate = 0;
     juce::int64 currentPos = 0;
     bool looping = false;
+    Timeline<Sample *> timeline;
+
+    void updateTimeline();
 
     juce::CriticalSection mutex;
 

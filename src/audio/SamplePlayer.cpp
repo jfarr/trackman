@@ -31,7 +31,8 @@ juce::int64 SamplePlayer::getTotalLength() const {
     const juce::ScopedLock lock(mutex);
     juce::int64 totalLength = 0;
     for (std::shared_ptr<Sample> &sample : samples) {
-        DBG("got length " << sample->getLengthInSamples() << " for sample " << sample->getFile().getFileName());
+        //        DBG("got length " << sample->getLengthInSamples() << " for sample " <<
+        //        sample->getFile().getFileName());
         totalLength = std::max(totalLength, sample->getLengthInSamples());
     }
     return totalLength;
@@ -45,4 +46,12 @@ bool SamplePlayer::isLooping() const {
 void SamplePlayer::setLooping(bool shouldLoop) {
     const juce::ScopedLock lock(mutex);
     looping = shouldLoop;
+}
+
+void SamplePlayer::updateTimeline() {
+    const juce::ScopedLock lock(mutex);
+    timeline.reset();
+    for (std::shared_ptr<Sample> &sample : samples) {
+        timeline.addRange(sample->getStartPos(), sample->getEndPos(), sample.get());
+    }
 }
