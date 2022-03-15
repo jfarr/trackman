@@ -51,7 +51,7 @@ void SampleThumbnail::createControls() {
 
 void SampleThumbnail::paint(juce::Graphics &g) {
     paintWithoutOverlay(g);
-    paintOverlay(g);
+//    paintOverlay(g);
 }
 
 void SampleThumbnail::paintWithoutOverlay(juce::Graphics &g) {
@@ -102,6 +102,18 @@ void SampleThumbnail::mouseDown(const juce::MouseEvent &event) {
     if (!dragging) {
         dragging = true;
         xPos = getPosition().getX();
+    }
+
+    auto leftPanelWidth = 25;
+    auto bounds = getBoundsInParent();
+//    auto duration = transport.getLengthInSeconds();
+    auto laneWidth = getParentComponent()->getWidth() - leftPanelWidth;
+    auto duration = laneWidth / project.getHorizontalScale();
+    if (duration > 0.0) {
+        auto clickPosition = event.position.x + (bounds.getX() - leftPanelWidth);
+        auto audioPosition = clickPosition / project.getHorizontalScale();
+
+        transport.setPosition(audioPosition);
     }
 }
 

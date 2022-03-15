@@ -7,6 +7,7 @@
 #include "model/Track.h"
 #include "model/TrackList.h"
 #include "ui/desktop/TrackListListener.h"
+#include "ui/common/PositionOverlay.h"
 
 class DesktopController;
 
@@ -76,6 +77,7 @@ class TrackListPanel : public juce::Component,
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
     std::list<TrackLaneControl *> lanes;
+    PositionOverlay overlay;
 
     DropBox dropBox;
     int dragSourceOffset = 0;
