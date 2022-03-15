@@ -54,8 +54,7 @@ void Project::from_json(
         track->setLevelGain(track_json["gain"]);
         track->setMute(track_json["muted"]);
         for (auto sample_json : track_json["samples"]) {
-            trackList.addSample(*track, sample_json["file"], sample_json["startPos"], sample_json["endPos"],
-                deviceManager, formatManager);
+            addSample(*track, sample_json["file"], sample_json["startPos"], sample_json["endPos"], formatManager);
         }
         //        track->loadSamples(formatManager, sampleRate);
         //        mixer.addSource(track->getSource());
