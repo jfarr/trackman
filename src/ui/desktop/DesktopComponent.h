@@ -42,6 +42,7 @@ class DesktopComponent : public juce::Component,
         editUndo,
         newTrack,
         newAudioPlayer,
+        newMidiKeyboard,
         deleteTrackSelection
     };
 

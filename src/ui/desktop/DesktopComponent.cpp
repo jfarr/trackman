@@ -2,6 +2,7 @@
 #include "DesktopController.h"
 #include "common/listutil.h"
 #include "ui/MainWindow.h"
+#include "ui/KeyboardControl.h"
 
 DesktopComponent::DesktopComponent(DesktopController &desktopController)
     : desktopController(desktopController), timeMeter(desktopController.getProject()),
@@ -81,6 +82,7 @@ juce::PopupMenu DesktopComponent::getMenuForIndex(int menuIndex, const juce::Str
     } else if (menuIndex == 2) {
         menu.addCommandItem(&commandManager, CommandIDs::newTrack);
         menu.addCommandItem(&commandManager, CommandIDs::newAudioPlayer);
+        menu.addCommandItem(&commandManager, CommandIDs::newMidiKeyboard);
     } else if (menuIndex == 3) {
         menu.addCommandItem(&commandManager, CommandIDs::deleteTrackSelection);
     }
@@ -92,7 +94,7 @@ juce::PopupMenu DesktopComponent::getMenuForIndex(int menuIndex, const juce::Str
 void DesktopComponent::getAllCommands(juce::Array<juce::CommandID> &c) {
     juce::Array<juce::CommandID> commands{CommandIDs::openProject, CommandIDs::saveProject, CommandIDs::saveProjectAs,
         CommandIDs::exportProject, CommandIDs::editUndo, CommandIDs::newTrack, CommandIDs::newAudioPlayer,
-        CommandIDs::deleteTrackSelection};
+        CommandIDs::newMidiKeyboard, CommandIDs::deleteTrackSelection};
     c.addArray(commands);
 }
 
@@ -126,8 +128,12 @@ void DesktopComponent::getCommandInfo(juce::CommandID commandID, juce::Applicati
         result.addDefaultKeypress('t', juce::ModifierKeys::commandModifier);
         break;
     case CommandIDs::newAudioPlayer:
-        result.setInfo("Audio Player", "Create a new audioplayer component", "Menu", 0);
+        result.setInfo("Audio Player", "Open a new audioplayer", "Menu", 0);
         result.addDefaultKeypress('p', juce::ModifierKeys::commandModifier);
+        break;
+    case CommandIDs::newMidiKeyboard:
+        result.setInfo("MIDI Keyboard", "Open a MIDI keyboard", "Menu", 0);
+        result.addDefaultKeypress('k', juce::ModifierKeys::commandModifier);
         break;
     case CommandIDs::deleteTrackSelection:
         result.setInfo("Delete " + desktopController.getSelectionType(),
@@ -163,6 +169,9 @@ bool DesktopComponent::perform(const InvocationInfo &info) {
     case CommandIDs::newAudioPlayer:
         createChildWindow("audioplayer",
             new AudioPlayer(desktopController.getMainWindow().getMainAudioComponent().getFormatManager()));
+        break;
+    case CommandIDs::newMidiKeyboard:
+        createChildWindow("keyboard", new KeyboardControl());
         break;
     case CommandIDs::deleteTrackSelection:
         desktopController.deleteSelected();
