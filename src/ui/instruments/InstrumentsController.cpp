@@ -12,7 +12,7 @@ void InstrumentsController::update() {
     instruments.clear();
     instrumentsPanel.clear();
     project.getTrackList().eachTrack([this](Track &track) {
-        auto instrument = new InstrumentController();
+        auto instrument = new InstrumentController(track);
         instruments.push_back(std::unique_ptr<InstrumentController>(instrument));
         instrumentsPanel.addTrack(&instrument->getInstrumentControl());
         instrument->update();

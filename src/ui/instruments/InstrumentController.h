@@ -5,7 +5,7 @@
 
 class InstrumentController {
   public:
-    InstrumentController() = default;
+    InstrumentController(Track &track) : track(track), instrumentControl(track) {}
     ~InstrumentController() = default;
 
     InstrumentControl &getInstrumentControl() { return instrumentControl; }
@@ -14,6 +14,7 @@ class InstrumentController {
     void repaint();
 
   private:
+    Track &track;
     InstrumentControl instrumentControl;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentController)

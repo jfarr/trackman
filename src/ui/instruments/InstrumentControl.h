@@ -1,10 +1,11 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "model/Track.h"
 
 class InstrumentControl : public juce::Component {
   public:
-    InstrumentControl() = default;
+    InstrumentControl(Track &track) : track(track) {}
     ~InstrumentControl() override = default;
 
     int getPreferredHeight() const { return preferredHeight; }
@@ -18,6 +19,8 @@ class InstrumentControl : public juce::Component {
 
   private:
     const int preferredHeight = 75;
+
+    Track &track;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentControl)
 };
