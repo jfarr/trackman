@@ -1,20 +1,20 @@
 # Roadmap
 
 ## Short-Term
-- Click to move transport
-- Sample info popup
-- Drop multiple files
-  - Default one track
-  - Ctrl-drag multiple tracks
+- Instrument panel
 - Use undo manager
 - Use ListenerList
 - Stereo panner
 - Song start / end position
 - Loop start / end position
+- Sample info popup
 
 
 ## Long Term
 
+- Drop multiple files
+  - Default one track
+  - Ctrl-drag multiple tracks
 - Copy / paste
 - Tempo + time signature
   - Snap to nearest quanta
