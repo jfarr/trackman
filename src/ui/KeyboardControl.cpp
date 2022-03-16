@@ -19,7 +19,7 @@ KeyboardControl::KeyboardControl()
     midiMessagesBox.setColour(juce::TextEditor::outlineColourId, juce::Colour(0x1c000000));
     midiMessagesBox.setColour(juce::TextEditor::shadowColourId, juce::Colour(0x16000000));
 
-    setSize(600, 400);
+    setSize(450, 200);
 }
 
 KeyboardControl::~KeyboardControl() { keyboardState.removeListener(this); }

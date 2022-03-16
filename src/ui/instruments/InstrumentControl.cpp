@@ -2,6 +2,7 @@
 
 InstrumentControl::InstrumentControl(Track &track) : track(track) {
     selectButton.setButtonText("...");
+    selectButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkslategrey);
     addAndMakeVisible(selectButton);
 }
 
