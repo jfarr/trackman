@@ -2,7 +2,6 @@
 
 void TimeMeter::paint(juce::Graphics &g) {
     auto bounds = getLocalBounds();
-    auto leftPanelWidth = 25;
     auto labelY = -7;
     auto labelWidth = 50;
     auto labelHeight = 20;
@@ -18,7 +17,7 @@ void TimeMeter::paint(juce::Graphics &g) {
     int i = 0;
     int increment = std::max(1, (int)(75 / project.getHorizontalScale()));
     while (i * scale < bounds.getWidth()) {
-        int x = leftPanelWidth + i * scale;
+        int x = i * scale;
         g.drawRect(x, y, 1, tickHeight, 1);
         g.drawText(juce::String(i) + ":00", x + labelMargin, labelY, labelWidth, labelHeight,
             juce::Justification::bottom | juce::Justification::left, true);
@@ -27,14 +26,14 @@ void TimeMeter::paint(juce::Graphics &g) {
     y = getHeight() - secondTickHeight;
     i = 1;
     while (i * scale / 2 * increment < bounds.getWidth()) {
-        int x = leftPanelWidth + i * scale / 2 * increment;
+        int x = i * scale / 2 * increment;
         g.drawRect(x, y, 1, secondTickHeight, 1);
         i += 1;
     }
     y = getHeight() - thirdTickHeight;
     i = 1;
     while (i * scale / 8 * increment < bounds.getWidth()) {
-        int x = leftPanelWidth + i * scale / 8 * increment;
+        int x = i * scale / 8 * increment;
         g.drawRect(x, y, 1, thirdTickHeight, 1);
         i += 1;
     }
@@ -44,7 +43,7 @@ void TimeMeter::paint(juce::Graphics &g) {
     auto arrowWidth = 18.0;
 
     float audioPosition = 0.0;
-        auto drawPosition = audioPosition * scale + leftPanelWidth;
+    auto drawPosition = audioPosition * scale;
 
     g.setColour(juce::Colours::lightgrey);
     g.drawLine(drawPosition, margin, drawPosition, (float)getHeight(), 1.0f);
