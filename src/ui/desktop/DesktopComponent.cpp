@@ -167,11 +167,11 @@ bool DesktopComponent::perform(const InvocationInfo &info) {
         desktopController.addNewTrack();
         break;
     case CommandIDs::newAudioPlayer:
-        createChildWindow("audioplayer",
+        createChildWindow("Audio Player",
             new AudioPlayer(desktopController.getMainWindow().getMainAudioComponent().getFormatManager()));
         break;
     case CommandIDs::newMidiKeyboard:
-        createChildWindow("keyboard", new KeyboardControl());
+        createChildWindow("MIDI Keyboard", new KeyboardControl());
         break;
     case CommandIDs::deleteTrackSelection:
         desktopController.deleteSelected();
