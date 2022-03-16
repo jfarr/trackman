@@ -60,7 +60,7 @@ void SampleThumbnail::paint(juce::Graphics &g) {
     auto thumbnailBounds = area.reduced(margin);
     g.setColour(juce::Colours::dimgrey);
     g.fillRect(thumbnailBounds);
-    g.setColour(juce::Colours::limegreen.brighter(0.5));
+    g.setColour(juce::Colours::limegreen);
     thumbnail.drawChannels(g, thumbnailBounds, 0.0, thumbnail.getTotalLength(), 1.0f);
 }
 
