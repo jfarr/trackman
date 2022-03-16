@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Short-Term
-- Instrument panel
+- Instruments
 - Use undo manager
 - Use ListenerList
 - Stereo panner
