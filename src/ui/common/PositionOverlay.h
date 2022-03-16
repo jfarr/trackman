@@ -5,7 +5,7 @@
 
 class PositionOverlay : public juce::Component, private juce::Timer {
   public:
-    PositionOverlay(juce::AudioTransportSource &transportSource);
+    explicit PositionOverlay(juce::AudioTransportSource &transportSource);
 
     void paint(juce::Graphics &g) override;
 

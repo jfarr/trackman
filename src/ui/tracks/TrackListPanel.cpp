@@ -17,7 +17,7 @@ TrackListPanel::TrackListPanel(
     update();
 }
 
-TrackListPanel::~TrackListPanel() {}
+TrackListPanel::~TrackListPanel() = default;
 
 Track *TrackListPanel::getTrackAtPos(int x, int y) {
     for (TrackLaneControl *lane : lanes) {
@@ -87,17 +87,16 @@ void TrackListPanel::resize() {
     auto w = getPanelWidth();
     auto h = getPanelHeight();
     setSize(w, h);
-    for (TrackLaneControl *lane : lanes) {
+    for (auto *lane : lanes) {
         lane->resized();
     }
     resized();
 }
 
 int TrackListPanel::getPanelWidth() const {
-    auto leftPanelWidth = 25;
     int trackWidth = (int)(desktopController.getProject().getTrackList().getTotalLengthInSeconds() *
                            desktopController.getProject().getHorizontalScale());
-    return std::max(trackWidth + leftPanelWidth, viewport.getWidth());
+    return std::max(trackWidth, viewport.getWidth());
 }
 
 int TrackListPanel::getPanelHeight() const {
@@ -121,9 +120,8 @@ void TrackListPanel::paint(juce::Graphics &g) {
 void TrackListPanel::resized() {
     auto area = getLocalBounds();
     auto laneHeight = (int)(getTrackLaneHeight() / lanes.size());
-    auto leftPanelWidth = 25;
     auto width = std::max(transport.getLengthInSeconds() * desktopController.getProject().getHorizontalScale(), 2.0);
-    overlay.setBounds(area.withLeft(leftPanelWidth).withWidth(width));
+    overlay.setBounds(area.withWidth(width));
     for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(laneHeight));
     }

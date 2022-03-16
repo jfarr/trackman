@@ -8,7 +8,7 @@
 DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceManager &deviceManager)
     : mainWindow(mainWindow), deviceManager(deviceManager), applicationName(mainWindow.getName()),
       desktopComponent(*this), project(deviceManager), mixerController(*this),
-      trackListController(*this, project.getMixer().getTransportSource()) {
+      trackListController(*this, project.getMixer().getTransportSource()), instrumentsController(*this) {
 
     updateTitleBar();
 }
@@ -157,6 +157,7 @@ Track *DesktopController::addTrack() {
     juce::MessageManager::callAsync([this]() {
         trackListController.update();
         mixerController.update();
+        instrumentsController.update();
     });
     return track;
 }
@@ -169,6 +170,7 @@ void DesktopController::deleteTrack(Track *track, bool purge) {
     juce::MessageManager::callAsync([this]() {
         trackListController.update();
         mixerController.update();
+        instrumentsController.update();
     });
 }
 
@@ -177,6 +179,7 @@ void DesktopController::undeleteTrack(Track *track) {
     juce::MessageManager::callAsync([this]() {
         trackListController.update();
         mixerController.update();
+        instrumentsController.update();
     });
 }
 
@@ -263,6 +266,7 @@ void DesktopController::openProject() {
             juce::MessageManager::callAsync([this]() {
                 trackListController.update();
                 mixerController.update();
+                instrumentsController.update();
             });
             commandList.clear();
             saveCommand = nullptr;
@@ -297,6 +301,7 @@ void DesktopController::selectionChanged(Track *track) {
     juce::MessageManager::callAsync([this]() {
         trackListController.repaint();
         mixerController.repaint();
+        instrumentsController.repaint();
     });
     desktopComponent.menuItemsChanged();
 }
@@ -319,6 +324,7 @@ void DesktopController::verticalScaleIncreased() {
     project.incrementVerticalScale();
     juce::MessageManager::callAsync([this]() {
         trackListController.update();
+        instrumentsController.update();
         desktopComponent.resized();
     });
 }
@@ -327,6 +333,7 @@ void DesktopController::verticalScaleDecreased() {
     project.decrementVerticalScale();
     juce::MessageManager::callAsync([this]() {
         trackListController.update();
+        instrumentsController.update();
         desktopComponent.resized();
     });
 }
@@ -335,6 +342,7 @@ void DesktopController::horizontalScaleIncreased() {
     project.incrementHorizontalScale();
     juce::MessageManager::callAsync([this]() {
         trackListController.update();
+        instrumentsController.update();
         desktopComponent.resized();
     });
 }
@@ -343,6 +351,7 @@ void DesktopController::horizontalScaleDecreased() {
     project.decrementHorizontalScale();
     juce::MessageManager::callAsync([this]() {
         trackListController.update();
+        instrumentsController.update();
         desktopComponent.resized();
     });
 }

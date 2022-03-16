@@ -14,7 +14,7 @@ class DesktopController;
 class DropBox : public juce::Component {
   public:
     DropBox() { setSize(200, 60); }
-    ~DropBox() {}
+    ~DropBox() override {}
 
     void setSource(std::unique_ptr<juce::AudioFormatReaderSource> &newSource) { source = std::move(newSource); }
 

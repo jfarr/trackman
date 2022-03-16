@@ -8,11 +8,25 @@
 #include "model/Mixer.h"
 #include "ui/AudioPlayer.h"
 #include "ui/common/TimeMeter.h"
+#include "ui/instruments/InstrumentsPanel.h"
 #include "ui/mixer/MixerPanel.h"
 #include "ui/tracks/TrackListPanel.h"
 #include "ui/tracks/TrackListViewport.h"
 
 class DesktopController;
+
+class Spacer : public juce::Component {
+  public:
+    Spacer() = default;
+    ~Spacer() = default;
+
+    void paint(juce::Graphics &g) override {
+        g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    }
+
+  private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Spacer)
+};
 
 class DesktopComponent : public juce::Component,
                          public juce::ApplicationCommandTarget,
@@ -68,12 +82,18 @@ class DesktopComponent : public juce::Component,
   private:
     const int initialWidth = 800;
     const int initialHeight = 600;
+    const int leftPanelWidth = 25;
+    const int panelWidth = 25;
+    const int topStripHeight = 15;
+    const int scaleButtonWidth = 12;
 
     DesktopController &desktopController;
 
     TimeMeter timeMeter;
     ScaleButtonPanel horizontalScaleButtonPanel;
     ScaleButtonPanel verticalScaleButtonPanel;
+    Spacer spacer;
+
     std::list<FileDragDropTarget *> listeners;
 
     juce::ApplicationCommandManager commandManager;

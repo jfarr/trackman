@@ -62,7 +62,7 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
         auto scale = project.getHorizontalScale();
         auto width = length * scale;
         double offset = width / 2;
-        double startPos = std::max((pos - offset - leftPanelWidth), 0.0);
+        double startPos = std::max((pos - offset), 0.0);
         double endPos = startPos + width;
         auto sample = project.addSample(track, file, startPos / scale, endPos / scale,
             desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
@@ -148,7 +148,8 @@ void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y
     removeDragLane();
     auto curPos = sample.getStartPos();
     auto scale = project.getHorizontalScale();
-    double newPos = std::max((double)(x - leftPanelWidth), 0.0) / scale;
+    x = std::max(x, 0);
+    double newPos = (double)x / scale;
     Track *toTrack = trackListPanel.getTrackAtPos(x, y);
     desktopController.moveSelectedSample(sample, track, toTrack, curPos, newPos);
 }
@@ -160,8 +161,7 @@ void TrackListController::sampleResized(Sample &sample, int width) {
 }
 
 void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int screenY) {
-    auto leftPanelWidth = 25;
-    x = std::max(x, leftPanelWidth);
+    x = std::max(x, 0);
     thumbnail.setTopLeftPosition(thumbnail.getPosition().withX(x));
     auto y = screenY - trackListPanel.getScreenPosition().getY();
     auto track = trackListPanel.getTrackAtPos(x, y);

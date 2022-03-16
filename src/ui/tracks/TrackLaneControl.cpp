@@ -31,29 +31,25 @@ void TrackLaneControl::update() {
 }
 
 void TrackLaneControl::paint(juce::Graphics &g) {
-    auto leftPanelWidth = 25;
     g.fillAll(track.isSelected() ? juce::Colour{0xff3f5f5f} : juce::Colours::darkslategrey);
     g.setColour(juce::Colours::slategrey);
     g.fillRect(0, getHeight() - 1, getWidth(), 1);
-    g.fillRect(leftPanelWidth, 0, 1, getHeight());
+    g.fillRect(0, 0, 1, getHeight());
     g.setColour(juce::Colours::lightgrey);
-    g.fillRect(0, 1, leftPanelWidth, getHeight() - 1);
+    g.fillRect(0, 1, 0, getHeight() - 1);
     g.setColour(juce::Colours::lightgrey);
-    g.drawLine(leftPanelWidth, 0, leftPanelWidth, (float)getHeight(), 1.0f);
+    g.drawLine(0, 0, 0, (float)getHeight(), 1.0f);
 }
 
 void TrackLaneControl::resized() {
     auto area = getLocalBounds();
-    auto leftPanelWidth = 25;
     auto labelHeight = 12;
     auto margin = 3;
     auto scale = project.getHorizontalScale();
-    area.removeFromLeft(leftPanelWidth);
     trackLabel.setBounds(area.removeFromTop(labelHeight).withTrimmedTop(margin));
     area.removeFromTop(margin);
     for (SampleThumbnail *thumbnail : thumbnails) {
         auto x = thumbnail->getSample().getStartPos() * scale;
-        thumbnail->setBounds(
-            x + leftPanelWidth, area.getY(), thumbnail->getSample().getLengthInSeconds() * scale, area.getHeight());
+        thumbnail->setBounds(x, area.getY(), thumbnail->getSample().getLengthInSeconds() * scale, area.getHeight());
     }
 }
