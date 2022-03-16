@@ -148,7 +148,8 @@ void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y
     removeDragLane();
     auto curPos = sample.getStartPos();
     auto scale = project.getHorizontalScale();
-    double newPos = std::max((double)x, 0.0) / scale;
+    x = std::max(x, 0);
+    double newPos = (double)x / scale;
     Track *toTrack = trackListPanel.getTrackAtPos(x, y);
     desktopController.moveSelectedSample(sample, track, toTrack, curPos, newPos);
 }
