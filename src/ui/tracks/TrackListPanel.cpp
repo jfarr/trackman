@@ -15,7 +15,6 @@ TrackListPanel::TrackListPanel(
     viewport.setViewedComponent(this, false);
 
     update();
-    startTimer(20);
 }
 
 TrackListPanel::~TrackListPanel() {}

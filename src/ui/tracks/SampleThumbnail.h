@@ -34,8 +34,7 @@ class StretchHandle : public juce::Component {
 
 class SampleThumbnail : public juce::Component {
   public:
-    SampleThumbnail(Project &project, Track &track, Sample &sample, juce::AudioTransportSource &transport,
-        juce::AudioFormatManager &formatManager);
+    SampleThumbnail(Project &project, Track &track, Sample &sample, juce::AudioFormatManager &formatManager);
     ~SampleThumbnail() {}
 
     Track &getTrack() { return track; }
@@ -56,7 +55,6 @@ class SampleThumbnail : public juce::Component {
     Project &project;
     Track &track;
     Sample &sample;
-    juce::AudioTransportSource &transport;
 
     juce::Label filenameLabel;
     juce::Label missingFileLabel;

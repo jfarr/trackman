@@ -38,17 +38,6 @@ void TrackLaneControl::paint(juce::Graphics &g) {
     g.fillRect(leftPanelWidth, 0, 1, getHeight());
     g.setColour(juce::Colours::lightgrey);
     g.fillRect(0, 1, leftPanelWidth, getHeight() - 1);
-
-//    auto duration = (float)transport.getLengthInSeconds();
-//
-//    if (duration > 0.0) {
-//        auto audioPosition = (float)transport.getCurrentPosition();
-//        auto drawPosition = audioPosition * project.getHorizontalScale() + leftPanelWidth;
-//
-//        g.setColour(juce::Colour{0xff282828});
-//        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
-//    }
-
     g.setColour(juce::Colours::lightgrey);
     g.drawLine(leftPanelWidth, 0, leftPanelWidth, (float)getHeight(), 1.0f);
 }
