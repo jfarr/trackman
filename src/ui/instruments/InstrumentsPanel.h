@@ -19,7 +19,7 @@ class InstrumentsPanel : public juce::Component {
     void resized() override;
 
   private:
-    const int panelWidth = 25;
+    const int panelWidth = 30;
     const int topStripHeight = 15;
 
     std::list<InstrumentControl *> instruments;

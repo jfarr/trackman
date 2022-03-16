@@ -1,5 +1,10 @@
 #include "InstrumentControl.h"
 
+InstrumentControl::InstrumentControl(Track &track) : track(track) {
+    selectButton.setButtonText("...");
+    addAndMakeVisible(selectButton);
+}
+
 void InstrumentControl::update() {}
 
 void InstrumentControl::paint(juce::Graphics &g) {
@@ -8,4 +13,10 @@ void InstrumentControl::paint(juce::Graphics &g) {
     g.fillRect(0, getHeight() - 1, getWidth(), 1);
 }
 
-void InstrumentControl::resized() {}
+void InstrumentControl::resized() {
+    auto area = getLocalBounds();
+    auto buttonSize = 25;
+    auto margin = 3;
+    auto buttonArea = area.removeFromLeft(buttonSize);
+    selectButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
+}
