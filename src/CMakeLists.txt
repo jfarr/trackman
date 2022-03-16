@@ -76,6 +76,8 @@ target_sources(Trackman PRIVATE
         ui/instruments/InstrumentControl.h
         ui/instruments/InstrumentController.cpp
         ui/instruments/InstrumentController.h
+        ui/instruments/InstrumentsController.cpp
+        ui/instruments/InstrumentsController.h
         ui/instruments/InstrumentsPanel.cpp
         ui/instruments/InstrumentsPanel.h
         ui/mixer/LevelMeterLookAndFeel.h

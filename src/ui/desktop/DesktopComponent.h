@@ -76,7 +76,7 @@ class DesktopComponent : public juce::Component,
     DesktopController &desktopController;
 
     TimeMeter timeMeter;
-    InstrumentsPanel instrumentsPanel;
+//    InstrumentsPanel instrumentsPanel;
     ScaleButtonPanel horizontalScaleButtonPanel;
     ScaleButtonPanel verticalScaleButtonPanel;
     std::list<FileDragDropTarget *> listeners;

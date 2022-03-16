@@ -87,7 +87,7 @@ void TrackListPanel::resize() {
     auto w = getPanelWidth();
     auto h = getPanelHeight();
     setSize(w, h);
-    for (TrackLaneControl *lane : lanes) {
+    for (auto *lane : lanes) {
         lane->resized();
     }
     resized();

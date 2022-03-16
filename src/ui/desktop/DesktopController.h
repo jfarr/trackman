@@ -10,6 +10,7 @@
 #include "ui/mixer/MixerController.h"
 #include "ui/mixer/TrackControlListener.h"
 #include "ui/tracks/TrackListController.h"
+#include "ui/instruments/InstrumentsController.h"
 
 class MainWindow;
 
@@ -29,7 +30,9 @@ class DesktopController : public juce::AudioSource,
 
     MixerController &getMixerController() { return mixerController; }
     Mixer &getMixer() { return project.getMixer(); }
+
     TrackListController &getTrackListController() { return trackListController; }
+    InstrumentsController &getInstrumentsController() { return instrumentsController; };
 
     bool canUndo() const;
     void undoLast();
@@ -102,6 +105,7 @@ class DesktopController : public juce::AudioSource,
     Project project;
     MixerController mixerController;
     TrackListController trackListController;
+    InstrumentsController instrumentsController;
 
     DesktopComponent desktopComponent;
 

@@ -14,9 +14,10 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
     horizontalScaleButtonPanel.addListener(&desktopController);
 
     addAndMakeVisible(timeMeter);
-    addAndMakeVisible(instrumentsPanel);
+//    addAndMakeVisible(instrumentsPanel);
     addAndMakeVisible(desktopController.getTrackListController().getViewport());
     addAndMakeVisible(desktopController.getMixerController().getMixerPanel());
+    addAndMakeVisible(desktopController.getInstrumentsController().getInstrumentsPanel());
     addAndMakeVisible(verticalScaleButtonPanel);
     addAndMakeVisible(horizontalScaleButtonPanel);
 
@@ -184,6 +185,7 @@ void DesktopComponent::resized() {
         area.getY() + topStripHeight, scaleButtonWidth, scaleButtonWidth * 2));
     horizontalScaleButtonPanel.setBounds(
         juce::Rectangle<int>(0, area.getHeight() - scaleButtonWidth, scaleButtonWidth * 2, scaleButtonWidth));
+    auto &instrumentsPanel = desktopController.getInstrumentsController().getInstrumentsPanel();
     instrumentsPanel.setBounds(area.removeFromLeft(leftPanelWidth));
     timeMeter.setBounds(area.removeFromTop(topStripHeight));
     timeMeter.repaint();
