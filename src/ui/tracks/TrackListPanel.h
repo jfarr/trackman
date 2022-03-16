@@ -7,6 +7,7 @@
 #include "model/Track.h"
 #include "model/TrackList.h"
 #include "ui/desktop/TrackListListener.h"
+#include "ui/common/PositionOverlay.h"
 
 class DesktopController;
 
@@ -30,8 +31,7 @@ class DropBox : public juce::Component {
 
 class TrackListPanel : public juce::Component,
                        public juce::DragAndDropContainer,
-                       public juce::DragAndDropTarget,
-                       private juce::Timer {
+                       public juce::DragAndDropTarget {
   public:
     TrackListPanel(
         DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport);
@@ -76,6 +76,7 @@ class TrackListPanel : public juce::Component,
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
     std::list<TrackLaneControl *> lanes;
+    PositionOverlay overlay;
 
     DropBox dropBox;
     int dragSourceOffset = 0;
@@ -91,10 +92,6 @@ class TrackListPanel : public juce::Component,
     void notifySampleResized(SampleThumbnail *thumbnail, int width);
     void notifyDragEnded();
     void notifySelectionChanged();
-
-    //==============================================================================
-    // Timer
-    void timerCallback() override { repaint(); }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListPanel)
 };

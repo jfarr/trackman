@@ -26,6 +26,7 @@ void AudioPlayer::createControls() {
 
     fileChooserControl.addListener(this);
     transportControl.addListener(this);
+    thumbnailComponent.addMouseListener(this, false);
 }
 
 //==============================================================================
@@ -57,6 +58,19 @@ void AudioPlayer::resized() {
     transportControl.setBounds(area.removeFromBottom(buttonHeight));
     thumbnailComponent.setBounds(area.reduced(margin));
     positionOverlay.setBounds(area.reduced(margin));
+}
+
+void AudioPlayer::mouseDown(const juce::MouseEvent &event) {
+    auto newEvent = event.getEventRelativeTo(&thumbnailComponent);
+    auto duration = transportSource.getLengthInSeconds();
+
+    if (duration > 0.0) {
+        auto clickPosition = newEvent.position.x;
+        auto audioPosition = (clickPosition / (float)positionOverlay.getWidth()) * duration;
+
+        transportSource.setPosition(audioPosition);
+    }
+    Component::mouseDown(event);
 }
 
 void AudioPlayer::fileChosen(juce::File file) {

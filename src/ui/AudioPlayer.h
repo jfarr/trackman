@@ -23,6 +23,7 @@ class AudioPlayer : public juce::AudioAppComponent, public FileListener, public 
     // Component
     void paint(juce::Graphics &g) override;
     void resized() override;
+    void mouseDown(const juce::MouseEvent &event) override;
 
     //==============================================================================
     // TransportControlListener

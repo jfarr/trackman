@@ -1,13 +1,13 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "model/Project.h"
 
 class PositionOverlay : public juce::Component, private juce::Timer {
   public:
     PositionOverlay(juce::AudioTransportSource &transportSource);
 
     void paint(juce::Graphics &g) override;
-    void mouseDown(const juce::MouseEvent &event) override;
 
   private:
     void timerCallback() override;

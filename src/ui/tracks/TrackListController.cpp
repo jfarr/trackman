@@ -160,6 +160,8 @@ void TrackListController::sampleResized(Sample &sample, int width) {
 }
 
 void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int screenY) {
+    auto leftPanelWidth = 25;
+    x = std::max(x, leftPanelWidth);
     thumbnail.setTopLeftPosition(thumbnail.getPosition().withX(x));
     auto y = screenY - trackListPanel.getScreenPosition().getY();
     auto track = trackListPanel.getTrackAtPos(x, y);

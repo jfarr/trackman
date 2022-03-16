@@ -25,11 +25,10 @@ void StretchHandle::mouseDown(const juce::MouseEvent &event) { thumbnail.mouseDo
 
 void StretchHandle::mouseUp(const juce::MouseEvent &event) {}
 
-SampleThumbnail::SampleThumbnail(Project &project, Track &track, Sample &sample, juce::AudioTransportSource &transport,
-    juce::AudioFormatManager &formatManager)
-    : project(project), track(track), sample(sample), transport(transport), thumbnailCache(5),
-      thumbnail(512, formatManager, thumbnailCache), stretchHandle(*this), dragImage(juce::Image::ARGB, 1, 1, true),
-      scaledDragImage(dragImage) {
+SampleThumbnail::SampleThumbnail(
+    Project &project, Track &track, Sample &sample, juce::AudioFormatManager &formatManager)
+    : project(project), track(track), sample(sample), thumbnailCache(5), thumbnail(512, formatManager, thumbnailCache),
+      stretchHandle(*this), dragImage(juce::Image::ARGB, 1, 1, true), scaledDragImage(dragImage) {
     thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
     createControls();
     setSize(200, 81);
@@ -50,11 +49,6 @@ void SampleThumbnail::createControls() {
 }
 
 void SampleThumbnail::paint(juce::Graphics &g) {
-    paintWithoutOverlay(g);
-    paintOverlay(g);
-}
-
-void SampleThumbnail::paintWithoutOverlay(juce::Graphics &g) {
     auto area = getLocalBounds();
     auto margin = 3;
 
@@ -68,20 +62,6 @@ void SampleThumbnail::paintWithoutOverlay(juce::Graphics &g) {
     g.fillRect(thumbnailBounds);
     g.setColour(juce::Colours::limegreen);
     thumbnail.drawChannels(g, thumbnailBounds, 0.0, thumbnail.getTotalLength(), 1.0f);
-}
-
-void SampleThumbnail::paintOverlay(juce::Graphics &g) {
-    auto duration = (float)transport.getLengthInSeconds();
-
-    if (duration > 0.0) {
-        auto audioPosition = (float)transport.getCurrentPosition();
-        if (audioPosition >= sample.getStartPos() && audioPosition <= sample.getEndPos()) {
-            auto samplePos = audioPosition - sample.getStartPos();
-            auto drawPosition = samplePos * project.getHorizontalScale();
-            g.setColour(juce::Colour{0xff282828});
-            g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
-        }
-    }
 }
 
 void SampleThumbnail::resized() {

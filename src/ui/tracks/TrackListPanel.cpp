@@ -5,7 +5,7 @@
 
 TrackListPanel::TrackListPanel(
     DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport)
-    : desktopController(desktopController), viewport(viewport), transport(transport) {
+    : desktopController(desktopController), viewport(viewport), transport(transport), overlay(transport) {
 
     viewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
     viewport.getHorizontalScrollBar().setAutoHide(false);
@@ -15,7 +15,6 @@ TrackListPanel::TrackListPanel(
     viewport.setViewedComponent(this, false);
 
     update();
-    startTimer(20);
 }
 
 TrackListPanel::~TrackListPanel() {}
@@ -80,6 +79,7 @@ void TrackListPanel::update() {
         lane->update();
         addAndMakeVisible(lane);
     }
+    addAndMakeVisible(overlay);
     resize();
 }
 
@@ -116,25 +116,14 @@ int TrackListPanel::getTrackLaneHeight() const {
 
 void TrackListPanel::paint(juce::Graphics &g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    auto leftPanelWidth = 25;
-    auto duration = (float)transport.getLengthInSeconds();
-
-    if (duration > 0.0) {
-        auto audioPosition = (float)transport.getCurrentPosition();
-        float drawPosition =
-            audioPosition * (float)desktopController.getProject().getHorizontalScale() + (float)leftPanelWidth;
-
-        g.setColour(juce::Colour{0xff282828});
-        g.drawLine(drawPosition, 0.0f, drawPosition, (float)getHeight(), 1.0f);
-    }
-
-    g.setColour(juce::Colours::lightgrey);
-    g.drawLine((float)leftPanelWidth, 0.0f, (float)leftPanelWidth, (float)getHeight(), 1.0f);
 }
 
 void TrackListPanel::resized() {
     auto area = getLocalBounds();
     auto laneHeight = (int)(getTrackLaneHeight() / lanes.size());
+    auto leftPanelWidth = 25;
+    auto width = std::max(transport.getLengthInSeconds() * desktopController.getProject().getHorizontalScale(), 2.0);
+    overlay.setBounds(area.withLeft(leftPanelWidth).withWidth(width));
     for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(laneHeight));
     }
