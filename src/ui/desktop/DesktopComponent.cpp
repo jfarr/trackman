@@ -14,6 +14,7 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
     horizontalScaleButtonPanel.addListener(&desktopController);
 
     addAndMakeVisible(timeMeter);
+    addAndMakeVisible(instrumentsPanel);
     addAndMakeVisible(desktopController.getTrackListController().getViewport());
     addAndMakeVisible(desktopController.getMixerController().getMixerPanel());
     addAndMakeVisible(verticalScaleButtonPanel);
@@ -44,7 +45,7 @@ DesktopComponent::~DesktopComponent() {
 }
 
 void DesktopComponent::visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea) {
-    timeMeter.setBounds(timeMeter.getBounds().withLeft(-newVisibleArea.getX()));
+    timeMeter.setBounds(timeMeter.getBounds().withLeft(-newVisibleArea.getX() + leftPanelWidth));
 }
 
 void DesktopComponent::createChildWindow(const juce::String &name, juce::Component *component) {
@@ -175,19 +176,17 @@ void DesktopComponent::paint(juce::Graphics &g) {
 }
 
 void DesktopComponent::resized() {
-    auto topStripHeight = 15;
-    auto scaleButtonWidth = 12;
     auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
     auto area = getLocalBounds();
-    timeMeter.setBounds(area.removeFromTop(topStripHeight));
-    timeMeter.repaint();
-    verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(
-        area.getWidth() - (scaleButtonWidth + scrollBarWidth), area.getY(), scaleButtonWidth, scaleButtonWidth * 2));
     auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
+    verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(area.getWidth() - (scaleButtonWidth + scrollBarWidth),
+        area.getY() + topStripHeight, scaleButtonWidth, scaleButtonWidth * 2));
     horizontalScaleButtonPanel.setBounds(
-        juce::Rectangle<int>(0, area.getHeight() - (scaleButtonWidth + scrollBarWidth) + topStripHeight,
-            scaleButtonWidth * 2, scaleButtonWidth));
+        juce::Rectangle<int>(0, area.getHeight() - scaleButtonWidth, scaleButtonWidth * 2, scaleButtonWidth));
+    instrumentsPanel.setBounds(area.removeFromLeft(leftPanelWidth));
+    timeMeter.setBounds(area.removeFromTop(topStripHeight));
+    timeMeter.repaint();
     desktopController.getTrackListController().getViewport().setBounds(area);
     desktopController.resize();
 }

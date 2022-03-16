@@ -17,7 +17,7 @@ TrackListPanel::TrackListPanel(
     update();
 }
 
-TrackListPanel::~TrackListPanel() {}
+TrackListPanel::~TrackListPanel() = default;
 
 Track *TrackListPanel::getTrackAtPos(int x, int y) {
     for (TrackLaneControl *lane : lanes) {

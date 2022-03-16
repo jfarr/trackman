@@ -8,6 +8,7 @@
 #include "model/Mixer.h"
 #include "ui/AudioPlayer.h"
 #include "ui/common/TimeMeter.h"
+#include "ui/instruments/InstrumentsPanel.h"
 #include "ui/mixer/MixerPanel.h"
 #include "ui/tracks/TrackListPanel.h"
 #include "ui/tracks/TrackListViewport.h"
@@ -68,10 +69,14 @@ class DesktopComponent : public juce::Component,
   private:
     const int initialWidth = 800;
     const int initialHeight = 600;
+    const int leftPanelWidth = 25;
+    const int  topStripHeight = 15;
+    const int  scaleButtonWidth = 12;
 
     DesktopController &desktopController;
 
     TimeMeter timeMeter;
+    InstrumentsPanel instrumentsPanel;
     ScaleButtonPanel horizontalScaleButtonPanel;
     ScaleButtonPanel verticalScaleButtonPanel;
     std::list<FileDragDropTarget *> listeners;

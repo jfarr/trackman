@@ -72,6 +72,12 @@ target_sources(Trackman PRIVATE
         ui/desktop/ScaleButtonPanel.h
         ui/desktop/TrackScaleListener.h
         ui/desktop/TrackListListener.h
+        ui/instruments/InstrumentControl.cpp
+        ui/instruments/InstrumentControl.h
+        ui/instruments/InstrumentController.cpp
+        ui/instruments/InstrumentController.h
+        ui/instruments/InstrumentsPanel.cpp
+        ui/instruments/InstrumentsPanel.h
         ui/mixer/LevelMeterLookAndFeel.h
         ui/mixer/MasterLevelMeterLookAndFeel.h
         ui/mixer/MasterTrackControl.cpp
