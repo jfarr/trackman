@@ -1,6 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+
 #include "InstrumentControl.h"
 
 class InstrumentsPanel : public juce::Component {
@@ -19,7 +20,7 @@ class InstrumentsPanel : public juce::Component {
 
   private:
     const int panelWidth = 25;
-    const int  topStripHeight = 15;
+    const int topStripHeight = 15;
 
     std::list<InstrumentControl *> instruments;
 

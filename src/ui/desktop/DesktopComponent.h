@@ -15,6 +15,19 @@
 
 class DesktopController;
 
+class Spacer : public juce::Component {
+  public:
+    Spacer() = default;
+    ~Spacer() = default;
+
+    void paint(juce::Graphics &g) override {
+        g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    }
+
+  private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Spacer)
+};
+
 class DesktopComponent : public juce::Component,
                          public juce::ApplicationCommandTarget,
                          public juce::MenuBarModel,
@@ -70,15 +83,17 @@ class DesktopComponent : public juce::Component,
     const int initialWidth = 800;
     const int initialHeight = 600;
     const int leftPanelWidth = 25;
-    const int  topStripHeight = 15;
-    const int  scaleButtonWidth = 12;
+    const int panelWidth = 25;
+    const int topStripHeight = 15;
+    const int scaleButtonWidth = 12;
 
     DesktopController &desktopController;
 
     TimeMeter timeMeter;
-//    InstrumentsPanel instrumentsPanel;
     ScaleButtonPanel horizontalScaleButtonPanel;
     ScaleButtonPanel verticalScaleButtonPanel;
+    Spacer spacer;
+
     std::list<FileDragDropTarget *> listeners;
 
     juce::ApplicationCommandManager commandManager;

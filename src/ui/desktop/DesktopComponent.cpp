@@ -14,12 +14,12 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
     horizontalScaleButtonPanel.addListener(&desktopController);
 
     addAndMakeVisible(timeMeter);
-//    addAndMakeVisible(instrumentsPanel);
     addAndMakeVisible(desktopController.getTrackListController().getViewport());
     addAndMakeVisible(desktopController.getMixerController().getMixerPanel());
     addAndMakeVisible(desktopController.getInstrumentsController().getInstrumentsPanel());
     addAndMakeVisible(verticalScaleButtonPanel);
     addAndMakeVisible(horizontalScaleButtonPanel);
+    addAndMakeVisible(spacer);
 
     setApplicationCommandManagerToWatch(&commandManager);
     commandManager.registerAllCommandsForTarget(this);
@@ -47,6 +47,8 @@ DesktopComponent::~DesktopComponent() {
 
 void DesktopComponent::visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea) {
     timeMeter.setBounds(timeMeter.getBounds().withLeft(-newVisibleArea.getX() + leftPanelWidth));
+    auto &instrumentsPanel = desktopController.getInstrumentsController().getInstrumentsPanel();
+    instrumentsPanel.setBounds(instrumentsPanel.getBounds().withTop(-newVisibleArea.getY()));
 }
 
 void DesktopComponent::createChildWindow(const juce::String &name, juce::Component *component) {
@@ -191,6 +193,7 @@ void DesktopComponent::resized() {
     timeMeter.repaint();
     desktopController.getTrackListController().getViewport().setBounds(area);
     desktopController.resize();
+    spacer.setBounds(0, 0, panelWidth, topStripHeight);
 }
 
 //==============================================================================
