@@ -8,15 +8,19 @@
 
 class DesktopController;
 
-class InstrumentsController {
+class InstrumentsController : public TrackListListener {
   public:
     InstrumentsController(DesktopController &desktopController);
     ~InstrumentsController();
 
-    InstrumentsPanel& getInstrumentsPanel() { return instrumentsPanel; }
+    InstrumentsPanel &getInstrumentsPanel() { return instrumentsPanel; }
 
     void update();
     void repaint();
+
+    //==============================================================================
+    // TrackListListener
+    void selectionChanged(Track *track) override;
 
   private:
     DesktopController &desktopController;

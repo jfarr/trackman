@@ -1,9 +1,29 @@
 #include "InstrumentController.h"
+#include "InstrumentsController.h"
+#include "common/listutil.h"
 
-void InstrumentController::update() {
-    instrumentControl.update();
+InstrumentController::InstrumentController(InstrumentsController &instrumentsController, Track &track)
+    : track(track), instrumentControl(track) {
+    addListener((TrackListListener *)&instrumentsController);
+    instrumentControl.addMouseListener(this, false);
 }
 
-void InstrumentController::repaint() {
-    instrumentControl.repaint();
+void InstrumentController::update() { instrumentControl.update(); }
+
+void InstrumentController::repaint() { instrumentControl.repaint(); }
+
+void InstrumentController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }
+
+void InstrumentController::addListener(TrackListListener *listener) {
+    if (!listContains(trackListListeners, listener)) {
+        trackListListeners.push_front(listener);
+    }
+}
+
+void InstrumentController::removeListener(TrackListListener *listener) { trackListListeners.remove(listener); }
+
+void InstrumentController::notifySelectionChanged() {
+    for (TrackListListener *listener : trackListListeners) {
+        listener->selectionChanged(&track);
+    }
 }
