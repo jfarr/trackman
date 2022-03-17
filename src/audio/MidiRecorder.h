@@ -10,19 +10,18 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
     ~MidiRecorder() override;
 
     juce::MidiKeyboardState &getKeyboardState() { return keyboardState; }
-    bool isRecording() const {
-        const juce::ScopedLock lock(mutex);
-        return recording;
-    }
+    bool isRecording() const;
 
     void setAudioSource(juce::AudioSource *newSource) { source = newSource; }
     void startRecording();
     void stopRecording();
-    void handleNoteOn(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
-    void handleNoteOff(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
-    //    juce::int64 getTotalLengthInSamples() { return nextReadPosition; }
 
     void processNextMidiBuffer(juce::MidiBuffer &buffer, double time, int startSample, int numSamples);
+
+    //==============================================================================
+    // juce::MidiKeyboardState::Listener
+    void handleNoteOn(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
+    void handleNoteOff(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
 
     //==============================================================================
     // AudioSource
@@ -32,19 +31,26 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
 
     //==============================================================================
     // PositionableAudioSource
-    void setNextReadPosition(juce::int64 position) override {
-        const juce::ScopedLock lock(mutex);
-        nextReadPosition = position;
-    }
-    juce::int64 getNextReadPosition() const override {
-        const juce::ScopedLock lock(mutex);
-        return nextReadPosition;
-    }
+    void setNextReadPosition(juce::int64 position) override;
+    juce::int64 getNextReadPosition() const override;
     juce::int64 getTotalLength() const override;
     bool isLooping() const override { return false; }
     void setLooping(bool shouldLoop) override {}
 
   private:
+    class MidiMessageCallback : public juce::CallbackMessage {
+      public:
+        MidiMessageCallback(MidiRecorder *o, const juce::MidiMessage &m)
+            : owner(o), message(m) {}
+
+        void messageCallback() override { owner->handleMessage(message); }
+
+        MidiRecorder *owner;
+        juce::MidiMessage message;
+    };
+    void postMessage(const juce::MidiMessage &message);
+    void handleMessage(const juce::MidiMessage &message);
+
     juce::AudioDeviceManager &deviceManager;
     juce::AudioTransportSource &transport;
     juce::AudioSource *source;

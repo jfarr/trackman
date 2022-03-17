@@ -1,7 +1,5 @@
 #include "MidiRecorder.h"
 
-#include <limits>
-
 MidiRecorder::MidiRecorder(juce::AudioDeviceManager &deviceManager, juce::AudioTransportSource &transport)
     : deviceManager(deviceManager), transport(transport) {
     keyboardState.addListener(this);
@@ -19,33 +17,9 @@ void MidiRecorder::stopRecording() {
     recording = false;
 }
 
-void MidiRecorder::handleNoteOn(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
-//    const juce::ScopedLock lock(mutex);
-//    auto timestamp = transport.getCurrentPosition();
-//    auto m = juce::MidiMessage::noteOn(midiChannel, midiNoteNumber, velocity);
-//    m.setTimeStamp(timestamp);
-////    auto buffer = getBufferAtTime(timestamp);
-//    auto sampleNumber = timestamp * deviceManager.getAudioDeviceSetup().sampleRate;
-////    buffer.addEvent(m, sampleNumber);
-//    lastSampleNumber = sampleNumber;
-//    DBG("added note on event at time: " << timestamp << " sample number: " << sampleNumber);
-}
-
-void MidiRecorder::handleNoteOff(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
-//    const juce::ScopedLock lock(mutex);
-//    auto timestamp = transport.getCurrentPosition();
-//    auto m = juce::MidiMessage::noteOff(midiChannel, midiNoteNumber);
-//    m.setTimeStamp(timestamp);
-////    auto buffer = getBufferAtTime(timestamp);
-//    auto sampleNumber = timestamp * deviceManager.getAudioDeviceSetup().sampleRate;
-////    buffer.addEvent(m, sampleNumber);
-//    lastSampleNumber = sampleNumber;
-//    DBG("added note off event at time: " << timestamp << " sample number: " << sampleNumber);
-}
-
-juce::int64 MidiRecorder::getTotalLength() const {
+bool MidiRecorder::isRecording() const {
     const juce::ScopedLock lock(mutex);
-    return recording ? std::max(nextReadPosition, lastSampleNumber) : lastSampleNumber;
+    return recording;
 }
 
 juce::MidiBuffer &MidiRecorder::getBufferAtTime(double time) { return getBufferAtSampleNumber(getSampleNumber(time)); }
@@ -79,6 +53,41 @@ void MidiRecorder::processNextMidiBuffer(juce::MidiBuffer &buffer, double time, 
     }
 }
 
+//==============================================================================
+void MidiRecorder::handleNoteOn(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
+    auto m = juce::MidiMessage::noteOn(midiChannel, midiNoteNumber, velocity);
+    postMessage(m);
+}
+
+void MidiRecorder::handleNoteOff(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
+    auto m = juce::MidiMessage::noteOff(midiChannel, midiNoteNumber);
+    postMessage(m);
+}
+
+void MidiRecorder::postMessage(const juce::MidiMessage &message) { (new MidiMessageCallback(this, message))->post(); }
+
+void MidiRecorder::handleMessage(const juce::MidiMessage &message) {
+    auto timestamp = transport.getCurrentPosition();
+    auto buffer = getBufferAtTime(timestamp);
+    auto sampleNumber = timestamp * deviceManager.getAudioDeviceSetup().sampleRate;
+    buffer.addEvent(message, sampleNumber);
+    lastSampleNumber = sampleNumber;
+    DBG("added note on event at time: " << timestamp << " sample number: " << sampleNumber);
+}
+
+//==============================================================================
+void MidiRecorder::setNextReadPosition(juce::int64 position) {
+    nextReadPosition = position;
+}
+juce::int64 MidiRecorder::getNextReadPosition() const {
+    return nextReadPosition;
+}
+
+juce::int64 MidiRecorder::getTotalLength() const {
+    return recording ? std::max(nextReadPosition, lastSampleNumber) : lastSampleNumber;
+}
+
+//==============================================================================
 void MidiRecorder::prepareToPlay(int blockSize, double sampleRate) {
     if (source != nullptr) {
         source->prepareToPlay(blockSize, sampleRate);
@@ -92,7 +101,6 @@ void MidiRecorder::releaseResources() {
 }
 
 void MidiRecorder::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    const juce::ScopedLock lock(mutex);
     nextReadPosition += bufferToFill.numSamples;
     if (source != nullptr) {
         source->getNextAudioBlock(bufferToFill);
