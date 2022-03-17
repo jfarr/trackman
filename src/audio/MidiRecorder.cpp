@@ -35,6 +35,10 @@ void MidiRecorder::handleNoteOff(juce::MidiKeyboardState *source, int midiChanne
     DBG("added note off event at time: " << timestamp << " sample number: " << sampleNumber);
 }
 
+juce::int64 MidiRecorder::getTotalLength() const {
+    return recording ? std::max(nextReadPosition, lastSampleNumber) : lastSampleNumber;
+}
+
 juce::MidiBuffer &MidiRecorder::getBufferAtTime(double time) { return getBufferAtSampleNumber(getSampleNumber(time)); }
 
 juce::MidiBuffer &MidiRecorder::getBufferAtSampleNumber(juce::int64 sampleNumber) {

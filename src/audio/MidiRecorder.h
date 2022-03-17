@@ -31,7 +31,7 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
     // PositionableAudioSource
     void setNextReadPosition(juce::int64 position) override { nextReadPosition = position; }
     juce::int64 getNextReadPosition() const override { return nextReadPosition; }
-    juce::int64 getTotalLength() const override { return recording ? nextReadPosition : lastSampleNumber; }
+    juce::int64 getTotalLength() const override;
     bool isLooping() const override { return false; }
     void setLooping(bool shouldLoop) override {}
 
