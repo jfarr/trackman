@@ -2,7 +2,7 @@
 
 #include <limits>
 
-MidiRecorder::MidiRecorder() : startTimeInSeconds(juce::Time::getMillisecondCounterHiRes() * 0.001) {
+MidiRecorder::MidiRecorder(juce::AudioTransportSource &transport) : transport(transport) {
     keyboardState.addListener(this);
 }
 
@@ -10,15 +10,10 @@ MidiRecorder::~MidiRecorder() { keyboardState.removeListener(this); }
 
 void MidiRecorder::startRecording(double newSampleRate) {
     sampleRate = newSampleRate;
-    startTimeInSeconds = juce::Time::getMillisecondCounterHiRes() * 0.001;
-}
-
-double MidiRecorder::getCurrentTimeInSeconds() const {
-    return juce::Time::getMillisecondCounterHiRes() * 0.001 - startTimeInSeconds;
 }
 
 void MidiRecorder::handleNoteOn(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
-    auto timestamp = getCurrentTimeInSeconds();
+    auto timestamp = transport.getCurrentPosition();
     auto m = juce::MidiMessage::noteOn(midiChannel, midiNoteNumber, velocity);
     m.setTimeStamp(timestamp);
     auto buffer = getBufferAtTime(timestamp);
@@ -27,7 +22,7 @@ void MidiRecorder::handleNoteOn(juce::MidiKeyboardState *source, int midiChannel
 }
 
 void MidiRecorder::handleNoteOff(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
-    auto timestamp = getCurrentTimeInSeconds();
+    auto timestamp = transport.getCurrentPosition();
     auto m = juce::MidiMessage::noteOff(midiChannel, midiNoteNumber);
     m.setTimeStamp(timestamp);
     auto buffer = getBufferAtTime(timestamp);
@@ -39,7 +34,9 @@ juce::MidiBuffer &MidiRecorder::getBufferAtTime(double time) { return getBufferA
 
 juce::MidiBuffer &MidiRecorder::getBufferAtSampleNumber(juce::int64 sampleNumber) {
     int index = sampleNumber / INT_MAX;
+    DBG("accessing buffer " << index);
     if (index >= midiEvents.size()) {
+        DBG("expanding buffer to size " << index + 1);
         midiEvents.resize(index + 1);
     }
     return midiEvents.getReference(index);
@@ -57,5 +54,24 @@ void MidiRecorder::processNextMidiBuffer(juce::MidiBuffer &buffer, double time, 
                 buffer.addEvent(event.getMessage(), j++);
             }
         }
+    }
+}
+
+void MidiRecorder::prepareToPlay(int blockSize, double sampleRate) {
+    if (source != nullptr) {
+        source->prepareToPlay(blockSize, sampleRate);
+    }
+}
+
+void MidiRecorder::releaseResources() {
+    if (source != nullptr) {
+        source->releaseResources();
+    }
+}
+
+void MidiRecorder::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+    nextReadPosition += bufferToFill.numSamples;
+    if (source != nullptr) {
+        source->getNextAudioBlock(bufferToFill);
     }
 }

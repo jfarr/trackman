@@ -9,15 +9,17 @@
 DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceManager &deviceManager)
     : mainWindow(mainWindow), deviceManager(deviceManager), applicationName(mainWindow.getName()),
       desktopComponent(*this), project(deviceManager), mixerController(*this),
-      trackListController(*this, project.getMixer().getTransportSource()), instrumentsController(*this) {
+      trackListController(*this, project.getMixer().getTransportSource()), instrumentsController(*this),
+      midiRecorder(project.getMixer().getTransportSource()), synthAudioSource(midiRecorder.getKeyboardState()) {
 
     updateTitleBar();
 }
 
 void DesktopController::createKeyboard() {
     auto keyboard = new KeyboardControl(midiRecorder.getKeyboardState());
+    midiRecorder.setAudioSource(&synthAudioSource);
     midiRecorder.startRecording(deviceManager.getAudioDeviceSetup().sampleRate);
-    //    getMixer().addSource(keyboard->getAudioSource());
+    getMixer().addSource(&midiRecorder);
     desktopComponent.createChildWindow("MIDI Keyboard", keyboard);
 }
 

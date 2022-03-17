@@ -113,6 +113,7 @@ class DesktopController : public juce::AudioSource,
     DesktopComponent desktopComponent;
 
     MidiRecorder midiRecorder;
+    SynthAudioSource synthAudioSource;
 
     std::unique_ptr<juce::FileChooser> chooser;
     juce::File projectFile;
