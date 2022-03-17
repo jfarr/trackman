@@ -18,6 +18,9 @@ target_sources(Trackman PRIVATE
         audio/GainAudioSource.h
         audio/MeteredAudioSource.cpp
         audio/MeteredAudioSource.h
+        audio/MidiListener.h
+        audio/MidiRecorder.cpp
+        audio/MidiRecorder.h
         audio/PositionableAudioSourceAdapter.h
         audio/PositionableMixingAudioSource.cpp
         audio/PositionableMixingAudioSource.h
@@ -36,6 +39,8 @@ target_sources(Trackman PRIVATE
         commands/MixerCommands.h
         commands/TrackCommands.h
         commands/TrackListCommands.h
+        model/Instrument.cpp
+        model/Instrument.h
         model/Mixer.cpp
         model/Mixer.h
         model/Project.cpp

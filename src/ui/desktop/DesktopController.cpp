@@ -3,6 +3,7 @@
 #include "commands/TrackCommands.h"
 #include "commands/TrackListCommands.h"
 #include "common/listutil.h"
+#include "ui/KeyboardControl.h"
 #include "ui/MainWindow.h"
 
 DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceManager &deviceManager)
@@ -11,6 +12,13 @@ DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceMa
       trackListController(*this, project.getMixer().getTransportSource()), instrumentsController(*this) {
 
     updateTitleBar();
+}
+
+void DesktopController::createKeyboard() {
+    auto keyboard = new KeyboardControl(midiRecorder.getKeyboardState());
+    midiRecorder.startRecording(deviceManager.getAudioDeviceSetup().sampleRate);
+    //    getMixer().addSource(keyboard->getAudioSource());
+    desktopComponent.createChildWindow("MIDI Keyboard", keyboard);
 }
 
 void DesktopController::prepareToPlay(int blockSize, double sampleRate) {

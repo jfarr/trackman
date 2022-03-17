@@ -171,7 +171,7 @@ bool DesktopComponent::perform(const InvocationInfo &info) {
             new AudioPlayer(desktopController.getMainWindow().getMainAudioComponent().getFormatManager()));
         break;
     case CommandIDs::newMidiKeyboard:
-        createChildWindow("MIDI Keyboard", new KeyboardControl());
+        desktopController.createKeyboard();
         break;
     case CommandIDs::deleteTrackSelection:
         desktopController.deleteSelected();

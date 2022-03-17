@@ -51,6 +51,8 @@ class DesktopComponent : public juce::Component,
 
     void visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea);
 
+    void createChildWindow(const juce::String &name, juce::Component *component);
+
     void addListener(FileDragDropTarget *listener);
     void removeListener(FileDragDropTarget *listener);
 
@@ -102,7 +104,6 @@ class DesktopComponent : public juce::Component,
 
     juce::Array<Component::SafePointer<Component>> windows;
 
-    void createChildWindow(const juce::String &name, juce::Component *component);
     void closeAllWindows();
 
     void notifyFileDragEnter(const juce::StringArray &files, int x, int y);

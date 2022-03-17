@@ -11,6 +11,7 @@
 #include "ui/mixer/TrackControlListener.h"
 #include "ui/tracks/TrackListController.h"
 #include "ui/instruments/InstrumentsController.h"
+#include "audio/MidiRecorder.h"
 
 class MainWindow;
 
@@ -41,6 +42,8 @@ class DesktopController : public juce::AudioSource,
     bool isDirty() const { return dirty; }
 
     void resize();
+
+    void createKeyboard();
 
     void addNewTrack();
     void addNewSample(Track *track, const juce::File &file, int pos);
@@ -108,6 +111,8 @@ class DesktopController : public juce::AudioSource,
     InstrumentsController instrumentsController;
 
     DesktopComponent desktopComponent;
+
+    MidiRecorder midiRecorder;
 
     std::unique_ptr<juce::FileChooser> chooser;
     juce::File projectFile;

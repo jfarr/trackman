@@ -15,14 +15,14 @@ class Track {
     explicit Track();
     ~Track();
 
-    [[nodiscard]] int getTrackNumber() const { return trackNumber; }
-    [[nodiscard]] juce::String getName() const { return name; }
-    [[nodiscard]] float getLevelGain() const { return level; }
-    [[nodiscard]] bool isMuted() const { return muted; }
-    [[nodiscard]] bool isSoloed() const { return soloed; }
-    [[nodiscard]] bool isSelected() const { return selected; }
-    [[nodiscard]] bool isDeleted() const { return deleted; }
-    [[nodiscard]] juce::int64 getTotalLengthInSamples() const;
+    int getTrackNumber() const { return trackNumber; }
+    juce::String getName() const { return name; }
+    float getLevelGain() const { return level; }
+    bool isMuted() const { return muted; }
+    bool isSoloed() const { return soloed; }
+    bool isSelected() const { return selected; }
+    bool isDeleted() const { return deleted; }
+    juce::int64 getTotalLengthInSamples() const;
 
     juce::PositionableAudioSource *getSource() { return meteredSource.get(); }
     foleys::LevelMeterSource *getMeterSource() {
@@ -30,7 +30,7 @@ class Track {
     }
 
     void setTrackNumber(int newNumber) { trackNumber = newNumber; }
-    void setName(juce::String newName) { name = newName; }
+    void setName(const juce::String &newName) { name = newName; }
     void setLevelGain(float newLevel);
     void setSelected(bool newSelected) { selected = newSelected; }
     Sample *getSelected() const;
@@ -61,6 +61,7 @@ class Track {
     bool soloed = false;
     bool selected = false;
     bool deleted = false;
+
     std::list<std::shared_ptr<Sample>> samples;
     std::unique_ptr<SamplePlayer> samplePlayer;
 
