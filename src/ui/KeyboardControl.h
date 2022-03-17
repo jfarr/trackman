@@ -1,15 +1,16 @@
 #pragma once
 
 #include "JuceHeader.h"
+#include "audio/SynthAudioSource.h"
 
-class KeyboardControl : public juce::Component, public juce::MidiKeyboardStateListener {
+class KeyboardControl : public juce::AudioAppComponent, public juce::MidiKeyboardStateListener {
   public:
     KeyboardControl();
     ~KeyboardControl() override;
 
     //==============================================================================
     // Component
-    void paint (juce::Graphics& g) override;
+    void paint(juce::Graphics &g) override;
     void resized() override;
 
     //==============================================================================
@@ -17,9 +18,16 @@ class KeyboardControl : public juce::Component, public juce::MidiKeyboardStateLi
     void handleNoteOn(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
     void handleNoteOff(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
 
+    //==============================================================================
+    // MidiKeyboardStateListener
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void releaseResources() override;
+
   private:
     juce::MidiKeyboardState keyboardState;
     juce::MidiKeyboardComponent keyboardComponent;
+    SynthAudioSource synthAudioSource;
     juce::TextEditor midiMessagesBox;
     double startTime;
 

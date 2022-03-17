@@ -2,8 +2,9 @@
 
 KeyboardControl::KeyboardControl()
     : keyboardComponent(keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard),
-      startTime(juce::Time::getMillisecondCounterHiRes() * 0.001) {
+      synthAudioSource(keyboardState), startTime(juce::Time::getMillisecondCounterHiRes() * 0.001) {
 
+    setAudioChannels(0, 2);
     setOpaque(true);
     addAndMakeVisible(keyboardComponent);
     keyboardState.addListener(this);
@@ -22,7 +23,10 @@ KeyboardControl::KeyboardControl()
     setSize(450, 200);
 }
 
-KeyboardControl::~KeyboardControl() { keyboardState.removeListener(this); }
+KeyboardControl::~KeyboardControl() {
+    keyboardState.removeListener(this);
+    shutdownAudio();
+}
 
 void KeyboardControl::paint(juce::Graphics &g) { g.fillAll(juce::Colours::black); }
 
@@ -65,3 +69,13 @@ void KeyboardControl::addMessageToList(const juce::MidiMessage &message, const j
     juce::String midiMessageString(timecode + "  -  " + description + " (" + source + ")"); // [7]
     logMessage(midiMessageString);
 }
+
+void KeyboardControl::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
+    synthAudioSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+}
+
+void KeyboardControl::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+    synthAudioSource.getNextAudioBlock(bufferToFill);
+}
+
+void KeyboardControl::releaseResources() { synthAudioSource.releaseResources(); }
