@@ -2,6 +2,10 @@
 
 ## Short-Term
 - Instruments
+- Oscillator
+- Midi note roll
+  - Notes
+  - CV
 - Use undo manager
 - Use ListenerList
 - Stereo panner
@@ -12,6 +16,7 @@
 
 ## Long Term
 
+- Click+drag to select samples
 - Drop multiple files
   - Default one track
   - Ctrl-drag multiple tracks
@@ -22,12 +27,8 @@
 - Script window
 - Unit tests
 - GPL license
-- Midi note roll
-  - Notes
-  - CV
 - Automation events
 - Sequencer
-- Oscillator
 - LFO
 - Filter
 - EQ
