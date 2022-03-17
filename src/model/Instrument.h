@@ -5,7 +5,7 @@
 
 class Instrument {
   public:
-    Instrument() = default;
+    Instrument(juce::MidiKeyboardState &keyState) : synth(keyState) {}
     ~Instrument() = default;
 
   private:
