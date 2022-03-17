@@ -4,7 +4,7 @@
 MixerPanel::MixerPanel(DesktopController &desktopController, foleys::LevelMeterSource &meterSource)
     : desktopController(desktopController), masterTrackControl(desktopController.getMixer(), meterSource),
       mixerViewport(desktopController.getMixerController().getViewport()),
-      transportControl(desktopController.getMixer().getTransportSource()) {
+      transportControl(desktopController.getMixer().getTransportSource(), true, &desktopController.getMidiRecorder()) {
     createControls();
     masterTrackControl.addListener(&desktopController);
     setSize(800, 280);

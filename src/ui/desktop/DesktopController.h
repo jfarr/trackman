@@ -31,6 +31,7 @@ class DesktopController : public juce::AudioSource,
 
     MixerController &getMixerController() { return mixerController; }
     Mixer &getMixer() { return project.getMixer(); }
+    MidiRecorder &getMidiRecorder() { return midiRecorder; }
 
     TrackListController &getTrackListController() { return trackListController; }
     InstrumentsController &getInstrumentsController() { return instrumentsController; };

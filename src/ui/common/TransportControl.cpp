@@ -2,14 +2,17 @@
 #include "common/listutil.h"
 
 //==============================================================================
-TransportControl::TransportControl(juce::AudioTransportSource &transportSource, bool enabled)
+TransportControl::TransportControl(juce::AudioTransportSource &transportSource, bool enabled, MidiRecorder *recorder)
     : startButtonImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      recordButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      recordButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       playButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       playButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       stopButtonImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       pauseButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       pauseButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true), startButton("start"),
-      playButton("play"), stopButton("stop"), pauseButton("pause"), transportSource(transportSource), enabled(enabled) {
+      recordButton("record"), playButton("play"), stopButton("stop"), pauseButton("pause"),
+      transportSource(transportSource), recorder(recorder), enabled(enabled) {
     transportSource.addChangeListener(this);
     createControls();
     startTimer(20);
@@ -30,6 +33,16 @@ void TransportControl::createControls() {
     startButton.onClick = [this] { startButtonClicked(); };
     startButton.setEnabled(enabled);
     addAndMakeVisible(&startButton);
+
+    if (recorder != nullptr) {
+        drawRecordButton(recordButtonOffImage, juce::Colours::red.withMultipliedLightness(0.75), juce::Colours::dimgrey);
+        drawRecordButton(recordButtonOnImage, juce::Colours::red, juce::Colours::grey);
+        setButtonImage(recordButton, recordButtonOffImage);
+
+        recordButton.onClick = [this] { recordButtonClicked(); };
+        recordButton.setEnabled(enabled);
+        addAndMakeVisible(&recordButton);
+    }
 
     drawPlayButton(playButtonOffImage, bgColorOff, borderColorOff);
     drawPlayButton(playButtonOnImage, bgColorOn, borderColorOn);
@@ -91,6 +104,22 @@ void TransportControl::drawStartButton(juce::Image &image, juce::Colour bgColor,
     juce::Point<float> bottomRight(iconLeft + iconWidth, iconTop + iconHeight);
     p.addTriangle(left, topRight, bottomRight);
     g.fillRect(iconLeft, iconTop, 30.0, iconHeight);
+    g.fillPath(p);
+}
+
+void TransportControl::drawRecordButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
+    juce::Graphics g(image);
+    g.setColour(bgColor);
+    g.fillRect(0.0, 0.0, buttonImageWidth, buttonImageHeight);
+    g.setColour(borderColor);
+    g.drawRect(0.0, 0.0, buttonImageWidth, buttonImageHeight, 5.0);
+    g.setColour(juce::Colours::white);
+    juce::Path p;
+    auto iconLeft = 210.0f;
+    auto iconTop = 50.0f;
+    auto iconWidth = 110.0f;
+    auto iconHeight = 120.0f;
+    p.addEllipse(iconLeft, iconTop, iconWidth, iconHeight);
     g.fillPath(p);
 }
 
@@ -166,6 +195,9 @@ void TransportControl::resized() {
     auto loopButtonWidth = 65;
     auto buttonMargin = 2;
     startButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin).withTrimmedLeft(buttonMargin));
+    if (recorder != nullptr) {
+        recordButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
+    }
     playButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
     stopButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
     pauseButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
@@ -181,6 +213,10 @@ void TransportControl::changeState(TransportState newState) {
         case TransportState::Stopped:
             setButtonImage(playButton, playButtonOffImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
+            if (recorder->isRecording()) {
+                recorder->stopRecording();
+                setButtonImage(recordButton, recordButtonOffImage);
+            }
             transportSource.setPosition(0.0);
             break;
 
@@ -191,6 +227,9 @@ void TransportControl::changeState(TransportState newState) {
         case TransportState::Playing:
             setButtonImage(playButton, playButtonOnImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
+            if (recorder->isRecording()) {
+                setButtonImage(recordButton, recordButtonOnImage);
+            }
             break;
 
         case TransportState::Pausing:
@@ -262,6 +301,21 @@ void TransportControl::playButtonClicked() {
         changeState(TransportState::Starting);
     } else if (state == TransportState::Playing) {
         transportSource.setPosition(0.0);
+    }
+}
+
+void TransportControl::recordButtonClicked() {
+    if ((state == TransportState::Stopped) || (state == TransportState::Paused)) {
+        recorder->startRecording();
+        changeState(TransportState::Starting);
+    } else if (state == TransportState::Playing) {
+        if (recorder->isRecording()) {
+            recorder->stopRecording();
+            setButtonImage(recordButton, recordButtonOffImage);
+        } else {
+            recorder->startRecording();
+            setButtonImage(recordButton, recordButtonOnImage);
+        }
     }
 }
 
