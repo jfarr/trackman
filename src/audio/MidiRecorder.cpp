@@ -9,33 +9,42 @@ MidiRecorder::MidiRecorder(juce::AudioDeviceManager &deviceManager, juce::AudioT
 
 MidiRecorder::~MidiRecorder() { keyboardState.removeListener(this); }
 
-void MidiRecorder::startRecording() { recording = true; }
+void MidiRecorder::startRecording() {
+    const juce::ScopedLock lock(mutex);
+    recording = true;
+}
 
-void MidiRecorder::stopRecording() { recording = false; }
+void MidiRecorder::stopRecording() {
+    const juce::ScopedLock lock(mutex);
+    recording = false;
+}
 
 void MidiRecorder::handleNoteOn(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
-    auto timestamp = transport.getCurrentPosition();
-    auto m = juce::MidiMessage::noteOn(midiChannel, midiNoteNumber, velocity);
-    m.setTimeStamp(timestamp);
-    auto buffer = getBufferAtTime(timestamp);
-    auto sampleNumber = timestamp * deviceManager.getAudioDeviceSetup().sampleRate;
-    buffer.addEvent(m, sampleNumber);
-    lastSampleNumber = sampleNumber;
-    DBG("added note on event at time: " << timestamp << " sample number: " << sampleNumber);
+//    const juce::ScopedLock lock(mutex);
+//    auto timestamp = transport.getCurrentPosition();
+//    auto m = juce::MidiMessage::noteOn(midiChannel, midiNoteNumber, velocity);
+//    m.setTimeStamp(timestamp);
+////    auto buffer = getBufferAtTime(timestamp);
+//    auto sampleNumber = timestamp * deviceManager.getAudioDeviceSetup().sampleRate;
+////    buffer.addEvent(m, sampleNumber);
+//    lastSampleNumber = sampleNumber;
+//    DBG("added note on event at time: " << timestamp << " sample number: " << sampleNumber);
 }
 
 void MidiRecorder::handleNoteOff(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) {
-    auto timestamp = transport.getCurrentPosition();
-    auto m = juce::MidiMessage::noteOff(midiChannel, midiNoteNumber);
-    m.setTimeStamp(timestamp);
-    auto buffer = getBufferAtTime(timestamp);
-    auto sampleNumber = timestamp * deviceManager.getAudioDeviceSetup().sampleRate;
-    buffer.addEvent(m, sampleNumber);
-    lastSampleNumber = sampleNumber;
-    DBG("added note off event at time: " << timestamp << " sample number: " << sampleNumber);
+//    const juce::ScopedLock lock(mutex);
+//    auto timestamp = transport.getCurrentPosition();
+//    auto m = juce::MidiMessage::noteOff(midiChannel, midiNoteNumber);
+//    m.setTimeStamp(timestamp);
+////    auto buffer = getBufferAtTime(timestamp);
+//    auto sampleNumber = timestamp * deviceManager.getAudioDeviceSetup().sampleRate;
+////    buffer.addEvent(m, sampleNumber);
+//    lastSampleNumber = sampleNumber;
+//    DBG("added note off event at time: " << timestamp << " sample number: " << sampleNumber);
 }
 
 juce::int64 MidiRecorder::getTotalLength() const {
+    const juce::ScopedLock lock(mutex);
     return recording ? std::max(nextReadPosition, lastSampleNumber) : lastSampleNumber;
 }
 
@@ -83,6 +92,7 @@ void MidiRecorder::releaseResources() {
 }
 
 void MidiRecorder::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+    const juce::ScopedLock lock(mutex);
     nextReadPosition += bufferToFill.numSamples;
     if (source != nullptr) {
         source->getNextAudioBlock(bufferToFill);

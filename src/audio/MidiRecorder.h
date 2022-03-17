@@ -10,7 +10,10 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
     ~MidiRecorder() override;
 
     juce::MidiKeyboardState &getKeyboardState() { return keyboardState; }
-    bool isRecording() const { return recording; }
+    bool isRecording() const {
+        const juce::ScopedLock lock(mutex);
+        return recording;
+    }
 
     void setAudioSource(juce::AudioSource *newSource) { source = newSource; }
     void startRecording();
@@ -29,8 +32,14 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
 
     //==============================================================================
     // PositionableAudioSource
-    void setNextReadPosition(juce::int64 position) override { nextReadPosition = position; }
-    juce::int64 getNextReadPosition() const override { return nextReadPosition; }
+    void setNextReadPosition(juce::int64 position) override {
+        const juce::ScopedLock lock(mutex);
+        nextReadPosition = position;
+    }
+    juce::int64 getNextReadPosition() const override {
+        const juce::ScopedLock lock(mutex);
+        return nextReadPosition;
+    }
     juce::int64 getTotalLength() const override;
     bool isLooping() const override { return false; }
     void setLooping(bool shouldLoop) override {}
@@ -48,6 +57,8 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
     juce::MidiBuffer &getBufferAtSampleNumber(juce::int64 sampleNumber);
     juce::MidiBuffer &getBufferAtTime(double time);
     juce::int64 getSampleNumber(double time) const;
+
+    juce::CriticalSection mutex;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiRecorder)
 };
