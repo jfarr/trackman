@@ -2,7 +2,6 @@
 #include <nlohmann/json.hpp>
 
 #include "Project.h"
-#include "common/base64.h"
 
 using json = nlohmann::json;
 
