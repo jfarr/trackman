@@ -307,6 +307,7 @@ void DesktopController::recordingStopped() {
     auto selected = project.getTrackList().getSelectedTrack();
     if (selected != nullptr) {
         selected->setMidiMessages(midiRecorder.getMidiMessages());
+        MidiRecorder::printEvents(selected->getMidiMessages());
     }
 }
 
