@@ -76,16 +76,15 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
 void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos) {
     if (&fromTrack != &toTrack) {
         project.getMixer().removeSource(toTrack.getSource());
-        fromTrack.moveSampleTo(
-            sample, toTrack, desktopController.getMainWindow().getMainAudioComponent().getDeviceManager());
+        if (fromTrack.getNumSamples() == 1) {
+            project.getMixer().removeSource(fromTrack.getSource());
+        }
+        auto &deviceManager = desktopController.getMainWindow().getMainAudioComponent().getDeviceManager();
+        fromTrack.moveSampleTo(sample, toTrack, deviceManager);
         selectionChanged(&toTrack);
         fromTrack.selectSample(nullptr);
         toTrack.selectSample(&sample);
         project.getMixer().addSource(toTrack.getSource());
-        if (!fromTrack.hasSamples()) {
-            project.getMixer().removeSource(fromTrack.getSource());
-            fromTrack.clearSamples();
-        }
     }
     sample.setPosition(pos);
     trackListPanel.resize();

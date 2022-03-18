@@ -4,11 +4,11 @@
 
 Track::Track(MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager)
     : midiRecorder(midiRecorder), synthAudioSource(midiRecorder.getKeyboardState()) {
-//    synthAudioSource.prepareToPlay(
-//        deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
-//    gainSource = std::make_unique<GainAudioSource>(&synthAudioSource, false);
-//    meteredSource =
-//        std::make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
+    synthAudioSource.prepareToPlay(
+        deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
+    gainSource = std::make_unique<GainAudioSource>(&synthAudioSource, false);
+    meteredSource =
+        std::make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
 }
 
 Track::~Track() { samples.clear(); }
@@ -50,6 +50,9 @@ void Track::moveSampleTo(Sample &sample, Track &toTrack, juce::AudioDeviceManage
             ++iter;
         }
     }
+    if (samples.empty()) {
+        removeSamplePlayer();
+    }
 }
 
 Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
@@ -73,7 +76,7 @@ void Track::createSamplePlayer(juce::AudioDeviceManager &deviceManager) {
     }
 }
 
-void Track::clearSamples() {
+void Track::removeSamplePlayer() {
     meteredSource = nullptr;
     gainSource = nullptr;
     samplePlayer = nullptr;

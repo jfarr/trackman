@@ -14,7 +14,7 @@ Mixer::~Mixer() {
 }
 
 void Mixer::addSource(juce::PositionableAudioSource *source) {
-    if (!listContains(sources, source)) {
+    if (source != nullptr && !listContains(sources, source)) {
         sources.push_back(source);
         auto pos = transportSource.getCurrentPosition();
         mixerSource.addInputSource(source);
@@ -25,8 +25,10 @@ void Mixer::addSource(juce::PositionableAudioSource *source) {
 }
 
 void Mixer::removeSource(juce::PositionableAudioSource *source) {
-    mixerSource.removeInputSource(source);
-    sources.remove(source);
+    if (source != nullptr) {
+        mixerSource.removeInputSource(source);
+        sources.remove(source);
+    }
 }
 
 void Mixer::removeAllSources() {
@@ -51,11 +53,6 @@ void Mixer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
 }
 
 void Mixer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-//    if (transportSource.isPlaying()) {
-//        transportSource.getNextAudioBlock(bufferToFill);
-//    } else {
-//        meteredSource.getNextAudioBlock(bufferToFill);
-//    }
     transportSource.getNextAudioBlock(bufferToFill);
 }
 

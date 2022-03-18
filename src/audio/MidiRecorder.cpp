@@ -19,9 +19,7 @@ void MidiRecorder::stopRecording() {
     recording = false;
 }
 
-void MidiRecorder::reset() {
-    keyboardState.reset();
-}
+void MidiRecorder::reset() { keyboardState.reset(); }
 
 bool MidiRecorder::isRecording() const {
     const juce::ScopedLock lock(mutex);
@@ -63,18 +61,23 @@ void MidiRecorder::handleMessage(juce::MidiMessage &message, double time) {
 
 //==============================================================================
 void MidiRecorder::setNextReadPosition(juce::int64 position) { nextReadPosition = position; }
+
 juce::int64 MidiRecorder::getNextReadPosition() const { return nextReadPosition; }
 
 juce::int64 MidiRecorder::getTotalLength() const {
-    return recording ? std::max(nextReadPosition, lastSampleNumber) : lastSampleNumber;
+    //    return nextReadPosition;
+//    DBG("recording: " << (recording ? "true" : "false"));
+//    auto len = recording ? std::max(nextReadPosition + deviceManager.getAudioDeviceSetup().bufferSize, lastSampleNumber)
+//                         : lastSampleNumber;
+//    DBG("MidiRecorder::getTotalLength: " << len);
+//    return len;
+        return recording ? std::max(nextReadPosition, lastSampleNumber) : lastSampleNumber;
 }
 
 //==============================================================================
-void MidiRecorder::prepareToPlay(int blockSize, double sampleRate) {
-}
+void MidiRecorder::prepareToPlay(int blockSize, double sampleRate) {}
 
-void MidiRecorder::releaseResources() {
-}
+void MidiRecorder::releaseResources() {}
 
 void MidiRecorder::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
     if (recording) {

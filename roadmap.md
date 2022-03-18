@@ -6,6 +6,7 @@
 - Midi note roll
   - Notes
   - CV
+- Play instruments when not recording (preview)
 - Use undo manager
 - Use ListenerList
 - Stereo panner
