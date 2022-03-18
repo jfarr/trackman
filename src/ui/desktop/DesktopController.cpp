@@ -309,7 +309,8 @@ void DesktopController::updateTitleBar() {
 
 void DesktopController::selectionChanged(Track *track) {
     project.getTrackList().setSelected(track);
-    juce::MessageManager::callAsync([this]() {
+    juce::MessageManager::callAsync([this, track]() {
+        mixerController.getMixerPanel().getTransportControl().selectionChanged(track);
         trackListController.repaint();
         mixerController.repaint();
         instrumentsController.repaint();

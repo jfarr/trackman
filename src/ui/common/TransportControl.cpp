@@ -2,7 +2,7 @@
 #include "common/listutil.h"
 
 //==============================================================================
-TransportControl::TransportControl(juce::AudioTransportSource &transportSource, bool enabled, MidiRecorder *recorder)
+TransportControl::TransportControl(juce::AudioTransportSource &transportSource, bool enabled, MidiRecorder *recorder, TrackList *trackList)
     : startButtonImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       recordButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       recordButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
@@ -12,7 +12,7 @@ TransportControl::TransportControl(juce::AudioTransportSource &transportSource, 
       pauseButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       pauseButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true), startButton("start"),
       recordButton("record"), playButton("play"), stopButton("stop"), pauseButton("pause"),
-      transportSource(transportSource), recorder(recorder), enabled(enabled) {
+      transportSource(transportSource), enabled(enabled), recorder(recorder), trackList(trackList) {
     transportSource.addChangeListener(this);
     createControls();
     startTimer(20);
@@ -40,7 +40,7 @@ void TransportControl::createControls() {
         setButtonImage(recordButton, recordButtonOffImage);
 
         recordButton.onClick = [this] { recordButtonClicked(); };
-        recordButton.setEnabled(enabled);
+        recordButton.setEnabled(trackList->getSelectedTrack() != nullptr);
         addAndMakeVisible(&recordButton);
     }
 
@@ -338,6 +338,10 @@ void TransportControl::pauseButtonClicked() {
 }
 
 void TransportControl::loopButtonClicked() { notifyLoopingChanged(loopingToggle.getToggleState()); }
+
+void TransportControl::selectionChanged(Track *track) {
+    recordButton.setEnabled(trackList->getSelectedTrack() != nullptr);
+}
 
 void TransportControl::addListener(TransportControlListener *listener) {
     if (!listContains(listeners, listener)) {

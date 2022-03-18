@@ -16,7 +16,7 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
     void startRecording();
     void stopRecording();
 
-    void processNextMidiBuffer(juce::MidiBuffer &buffer, double time, int startSample, int numSamples);
+//    void processNextMidiBuffer(juce::MidiBuffer &buffer, double time, int startSample, int numSamples);
 
     //==============================================================================
     // juce::MidiKeyboardState::Listener
@@ -40,29 +40,33 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
   private:
     class MidiMessageCallback : public juce::CallbackMessage {
       public:
-        MidiMessageCallback(MidiRecorder *o, const juce::MidiMessage &m)
-            : owner(o), message(m) {}
+        MidiMessageCallback(MidiRecorder *o, const juce::MidiMessage &m, double t)
+            : owner(o), message(m), time(t) {}
 
-        void messageCallback() override { owner->handleMessage(message); }
+        void messageCallback() override { owner->handleMessage(message, time); }
 
         MidiRecorder *owner;
         juce::MidiMessage message;
+        double time;
     };
-    void postMessage(const juce::MidiMessage &message);
-    void handleMessage(const juce::MidiMessage &message);
+    void postMessage(juce::MidiMessage &message, double time);
+    void handleMessage(juce::MidiMessage &message, double time);
 
     juce::AudioDeviceManager &deviceManager;
     juce::AudioTransportSource &transport;
     juce::AudioSource *source;
     juce::MidiKeyboardState keyboardState;
-    juce::Array<juce::MidiBuffer> midiEvents;
+//    juce::Array<juce::MidiBuffer> midiEvents;
+    juce::MidiMessageSequence midiEvents;
     juce::int64 nextReadPosition;
     juce::int64 lastSampleNumber = 0;
     bool recording = false;
 
-    juce::MidiBuffer &getBufferAtSampleNumber(juce::int64 sampleNumber);
-    juce::MidiBuffer &getBufferAtTime(double time);
+//    juce::MidiBuffer &getBufferAtSampleNumber(juce::int64 sampleNumber);
+//    juce::MidiBuffer &getBufferAtTime(double time);
     juce::int64 getSampleNumber(double time) const;
+
+    void printEvents();
 
     juce::CriticalSection mutex;
 

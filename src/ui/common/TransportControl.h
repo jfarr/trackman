@@ -1,6 +1,8 @@
 #pragma once
 
 #include "audio/MidiRecorder.h"
+#include "model/TrackList.h"
+#include "ui/desktop/TrackListListener.h"
 #include <JuceHeader.h>
 
 class TransportControlListener {
@@ -8,11 +10,14 @@ class TransportControlListener {
     virtual void loopingChanged(bool shouldLoop) = 0;
 };
 
-class TransportControl : public juce::Component, public juce::ChangeListener, public juce::Timer {
+class TransportControl : public juce::Component,
+                         public juce::ChangeListener,
+                         public juce::Timer,
+                         public TrackListListener {
   public:
     //==============================================================================
-    TransportControl(
-        juce::AudioTransportSource &transportSource, bool enabled = true, MidiRecorder *recorder = nullptr);
+    TransportControl(juce::AudioTransportSource &transportSource, bool enabled = true, MidiRecorder *recorder = nullptr,
+        TrackList *trackList = nullptr);
     ~TransportControl() override;
 
     void setEnabled(bool enabled);
@@ -29,8 +34,12 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
     void changeListenerCallback(juce::ChangeBroadcaster *source) override;
 
     //==============================================================================
-    // Timer
+    // TrackListListener
     void timerCallback() override;
+
+    //==============================================================================
+    // Timer
+    void selectionChanged(Track *track) override;
 
   private:
     enum class TransportState { Stopped, Starting, Playing, Pausing, Paused, Stopping };
@@ -50,6 +59,8 @@ class TransportControl : public juce::Component, public juce::ChangeListener, pu
     const float buttonImageHeight = 210;
 
     MidiRecorder *recorder;
+    TrackList *trackList;
+
     juce::ImageButton startButton;
     juce::ImageButton recordButton;
     juce::ImageButton playButton;
