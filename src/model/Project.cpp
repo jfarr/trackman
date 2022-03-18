@@ -34,7 +34,9 @@ std::string Project::to_json() {
     json project_json = {{"horizontalScale", horizontalScale},
         {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
     project_json["tracks"] = json::array();
-    trackList.eachTrack([&project_json](Track &track) {
+    juce::MidiFile midiFile;
+    trackList.eachTrack([&project_json, &midiFile](Track &track) {
+        midiFile.addTrack(track.getMidiMessages());
         json track_json = {{"name", track.getName().toStdString()}, {"gain", track.getLevelGain()},
             {"muted", track.isMuted()}, {"soloed", track.isSoloed()}};
         track.eachSample([&track_json](Sample &sample) {
@@ -44,6 +46,13 @@ std::string Project::to_json() {
         });
         project_json["tracks"].push_back(track_json);
     });
+    juce::MemoryOutputStream out;
+    midiFile.writeTo(out, 2);
+    out.flush();
+    auto mb = out.getMemoryBlock();
+    auto encoded = juce::Base64::toBase64(mb.getData(), mb.getSize());
+    project_json["midi"] = encoded.toStdString();
+
     return project_json.dump();
 }
 
@@ -55,7 +64,15 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
     horizontalScale = project_json["horizontalScale"];
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);
+    std::string encoded = project_json["midi"];
+    juce::MemoryOutputStream out;
+    juce::Base64::convertFromBase64(out, encoded);
+    juce::MemoryInputStream in(out.getMemoryBlock());
+    juce::MidiFile midiFile;
+    midiFile.readFrom(in);
+
     trackList.clear();
+    int i = 0;
     for (auto track_json : project_json["tracks"]) {
         auto track = trackList.addTrack();
         track->setName(track_json["name"]);
@@ -65,6 +82,8 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
         for (auto sample_json : track_json["samples"]) {
             addSample(*track, sample_json["file"], sample_json["startPos"], sample_json["endPos"], formatManager);
         }
+        auto midiMessages = midiFile.getTrack(i++);
+        track->setMidiMessages(*midiMessages);
     }
 }
 
