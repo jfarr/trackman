@@ -1,7 +1,7 @@
 #include "TrackLaneControl.h"
 
 TrackLaneControl::TrackLaneControl(Project &project, Track &track, juce::AudioTransportSource &transport)
-    : project(project), track(track), transport(transport) {
+    : project(project), track(track), transport(transport), noteCanvas(project, track) {
     createControls();
     setSize(preferredWidth, preferredHeight);
 }
@@ -27,6 +27,9 @@ void TrackLaneControl::update() {
     for (SampleThumbnail *thumbnail : thumbnails) {
         addAndMakeVisible(thumbnail);
     }
+    if (track.getMidiMessages().getNumEvents() > 0) {
+        addAndMakeVisible(noteCanvas);
+    }
     resized();
 }
 
@@ -51,5 +54,8 @@ void TrackLaneControl::resized() {
     for (SampleThumbnail *thumbnail : thumbnails) {
         auto x = thumbnail->getSample().getStartPos() * scale;
         thumbnail->setBounds(x, area.getY(), thumbnail->getSample().getLengthInSeconds() * scale, area.getHeight());
+    }
+    if (track.getMidiMessages().getNumEvents() > 0) {
+        noteCanvas.resize();
     }
 }
