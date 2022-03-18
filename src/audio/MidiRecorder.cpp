@@ -77,7 +77,9 @@ void MidiRecorder::releaseResources() {
 }
 
 void MidiRecorder::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    nextReadPosition += bufferToFill.numSamples;
+    if (recording) {
+        nextReadPosition += bufferToFill.numSamples;
+    }
 }
 
 void MidiRecorder::printEvents(const juce::MidiMessageSequence &midiMessages) {

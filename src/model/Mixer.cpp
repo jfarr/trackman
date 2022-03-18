@@ -54,11 +54,7 @@ void Mixer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) 
     if (transportSource.isPlaying()) {
         transportSource.getNextAudioBlock(bufferToFill);
     } else {
-        if (trackList.getSelectedTrack() != nullptr && trackList.getSelectedTrack()->getSource() != nullptr) {
-            trackList.getSelectedTrack()->getSource()->getNextAudioBlock(bufferToFill);
-        } else {
-            bufferToFill.clearActiveBufferRegion();
-        }
+        meteredSource.getNextAudioBlock(bufferToFill);
     }
 }
 
