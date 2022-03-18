@@ -28,6 +28,7 @@ class TrackList {
     void setSelected(Track *selected);
     void selectSample(Sample *selected);
 
+    bool canRecord() const {  return getSelectedTrack() != nullptr && getSelectedTrack()->canRecord(); }
     void writeAudioFile(const juce::File &file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const;
 
   private:

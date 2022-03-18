@@ -6,7 +6,9 @@ InstrumentControl::InstrumentControl(Track &track) : track(track) {
     addAndMakeVisible(selectButton);
 }
 
-void InstrumentControl::update() {}
+void InstrumentControl::update() {
+    selectButton.setEnabled(track.canRecord());
+}
 
 void InstrumentControl::paint(juce::Graphics &g) {
     g.fillAll(track.isSelected() ? juce::Colours::lightgrey : juce::Colours::grey);

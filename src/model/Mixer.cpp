@@ -51,11 +51,12 @@ void Mixer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
 }
 
 void Mixer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    if (transportSource.isPlaying()) {
-        transportSource.getNextAudioBlock(bufferToFill);
-    } else {
-        meteredSource.getNextAudioBlock(bufferToFill);
-    }
+//    if (transportSource.isPlaying()) {
+//        transportSource.getNextAudioBlock(bufferToFill);
+//    } else {
+//        meteredSource.getNextAudioBlock(bufferToFill);
+//    }
+    transportSource.getNextAudioBlock(bufferToFill);
 }
 
 void Mixer::releaseResources() { transportSource.releaseResources(); }

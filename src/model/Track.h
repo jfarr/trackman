@@ -41,7 +41,10 @@ class Track {
     void selectSample(Sample *newSelected);
     void moveSampleTo(Sample &sample, Track &toTrack, juce::AudioDeviceManager &deviceManager);
     void eachSample(std::function<void(Sample &sample)> f);
+    bool hasSamples() const { return !samples.empty(); }
+    void clearSamples();
 
+    bool canRecord() const { return samplePlayer == nullptr; }
     juce::MidiMessageSequence &getMidiMessages() { return midiMessages; }
     void setMidiMessages(const juce::MidiMessageSequence &newMessages) { midiMessages = newMessages; }
 

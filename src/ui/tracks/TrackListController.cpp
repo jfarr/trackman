@@ -82,6 +82,10 @@ void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &to
         fromTrack.selectSample(nullptr);
         toTrack.selectSample(&sample);
         project.getMixer().addSource(toTrack.getSource());
+        if (!fromTrack.hasSamples()) {
+            project.getMixer().removeSource(fromTrack.getSource());
+            fromTrack.clearSamples();
+        }
     }
     sample.setPosition(pos);
     trackListPanel.resize();

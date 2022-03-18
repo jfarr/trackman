@@ -126,7 +126,7 @@ void DesktopController::deleteSelected() {
     Track *track = project.getTrackList().getSelectedTrack();
     Sample *sample = project.getTrackList().getSelectedSample();
     if (track != nullptr && sample != nullptr) {
-        Command *command = new DeleteSampleCommand(trackListController, *track, *sample);
+        Command *command = new DeleteSampleCommand(*this, *track, *sample);
         commandList.pushCommand(command);
         dirty = true;
         updateTitleBar();
@@ -197,11 +197,35 @@ void DesktopController::renameTrack(Track &track, const juce::String &newName) {
 
 Sample *DesktopController::addSample(Track &track, const juce::File &file, int pos) {
     Sample *sample = trackListController.addSample(track, file, pos);
-    juce::MessageManager::callAsync([this]() { mixerController.update(); });
+    juce::MessageManager::callAsync([this]() {
+        mixerController.update();
+        instrumentsController.update();
+    });
     return sample;
 }
 
-void DesktopController::deleteSample(Track &track, Sample *sample) { trackListController.deleteSample(track, sample); }
+void DesktopController::moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos) {
+    trackListController.moveSample(sample, fromTrack, toTrack, pos);
+    juce::MessageManager::callAsync([this]() {
+        mixerController.update();
+        instrumentsController.update();
+    });
+}
+
+void DesktopController::deleteSample(Track &track, Sample *sample) {
+    trackListController.deleteSample(track, sample);
+    juce::MessageManager::callAsync([this]() {
+        instrumentsController.update();
+    });
+}
+
+void DesktopController::undeleteSample(Track &track, Sample *sample) {
+    trackListController.undeleteSample(track, sample);
+    juce::MessageManager::callAsync([this]() {
+        instrumentsController.update();
+    });
+
+}
 
 void DesktopController::saveProject(const std::function<void(bool saved)> &callback) {
     if (projectFile != juce::File{}) {
