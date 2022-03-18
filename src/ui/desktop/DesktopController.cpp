@@ -306,8 +306,13 @@ void DesktopController::updateTitleBar() {
 void DesktopController::recordingStopped() {
     auto selected = project.getTrackList().getSelectedTrack();
     if (selected != nullptr) {
-        selected->setMidiMessages(midiRecorder.getMidiMessages());
-        MidiRecorder::printEvents(selected->getMidiMessages());
+        auto messages = midiRecorder.getMidiMessages();
+        messages.updateMatchedPairs();
+        selected->setMidiMessages(messages);
+//        MidiRecorder::printEvents(selected->getMidiMessages());
+        juce::MessageManager::callAsync([this]() {
+            trackListController.update();
+        });
     }
 }
 
