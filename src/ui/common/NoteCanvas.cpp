@@ -1,6 +1,9 @@
 #include "NoteCanvas.h"
 
-NoteCanvas::NoteCanvas(Project &project, Track &track) : project(project), track(track) { setSize(200, 81); }
+NoteCanvas::NoteCanvas(Project &project, Track &track) : project(project), track(track) {
+    setInterceptsMouseClicks(false, false);
+    setSize(200, 81);
+}
 
 void NoteCanvas::resize() {
     auto area = getBounds();
