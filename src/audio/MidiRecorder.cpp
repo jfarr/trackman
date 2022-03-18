@@ -65,13 +65,7 @@ void MidiRecorder::setNextReadPosition(juce::int64 position) { nextReadPosition 
 juce::int64 MidiRecorder::getNextReadPosition() const { return nextReadPosition; }
 
 juce::int64 MidiRecorder::getTotalLength() const {
-    //    return nextReadPosition;
-//    DBG("recording: " << (recording ? "true" : "false"));
-//    auto len = recording ? std::max(nextReadPosition + deviceManager.getAudioDeviceSetup().bufferSize, lastSampleNumber)
-//                         : lastSampleNumber;
-//    DBG("MidiRecorder::getTotalLength: " << len);
-//    return len;
-        return recording ? std::max(nextReadPosition, lastSampleNumber) : lastSampleNumber;
+    return recording ? std::max(nextReadPosition, lastSampleNumber) : lastSampleNumber;
 }
 
 //==============================================================================

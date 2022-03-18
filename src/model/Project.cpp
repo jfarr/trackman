@@ -24,7 +24,6 @@ void Project::deleteTrack(Track *track) {
 
 Sample *Project::addSample(
     Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager) {
-//    mixer.removeSource(track.getSource());
     if (!track.hasSamples()) {
         mixer.removeSource(track.getSource());
     }
