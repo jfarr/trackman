@@ -4,6 +4,7 @@
 
 #include "SampleThumbnail.h"
 #include "model/Track.h"
+#include "ui/common/NoteCanvas.h"
 
 class TrackLaneControl : public juce::Component {
   public:
@@ -32,6 +33,7 @@ class TrackLaneControl : public juce::Component {
 
     juce::Label trackLabel;
     std::list<SampleThumbnail *> thumbnails;
+    NoteCanvas noteCanvas;
 
     void createControls();
 

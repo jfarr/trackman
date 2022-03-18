@@ -23,6 +23,9 @@ void TrackLaneController::update() {
         thumbnails.back()->addListener(&trackListController);
         trackLaneControl.addThumbnail(thumbnails.back().get());
     });
+    if (track.getMidiMessages().getNumEvents() > 0) {
+
+    }
     trackLaneControl.update();
 }
 

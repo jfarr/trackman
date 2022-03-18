@@ -40,7 +40,7 @@ void TransportControl::createControls() {
         setButtonImage(recordButton, recordButtonOffImage);
 
         recordButton.onClick = [this] { recordButtonClicked(); };
-        recordButton.setEnabled(trackList->getSelectedTrack() != nullptr);
+        recordButton.setEnabled(trackList->canRecord());
         addAndMakeVisible(&recordButton);
     }
 
@@ -272,7 +272,7 @@ juce::String TransportControl::getStateLabel() {
 void TransportControl::changeListenerCallback(juce::ChangeBroadcaster *source) {
     if (source == &transportSource) {
         if (transportSource.isPlaying()) {
-            changeState(recording ? TransportState::Playing : TransportState::Recording);
+            changeState(recording ? TransportState::Recording : TransportState::Playing);
         } else if (TransportState::Pausing == state) {
             changeState(TransportState::Paused);
         } else if ((state == TransportState::Stopping) || (state == TransportState::Playing)) {
@@ -314,6 +314,7 @@ void TransportControl::playButtonClicked() {
 }
 
 void TransportControl::recordButtonClicked() {
+    recording = !recording;
     if ((state == TransportState::Stopped) || (state == TransportState::Paused)) {
         changeState(TransportState::Starting);
     } else if (state == TransportState::Playing) {
@@ -348,7 +349,7 @@ void TransportControl::pauseButtonClicked() {
 void TransportControl::loopButtonClicked() { notifyLoopingChanged(loopingToggle.getToggleState()); }
 
 void TransportControl::selectionChanged(Track *track) {
-    recordButton.setEnabled(trackList->getSelectedTrack() != nullptr);
+    recordButton.setEnabled(trackList->canRecord());
 }
 
 void TransportControl::addListener(TransportControlListener *listener) {

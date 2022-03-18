@@ -1,11 +1,14 @@
 # Roadmap
 
 ## Short-Term
+- Fix bugs
+  - Export audio not working
 - Instruments
 - Oscillator
 - Midi note roll
   - Notes
   - CV
+- Play instruments when not recording (preview)
 - Use undo manager
 - Use ListenerList
 - Stereo panner

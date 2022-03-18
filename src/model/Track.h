@@ -41,7 +41,10 @@ class Track {
     void selectSample(Sample *newSelected);
     void moveSampleTo(Sample &sample, Track &toTrack, juce::AudioDeviceManager &deviceManager);
     void eachSample(std::function<void(Sample &sample)> f);
+    bool hasSamples() const { return !samples.empty(); }
+    int getNumSamples() const { return samples.size(); }
 
+    bool canRecord() const { return samplePlayer == nullptr; }
     juce::MidiMessageSequence &getMidiMessages() { return midiMessages; }
     void setMidiMessages(const juce::MidiMessageSequence &newMessages) { midiMessages = newMessages; }
 
@@ -75,6 +78,7 @@ class Track {
     juce::MidiMessageSequence midiMessages;
 
     void createSamplePlayer(juce::AudioDeviceManager &deviceManager);
+    void removeSamplePlayer();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
 };

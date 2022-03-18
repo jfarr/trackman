@@ -4,6 +4,8 @@
 
 Track::Track(MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager)
     : midiRecorder(midiRecorder), synthAudioSource(midiRecorder.getKeyboardState()) {
+    synthAudioSource.prepareToPlay(
+        deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
     gainSource = std::make_unique<GainAudioSource>(&synthAudioSource, false);
     meteredSource =
         std::make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
@@ -18,9 +20,7 @@ void Track::setLevelGain(float newLevel) {
     }
 }
 
-void Track::setSelected(bool newSelected) {
-    selected = newSelected;
-}
+void Track::setSelected(bool newSelected) { selected = newSelected; }
 
 Sample *Track::getSelected() const {
     for (std::shared_ptr<Sample> const &sample : samples) {
@@ -50,6 +50,9 @@ void Track::moveSampleTo(Sample &sample, Track &toTrack, juce::AudioDeviceManage
             ++iter;
         }
     }
+    if (samples.empty()) {
+        removeSamplePlayer();
+    }
 }
 
 Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
@@ -71,6 +74,12 @@ void Track::createSamplePlayer(juce::AudioDeviceManager &deviceManager) {
         meteredSource =
             std::make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
     }
+}
+
+void Track::removeSamplePlayer() {
+    meteredSource = nullptr;
+    gainSource = nullptr;
+    samplePlayer = nullptr;
 }
 
 void Track::setMute(bool newMuted) { muted = newMuted; }

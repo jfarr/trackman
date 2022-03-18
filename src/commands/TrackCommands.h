@@ -58,7 +58,7 @@ class AddSampleCommand : public Command {
 
 class DeleteSampleCommand : public Command {
   public:
-    DeleteSampleCommand(TrackListController &controller, Track &track, Sample &sample)
+    DeleteSampleCommand(DesktopController &controller, Track &track, Sample &sample)
         : Command("Delete Sample"), controller(controller), track(track), sample(sample) {}
     ~DeleteSampleCommand() override = default;
 
@@ -66,7 +66,7 @@ class DeleteSampleCommand : public Command {
     void undo() override { controller.undeleteSample(track, &sample); }
 
   private:
-    TrackListController &controller;
+    DesktopController &controller;
     Track &track;
     Sample &sample;
 };
@@ -84,11 +84,11 @@ class MoveSampleCommand : public Command {
             toTrack = controller.addTrack();
             newTrack = true;
         }
-        controller.getTrackListController().moveSample(sample, fromTrack, *toTrack, newPos);
+        controller.moveSample(sample, fromTrack, *toTrack, newPos);
     }
 
     void undo() override {
-        controller.getTrackListController().moveSample(sample, *toTrack, fromTrack, prevPos);
+        controller.moveSample(sample, *toTrack, fromTrack, prevPos);
         if (newTrack) {
             controller.deleteTrack(toTrack, true);
         }

@@ -24,7 +24,9 @@ void Project::deleteTrack(Track *track) {
 
 Sample *Project::addSample(
     Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager) {
-    mixer.removeSource(track.getSource());
+    if (!track.hasSamples()) {
+        mixer.removeSource(track.getSource());
+    }
     auto sample = trackList.addSample(track, file, startPos, endPos, formatManager);
     mixer.addSource(track.getSource());
     return sample;
@@ -34,9 +36,21 @@ std::string Project::to_json() {
     json project_json = {{"horizontalScale", horizontalScale},
         {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
     project_json["tracks"] = json::array();
+    int ticks = 96;
+    int tempo = 120;
+    double quarterNotesPerSecond = tempo / 60.0;
     juce::MidiFile midiFile;
-    trackList.eachTrack([&project_json, &midiFile](Track &track) {
-        midiFile.addTrack(track.getMidiMessages());
+    midiFile.setTicksPerQuarterNote(ticks);
+    trackList.eachTrack([&project_json, &midiFile, quarterNotesPerSecond](Track &track) {
+        juce::MidiMessageSequence messages = track.getMidiMessages();
+        for (auto m : messages) {
+            auto t = m->message.getTimeStamp();
+            auto noteTime = t * quarterNotesPerSecond;
+            auto noteTicks = (int)(noteTime * 96);
+            m->message.setTimeStamp(noteTicks);
+        }
+        midiFile.addTrack(messages);
+        MidiRecorder::printEvents(messages);
         json track_json = {{"name", track.getName().toStdString()}, {"gain", track.getLevelGain()},
             {"muted", track.isMuted()}, {"soloed", track.isSoloed()}};
         track.eachSample([&track_json](Sample &sample) {
@@ -47,8 +61,7 @@ std::string Project::to_json() {
         project_json["tracks"].push_back(track_json);
     });
     juce::MemoryOutputStream out;
-    midiFile.writeTo(out, 2);
-    out.flush();
+    midiFile.writeTo(out, 1);
     auto mb = out.getMemoryBlock();
     auto encoded = juce::Base64::toBase64(mb.getData(), mb.getSize());
     project_json["midi"] = encoded.toStdString();
@@ -69,7 +82,8 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
     juce::Base64::convertFromBase64(out, encoded);
     juce::MemoryInputStream in(out.getMemoryBlock());
     juce::MidiFile midiFile;
-    midiFile.readFrom(in);
+    midiFile.readFrom(in, true);
+    midiFile.convertTimestampTicksToSeconds();
 
     trackList.clear();
     int i = 0;
@@ -84,6 +98,7 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
         }
         auto midiMessages = midiFile.getTrack(i++);
         track->setMidiMessages(*midiMessages);
+        MidiRecorder::printEvents(*midiMessages);
     }
 }
 

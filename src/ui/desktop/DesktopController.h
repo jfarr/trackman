@@ -63,7 +63,9 @@ class DesktopController : public juce::AudioSource,
     void renameTrack(Track &track, const juce::String &newName);
 
     Sample *addSample(Track &track, const juce::File &file, int pos);
+    void moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos);
     void deleteSample(Track &track, Sample *sample);
+    void undeleteSample(Track &track, Sample *sample);
 
     void saveProject(const std::function<void(bool saved)> &callback = nullptr);
     void saveProjectAs(std::function<void(bool saved)> callback = nullptr);

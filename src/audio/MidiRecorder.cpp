@@ -19,9 +19,7 @@ void MidiRecorder::stopRecording() {
     recording = false;
 }
 
-void MidiRecorder::reset() {
-    keyboardState.reset();
-}
+void MidiRecorder::reset() { keyboardState.reset(); }
 
 bool MidiRecorder::isRecording() const {
     const juce::ScopedLock lock(mutex);
@@ -63,6 +61,7 @@ void MidiRecorder::handleMessage(juce::MidiMessage &message, double time) {
 
 //==============================================================================
 void MidiRecorder::setNextReadPosition(juce::int64 position) { nextReadPosition = position; }
+
 juce::int64 MidiRecorder::getNextReadPosition() const { return nextReadPosition; }
 
 juce::int64 MidiRecorder::getTotalLength() const {
@@ -70,14 +69,14 @@ juce::int64 MidiRecorder::getTotalLength() const {
 }
 
 //==============================================================================
-void MidiRecorder::prepareToPlay(int blockSize, double sampleRate) {
-}
+void MidiRecorder::prepareToPlay(int blockSize, double sampleRate) {}
 
-void MidiRecorder::releaseResources() {
-}
+void MidiRecorder::releaseResources() {}
 
 void MidiRecorder::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    nextReadPosition += bufferToFill.numSamples;
+    if (recording) {
+        nextReadPosition += bufferToFill.numSamples;
+    }
 }
 
 void MidiRecorder::printEvents(const juce::MidiMessageSequence &midiMessages) {
