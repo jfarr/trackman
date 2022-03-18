@@ -1,6 +1,8 @@
 # Roadmap
 
 ## Short-Term
+- Fix bugs
+  - Export audio not working
 - Instruments
 - Oscillator
 - Midi note roll
