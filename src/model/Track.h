@@ -7,12 +7,14 @@
 #include "audio/MeteredAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
 #include "audio/SamplePlayer.h"
+#include "audio/SynthAudioSource.h"
+#include "audio/MidiRecorder.h"
 
 class TrackList;
 
 class Track {
   public:
-    explicit Track();
+    explicit Track(MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager);
     ~Track();
 
     int getTrackNumber() const { return trackNumber; }
@@ -32,7 +34,7 @@ class Track {
     void setTrackNumber(int newNumber) { trackNumber = newNumber; }
     void setName(const juce::String &newName) { name = newName; }
     void setLevelGain(float newLevel);
-    void setSelected(bool newSelected) { selected = newSelected; }
+    void setSelected(bool newSelected);
     Sample *getSelected() const;
     void setDeleted(bool newDeleted);
 
@@ -64,6 +66,9 @@ class Track {
 
     std::list<std::shared_ptr<Sample>> samples;
     std::unique_ptr<SamplePlayer> samplePlayer;
+
+    MidiRecorder &midiRecorder;
+    SynthAudioSource synthAudioSource;
 
     void createSamplePlayer(juce::AudioDeviceManager &deviceManager);
 

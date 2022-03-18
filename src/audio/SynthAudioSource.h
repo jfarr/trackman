@@ -82,7 +82,7 @@ struct SineWaveVoice : public juce::SynthesiserVoice {
     double currentAngle = 0.0, angleDelta = 0.0, level = 0.0, tailOff = 0.0;
 };
 
-class SynthAudioSource : public juce::AudioSource {
+class SynthAudioSource : public juce::PositionableAudioSource {
   public:
     explicit SynthAudioSource(juce::MidiKeyboardState &keyState) : keyboardState(keyState) {
         for (auto i = 0; i < 4; ++i) // [1]
@@ -109,6 +109,14 @@ class SynthAudioSource : public juce::AudioSource {
         synth.renderNextBlock(
             *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples); // [5]
     }
+
+    //==============================================================================
+    // PositionableAudioSource
+    void setNextReadPosition(juce::int64 newPosition) override {}
+    juce::int64 getNextReadPosition() const override { return 0; }
+    juce::int64 getTotalLength() const override { return 0; }
+    bool isLooping() const override { return false; }
+    void setLooping(bool shouldLoop) override {}
 
   private:
     juce::MidiKeyboardState &keyboardState;

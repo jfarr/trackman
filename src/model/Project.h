@@ -5,7 +5,7 @@
 
 class Project {
   public:
-    Project(juce::AudioDeviceManager &deviceManager);
+    Project(juce::AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder);
     ~Project() = default;
 
     Track *addTrack();

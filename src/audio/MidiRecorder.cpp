@@ -1,11 +1,17 @@
 #include "MidiRecorder.h"
+#include "model/Project.h"
 
-MidiRecorder::MidiRecorder(juce::AudioDeviceManager &deviceManager, juce::AudioTransportSource &transport)
-    : deviceManager(deviceManager), transport(transport) {
+MidiRecorder::MidiRecorder(Project &project, juce::AudioDeviceManager &deviceManager)
+    : project(project), deviceManager(deviceManager) {
     keyboardState.addListener(this);
 }
 
 MidiRecorder::~MidiRecorder() { keyboardState.removeListener(this); }
+//
+//void MidiRecorder::setAudioSource(juce::AudioSource *newSource) {
+//    source = newSource;
+//    source->prepareToPlay(deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
+//}
 
 void MidiRecorder::startRecording() {
     const juce::ScopedLock lock(mutex);
@@ -85,7 +91,7 @@ void MidiRecorder::handleMessage(juce::MidiMessage &message, double time) {
     auto offset = (time - t) * .001;
     //    DBG("handleMessage: " << t);
     //    DBG("offset: " << offset);
-    auto timestamp = transport.getCurrentPosition();
+    auto timestamp = project.getMixer().getTransportSource().getCurrentPosition();
     message.setTimeStamp(timestamp + offset);
     //    auto buffer = getBufferAtTime(timestamp);
     auto sampleNumber = timestamp * deviceManager.getAudioDeviceSetup().sampleRate;
@@ -106,22 +112,22 @@ juce::int64 MidiRecorder::getTotalLength() const {
 
 //==============================================================================
 void MidiRecorder::prepareToPlay(int blockSize, double sampleRate) {
-    if (source != nullptr) {
-        source->prepareToPlay(blockSize, sampleRate);
-    }
+//    if (source != nullptr) {
+//        source->prepareToPlay(blockSize, sampleRate);
+//    }
 }
 
 void MidiRecorder::releaseResources() {
-    if (source != nullptr) {
-        source->releaseResources();
-    }
+//    if (source != nullptr) {
+//        source->releaseResources();
+//    }
 }
 
 void MidiRecorder::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
     nextReadPosition += bufferToFill.numSamples;
-    if (source != nullptr) {
-        source->getNextAudioBlock(bufferToFill);
-    }
+//    if (source != nullptr) {
+//        source->getNextAudioBlock(bufferToFill);
+//    }
 }
 
 void MidiRecorder::printEvents() {

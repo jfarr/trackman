@@ -2,7 +2,12 @@
 
 #include <memory>
 
-Track::Track() {}
+Track::Track(MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager)
+    : midiRecorder(midiRecorder), synthAudioSource(midiRecorder.getKeyboardState()) {
+    gainSource = std::make_unique<GainAudioSource>(&synthAudioSource, false);
+    meteredSource =
+        std::make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
+}
 
 Track::~Track() { samples.clear(); }
 
@@ -11,6 +16,10 @@ void Track::setLevelGain(float newLevel) {
     if (gainSource != nullptr) {
         gainSource->setGain(level);
     }
+}
+
+void Track::setSelected(bool newSelected) {
+    selected = newSelected;
 }
 
 Sample *Track::getSelected() const {

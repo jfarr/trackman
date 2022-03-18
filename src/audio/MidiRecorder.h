@@ -4,15 +4,17 @@
 #include "SynthAudioSource.h"
 #include <JuceHeader.h>
 
+class Project;
+
 class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyboardState::Listener {
   public:
-    MidiRecorder(juce::AudioDeviceManager &deviceManager, juce::AudioTransportSource &transport);
+    MidiRecorder(Project& project, juce::AudioDeviceManager &deviceManager);
     ~MidiRecorder() override;
 
     juce::MidiKeyboardState &getKeyboardState() { return keyboardState; }
     bool isRecording() const;
 
-    void setAudioSource(juce::AudioSource *newSource) { source = newSource; }
+//    void setAudioSource(juce::AudioSource *newSource);
     void startRecording();
     void stopRecording();
 
@@ -52,13 +54,14 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
     void postMessage(juce::MidiMessage &message, double time);
     void handleMessage(juce::MidiMessage &message, double time);
 
+    Project &project;
     juce::AudioDeviceManager &deviceManager;
-    juce::AudioTransportSource &transport;
-    juce::AudioSource *source;
+//    juce::AudioTransportSource &transport;
+//    juce::AudioSource *source = nullptr;
     juce::MidiKeyboardState keyboardState;
 //    juce::Array<juce::MidiBuffer> midiEvents;
     juce::MidiMessageSequence midiEvents;
-    juce::int64 nextReadPosition;
+    juce::int64 nextReadPosition = 0;
     juce::int64 lastSampleNumber = 0;
     bool recording = false;
 

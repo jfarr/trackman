@@ -8,7 +8,7 @@ class Project;
 
 class TrackList {
   public:
-    TrackList(juce::AudioDeviceManager &deviceManager) : deviceManager(deviceManager) {}
+    TrackList(juce::AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder) : deviceManager(deviceManager), midiRecorder(midiRecorder) {}
     ~TrackList() = default;
 
     void undeleteTrack(Track *track);
@@ -39,6 +39,7 @@ class TrackList {
         Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager);
 
     juce::AudioDeviceManager &deviceManager;
+    MidiRecorder &midiRecorder;
     std::list<std::unique_ptr<Track>> tracks;
 
     void renumber();

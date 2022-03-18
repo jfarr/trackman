@@ -28,6 +28,7 @@ class DesktopController : public juce::AudioSource,
     MainWindow &getMainWindow() { return mainWindow; }
     DesktopComponent &getDesktopComponent() { return desktopComponent; }
     Project &getProject() { return project; }
+    juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
 
     MixerController &getMixerController() { return mixerController; }
     Mixer &getMixer() { return project.getMixer(); }
@@ -114,13 +115,14 @@ class DesktopController : public juce::AudioSource,
     DesktopComponent desktopComponent;
 
     MidiRecorder midiRecorder;
-    SynthAudioSource synthAudioSource;
+//    SynthAudioSource synthAudioSource;
 
     std::unique_ptr<juce::FileChooser> chooser;
     juce::File projectFile;
     bool dirty = false;
     Command *saveCommand = nullptr;
 
+//    juce::AudioSource *getAudioSource();
     void saveProjectFile(const juce::File &file);
     void updateTitleBar();
 
