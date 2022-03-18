@@ -2,7 +2,12 @@
 
 #include <memory>
 
-Track::Track() {}
+Track::Track(MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager)
+    : midiRecorder(midiRecorder), synthAudioSource(midiRecorder.getKeyboardState()) {
+    gainSource = std::make_unique<GainAudioSource>(&synthAudioSource, false);
+    meteredSource =
+        std::make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
+}
 
 Track::~Track() { samples.clear(); }
 
@@ -11,6 +16,10 @@ void Track::setLevelGain(float newLevel) {
     if (gainSource != nullptr) {
         gainSource->setGain(level);
     }
+}
+
+void Track::setSelected(bool newSelected) {
+    selected = newSelected;
 }
 
 Sample *Track::getSelected() const {
@@ -49,12 +58,6 @@ Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
     auto sample = &(*samples.back());
     sample->loadFile(deviceManager, formatManager);
     createSamplePlayer(deviceManager);
-    //    if (samplePlayer == nullptr) {
-    //        samplePlayer = std::make_unique<SamplePlayer>(samples);
-    //        gainSource = std::make_unique<GainAudioSource>(samplePlayer.get(), false);
-    //        meteredSource = std::make_unique<MeteredAudioSource>(gainSource.get(),
-    //        deviceManager.getAudioDeviceSetup().sampleRate);
-    //    }
     if (name == defaultName) {
         name = file.getFileName();
     }

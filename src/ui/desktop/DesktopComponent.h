@@ -42,6 +42,7 @@ class DesktopComponent : public juce::Component,
         editUndo,
         newTrack,
         newAudioPlayer,
+        newMidiKeyboard,
         deleteTrackSelection
     };
 
@@ -49,6 +50,8 @@ class DesktopComponent : public juce::Component,
     ~DesktopComponent() override;
 
     void visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea);
+
+    void createChildWindow(const juce::String &name, juce::Component *component);
 
     void addListener(FileDragDropTarget *listener);
     void removeListener(FileDragDropTarget *listener);
@@ -82,7 +85,7 @@ class DesktopComponent : public juce::Component,
   private:
     const int initialWidth = 800;
     const int initialHeight = 600;
-    const int leftPanelWidth = 25;
+    const int leftPanelWidth = 30;
     const int panelWidth = 25;
     const int topStripHeight = 15;
     const int scaleButtonWidth = 12;
@@ -101,7 +104,6 @@ class DesktopComponent : public juce::Component,
 
     juce::Array<Component::SafePointer<Component>> windows;
 
-    void createChildWindow(const juce::String &name, juce::Component *component);
     void closeAllWindows();
 
     void notifyFileDragEnter(const juce::StringArray &files, int x, int y);

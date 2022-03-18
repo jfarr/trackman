@@ -6,7 +6,6 @@
 #include "TrackListPanel.h"
 #include "TrackListViewport.h"
 #include "model/Project.h"
-#include "model/TrackList.h"
 #include "ui/desktop/TrackListListener.h"
 #include "ui/tracks/SampleListener.h"
 
@@ -14,7 +13,7 @@ class DesktopController;
 
 class TrackListController : public TrackListListener, public SampleListener {
   public:
-    TrackListController(DesktopController &desktopController, juce::AudioTransportSource &transport);
+    TrackListController(DesktopController &desktopController);
     ~TrackListController();
 
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
@@ -49,7 +48,6 @@ class TrackListController : public TrackListListener, public SampleListener {
   private:
     DesktopController &desktopController;
     Project &project;
-    juce::AudioTransportSource &transport;
 
     TrackListViewport trackListViewport;
     TrackListPanel trackListPanel;

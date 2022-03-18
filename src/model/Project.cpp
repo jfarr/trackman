@@ -5,11 +5,12 @@
 
 using json = nlohmann::json;
 
-Project::Project(juce::AudioDeviceManager &deviceManager)
-    : deviceManager(deviceManager), trackList(deviceManager), mixer(deviceManager) {}
+Project::Project(juce::AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
+    : deviceManager(deviceManager), trackList(deviceManager, midiRecorder), mixer(trackList, deviceManager) {}
 
 Track *Project::addTrack() {
     auto *track = trackList.addTrack();
+    mixer.addSource(track->getSource());
     return track;
 }
 
@@ -23,6 +24,7 @@ void Project::deleteTrack(Track *track) {
 
 Sample *Project::addSample(
     Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager) {
+    mixer.removeSource(track.getSource());
     auto sample = trackList.addSample(track, file, startPos, endPos, formatManager);
     mixer.addSource(track.getSource());
     return sample;

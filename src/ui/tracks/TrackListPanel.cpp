@@ -119,7 +119,7 @@ void TrackListPanel::paint(juce::Graphics &g) {
 
 void TrackListPanel::resized() {
     auto area = getLocalBounds();
-    auto laneHeight = (int)(getTrackLaneHeight() / lanes.size());
+    auto laneHeight = lanes.empty() ? 0 : (int)(getTrackLaneHeight() / lanes.size());
     auto width = std::max(transport.getLengthInSeconds() * desktopController.getProject().getHorizontalScale(), 2.0);
     overlay.setBounds(area.withWidth(width));
     for (auto &lane : lanes) {

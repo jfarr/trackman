@@ -3,10 +3,10 @@
 #include "ui/MainWindow.h"
 #include "ui/desktop/DesktopController.h"
 
-TrackListController::TrackListController(DesktopController &desktopController, juce::AudioTransportSource &transport)
-    : desktopController(desktopController), project(desktopController.getProject()), transport(transport),
+TrackListController::TrackListController(DesktopController &desktopController)
+    : desktopController(desktopController), project(desktopController.getProject()),
       trackListViewport(desktopController.getDesktopComponent()),
-      trackListPanel(desktopController, trackListViewport, transport) {
+      trackListPanel(desktopController, trackListViewport, desktopController.getMixer().getTransportSource()) {
 
     trackListPanel.addListener((SampleListener *)this);
     trackListPanel.addListener((TrackListListener *)this);
@@ -22,7 +22,7 @@ void TrackListController::update() {
     lanes.clear();
     trackListPanel.clear();
     project.getTrackList().eachTrack([this](Track &track) {
-        auto lane = new TrackLaneController(project, track, *this, transport,
+        auto lane = new TrackLaneController(project, track, *this, project.getMixer().getTransportSource(),
             desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
         lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
         trackListPanel.addLane(&lane->getTrackLaneControl());
@@ -75,6 +75,7 @@ Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
 
 void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos) {
     if (&fromTrack != &toTrack) {
+        project.getMixer().removeSource(toTrack.getSource());
         fromTrack.moveSampleTo(
             sample, toTrack, desktopController.getMainWindow().getMainAudioComponent().getDeviceManager());
         selectionChanged(&toTrack);
@@ -170,8 +171,8 @@ void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int sc
         TrackLaneController *lane;
         if (track == nullptr) {
             if (newDragLane == nullptr) {
-                track = new Track();
-                newDragLane = new TrackLaneController(project, *track, *this, transport,
+                track = new Track(desktopController.getMidiRecorder(), desktopController.getDeviceManager());
+                newDragLane = new TrackLaneController(project, *track, *this, project.getMixer().getTransportSource(),
                     desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
                 trackListPanel.addLane(&newDragLane->getTrackLaneControl());
                 trackListPanel.addAndMakeVisible(&newDragLane->getTrackLaneControl());

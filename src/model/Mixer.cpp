@@ -1,11 +1,11 @@
 #include "Mixer.h"
+#include "TrackList.h"
 #include "common/listutil.h"
 
-Mixer::Mixer(juce::AudioDeviceManager &deviceManager)
-    : deviceManager(deviceManager), gainSource(&mixerSource, false),
+Mixer::Mixer(TrackList &trackList, juce::AudioDeviceManager &deviceManager)
+    : trackList(trackList), deviceManager(deviceManager), gainSource(&mixerSource, false),
       meteredSource(&gainSource, deviceManager.getAudioDeviceSetup().sampleRate) {
     transportSource.setSource(&meteredSource);
-    initialized = true;
 }
 
 Mixer::~Mixer() {
@@ -47,19 +47,20 @@ void Mixer::setMasterMute(bool newMuted) {
 }
 
 void Mixer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
-    if (initialized) {
-        transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
-    }
+    transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
 void Mixer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    if (initialized) {
+    if (transportSource.isPlaying()) {
+        DBG("got here");
         transportSource.getNextAudioBlock(bufferToFill);
+    } else {
+        if (trackList.getSelectedTrack() != nullptr && trackList.getSelectedTrack()->getSource() != nullptr) {
+            trackList.getSelectedTrack()->getSource()->getNextAudioBlock(bufferToFill);
+        } else {
+            bufferToFill.clearActiveBufferRegion();
+        }
     }
 }
 
-void Mixer::releaseResources() {
-    if (initialized) {
-        transportSource.releaseResources();
-    }
-}
+void Mixer::releaseResources() { transportSource.releaseResources(); }

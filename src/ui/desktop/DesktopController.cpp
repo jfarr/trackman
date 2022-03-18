@@ -3,21 +3,30 @@
 #include "commands/TrackCommands.h"
 #include "commands/TrackListCommands.h"
 #include "common/listutil.h"
+#include "ui/KeyboardControl.h"
 #include "ui/MainWindow.h"
 
 DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceManager &deviceManager)
     : mainWindow(mainWindow), deviceManager(deviceManager), applicationName(mainWindow.getName()),
-      desktopComponent(*this), project(deviceManager), mixerController(*this),
-      trackListController(*this, project.getMixer().getTransportSource()), instrumentsController(*this) {
+      desktopComponent(*this), project(deviceManager, midiRecorder), mixerController(*this), trackListController(*this),
+      instrumentsController(*this), midiRecorder(project, deviceManager) {
 
+    getMixer().addSource(&midiRecorder);
     updateTitleBar();
+}
+
+void DesktopController::createKeyboard() {
+    auto keyboard = new KeyboardControl(midiRecorder.getKeyboardState());
+    desktopComponent.createChildWindow("MIDI Keyboard", keyboard);
 }
 
 void DesktopController::prepareToPlay(int blockSize, double sampleRate) {
     project.getMixer().prepareToPlay(blockSize, sampleRate);
 }
 
-void DesktopController::releaseResources() { project.getMixer().releaseResources(); }
+void DesktopController::releaseResources() {
+    project.getMixer().releaseResources();
+}
 
 void DesktopController::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
     project.getMixer().getNextAudioBlock(bufferToFill);
@@ -298,7 +307,9 @@ void DesktopController::updateTitleBar() {
 
 void DesktopController::selectionChanged(Track *track) {
     project.getTrackList().setSelected(track);
-    juce::MessageManager::callAsync([this]() {
+    juce::MessageManager::callAsync([this, track]() {
+        midiRecorder.reset();
+        mixerController.getMixerPanel().getTransportControl().selectionChanged(track);
         trackListController.repaint();
         mixerController.repaint();
         instrumentsController.repaint();

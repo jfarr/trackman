@@ -24,7 +24,9 @@ void InstrumentsPanel::paint(juce::Graphics &g) {
 
 void InstrumentsPanel::resized() {
     auto area = getLocalBounds();
+    auto rightMargin = 3;
     area.removeFromTop(topStripHeight);
+    area.removeFromRight(rightMargin);
     for (auto &instrument : instruments) {
         instrument->setBounds(area.removeFromTop(instrument->getPreferredHeight()));
     }
