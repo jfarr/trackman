@@ -52,7 +52,6 @@ void Mixer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
 
 void Mixer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
     if (transportSource.isPlaying()) {
-        DBG("got here");
         transportSource.getNextAudioBlock(bufferToFill);
     } else {
         if (trackList.getSelectedTrack() != nullptr && trackList.getSelectedTrack()->getSource() != nullptr) {
