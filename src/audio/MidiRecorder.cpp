@@ -17,7 +17,6 @@ void MidiRecorder::startRecording() {
 void MidiRecorder::stopRecording() {
     const juce::ScopedLock lock(mutex);
     recording = false;
-    printEvents();
 }
 
 void MidiRecorder::reset() {
@@ -59,7 +58,7 @@ void MidiRecorder::handleMessage(juce::MidiMessage &message, double time) {
     message.setTimeStamp(timestamp + offset);
     auto sampleNumber = timestamp * deviceManager.getAudioDeviceSetup().sampleRate;
     lastSampleNumber = sampleNumber;
-    midiEvents.addEvent(message);
+    midiMessages.addEvent(message);
 }
 
 //==============================================================================
@@ -81,8 +80,8 @@ void MidiRecorder::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferT
     nextReadPosition += bufferToFill.numSamples;
 }
 
-void MidiRecorder::printEvents() {
-    for (auto i = midiEvents.begin(); i != midiEvents.end(); i++) {
+void MidiRecorder::printEvents(const juce::MidiMessageSequence &midiMessages) {
+    for (auto i = midiMessages.begin(); i != midiMessages.end(); i++) {
         auto m = (*i)->message;
         DBG(juce::String("note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
             << m.getTimeStamp() << ": noteNumber=" << m.getNoteNumber() << " velocity=" << m.getVelocity());

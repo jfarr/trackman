@@ -42,6 +42,9 @@ class Track {
     void moveSampleTo(Sample &sample, Track &toTrack, juce::AudioDeviceManager &deviceManager);
     void eachSample(std::function<void(Sample &sample)> f);
 
+    juce::MidiMessageSequence &getMidiMessages() { return midiMessages; }
+    void setMidiMessages(const juce::MidiMessageSequence &newMessages) { midiMessages = newMessages; }
+
   private:
     friend TrackList;
 
@@ -69,6 +72,7 @@ class Track {
 
     MidiRecorder &midiRecorder;
     SynthAudioSource synthAudioSource;
+    juce::MidiMessageSequence midiMessages;
 
     void createSamplePlayer(juce::AudioDeviceManager &deviceManager);
 

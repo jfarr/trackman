@@ -53,6 +53,7 @@ class DesktopController : public juce::AudioSource,
     void resizeSample(Sample &sample, double prevLen, double newLen);
     void deleteSelected();
 
+    void recordingStopped();
     void selectionChanged(Track *track);
     juce::String getSelectionType() const;
 

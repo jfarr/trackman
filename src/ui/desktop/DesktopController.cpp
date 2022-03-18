@@ -24,9 +24,7 @@ void DesktopController::prepareToPlay(int blockSize, double sampleRate) {
     project.getMixer().prepareToPlay(blockSize, sampleRate);
 }
 
-void DesktopController::releaseResources() {
-    project.getMixer().releaseResources();
-}
+void DesktopController::releaseResources() { project.getMixer().releaseResources(); }
 
 void DesktopController::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
     project.getMixer().getNextAudioBlock(bufferToFill);
@@ -305,10 +303,20 @@ void DesktopController::updateTitleBar() {
         " - " + applicationName);
 }
 
+void DesktopController::recordingStopped() {
+    auto selected = project.getTrackList().getSelectedTrack();
+    if (selected != nullptr) {
+        selected->setMidiMessages(midiRecorder.getMidiMessages());
+        DBG("finished recording");
+        MidiRecorder::printEvents(selected->getMidiMessages());
+    }
+}
+
 void DesktopController::selectionChanged(Track *track) {
     project.getTrackList().setSelected(track);
     juce::MessageManager::callAsync([this, track]() {
         midiRecorder.reset();
+        midiRecorder.setMidiMessages(track == nullptr ? juce::MidiMessageSequence() : track->getMidiMessages());
         mixerController.getMixerPanel().getTransportControl().selectionChanged(track);
         trackListController.repaint();
         mixerController.repaint();

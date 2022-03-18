@@ -7,12 +7,14 @@ class Project;
 
 class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyboardState::Listener {
   public:
-    MidiRecorder(Project& project, juce::AudioDeviceManager &deviceManager);
+    MidiRecorder(Project &project, juce::AudioDeviceManager &deviceManager);
     ~MidiRecorder() override;
 
     juce::MidiKeyboardState &getKeyboardState() { return keyboardState; }
+    const juce::MidiMessageSequence &getMidiMessages() const { return midiMessages; }
     bool isRecording() const;
 
+    void setMidiMessages(const juce::MidiMessageSequence &newMessages) { midiMessages = newMessages; }
     void startRecording();
     void stopRecording();
     void reset();
@@ -36,11 +38,12 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
     bool isLooping() const override { return false; }
     void setLooping(bool shouldLoop) override {}
 
+    static void printEvents(const juce::MidiMessageSequence &midiMessages);
+
   private:
     class MidiMessageCallback : public juce::CallbackMessage {
       public:
-        MidiMessageCallback(MidiRecorder *o, const juce::MidiMessage &m, double t)
-            : owner(o), message(m), time(t) {}
+        MidiMessageCallback(MidiRecorder *o, const juce::MidiMessage &m, double t) : owner(o), message(m), time(t) {}
 
         void messageCallback() override { owner->handleMessage(message, time); }
 
@@ -54,12 +57,10 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
     Project &project;
     juce::AudioDeviceManager &deviceManager;
     juce::MidiKeyboardState keyboardState;
-    juce::MidiMessageSequence midiEvents;
+    juce::MidiMessageSequence midiMessages;
     juce::int64 nextReadPosition = 0;
     juce::int64 lastSampleNumber = 0;
     bool recording = false;
-
-    void printEvents();
 
     juce::CriticalSection mutex;
 

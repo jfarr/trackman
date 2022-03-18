@@ -214,9 +214,11 @@ void TransportControl::changeState(TransportState newState) {
             setButtonImage(playButton, playButtonOffImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
             if (recorder->isRecording()) {
-                recorder->stopRecording();
                 setButtonImage(recordButton, recordButtonOffImage);
+                recorder->stopRecording();
+                notifyRecordingStopped();
             }
+            recording = false;
             transportSource.setPosition(0.0);
             break;
 
@@ -227,12 +229,17 @@ void TransportControl::changeState(TransportState newState) {
         case TransportState::Playing:
             setButtonImage(playButton, playButtonOnImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
-            if (recorder->isRecording()) {
-                setButtonImage(recordButton, recordButtonOnImage);
-            }
+            break;
+
+        case TransportState::Recording:
+            setButtonImage(playButton, playButtonOnImage);
+            setButtonImage(pauseButton, pauseButtonOffImage);
+            setButtonImage(recordButton, recordButtonOnImage);
+            recorder->startRecording();
             break;
 
         case TransportState::Pausing:
+            recorder->stopRecording();
             transportSource.stop();
             break;
 
@@ -253,6 +260,8 @@ juce::String TransportControl::getStateLabel() {
         return juce::String("Stopped");
     case TransportState::Playing:
         return juce::String("Playing");
+    case TransportState::Recording:
+        return juce::String("Recording");
     case TransportState::Paused:
         return juce::String("Paused");
     default:
@@ -263,7 +272,7 @@ juce::String TransportControl::getStateLabel() {
 void TransportControl::changeListenerCallback(juce::ChangeBroadcaster *source) {
     if (source == &transportSource) {
         if (transportSource.isPlaying()) {
-            changeState(TransportState::Playing);
+            changeState(recording ? TransportState::Playing : TransportState::Recording);
         } else if (TransportState::Pausing == state) {
             changeState(TransportState::Paused);
         } else if ((state == TransportState::Stopping) || (state == TransportState::Playing)) {
@@ -306,7 +315,6 @@ void TransportControl::playButtonClicked() {
 
 void TransportControl::recordButtonClicked() {
     if ((state == TransportState::Stopped) || (state == TransportState::Paused)) {
-        recorder->startRecording();
         changeState(TransportState::Starting);
     } else if (state == TransportState::Playing) {
         if (recorder->isRecording()) {
@@ -354,5 +362,11 @@ void TransportControl::removeListener(TransportControlListener *listener) { list
 void TransportControl::notifyLoopingChanged(bool shouldLoop) {
     for (TransportControlListener *listener : listeners) {
         listener->loopingChanged(shouldLoop);
+    }
+}
+
+void TransportControl::notifyRecordingStopped() {
+    for (TransportControlListener *listener : listeners) {
+        listener->recordingStopped();
     }
 }

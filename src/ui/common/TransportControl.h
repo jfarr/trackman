@@ -7,7 +7,8 @@
 
 class TransportControlListener {
   public:
-    virtual void loopingChanged(bool shouldLoop) = 0;
+    virtual void loopingChanged(bool shouldLoop) {}
+    virtual void recordingStopped() {}
 };
 
 class TransportControl : public juce::Component,
@@ -42,7 +43,7 @@ class TransportControl : public juce::Component,
     void selectionChanged(Track *track) override;
 
   private:
-    enum class TransportState { Stopped, Starting, Playing, Pausing, Paused, Stopping };
+    enum class TransportState { Stopped, Starting, Playing, Recording, Pausing, Paused, Stopping };
     TransportState state = TransportState::Stopped;
     juce::AudioTransportSource &transportSource;
     bool enabled;
@@ -52,6 +53,7 @@ class TransportControl : public juce::Component,
     void changeState(TransportState newState);
     juce::String getStateLabel();
     void notifyLoopingChanged(bool shouldLoop);
+    void notifyRecordingStopped();
 
     //==============================================================================
 
@@ -59,6 +61,7 @@ class TransportControl : public juce::Component,
     const float buttonImageHeight = 210;
 
     MidiRecorder *recorder;
+    bool recording = false;
     TrackList *trackList;
 
     juce::ImageButton startButton;
