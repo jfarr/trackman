@@ -63,10 +63,6 @@ std::string Project::to_json() {
     auto mb = out.getMemoryBlock();
     auto encoded = juce::Base64::toBase64(mb.getData(), mb.getSize());
     project_json["midi"] = encoded.toStdString();
-    juce::TemporaryFile tempFile(juce::File("/tmp/tracks.mid"));
-    juce::FileOutputStream output(tempFile.getFile());
-    midiFile.writeTo(output, 1);
-    tempFile.overwriteTargetFileWithTemporary();
 
     return project_json.dump();
 }
