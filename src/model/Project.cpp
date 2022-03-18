@@ -2,6 +2,7 @@
 #include <nlohmann/json.hpp>
 
 #include "Project.h"
+#include "common/base64.h"
 
 using json = nlohmann::json;
 
@@ -34,7 +35,9 @@ std::string Project::to_json() {
     json project_json = {{"horizontalScale", horizontalScale},
         {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
     project_json["tracks"] = json::array();
-    trackList.eachTrack([&project_json](Track &track) {
+    juce::MidiFile midiFile;
+    trackList.eachTrack([&project_json, &midiFile](Track &track) {
+        midiFile.addTrack(track.getMidiMessages());
         json track_json = {{"name", track.getName().toStdString()}, {"gain", track.getLevelGain()},
             {"muted", track.isMuted()}, {"soloed", track.isSoloed()}};
         track.eachSample([&track_json](Sample &sample) {
@@ -44,6 +47,15 @@ std::string Project::to_json() {
         });
         project_json["tracks"].push_back(track_json);
     });
+    juce::MemoryOutputStream out;
+    midiFile.writeTo(out, 2);
+    out.flush();
+    auto mb = out.getMemoryBlock();
+//    auto contents = out.toString().toStdString();
+    std::vector<base64::byte> data(std::begin(mb), std::end(mb));
+    auto encoded = base64::encode(data);
+    project_json["midi"] = encoded;
+
     return project_json.dump();
 }
 
