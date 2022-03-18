@@ -18,7 +18,6 @@ target_sources(Trackman PRIVATE
         audio/GainAudioSource.h
         audio/MeteredAudioSource.cpp
         audio/MeteredAudioSource.h
-        audio/MidiListener.h
         audio/MidiRecorder.cpp
         audio/MidiRecorder.h
         audio/PositionableAudioSourceAdapter.h

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "MidiListener.h"
 #include "SynthAudioSource.h"
 #include <JuceHeader.h>
 
@@ -14,11 +13,9 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
     juce::MidiKeyboardState &getKeyboardState() { return keyboardState; }
     bool isRecording() const;
 
-//    void setAudioSource(juce::AudioSource *newSource);
     void startRecording();
     void stopRecording();
-
-//    void processNextMidiBuffer(juce::MidiBuffer &buffer, double time, int startSample, int numSamples);
+    void reset();
 
     //==============================================================================
     // juce::MidiKeyboardState::Listener
@@ -56,18 +53,11 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
 
     Project &project;
     juce::AudioDeviceManager &deviceManager;
-//    juce::AudioTransportSource &transport;
-//    juce::AudioSource *source = nullptr;
     juce::MidiKeyboardState keyboardState;
-//    juce::Array<juce::MidiBuffer> midiEvents;
     juce::MidiMessageSequence midiEvents;
     juce::int64 nextReadPosition = 0;
     juce::int64 lastSampleNumber = 0;
     bool recording = false;
-
-//    juce::MidiBuffer &getBufferAtSampleNumber(juce::int64 sampleNumber);
-//    juce::MidiBuffer &getBufferAtTime(double time);
-    juce::int64 getSampleNumber(double time) const;
 
     void printEvents();
 
