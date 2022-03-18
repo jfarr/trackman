@@ -32,10 +32,10 @@ void PositionableMixingAudioSource::prepareToPlay(int blockSize, double newSampl
 void PositionableMixingAudioSource::releaseResources() { mixer.releaseResources(); }
 
 void PositionableMixingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    juce::int64 currentPos = getNextReadPosition();
-    if (currentPos > getTotalLength()) {
-        setNextReadPosition(currentPos);
-    }
+//    juce::int64 currentPos = getNextReadPosition();
+//    if (currentPos > getTotalLength()) {
+//        setNextReadPosition(currentPos);
+//    }
     mixer.getNextAudioBlock(bufferToFill);
 }
 
