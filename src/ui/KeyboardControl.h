@@ -4,8 +4,8 @@
 
 class KeyboardControl : public juce::Component {
   public:
-    KeyboardControl(juce::MidiKeyboardState &keyboardState);
-    ~KeyboardControl() override;
+    explicit KeyboardControl(juce::MidiKeyboardState &keyboardState);
+    ~KeyboardControl() override = default;
 
     //==============================================================================
     // Component
