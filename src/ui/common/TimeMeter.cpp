@@ -18,22 +18,12 @@ void TimeMeter::drawTicksInMeasures(juce::Graphics &g, const juce::Rectangle<int
     g.setColour(juce::Colour{0xff282828});
     g.setFont(11);
     float y = bounds.getY() + (bounds.getHeight() - tickHeight);
-    //    float i = 0;
     double secs = 0;
     for (int i = 0; secs * scale < bounds.getWidth(); i++, secs = project.measuresToSeconds(i)) {
-        DBG("i: " << i << " secs: " << secs);
-        //    double increment = project.measuresToSeconds(2) * project.getHorizontalScaleRatio();
-        //    if (increment <= 0) {
-        //        return;
-        //    }
-        //    int n = 1;
-        //    while (i * scale < bounds.getWidth()) {
         float x = secs * scale;
         g.drawRect(x, y, 1.0, tickHeight, 1.0);
         g.drawText(juce::String(i + 1) + ".1.00", x + labelMargin, labelY, labelWidth, labelHeight,
             juce::Justification::bottom | juce::Justification::left, true);
-        //        n++;
-        //        i += increment;
     }
 }
 
@@ -47,52 +37,20 @@ void TimeMeter::drawTicksInSeconds(juce::Graphics &g, const juce::Rectangle<int>
     g.setColour(juce::Colour{0xff282828});
     g.setFont(11);
     float y = bounds.getY() + (bounds.getHeight() - tickHeight);
-    //    float i = 0;
     double secs = 0;
     for (int i = 0; secs * scale < bounds.getWidth(); i++, secs = project.measuresToSeconds(i)) {
-        DBG("i: " << i << " secs: " << secs);
-        //    double increment = project.measuresToSeconds(2) * project.getHorizontalScaleRatio();
-        //    if (increment <= 0) {
-        //        return;
-        //    }
-        //    int n = 1;
-        //    while (i * scale < bounds.getWidth()) {
         float x = secs * scale;
         float secs = project.measuresToSeconds(i);
         float wholeSecs;
-        float decimalSecs = std::modf(secs, &wholeSecs);
-        int mins = (int)(wholeSecs / 60);
+        int minutes = (int)(wholeSecs / 60);
         secs = std::fmod(secs, 60);
 
         g.drawRect(x, y, 1.0, tickHeight, 1.0);
-        g.drawText(juce::String(mins).paddedLeft('0', 2) + ":" + juce::String(secs, 3).paddedLeft('0', 6),
+        g.drawText(juce::String(minutes).paddedLeft('0', 2) + ":" + juce::String(secs, 3).paddedLeft('0', 6),
             x + labelMargin, labelY, labelWidth, labelHeight, juce::Justification::bottom | juce::Justification::left,
             true);
-        //        n++;
-        //        i += increment;
     }
 
-    //    float y = bounds.getY() + (bounds.getHeight() - tickHeight);
-    //    float i = 0;
-    //    double increment = project.measuresToSeconds(1) * project.getHorizontalScaleRatio();
-    //    int n = 1;
-    //    while (i * scale < bounds.getWidth()) {
-    //        float x = i * scale;
-    //        g.drawRect(x, y, 1.0, tickHeight, 1.0);
-    //        float secs = project.measuresToSeconds(n);
-    //        float wholeSecs;
-    //        float decimalSecs = std::modf(secs, &wholeSecs);
-    //        int mins = (int)(wholeSecs / 60);
-    //        secs = std::fmod(secs, 60);
-    ////        int fraction = (int)std::round(decimalSecs * 1000) / 1000;
-    //        g.drawText(juce::String(mins).paddedLeft('0', 2) + ":" + juce::String(secs, 3).paddedLeft('0', 6),
-    ////        g.drawText(juce::String(mins).paddedLeft('0', 2) + ":" + juce::String((int)wholeSecs).paddedLeft('0', 2)
-    ///+ "." + /                       juce::String(fraction, 3),
-    //            x + labelMargin, labelY, labelWidth, labelHeight, juce::Justification::bottom |
-    //            juce::Justification::left, true);
-    //        n++;
-    //        i += increment;
-    //    }
 
     //    auto labelY = bounds.getY() - 7;
     //    auto labelWidth = 50;

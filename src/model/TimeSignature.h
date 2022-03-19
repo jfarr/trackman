@@ -14,7 +14,6 @@ class TimeSignature {
     int getDenominator() const { return denominator; }
 
     double measuresToSeconds(double measures, int tempo) const {
-        DBG("measuresToSeconds(" << measures << "," << tempo <<"): " << (double)(measures * numerator) / (double)tempo * 60.0);
         return (double)(measures * numerator) / (double)tempo * 60.0;
     }
 
