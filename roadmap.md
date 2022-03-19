@@ -24,6 +24,7 @@
 
 ## Long Term
 
+- Time-shift samples (without pitch-shifting)
 - Snap to nearest quanta
 - Click+drag to select samples
 - Drop multiple files
