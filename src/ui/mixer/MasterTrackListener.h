@@ -5,4 +5,5 @@ class MasterTrackListener {
     virtual void masterLevelChanged(float level) {}
     virtual void masterLevelChangeFinalized(float previousLevel) {}
     virtual void masterMuteToggled() {}
+    virtual void tempoChanged(float previousTempo, float newTempo) {}
 };

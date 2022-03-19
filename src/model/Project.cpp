@@ -33,7 +33,7 @@ Sample *Project::addSample(
 }
 
 std::string Project::to_json() {
-    json project_json = {{"horizontalScale", horizontalScale},
+    json project_json = {{"tempo", tempo}, {"horizontalScale", horizontalScale},
         {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
     project_json["tracks"] = json::array();
     int ticks = 96;
@@ -74,6 +74,7 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
     json project_json;
     s >> project_json;
     mixer.removeAllSources();
+    tempo = project_json["tempo"];
     horizontalScale = project_json["horizontalScale"];
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);

@@ -89,6 +89,7 @@ class DesktopController : public juce::AudioSource,
     // MasterTrackListener
     void masterLevelChangeFinalized(float previousLevel) override;
     void masterMuteToggled() override;
+    void tempoChanged(float previousTempo, float newTempo) override;
 
     //==============================================================================
     // TrackControlListener

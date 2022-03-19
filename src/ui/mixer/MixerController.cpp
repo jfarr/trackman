@@ -10,6 +10,7 @@ MixerController::MixerController(DesktopController &desktopController)
     mixerViewport.setViewedComponent(&trackPanel, false);
     mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
+    mixerPanel.addListener(&desktopController);
     update();
 }
 
@@ -20,6 +21,7 @@ MixerController::~MixerController() {
     }
     mixerPanel.getMasterTrackControl().removeListener(this);
     mixerPanel.getTransportControl().removeListener(this);
+    mixerPanel.removeListener(&desktopController);
 }
 
 void MixerController::update() {
@@ -31,6 +33,7 @@ void MixerController::update() {
         trackPanel.addTrack(&controller->getTrackControl());
     });
     trackPanel.update();
+    mixerPanel.update();
 }
 
 void MixerController::repaint() {
@@ -82,3 +85,5 @@ void MixerController::recordingStopped() {
 }
 
 void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevelGain(newLevel); }
+
+//void MixerController::tempoChanged(float previousTempo, float newTempo) { }

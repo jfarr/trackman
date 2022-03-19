@@ -1,5 +1,4 @@
 #include "MasterTrackControl.h"
-
 #include "common/listutil.h"
 
 MasterTrackControl::MasterTrackControl(Mixer &mixer, foleys::LevelMeterSource &meterSource)

@@ -10,6 +10,7 @@ class Project {
     ~Project() = default;
 
     const float getTempo() const { return tempo; };
+    void setTempo(const float newTempo) { tempo = newTempo; }
 
     Track *addTrack();
     void deleteTrack(Track *track);

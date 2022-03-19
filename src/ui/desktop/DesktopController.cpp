@@ -54,6 +54,11 @@ void DesktopController::masterMuteToggled() {
     desktopComponent.menuItemsChanged();
 }
 
+void DesktopController::tempoChanged(float previousTempo, float newTempo) {
+    DBG("changed tempo from " << previousTempo << " to " << newTempo);
+    project.setTempo(newTempo);
+}
+
 void DesktopController::trackNameChanged(Track &track, juce::String newName) {
     Command *command = new RenameTrackCommand(*this, track, newName);
     commandList.pushCommand(command);
