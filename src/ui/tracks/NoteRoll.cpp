@@ -16,12 +16,11 @@ void NoteRoll::resize() {
 }
 
 void NoteRoll::paint(juce::Graphics &g) {
-    g.fillAll(juce::Colours::green);
     auto selected = track.isSelected();
     auto area = getLocalBounds();
     auto messages = track.getCurrentMidiMessages(project.getMixer().getTransportSource().getCurrentPosition());
     auto length = messages.getEndTime();
-    auto scale = area.getWidth() / length;
+    auto scale = project.getHorizontalScale();
     for (auto m : messages) {
         if (m->message.isNoteOn() && m->noteOffObject != nullptr) {
             auto noteOn = m->message;
