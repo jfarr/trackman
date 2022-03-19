@@ -10,6 +10,20 @@
 
 class DesktopController;
 
+class TempoTextEditor : public juce::Label {
+  public:
+    TempoTextEditor() {
+        setEditable(true);
+    }
+    ~TempoTextEditor() override {}
+  private:
+    juce::TextEditor* createEditorComponent() override {
+        auto editor = juce::Label::createEditorComponent();
+        editor->setInputRestrictions(3, "0123456789");
+        return editor;
+    }
+};
+
 class MixerPanel : public juce::Component {
   public:
     MixerPanel(DesktopController &desktopController, foleys::LevelMeterSource &meterSource);
@@ -29,6 +43,7 @@ class MixerPanel : public juce::Component {
     const int preferredWidth = 800;
     const int preferredHeight = 280;
     const int transportHeight = 35;
+    const int transportWidth = 550;
     const int transportMargin = 5;
 
     DesktopController &desktopController;
@@ -36,6 +51,8 @@ class MixerPanel : public juce::Component {
 
     TransportControl transportControl;
     MasterTrackControl masterTrackControl;
+    juce::Label tempoLabel;
+    TempoTextEditor tempoText;
 
     void createControls();
 

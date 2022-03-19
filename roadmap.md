@@ -1,11 +1,11 @@
 # Roadmap
 
 ## Short-Term
-- Tempo + time signature
+- TimeSignature + time signature
 - Instruments
 - Oscillator
 - Master track automation
-  - Tempo change
+  - TimeSignature change
   - Time signature change
 - Stereo panner
 - Midi CV
@@ -29,7 +29,7 @@
   - Default one track
   - Ctrl-drag multiple tracks
 - Copy / paste
-- Tempo + time signature
+- TimeSignature + time signature
   - Snap to nearest quanta
 - Console commands
 - Script window

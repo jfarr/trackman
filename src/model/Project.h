@@ -2,11 +2,14 @@
 
 #include "Mixer.h"
 #include "TrackList.h"
+#include "TimeSignature.h"
 
 class Project {
   public:
     Project(juce::AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder);
     ~Project() = default;
+
+    const float getTempo() const { return tempo; };
 
     Track *addTrack();
     void deleteTrack(Track *track);
@@ -40,6 +43,7 @@ class Project {
     void writeAudioFile(const juce::File &file);
 
   private:
+    const float initialTempo = 120.0;
     const double initialVerticalScale = 1;
     const double initialHorizontalScale = 100;
     const double scaleIncrement = 5;
@@ -47,6 +51,8 @@ class Project {
     juce::AudioDeviceManager &deviceManager;
     TrackList trackList;
     Mixer mixer;
+    TimeSignature timeSignature;
+    float tempo = initialTempo;
     double verticalScale = initialVerticalScale;
     double horizontalScale = initialHorizontalScale;
 };
