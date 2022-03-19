@@ -14,6 +14,8 @@ void SynthAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &buf
 
     synth.renderNextBlock(
         *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
+
+    currentPosition += bufferToFill.numSamples;
 }
 
 juce::int64 SynthAudioSource::getTotalLength() const {
