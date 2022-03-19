@@ -3,7 +3,7 @@
 #include <memory>
 
 Track::Track(MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager)
-    : deviceManager(deviceManager), midiRecorder(midiRecorder), synthAudioSource(midiRecorder.getKeyboardState()) {
+    : deviceManager(deviceManager), midiRecorder(midiRecorder), synthAudioSource(*this) {
     synthAudioSource.prepareToPlay(
         deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
     gainSource = std::make_unique<GainAudioSource>(&synthAudioSource, false);
@@ -122,6 +122,7 @@ void Track::stopRecording() {
     midiRecorder.stopRecording();
     recording = false;
     auto messages = midiRecorder.getMidiMessages();
+    messages.sort();
     messages.updateMatchedPairs();
     midiMessages = messages;
 }
@@ -144,4 +145,11 @@ const juce::MidiMessageSequence Track::getCurrentMidiMessages(double pos) const 
         return messages;
     }
     return midiMessages;
+}
+
+void Track::processNextMidiBuffer(
+    juce::MidiBuffer &buffer, const int startSample, const int numSamples, const bool injectIndirectEvents) {
+    if (recording) {
+        midiRecorder.getKeyboardState().processNextMidiBuffer(buffer, startSample, numSamples, injectIndirectEvents);
+    }
 }

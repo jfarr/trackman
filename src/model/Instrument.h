@@ -3,9 +3,11 @@
 #include <JuceHeader.h>
 #include "audio/SynthAudioSource.h"
 
+class Track;
+
 class Instrument {
   public:
-    Instrument(juce::MidiKeyboardState &keyState) : synth(keyState) {}
+    Instrument(Track &track, juce::MidiKeyboardState &keyState) : synth(track) {}
     ~Instrument() = default;
 
   private:

@@ -25,6 +25,7 @@ class Track {
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
     juce::int64 getTotalLengthInSamples() const;
+    juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
 
     juce::PositionableAudioSource *getSource() { return meteredSource.get(); }
     foleys::LevelMeterSource *getMeterSource() {
@@ -52,6 +53,9 @@ class Track {
     const juce::MidiMessageSequence &getMidiMessages() const { return midiMessages; }
     const juce::MidiMessageSequence getCurrentMidiMessages(double pos) const;
     void setMidiMessages(const juce::MidiMessageSequence &newMessages) { midiMessages = newMessages; }
+
+    void processNextMidiBuffer(
+        juce::MidiBuffer &buffer, const int startSample, const int numSamples, const bool injectIndirectEvents);
 
   private:
     friend TrackList;

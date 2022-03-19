@@ -82,43 +82,34 @@ struct SineWaveVoice : public juce::SynthesiserVoice {
     double currentAngle = 0.0, angleDelta = 0.0, level = 0.0, tailOff = 0.0;
 };
 
+class Track;
+
 class SynthAudioSource : public juce::PositionableAudioSource {
   public:
-    explicit SynthAudioSource(juce::MidiKeyboardState &keyState) : keyboardState(keyState) {
-        for (auto i = 0; i < 4; ++i) // [1]
+    SynthAudioSource(Track &track) : track(track) {
+        for (auto i = 0; i < 4; ++i)
             synth.addVoice(new SineWaveVoice());
 
-        synth.addSound(new SineWaveSound()); // [2]
+        synth.addSound(new SineWaveSound());
     }
 
     void setUsingSineWaveSound() { synth.clearSounds(); }
 
-    void prepareToPlay(int /*samplesPerBlockExpected*/, double sampleRate) override {
-        synth.setCurrentPlaybackSampleRate(sampleRate); // [3]
-    }
-
+    //==============================================================================
+    // AudioSource
+    void prepareToPlay(int blockSize, double sampleRate) override;
     void releaseResources() override {}
-
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override {
-        bufferToFill.clearActiveBufferRegion();
-
-        juce::MidiBuffer incomingMidi;
-        keyboardState.processNextMidiBuffer(
-            incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true); // [4]
-
-        synth.renderNextBlock(
-            *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples); // [5]
-    }
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
 
     //==============================================================================
     // PositionableAudioSource
     void setNextReadPosition(juce::int64 newPosition) override {}
     juce::int64 getNextReadPosition() const override { return 0; }
-    juce::int64 getTotalLength() const override { return 0; }
+    juce::int64 getTotalLength() const override;
     bool isLooping() const override { return false; }
     void setLooping(bool shouldLoop) override {}
 
   private:
-    juce::MidiKeyboardState &keyboardState;
+    Track &track;
     juce::Synthesiser synth;
 };
