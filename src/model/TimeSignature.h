@@ -4,10 +4,11 @@
 
 class TimeSignature {
   public:
-    TimeSignature() {}
+    TimeSignature() = default;
+    ~TimeSignature() = default;
+
     TimeSignature(int numerator, int denominator) : numerator(numerator), denominator(denominator) {}
     TimeSignature(const TimeSignature &other) : numerator(other.numerator), denominator(other.denominator) {}
-    ~TimeSignature() {}
 
   private:
     int numerator = 4;
