@@ -37,9 +37,9 @@ class Project {
         verticalScale /= 1.08;
         verticalScale = std::max(verticalScale, 0.0000001);
     }
-    void incrementHorizontalScale() { horizontalScale *= 1.1; }
+    void incrementHorizontalScale() { horizontalScale *= 1.2; }
     void decrementHorizontalScale() {
-        horizontalScale /= 1.1;
+        horizontalScale /= 1.2;
         horizontalScale = std::max(horizontalScale, 0.0000001);
     }
 
