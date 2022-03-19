@@ -19,8 +19,6 @@ void MidiRecorder::stopRecording() {
     recording = false;
 }
 
-//void MidiRecorder::reset() { keyboardState.reset(); }
-
 bool MidiRecorder::isRecording() const {
     const juce::ScopedLock lock(mutex);
     return recording;
