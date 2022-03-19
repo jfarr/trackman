@@ -28,9 +28,7 @@ void TrackLaneControl::update() {
     for (SampleThumbnail *thumbnail : thumbnails) {
         addAndMakeVisible(thumbnail);
     }
-//    if (track.getMidiMessages().getNumEvents() > 0) {
-        addAndMakeVisible(noteRoll);
-//    }
+    addAndMakeVisible(noteRoll);
     resized();
 }
 
