@@ -13,6 +13,10 @@ int Project::secondsToTicks(double seconds) { return ::secondsToTicks(tempo, sec
 
 double Project::ticksToSeconds(int ticks) { return ::ticksToSeconds(tempo, ticks); }
 
+double Project::measuresToSeconds(double measures) {
+    return timeSignature.measuresToSeconds(measures, tempo);
+}
+
 Track *Project::addTrack() {
     auto *track = trackList.addTrack();
     mixer.addSource(track->getSource());

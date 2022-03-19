@@ -26,9 +26,11 @@ class Project {
 
     int secondsToTicks(double seconds);
     double ticksToSeconds(int ticks);
+    double measuresToSeconds(double measures);
 
     double getVerticalScale() const { return verticalScale; }
     double getHorizontalScale() const { return horizontalScale; }
+    double getHorizontalScaleRatio() const { return initialHorizontalScale / horizontalScale; }
 
     void incrementVerticalScale() { verticalScale *= 1.08; }
     void decrementVerticalScale() {
@@ -50,6 +52,7 @@ class Project {
     const float initialTempo = 120.0;
     const double initialVerticalScale = 1;
     const double initialHorizontalScale = 100;
+//    const int baseHorizontalScale = 75;
     const double scaleIncrement = 5;
 
     juce::AudioDeviceManager &deviceManager;

@@ -20,7 +20,7 @@ class InstrumentsPanel : public juce::Component {
 
   private:
     const int panelWidth = 30;
-    const int topStripHeight = 15;
+    const int topStripHeight = 30;
 
     std::list<InstrumentControl *> instruments;
 
