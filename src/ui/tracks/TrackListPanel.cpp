@@ -5,7 +5,8 @@
 
 TrackListPanel::TrackListPanel(
     DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport)
-    : desktopController(desktopController), viewport(viewport), transport(transport), overlay(transport) {
+    : desktopController(desktopController), viewport(viewport), transport(transport), overlay(transport),
+      dropBox([this]() { return canDrop(); }) {
 
     viewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
     viewport.getHorizontalScrollBar().setAutoHide(false);
@@ -44,11 +45,17 @@ void TrackListPanel::fileDragEnter(const juce::StringArray &files, int x, int y)
 void TrackListPanel::fileDragMove(const juce::StringArray &files, int x, int y) {
     auto bounds = dropBox.getLocalBounds();
     dropBox.setBounds(bounds.withCentre(juce::Point(x, y)));
+    dragPosition = juce::Point<int>(x, y);
 }
 
 void TrackListPanel::fileDragExit(const juce::StringArray &files) { removeChildComponent(&dropBox); }
 
 void TrackListPanel::filesDropped(const juce::StringArray &files, int x, int y) { removeChildComponent(&dropBox); }
+
+bool TrackListPanel::canDrop() {
+    auto *track = getTrackAtPos(dragPosition.getX(), dragPosition.getY());
+    return track == nullptr || !track->hasMidi();
+}
 
 void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
     auto sourceComponent = dragSourceDetails.sourceComponent.get();
