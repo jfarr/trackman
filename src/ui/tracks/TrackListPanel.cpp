@@ -88,6 +88,7 @@ void TrackListPanel::resize() {
     auto w = getPanelWidth();
     auto h = getPanelHeight();
     setSize(w, h);
+    maxWidth = std::max(maxWidth, w);
     for (auto *lane : lanes) {
         lane->resized();
     }
@@ -99,7 +100,7 @@ int TrackListPanel::getPanelWidth() const {
     auto trackListLength = desktopController.getProject().getTrackList().getTotalLengthInSeconds();
     auto scale = desktopController.getProject().getHorizontalScale();
     int trackWidth = (int)(std::max(currentPos, trackListLength) * scale);
-    return std::max(trackWidth, viewport.getWidth());
+    return std::max(maxWidth, std::max(trackWidth, viewport.getWidth()));
 }
 
 int TrackListPanel::getPanelHeight() const {

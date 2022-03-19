@@ -44,6 +44,7 @@ class Track {
     bool hasSamples() const { return !samples.empty(); }
     int getNumSamples() const { return samples.size(); }
 
+    bool hasMidi() const { return midiMessages.getNumEvents() > 0; }
     bool canRecord() const { return samplePlayer == nullptr; }
     bool isRecording() const { return recording; }
     void startRecording();

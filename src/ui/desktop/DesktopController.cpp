@@ -98,6 +98,9 @@ void DesktopController::addNewTrack() {
 }
 
 void DesktopController::addNewSample(Track *track, const juce::File &file, int pos) {
+    if (track->hasMidi()) {
+        return;
+    }
     Command *command = new AddSampleCommand(*this, track, file, pos);
     commandList.pushCommand(command);
     dirty = true;

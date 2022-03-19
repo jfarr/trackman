@@ -44,6 +44,7 @@ class TrackListPanel : public juce::Component,
     void removeLane(TrackLaneControl *lane) { lanes.remove(lane); }
     void clear() { lanes.clear(); }
     void resize();
+    void increaseMaxWidth(int increment) { maxWidth += increment; resize(); }
     void update();
 
     void fileDragEnter(const juce::StringArray &files, int x, int y);
@@ -78,6 +79,7 @@ class TrackListPanel : public juce::Component,
     juce::AudioTransportSource &transport;
     std::list<TrackLaneControl *> lanes;
     PositionOverlay overlay;
+    int maxWidth = 0;
 
     DropBox dropBox;
     int dragSourceOffset = 0;
