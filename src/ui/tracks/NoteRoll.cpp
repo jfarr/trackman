@@ -1,12 +1,12 @@
-#include "NoteCanvas.h"
+#include "NoteRoll.h"
 
-NoteCanvas::NoteCanvas(Project &project, Track &track) : project(project), track(track) {
+NoteRoll::NoteRoll(Project &project, Track &track) : project(project), track(track) {
     setInterceptsMouseClicks(false, false);
     setSize(200, 81);
     startTimer(20);
 }
 
-void NoteCanvas::resize() {
+void NoteRoll::resize() {
     auto area = getBounds();
     auto length =
         track.getCurrentMidiMessages(project.getMixer().getTransportSource().getCurrentPosition()).getEndTime();
@@ -15,7 +15,7 @@ void NoteCanvas::resize() {
     repaint();
 }
 
-void NoteCanvas::paint(juce::Graphics &g) {
+void NoteRoll::paint(juce::Graphics &g) {
     g.fillAll(juce::Colours::green);
     auto selected = track.isSelected();
     auto area = getLocalBounds();

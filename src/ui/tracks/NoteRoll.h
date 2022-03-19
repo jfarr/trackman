@@ -1,14 +1,14 @@
 #pragma once
 
-#include <JuceHeader.h>
+#include "JuceHeader.h"
 
 #include "model/Project.h"
 #include "model/Track.h"
 
-class NoteCanvas : public juce::Component, public juce::Timer {
+class NoteRoll : public juce::Component, public juce::Timer {
   public:
-    NoteCanvas(Project &project, Track &track);
-    ~NoteCanvas() override = default;
+    NoteRoll(Project &project, Track &track);
+    ~NoteRoll() override = default;
 
     void resize();
 
@@ -24,5 +24,5 @@ class NoteCanvas : public juce::Component, public juce::Timer {
     Project &project;
     Track &track;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteCanvas)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteRoll)
 };
