@@ -1,19 +1,18 @@
 # Roadmap
 
 ## Short-Term
-- Midi playback
-- Fix bugs
-  - Export audio not working
 - Instruments
 - Oscillator
-- Midi note roll
-  - Notes
-  - CV
+- Master track automation
+  - Tempo change
+  - Time signature change
+- Stereo panner
+- Midi CV
 - Hold zoom buttons zooms exponentially faster
 - Play instruments when not recording (preview)
 - Use undo manager
+- Undo record midi
 - Use ListenerList
-- Stereo panner
 - Song start / end position
 - Loop start / end position
 - Sample info popup
