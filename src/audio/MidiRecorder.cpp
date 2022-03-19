@@ -51,7 +51,7 @@ void MidiRecorder::handleMessage(juce::MidiMessage &message, double time) {
     auto t = juce::Time::getMillisecondCounterHiRes();
     auto offset = (time - t) * .001;
     auto timestamp = project.getMixer().getTransportSource().getCurrentPosition();
-    message.setTimeStamp(timestamp + offset);
+    message.setTimeStamp(project.secondsToTicks(timestamp + offset));
     midiMessages.addEvent(message);
 }
 

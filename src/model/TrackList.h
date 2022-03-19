@@ -8,7 +8,8 @@ class Project;
 
 class TrackList {
   public:
-    TrackList(juce::AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder) : deviceManager(deviceManager), midiRecorder(midiRecorder) {}
+    TrackList(Project &project, juce::AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
+        : project(project), deviceManager(deviceManager), midiRecorder(midiRecorder) {}
     ~TrackList() = default;
 
     void undeleteTrack(Track *track);
@@ -28,7 +29,7 @@ class TrackList {
     void setSelected(Track *selected);
     void selectSample(Sample *selected);
 
-    bool canRecord() const {  return getSelectedTrack() != nullptr && getSelectedTrack()->canRecord(); }
+    bool canRecord() const { return getSelectedTrack() != nullptr && getSelectedTrack()->canRecord(); }
     void writeAudioFile(const juce::File &file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const;
 
   private:
@@ -39,6 +40,7 @@ class TrackList {
     Sample *addSample(
         Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager);
 
+    Project &project;
     juce::AudioDeviceManager &deviceManager;
     MidiRecorder &midiRecorder;
     std::list<std::unique_ptr<Track>> tracks;

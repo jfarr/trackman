@@ -10,11 +10,12 @@
 #include "audio/SamplePlayer.h"
 #include "audio/SynthAudioSource.h"
 
+class Project;
 class TrackList;
 
 class Track {
   public:
-    Track(MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager);
+    Track(Project &project, MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager);
     ~Track();
 
     int getTrackNumber() const { return trackNumber; }
@@ -82,6 +83,7 @@ class Track {
     std::list<std::shared_ptr<Sample>> samples;
     std::unique_ptr<SamplePlayer> samplePlayer;
 
+    Project &project;
     juce::AudioDeviceManager &deviceManager;
     MidiRecorder &midiRecorder;
     SynthAudioSource synthAudioSource;

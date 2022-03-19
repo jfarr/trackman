@@ -9,5 +9,5 @@ static int secondsToTicks(float tempo, double seconds) {
 
 static double ticksToSeconds(float tempo, int ticks) {
     auto quarterNotesPerSecond = tempo / 60;
-    return ticks / ticksPerQuarterNote / quarterNotesPerSecond;
+    return (double)ticks / (double)ticksPerQuarterNote / (double)quarterNotesPerSecond;
 }

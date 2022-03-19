@@ -24,6 +24,9 @@ class Project {
     Track *getSelectedTrack() const { return trackList.getSelectedTrack(); }
     Sample *getSelectedSample() const { return trackList.getSelectedSample(); }
 
+    int secondsToTicks(double seconds);
+    double ticksToSeconds(int ticks);
+
     double getVerticalScale() const { return verticalScale; }
     double getHorizontalScale() const { return horizontalScale; }
 
