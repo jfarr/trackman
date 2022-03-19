@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Short-Term
+- Midi playback
 - Fix bugs
   - Export audio not working
 - Instruments
