@@ -87,7 +87,7 @@ class DesktopComponent : public juce::Component,
     const int initialHeight = 600;
     const int leftPanelWidth = 30;
     const int panelWidth = 25;
-    const int topStripHeight = 15;
+    const int topStripHeight = 30;
     const int scaleButtonWidth = 12;
 
     DesktopController &desktopController;

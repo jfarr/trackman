@@ -2,7 +2,16 @@
 
 void TimeMeter::paint(juce::Graphics &g) {
     auto bounds = getLocalBounds();
-    auto labelY = -7;
+    drawTicksInSeconds(g, bounds.removeFromBottom(15));
+    drawStartMarker(g);
+}
+
+void TimeMeter::drawTicksInMeasures(juce::Graphics &g, const juce::Rectangle<int> &bounds) const {
+
+}
+
+void TimeMeter::drawTicksInSeconds(juce::Graphics &g, const juce::Rectangle<int> &bounds) const {
+    auto labelY = bounds.getY() - 7;
     auto labelWidth = 50;
     auto labelHeight = 20;
     auto labelMargin = 5;
@@ -37,13 +46,15 @@ void TimeMeter::paint(juce::Graphics &g) {
         g.drawRect(x, y, 1, thirdTickHeight, 1);
         i += 1;
     }
+}
 
+void TimeMeter::drawStartMarker(juce::Graphics &g) const {
     auto margin = 4;
     auto arrowHeight = 8.0;
     auto arrowWidth = 18.0;
 
     float audioPosition = 0.0;
-    auto drawPosition = audioPosition * scale;
+    auto drawPosition = audioPosition * project.getHorizontalScale();
 
     g.setColour(juce::Colours::lightgrey);
     g.drawLine(drawPosition, margin, drawPosition, (float)getHeight(), 1.0f);
