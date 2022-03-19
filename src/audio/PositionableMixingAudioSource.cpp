@@ -73,4 +73,7 @@ bool PositionableMixingAudioSource::isLooping() const {
 void PositionableMixingAudioSource::setLooping(bool shouldLoop) {
     const juce::ScopedLock lock(mutex);
     looping = shouldLoop;
+    for (int i = inputs.size(); --i >= 0;) {
+        inputs.getUnchecked(i)->setLooping(shouldLoop);
+    }
 }

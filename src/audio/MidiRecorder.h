@@ -2,11 +2,9 @@
 
 #include <JuceHeader.h>
 
-#include "SynthAudioSource.h"
-
 class Project;
 
-class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyboardState::Listener {
+class MidiRecorder : public juce::MidiKeyboardState::Listener {
   public:
     MidiRecorder(Project &project, juce::AudioDeviceManager &deviceManager);
     ~MidiRecorder() override;
@@ -18,26 +16,11 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
     void setMidiMessages(const juce::MidiMessageSequence &newMessages) { midiMessages = newMessages; }
     void startRecording();
     void stopRecording();
-    void reset();
 
     //==============================================================================
     // juce::MidiKeyboardState::Listener
     void handleNoteOn(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
     void handleNoteOff(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
-
-    //==============================================================================
-    // AudioSource
-    void prepareToPlay(int blockSize, double sampleRate) override;
-    void releaseResources() override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
-
-    //==============================================================================
-    // PositionableAudioSource
-    void setNextReadPosition(juce::int64 position) override;
-    juce::int64 getNextReadPosition() const override;
-    juce::int64 getTotalLength() const override;
-    bool isLooping() const override { return false; }
-    void setLooping(bool shouldLoop) override {}
 
     static void printEvents(const juce::MidiMessageSequence &midiMessages);
 
@@ -59,9 +42,8 @@ class MidiRecorder : public juce::PositionableAudioSource, public juce::MidiKeyb
     juce::AudioDeviceManager &deviceManager;
     juce::MidiKeyboardState keyboardState;
     juce::MidiMessageSequence midiMessages;
-    juce::int64 nextReadPosition = 0;
-    juce::int64 lastSampleNumber = 0;
     bool recording = false;
+    bool looping = false;
 
     juce::CriticalSection mutex;
 

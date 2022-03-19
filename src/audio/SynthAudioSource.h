@@ -103,14 +103,15 @@ class SynthAudioSource : public juce::PositionableAudioSource {
 
     //==============================================================================
     // PositionableAudioSource
-    void setNextReadPosition(juce::int64 newPosition) override { currentPosition = newPosition; }
-    juce::int64 getNextReadPosition() const override { return currentPosition; }
+    void setNextReadPosition(juce::int64 newPosition) override;
+    juce::int64 getNextReadPosition() const override;
     juce::int64 getTotalLength() const override;
-    bool isLooping() const override { return false; }
-    void setLooping(bool shouldLoop) override {}
+    bool isLooping() const override;
+    void setLooping(bool shouldLoop) override;
 
   private:
     Track &track;
     juce::Synthesiser synth;
     juce::int64 currentPosition = 0;
+    bool looping = false;
 };

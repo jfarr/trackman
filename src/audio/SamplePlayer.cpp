@@ -39,9 +39,9 @@ void SamplePlayer::releaseResources() {
 void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
     const juce::ScopedLock lock(mutex);
     if (bufferToFill.numSamples > 0) {
-        currentPos += bufferToFill.numSamples;
         Timeline timeline = getCurrentTimeline();
-        std::list<Sample *> samplesToPlay = timeline.getAt(getTimeAtPosition(currentPos));
+        auto pos = looping ? currentPos % getTotalLength() : currentPos;
+        std::list<Sample *> samplesToPlay = timeline.getAt(getTimeAtPosition(pos));
         if (!samplesToPlay.empty()) {
             auto firstSample = samplesToPlay.front();
             if (!firstSample->isDeleted()) {
@@ -70,6 +70,7 @@ void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferT
         } else {
             bufferToFill.clearActiveBufferRegion();
         }
+        currentPos += bufferToFill.numSamples;
     }
 }
 
@@ -86,7 +87,7 @@ void SamplePlayer::setNextReadPosition(juce::int64 newPosition) {
 
 juce::int64 SamplePlayer::getNextReadPosition() const {
     const juce::ScopedLock lock(mutex);
-    return currentPos;
+    return looping ? currentPos % getTotalLength() : currentPos;
 }
 
 juce::int64 SamplePlayer::getTotalLength() const {
@@ -108,4 +109,9 @@ bool SamplePlayer::isLooping() const {
 void SamplePlayer::setLooping(bool shouldLoop) {
     const juce::ScopedLock lock(mutex);
     looping = shouldLoop;
+    for (auto &sample : samples) {
+        if (!sample->isDeleted()) {
+            sample->setLooping(shouldLoop);
+        }
+    }
 }

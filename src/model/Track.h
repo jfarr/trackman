@@ -52,7 +52,7 @@ class Track {
     void stopRecording();
     const juce::MidiMessageSequence &getMidiMessages() const { return midiMessages; }
     const juce::MidiMessageSequence getCurrentMidiMessages(double pos) const;
-    void setMidiMessages(const juce::MidiMessageSequence &newMessages) { midiMessages = newMessages; }
+    void setMidiMessages(const juce::MidiMessageSequence &newMessages);
 
     void processNextMidiBuffer(
         juce::MidiBuffer &buffer, const int startSample, const int numSamples, const juce::int64 currentPos);
