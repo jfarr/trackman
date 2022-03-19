@@ -98,6 +98,7 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
         }
         auto midiMessages = midiFile.getTrack(i++);
         track->setMidiMessages(*midiMessages);
+        mixer.addSource(track->getSource());
         MidiRecorder::printEvents(*midiMessages);
     }
 }

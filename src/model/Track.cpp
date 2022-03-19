@@ -147,6 +147,11 @@ const juce::MidiMessageSequence Track::getCurrentMidiMessages(double pos) const 
     return midiMessages;
 }
 
+void Track::setMidiMessages(const juce::MidiMessageSequence &newMessages) {
+    midiMessages = newMessages;
+
+}
+
 void Track::processNextMidiBuffer(
     juce::MidiBuffer &buffer, const int startSample, const int numSamples, const juce::int64 currentPos) {
     if (recording) {
