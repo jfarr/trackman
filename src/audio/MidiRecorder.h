@@ -16,7 +16,7 @@ class MidiRecorder : public juce::MidiKeyboardState::Listener {
     void setMidiMessages(const juce::MidiMessageSequence &newMessages) { midiMessages = newMessages; }
     void startRecording();
     void stopRecording();
-    void reset();
+//    void reset();
 
     //==============================================================================
     // juce::MidiKeyboardState::Listener

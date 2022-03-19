@@ -111,7 +111,7 @@ juce::int64 Track::getTotalLengthInSamples() const {
 
 void Track::startRecording() {
     if (!recording) {
-        midiRecorder.reset();
+//        midiRecorder.reset();
         midiRecorder.setMidiMessages(midiMessages);
     }
     midiRecorder.startRecording();

@@ -242,8 +242,11 @@ void TransportControl::changeState(TransportState newState) {
             break;
 
         case TransportState::Pausing:
-            if (recorder != nullptr) {
-                recorder->stopRecording();
+            if (recorder != nullptr && trackList != nullptr) {
+                auto selected = trackList->getSelectedTrack();
+                if (selected != nullptr) {
+                    selected->stopRecording();
+                }
             }
             transportSource.stop();
             break;
@@ -323,12 +326,17 @@ void TransportControl::recordButtonClicked() {
     if ((state == TransportState::Stopped) || (state == TransportState::Paused)) {
         changeState(TransportState::Starting);
     } else if (state == TransportState::Playing) {
-        if (recorder->isRecording()) {
-            recorder->stopRecording();
-            setButtonImage(recordButton, recordButtonOffImage);
-        } else {
-            recorder->startRecording();
-            setButtonImage(recordButton, recordButtonOnImage);
+        if (recorder != nullptr && trackList != nullptr) {
+            auto selected = trackList->getSelectedTrack();
+            if (selected != nullptr) {
+                if (selected->isRecording()) {
+                    selected->stopRecording();
+                    setButtonImage(recordButton, recordButtonOffImage);
+                } else {
+                    selected->startRecording();
+                    setButtonImage(recordButton, recordButtonOnImage);
+                }
+            }
         }
     }
 }
