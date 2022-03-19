@@ -94,7 +94,7 @@ class TrackListPanel : public juce::Component,
     void notifyDragEnded();
     void notifySelectionChanged();
 
-    void timerCallback() override { resized(); }
+    void timerCallback() override { resize(); }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListPanel)
 };

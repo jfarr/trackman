@@ -1,7 +1,8 @@
 #pragma once
 
-#include "SynthAudioSource.h"
 #include <JuceHeader.h>
+
+#include "SynthAudioSource.h"
 
 class Project;
 

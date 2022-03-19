@@ -95,8 +95,10 @@ void TrackListPanel::resize() {
 }
 
 int TrackListPanel::getPanelWidth() const {
-    int trackWidth = (int)(desktopController.getProject().getTrackList().getTotalLengthInSeconds() *
-                           desktopController.getProject().getHorizontalScale());
+    auto currentPos = desktopController.getMixer().getTransportSource().getCurrentPosition();
+    auto trackListLength = desktopController.getProject().getTrackList().getTotalLengthInSeconds();
+    auto scale = desktopController.getProject().getHorizontalScale();
+    int trackWidth = (int)(std::max(currentPos, trackListLength) * scale);
     return std::max(trackWidth, viewport.getWidth());
 }
 

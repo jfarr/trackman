@@ -5,16 +5,16 @@
 #include "Sample.h"
 #include "audio/GainAudioSource.h"
 #include "audio/MeteredAudioSource.h"
+#include "audio/MidiRecorder.h"
 #include "audio/PositionableMixingAudioSource.h"
 #include "audio/SamplePlayer.h"
 #include "audio/SynthAudioSource.h"
-#include "audio/MidiRecorder.h"
 
 class TrackList;
 
 class Track {
   public:
-    explicit Track(MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager);
+    Track(MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager);
     ~Track();
 
     int getTrackNumber() const { return trackNumber; }
@@ -39,7 +39,7 @@ class Track {
     void setDeleted(bool newDeleted);
 
     void selectSample(Sample *newSelected);
-    void moveSampleTo(Sample &sample, Track &toTrack, juce::AudioDeviceManager &deviceManager);
+    void moveSampleTo(Sample &sample, Track &toTrack);
     void eachSample(std::function<void(Sample &sample)> f);
     bool hasSamples() const { return !samples.empty(); }
     int getNumSamples() const { return samples.size(); }
@@ -55,8 +55,7 @@ class Track {
   private:
     friend TrackList;
 
-    Sample *addSample(const juce::File &file, double startPos, double endPos, juce::AudioDeviceManager &deviceManager,
-        juce::AudioFormatManager &formatManager);
+    Sample *addSample(const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager);
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
     void updateGain(bool anySoloed);
@@ -78,11 +77,12 @@ class Track {
     std::list<std::shared_ptr<Sample>> samples;
     std::unique_ptr<SamplePlayer> samplePlayer;
 
+    juce::AudioDeviceManager &deviceManager;
     MidiRecorder &midiRecorder;
     SynthAudioSource synthAudioSource;
     juce::MidiMessageSequence midiMessages;
 
-    void createSamplePlayer(juce::AudioDeviceManager &deviceManager);
+    void createSamplePlayer();
     void removeSamplePlayer();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)

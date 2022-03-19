@@ -35,7 +35,7 @@ void TrackList::removeTrack(Track *track) {
 
 Sample *TrackList::addSample(
     Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager) {
-    return track.addSample(file, startPos, endPos, deviceManager, formatManager);
+    return track.addSample(file, startPos, endPos, formatManager);
 }
 
 Track *TrackList::getSelectedTrack() const {

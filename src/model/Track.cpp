@@ -3,7 +3,7 @@
 #include <memory>
 
 Track::Track(MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager)
-    : midiRecorder(midiRecorder), synthAudioSource(midiRecorder.getKeyboardState()) {
+    : deviceManager(deviceManager), midiRecorder(midiRecorder), synthAudioSource(midiRecorder.getKeyboardState()) {
     synthAudioSource.prepareToPlay(
         deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
     gainSource = std::make_unique<GainAudioSource>(&synthAudioSource, false);
@@ -40,11 +40,11 @@ void Track::selectSample(Sample *newSelected) {
     eachSample([&newSelected](Sample &sample) { sample.setSelected(&sample == newSelected); });
 }
 
-void Track::moveSampleTo(Sample &sample, Track &toTrack, juce::AudioDeviceManager &deviceManager) {
+void Track::moveSampleTo(Sample &sample, Track &toTrack) {
     for (auto iter = samples.begin(); iter != samples.end();) {
         if (&sample == iter->get()) {
             toTrack.samples.push_back(*iter);
-            toTrack.createSamplePlayer(deviceManager);
+            toTrack.createSamplePlayer();
             samples.erase(iter++);
         } else {
             ++iter;
@@ -55,19 +55,19 @@ void Track::moveSampleTo(Sample &sample, Track &toTrack, juce::AudioDeviceManage
     }
 }
 
-Sample *Track::addSample(const juce::File &file, double startPos, double endPos,
-    juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {
+Sample *Track::addSample(
+    const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager) {
     samples.push_back(std::make_shared<Sample>(file, startPos, endPos));
     auto sample = &(*samples.back());
     sample->loadFile(deviceManager, formatManager);
-    createSamplePlayer(deviceManager);
+    createSamplePlayer();
     if (name == defaultName) {
         name = file.getFileName();
     }
     return &(*samples.back());
 }
 
-void Track::createSamplePlayer(juce::AudioDeviceManager &deviceManager) {
+void Track::createSamplePlayer() {
     if (samplePlayer == nullptr) {
         samplePlayer = std::make_unique<SamplePlayer>(samples);
         gainSource = std::make_unique<GainAudioSource>(samplePlayer.get(), false);
@@ -102,7 +102,11 @@ void Track::eachSample(std::function<void(Sample &sample)> f) {
 }
 
 juce::int64 Track::getTotalLengthInSamples() const {
-    return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
+    if (midiMessages.getNumEvents() == 0) {
+        return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
+    } else {
+        return midiMessages.getEndTime() * deviceManager.getAudioDeviceSetup().sampleRate;
+    }
 }
 
 void Track::startRecording() {
