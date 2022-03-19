@@ -3,8 +3,9 @@
 #include <JuceHeader.h>
 
 #include "model/Project.h"
+#include "model/Track.h"
 
-class NoteCanvas : public juce::Component {
+class NoteCanvas : public juce::Component, public juce::Timer {
   public:
     NoteCanvas(Project &project, Track &track);
     ~NoteCanvas() override = default;
@@ -14,6 +15,10 @@ class NoteCanvas : public juce::Component {
     //==============================================================================
     // Component
     void paint(juce::Graphics &g) override;
+
+    //==============================================================================
+    // Timer
+    void timerCallback() override { resize(); }
 
   private:
     Project &project;

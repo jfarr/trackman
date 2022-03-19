@@ -208,14 +208,13 @@ void TransportControl::resized() {
 void TransportControl::changeState(TransportState newState) {
     if (state != newState) {
         state = newState;
-
         switch (state) {
         case TransportState::Stopped:
             setButtonImage(playButton, playButtonOffImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
-            if (recorder->isRecording()) {
+            if (recorder != nullptr && recorder->isRecording()) {
                 setButtonImage(recordButton, recordButtonOffImage);
-                recorder->stopRecording();
+//                recorder->stopRecording();
                 notifyRecordingStopped();
             }
             recording = false;
@@ -235,11 +234,18 @@ void TransportControl::changeState(TransportState newState) {
             setButtonImage(playButton, playButtonOnImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
             setButtonImage(recordButton, recordButtonOnImage);
-            recorder->startRecording();
+            if (recorder != nullptr && trackList != nullptr) {
+                auto selected = trackList->getSelectedTrack();
+                if (selected != nullptr) {
+                    selected->startRecording();
+                }
+            }
             break;
 
         case TransportState::Pausing:
-            recorder->stopRecording();
+            if (recorder != nullptr) {
+                recorder->stopRecording();
+            }
             transportSource.stop();
             break;
 

@@ -2,8 +2,9 @@
 
 TrackLaneControl::TrackLaneControl(Project &project, Track &track, juce::AudioTransportSource &transport)
     : project(project), track(track), transport(transport), noteCanvas(project, track) {
-    createControls();
     setSize(preferredWidth, preferredHeight);
+    createControls();
+    update();
 }
 
 TrackLaneControl::~TrackLaneControl() {}
@@ -27,9 +28,9 @@ void TrackLaneControl::update() {
     for (SampleThumbnail *thumbnail : thumbnails) {
         addAndMakeVisible(thumbnail);
     }
-    if (track.getMidiMessages().getNumEvents() > 0) {
+//    if (track.getMidiMessages().getNumEvents() > 0) {
         addAndMakeVisible(noteCanvas);
-    }
+//    }
     resized();
 }
 

@@ -330,9 +330,10 @@ void DesktopController::updateTitleBar() {
 void DesktopController::recordingStopped() {
     auto selected = project.getTrackList().getSelectedTrack();
     if (selected != nullptr) {
-        auto messages = midiRecorder.getMidiMessages();
-        messages.updateMatchedPairs();
-        selected->setMidiMessages(messages);
+        selected->stopRecording();
+//        auto messages = midiRecorder.getMidiMessages();
+//        messages.updateMatchedPairs();
+//        selected->setMidiMessages(messages);
         juce::MessageManager::callAsync([this]() {
             trackListController.update();
         });
@@ -342,8 +343,8 @@ void DesktopController::recordingStopped() {
 void DesktopController::selectionChanged(Track *track) {
     project.getTrackList().setSelected(track);
     juce::MessageManager::callAsync([this, track]() {
-        midiRecorder.reset();
-        midiRecorder.setMidiMessages(track == nullptr ? juce::MidiMessageSequence() : track->getMidiMessages());
+//        midiRecorder.reset();
+//        midiRecorder.setMidiMessages(track == nullptr ? juce::MidiMessageSequence() : track->getMidiMessages());
         mixerController.getMixerPanel().getTransportControl().selectionChanged(track);
         trackListController.repaint();
         mixerController.repaint();

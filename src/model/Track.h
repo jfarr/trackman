@@ -45,7 +45,11 @@ class Track {
     int getNumSamples() const { return samples.size(); }
 
     bool canRecord() const { return samplePlayer == nullptr; }
-    juce::MidiMessageSequence &getMidiMessages() { return midiMessages; }
+    bool isRecording() const { return recording; }
+    void startRecording();
+    void stopRecording();
+    const juce::MidiMessageSequence &getMidiMessages() const { return midiMessages; }
+    const juce::MidiMessageSequence getCurrentMidiMessages(double pos) const;
     void setMidiMessages(const juce::MidiMessageSequence &newMessages) { midiMessages = newMessages; }
 
   private:
@@ -69,6 +73,7 @@ class Track {
     bool soloed = false;
     bool selected = false;
     bool deleted = false;
+    bool recording = false;
 
     std::list<std::shared_ptr<Sample>> samples;
     std::unique_ptr<SamplePlayer> samplePlayer;

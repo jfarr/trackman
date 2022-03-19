@@ -104,3 +104,40 @@ void Track::eachSample(std::function<void(Sample &sample)> f) {
 juce::int64 Track::getTotalLengthInSamples() const {
     return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
 }
+
+void Track::startRecording() {
+    if (!recording) {
+        midiRecorder.reset();
+        midiRecorder.setMidiMessages(midiMessages);
+    }
+    midiRecorder.startRecording();
+    recording = true;
+}
+
+void Track::stopRecording() {
+    midiRecorder.stopRecording();
+    recording = false;
+    auto messages = midiRecorder.getMidiMessages();
+    messages.updateMatchedPairs();
+    midiMessages = messages;
+}
+
+const juce::MidiMessageSequence Track::getCurrentMidiMessages(double pos) const {
+    if (recording) {
+        auto messages = midiRecorder.getMidiMessages();
+        std::list<juce::MidiMessage> noteOffMessages;
+        for (auto i : messages) {
+            if (i->message.isNoteOn() && i->noteOffObject == nullptr) {
+                auto noteOff = juce::MidiMessage::noteOff(i->message.getChannel(), i->message.getNoteNumber());
+                noteOff.setTimeStamp(pos);
+                noteOffMessages.push_back(noteOff);
+            }
+        }
+        for (auto noteOff : noteOffMessages) {
+            messages.addEvent(noteOff);
+        }
+        messages.updateMatchedPairs();
+        return messages;
+    }
+    return midiMessages;
+}
