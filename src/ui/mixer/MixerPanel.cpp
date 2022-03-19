@@ -8,7 +8,7 @@ MixerPanel::MixerPanel(DesktopController &desktopController, foleys::LevelMeterS
           &desktopController.getProject().getTrackList()) {
     createControls();
     masterTrackControl.addListener(&desktopController);
-    setSize(800, 280);
+    setSize(preferredWidth, preferredHeight);
 }
 
 MixerPanel::~MixerPanel() { masterTrackControl.removeListener(&desktopController); }
@@ -24,18 +24,18 @@ void MixerPanel::createControls() {
 void MixerPanel::paint(juce::Graphics &g) {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
     auto area = getLocalBounds();
-    auto buttonHeight = 35;
+//    auto buttonHeight = 35;
     g.setColour(juce::Colours::lightgrey);
-    g.fillRect(area.removeFromTop(buttonHeight));
+    g.fillRect(area.removeFromTop(transportHeight));
     g.setColour(juce::Colours::dimgrey);
     g.fillRect(area.removeFromTop(1));
 }
 
 void MixerPanel::resized() {
     auto area = getLocalBounds();
-    auto buttonHeight = 35;
-    auto transportMargin = 5;
-    transportControl.setBounds(area.removeFromTop(buttonHeight).reduced(transportMargin));
+//    auto buttonHeight = 35;
+//    auto transportMargin = 5;
+    transportControl.setBounds(area.removeFromTop(transportHeight).reduced(transportMargin));
     area.removeFromTop(1);
     masterTrackControl.setBounds(area.removeFromLeft(masterTrackControl.getPreferredWidth()));
     mixerViewport.setBounds(area);

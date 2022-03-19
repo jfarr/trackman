@@ -26,6 +26,11 @@ class MixerPanel : public juce::Component {
     void resized() override;
 
   private:
+    const int preferredWidth = 800;
+    const int preferredHeight = 280;
+    const int transportHeight = 35;
+    const int transportMargin = 5;
+
     DesktopController &desktopController;
     juce::Viewport &mixerViewport;
 

@@ -198,11 +198,12 @@ void DesktopComponent::resized() {
         juce::Rectangle<int>(0, area.getHeight() - scaleButtonWidth, scaleButtonWidth * 2, scaleButtonWidth));
     auto &instrumentsPanel = desktopController.getInstrumentsController().getInstrumentsPanel();
     instrumentsPanel.setBounds(area.removeFromLeft(leftPanelWidth));
-    timeMeter.setBounds(area.removeFromTop(topStripHeight));
+    auto stripArea = area;
+    timeMeter.setBounds(stripArea.removeFromTop(topStripHeight));
     timeMeter.repaint();
-    desktopController.getTrackListController().getViewport().setBounds(area);
+    desktopController.getTrackListController().getViewport().setBounds(stripArea);
     desktopController.resize();
-    spacer.setBounds(0, 0, panelWidth, topStripHeight);
+    spacer.setBounds(area.removeFromTop(topStripHeight).withX(0).withWidth(panelWidth));
 }
 
 //==============================================================================

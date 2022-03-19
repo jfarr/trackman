@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Short-Term
+- Tempo + time signature
 - Instruments
 - Oscillator
 - Master track automation
