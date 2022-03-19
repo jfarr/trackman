@@ -14,6 +14,7 @@ target_sources(Trackman PRIVATE
         JuceHeader.h
         Main.cpp
         common/listutil.h
+        common/midiutil.h
         audio/GainAudioSource.cpp
         audio/GainAudioSource.h
         audio/MeteredAudioSource.cpp
