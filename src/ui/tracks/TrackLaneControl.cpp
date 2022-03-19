@@ -56,6 +56,6 @@ void TrackLaneControl::resized() {
         auto x = thumbnail->getSample().getStartPos() * scale;
         thumbnail->setBounds(x, area.getY(), thumbnail->getSample().getLengthInSeconds() * scale, area.getHeight());
     }
-    noteRoll.setBounds(noteRoll.getBounds().withHeight(getHeight()));
+    noteRoll.setBounds(noteRoll.getBounds().withY(area.getY()).withHeight(area.getHeight()));
     noteRoll.resize();
 }
