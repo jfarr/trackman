@@ -54,29 +54,7 @@ void MidiRecorder::handleMessage(juce::MidiMessage &message, double time) {
     auto offset = (time - t) * .001;
     auto timestamp = project.getMixer().getTransportSource().getCurrentPosition();
     message.setTimeStamp(timestamp + offset);
-    auto sampleNumber = timestamp * deviceManager.getAudioDeviceSetup().sampleRate;
-    lastSampleNumber = sampleNumber;
     midiMessages.addEvent(message);
-}
-
-//==============================================================================
-void MidiRecorder::setNextReadPosition(juce::int64 position) { nextReadPosition = position; }
-
-juce::int64 MidiRecorder::getNextReadPosition() const { return nextReadPosition; }
-
-juce::int64 MidiRecorder::getTotalLength() const {
-    return recording ? std::max(nextReadPosition, lastSampleNumber) : lastSampleNumber;
-}
-
-//==============================================================================
-void MidiRecorder::prepareToPlay(int blockSize, double sampleRate) {}
-
-void MidiRecorder::releaseResources() {}
-
-void MidiRecorder::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    if (recording) {
-        nextReadPosition += bufferToFill.numSamples;
-    }
 }
 
 void MidiRecorder::printEvents(const juce::MidiMessageSequence &midiMessages) {

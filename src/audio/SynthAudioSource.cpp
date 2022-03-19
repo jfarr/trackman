@@ -22,7 +22,7 @@ juce::int64 SynthAudioSource::getNextReadPosition() const {
 }
 
 juce::int64 SynthAudioSource::getTotalLength() const {
-    return track.getDeviceManager().getAudioDeviceSetup().sampleRate * track.getMidiMessages().getEndTime();
+    return track.isRecording() ? currentPosition : track.getDeviceManager().getAudioDeviceSetup().sampleRate * track.getMidiMessages().getEndTime();
 }
 
 bool SynthAudioSource::isLooping() const {

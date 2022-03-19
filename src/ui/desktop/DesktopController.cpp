@@ -11,7 +11,7 @@ DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceMa
       desktopComponent(*this), project(deviceManager, midiRecorder), mixerController(*this), trackListController(*this),
       instrumentsController(*this), midiRecorder(project, deviceManager) {
 
-    getMixer().addSource(&midiRecorder);
+//    getMixer().addSource(&midiRecorder);
     updateTitleBar();
 }
 
