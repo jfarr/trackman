@@ -68,8 +68,6 @@ target_sources(Trackman PRIVATE
         ui/common/PositionOverlay.h
         ui/common/ThumbnailComponent.cpp
         ui/common/ThumbnailComponent.h
-        ui/common/TimeMeter.cpp
-        ui/common/TimeMeter.h
         ui/common/TransportControl.cpp
         ui/common/TransportControl.h
         ui/desktop/ChildWindow.cpp
@@ -81,6 +79,8 @@ target_sources(Trackman PRIVATE
         ui/desktop/FileDragDropTarget.h
         ui/desktop/ScaleButtonPanel.cpp
         ui/desktop/ScaleButtonPanel.h
+        ui/desktop/TimeMeter.cpp
+        ui/desktop/TimeMeter.h
         ui/desktop/TrackScaleListener.h
         ui/desktop/TrackListListener.h
         ui/instruments/InstrumentControl.cpp
