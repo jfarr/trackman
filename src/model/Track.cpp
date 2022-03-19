@@ -106,8 +106,12 @@ juce::int64 Track::getTotalLengthInSamples() const {
     if (midiMessages.getNumEvents() == 0) {
         return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
     } else {
-        return midiMessages.getEndTime() * deviceManager.getAudioDeviceSetup().sampleRate;
+        return getMidiLengthInSamples();
     }
+}
+
+juce::int64 Track::getMidiLengthInSamples() const {
+    return project.ticksToSeconds(midiMessages.getEndTime()) * deviceManager.getAudioDeviceSetup().sampleRate;
 }
 
 void Track::startRecording() {

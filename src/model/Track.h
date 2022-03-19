@@ -26,6 +26,7 @@ class Track {
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
     juce::int64 getTotalLengthInSamples() const;
+    juce::int64 getMidiLengthInSamples() const;
     juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
 
     juce::PositionableAudioSource *getSource() { return meteredSource.get(); }

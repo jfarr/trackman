@@ -9,8 +9,8 @@ NoteRoll::NoteRoll(Project &project, Track &track) : project(project), track(tra
 
 void NoteRoll::resize() {
     auto area = getBounds();
-    auto length =
-        track.getCurrentMidiMessages(project.getMixer().getTransportSource().getCurrentPosition()).getEndTime();
+    auto length = project.ticksToSeconds(
+        track.getCurrentMidiMessages(project.getMixer().getTransportSource().getCurrentPosition()).getEndTime());
     auto width = length * project.getHorizontalScale() + 1;
     setBounds(area.withWidth(width));
     repaint();

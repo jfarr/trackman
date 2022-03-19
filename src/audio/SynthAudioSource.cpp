@@ -22,7 +22,7 @@ juce::int64 SynthAudioSource::getNextReadPosition() const {
 }
 
 juce::int64 SynthAudioSource::getTotalLength() const {
-    juce::int64 len = track.getDeviceManager().getAudioDeviceSetup().sampleRate * track.getMidiMessages().getEndTime();
+    juce::int64 len = track.getMidiLengthInSamples();
     return track.isRecording() && !looping ? std::max(len, currentPosition) : len;
 }
 
