@@ -8,6 +8,7 @@
 - Midi note roll
   - Notes
   - CV
+- Hold zoom buttons zooms exponentially faster
 - Play instruments when not recording (preview)
 - Use undo manager
 - Use ListenerList
