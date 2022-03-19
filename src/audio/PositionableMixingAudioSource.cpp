@@ -50,9 +50,6 @@ juce::int64 PositionableMixingAudioSource::getNextReadPosition() const {
         auto pos = inputs.getUnchecked(i)->getNextReadPosition();
         nextPos = juce::jmax(nextPos, pos);
     }
-    if (looping) {
-        nextPos = nextPos % getTotalLength();
-    }
     return nextPos;
 }
 

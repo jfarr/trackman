@@ -84,4 +84,8 @@ juce::int64 Sample::getTotalLength() const {
 
 bool Sample::isLooping() const { return false; }
 
-void Sample::setLooping(bool shouldLoop) {}
+void Sample::setLooping(bool shouldLoop) {
+    if (resamplingSource != nullptr) {
+        resamplingSource->setLooping(shouldLoop);
+    }
+}
