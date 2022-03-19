@@ -1,11 +1,11 @@
 # Roadmap
 
 ## Short-Term
-- TimeSignature + time signature
+- Tempo + time signature
 - Instruments
 - Oscillator
 - Master track automation
-  - TimeSignature change
+  - Tempo change
   - Time signature change
 - Stereo panner
 - Midi CV
@@ -24,13 +24,12 @@
 
 ## Long Term
 
+- Snap to nearest quanta
 - Click+drag to select samples
 - Drop multiple files
   - Default one track
   - Ctrl-drag multiple tracks
 - Copy / paste
-- TimeSignature + time signature
-  - Snap to nearest quanta
 - Console commands
 - Script window
 - Unit tests
