@@ -154,23 +154,24 @@ void Track::setMidiMessages(const juce::MidiMessageSequence &newMessages) {
 
 void Track::processNextMidiBuffer(
     juce::MidiBuffer &buffer, const int startSample, const int numSamples, const juce::int64 currentPos) {
-    if (recording) {
-        midiRecorder.getKeyboardState().processNextMidiBuffer(buffer, startSample, numSamples, true);
-    } else {
-        // TODO: handle wrap-around
-        auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
-        const double startTime = currentPos / sampleRate;
-        const double endTime = startTime + numSamples / sampleRate;
-        const double scaleFactor = numSamples / (double)(endTime + 1 - startTime);
+    // TODO: handle wrap-around
+    auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
+    const double startTime = currentPos / sampleRate;
+    const double endTime = startTime + numSamples / sampleRate;
+    const double scaleFactor = numSamples / (double)(endTime + 1 - startTime);
 
-        auto startIndex = midiMessages.getNextIndexAtTime(startTime);
-        auto endIndex = midiMessages.getNextIndexAtTime(endTime);
-        for (int i = startIndex; i < endIndex; i++) {
-            auto p = midiMessages.getEventPointer(i);
-            auto event = p->message;
-            const auto pos =
-                juce::jlimit(0, numSamples - 1, juce::roundToInt((event.getTimeStamp() - startTime) * scaleFactor));
-            buffer.addEvent(event, startSample + pos);
-        }
+    auto startIndex = midiMessages.getNextIndexAtTime(startTime);
+    auto endIndex = midiMessages.getNextIndexAtTime(endTime);
+    for (int i = startIndex; i < endIndex; i++) {
+        auto p = midiMessages.getEventPointer(i);
+        auto event = p->message;
+        const auto pos =
+            juce::jlimit(0, numSamples - 1, juce::roundToInt((event.getTimeStamp() - startTime) * scaleFactor));
+        buffer.addEvent(event, startSample + pos);
+    }
+    if (recording) {
+        juce::MidiBuffer keyboardBuffer;
+        midiRecorder.getKeyboardState().processNextMidiBuffer(keyboardBuffer, startSample, numSamples, true);
+        buffer.addEvents(keyboardBuffer, startSample, numSamples, 0);
     }
 }
