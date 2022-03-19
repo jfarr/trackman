@@ -157,6 +157,7 @@ void Track::processNextMidiBuffer(
     if (recording) {
         midiRecorder.getKeyboardState().processNextMidiBuffer(buffer, startSample, numSamples, true);
     } else {
+        // TODO: handle wrap-around
         auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
         const double startTime = currentPos / sampleRate;
         const double endTime = startTime + numSamples / sampleRate;
