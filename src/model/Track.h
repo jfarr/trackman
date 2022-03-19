@@ -55,7 +55,7 @@ class Track {
     void setMidiMessages(const juce::MidiMessageSequence &newMessages) { midiMessages = newMessages; }
 
     void processNextMidiBuffer(
-        juce::MidiBuffer &buffer, const int startSample, const int numSamples, const bool injectIndirectEvents);
+        juce::MidiBuffer &buffer, const int startSample, const int numSamples, const juce::int64 currentPos);
 
   private:
     friend TrackList;

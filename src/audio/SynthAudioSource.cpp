@@ -10,11 +10,8 @@ void SynthAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &buf
     bufferToFill.clearActiveBufferRegion();
 
     juce::MidiBuffer incomingMidi;
-    track.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
-
-    synth.renderNextBlock(
-        *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
-
+    track.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, currentPosition);
+    synth.renderNextBlock(*bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
     currentPosition += bufferToFill.numSamples;
 }
 
