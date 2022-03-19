@@ -16,6 +16,9 @@
 - Song start / end position
 - Loop start / end position
 - Sample info popup
+- UI enhancements
+  - Rescale note roll
+  - Drop sample disallowed graphic
 
 
 ## Long Term
