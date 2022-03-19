@@ -24,5 +24,8 @@ class NoteRoll : public juce::Component, public juce::Timer {
     Project &project;
     Track &track;
 
+    static juce::Rectangle<float> getNoteRect(const juce::MidiMessage &noteOn, const juce::MidiMessage &noteOff, int lowNote,
+        double noteStep, double x, double h, double scale, double margin) ;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteRoll)
 };

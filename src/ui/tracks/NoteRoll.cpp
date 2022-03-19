@@ -25,23 +25,29 @@ void NoteRoll::paint(juce::Graphics &g) {
     int highNote = getHighestNote(messages);
     double noteSpan = std::max(24, highNote - lowNote) + 1;
     double margin = 1.0;
+    double x = area.getX();
     double h = getHeight() - 2 * margin;
-    double noteStep = h / noteSpan;
+    double noteHeight = h / noteSpan;
     for (auto m : messages) {
         if (m->message.isNoteOn() && m->noteOffObject != nullptr) {
             auto noteOn = m->message;
             auto noteOff = m->noteOffObject->message;
-            auto start = noteOn.getTimeStamp();
-            auto end = noteOff.getTimeStamp();
-            auto x = area.getX() + start * scale;
-            auto width = (end - start) * scale;
-            auto noteDist = noteOn.getNoteNumber() - lowNote;
-            double y = h - noteStep * (noteDist + 1.0) + margin;
-            juce::Rectangle<float> r(x, y, width, noteStep);
+            juce::Rectangle<float> r = getNoteRect(noteOn, noteOff, lowNote, noteHeight, x, h, scale, margin);
             g.setColour(juce::Colours::steelblue.darker(0.3));
             g.fillRect(r);
             g.setColour(selected ? juce::Colours::lightgrey : juce::Colours::grey);
             g.drawRect(r.expanded(margin));
         }
     }
+}
+
+juce::Rectangle<float> NoteRoll::getNoteRect(const juce::MidiMessage &noteOn, const juce::MidiMessage &noteOff,
+    int lowNote, double noteHeight, double x, double h, double scale, double margin) {
+    auto start = noteOn.getTimeStamp();
+    auto end = noteOff.getTimeStamp();
+    auto noteX = x + start * scale;
+    auto noteWidth = (end - start) * scale;
+    auto noteDist = noteOn.getNoteNumber() - lowNote;
+    double noteY = h - noteHeight * (noteDist + 1.0) + margin;
+    return juce::Rectangle<float>(noteX, noteY, noteWidth, noteHeight);
 }
