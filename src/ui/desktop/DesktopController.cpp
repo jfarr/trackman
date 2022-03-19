@@ -98,6 +98,9 @@ void DesktopController::addNewTrack() {
 }
 
 void DesktopController::addNewSample(Track *track, const juce::File &file, int pos) {
+    if (track != nullptr && track->hasMidi()) {
+        return;
+    }
     Command *command = new AddSampleCommand(*this, track, file, pos);
     commandList.pushCommand(command);
     dirty = true;
@@ -330,9 +333,7 @@ void DesktopController::updateTitleBar() {
 void DesktopController::recordingStopped() {
     auto selected = project.getTrackList().getSelectedTrack();
     if (selected != nullptr) {
-        auto messages = midiRecorder.getMidiMessages();
-        messages.updateMatchedPairs();
-        selected->setMidiMessages(messages);
+        selected->stopRecording();
         juce::MessageManager::callAsync([this]() {
             trackListController.update();
         });
@@ -342,8 +343,6 @@ void DesktopController::recordingStopped() {
 void DesktopController::selectionChanged(Track *track) {
     project.getTrackList().setSelected(track);
     juce::MessageManager::callAsync([this, track]() {
-        midiRecorder.reset();
-        midiRecorder.setMidiMessages(track == nullptr ? juce::MidiMessageSequence() : track->getMidiMessages());
         mixerController.getMixerPanel().getTransportControl().selectionChanged(track);
         trackListController.repaint();
         mixerController.repaint();

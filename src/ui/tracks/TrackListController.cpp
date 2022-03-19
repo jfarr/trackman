@@ -5,7 +5,7 @@
 
 TrackListController::TrackListController(DesktopController &desktopController)
     : desktopController(desktopController), project(desktopController.getProject()),
-      trackListViewport(desktopController.getDesktopComponent()),
+      trackListViewport(desktopController.getDesktopComponent(), desktopController.getProject()),
       trackListPanel(desktopController, trackListViewport, desktopController.getMixer().getTransportSource()) {
 
     trackListPanel.addListener((SampleListener *)this);
@@ -80,7 +80,7 @@ void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &to
             project.getMixer().removeSource(fromTrack.getSource());
         }
         auto &deviceManager = desktopController.getMainWindow().getMainAudioComponent().getDeviceManager();
-        fromTrack.moveSampleTo(sample, toTrack, deviceManager);
+        fromTrack.moveSampleTo(sample, toTrack);
         selectionChanged(&toTrack);
         fromTrack.selectSample(nullptr);
         toTrack.selectSample(&sample);

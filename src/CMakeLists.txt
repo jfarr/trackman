@@ -14,6 +14,7 @@ target_sources(Trackman PRIVATE
         JuceHeader.h
         Main.cpp
         common/listutil.h
+        common/midiutil.h
         audio/GainAudioSource.cpp
         audio/GainAudioSource.h
         audio/MeteredAudioSource.cpp
@@ -61,8 +62,6 @@ target_sources(Trackman PRIVATE
         ui/common/DecibelSlider.h
         ui/common/FileChooserControl.cpp
         ui/common/FileChooserControl.h
-        ui/common/NoteCanvas.cpp
-        ui/common/NoteCanvas.h
         ui/common/PositionOverlay.cpp
         ui/common/PositionOverlay.h
         ui/common/ThumbnailComponent.cpp
@@ -106,6 +105,8 @@ target_sources(Trackman PRIVATE
         ui/mixer/TrackControlListener.h
         ui/mixer/TrackPanel.cpp
         ui/mixer/TrackPanel.h
+        ui/tracks/NoteRoll.cpp
+        ui/tracks/NoteRoll.h
         ui/tracks/SampleListener.h
         ui/tracks/SampleThumbnail.cpp
         ui/tracks/SampleThumbnail.h

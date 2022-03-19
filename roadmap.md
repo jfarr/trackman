@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Short-Term
+- Midi playback
 - Fix bugs
   - Export audio not working
 - Instruments
@@ -8,6 +9,7 @@
 - Midi note roll
   - Notes
   - CV
+- Hold zoom buttons zooms exponentially faster
 - Play instruments when not recording (preview)
 - Use undo manager
 - Use ListenerList
@@ -15,6 +17,9 @@
 - Song start / end position
 - Loop start / end position
 - Sample info popup
+- UI enhancements
+  - Rescale note roll
+  - Drop sample disallowed graphic
 
 
 ## Long Term

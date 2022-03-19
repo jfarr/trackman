@@ -13,19 +13,20 @@ class DesktopController;
 
 class DropBox : public juce::Component {
   public:
-    DropBox() { setSize(200, 60); }
+    DropBox(std::function<bool()> canDropFn) : canDropFn(canDropFn) { setSize(200, 60); }
     ~DropBox() override {}
 
     void setSource(std::unique_ptr<juce::AudioFormatReaderSource> &newSource) { source = std::move(newSource); }
 
     void paint(juce::Graphics &g) override {
-        g.fillAll(juce::Colours::dimgrey);
+        g.fillAll(canDropFn() ? juce::Colours::dimgrey : juce::Colours::darkred);
         g.setColour(juce::Colours::grey);
         g.drawRect(0, 0, getWidth(), getHeight());
     }
 
   private:
     std::unique_ptr<juce::AudioFormatReaderSource> source;
+    std::function<bool()> canDropFn;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DropBox)
 };
 
@@ -44,6 +45,7 @@ class TrackListPanel : public juce::Component,
     void removeLane(TrackLaneControl *lane) { lanes.remove(lane); }
     void clear() { lanes.clear(); }
     void resize();
+    void increaseMaxWidth(int increment) { maxWidth += increment; resize(); }
     void update();
 
     void fileDragEnter(const juce::StringArray &files, int x, int y);
@@ -78,9 +80,12 @@ class TrackListPanel : public juce::Component,
     juce::AudioTransportSource &transport;
     std::list<TrackLaneControl *> lanes;
     PositionOverlay overlay;
+    int maxWidth = 0;
 
     DropBox dropBox;
     int dragSourceOffset = 0;
+    juce::Point<int> dragPosition;
+    bool canDrop();
 
     std::list<SampleListener *> sampleListeners;
     std::list<TrackListListener *> trackListListeners;
@@ -94,7 +99,7 @@ class TrackListPanel : public juce::Component,
     void notifyDragEnded();
     void notifySelectionChanged();
 
-    void timerCallback() override { resized(); }
+    void timerCallback() override { resize(); }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListPanel)
 };
