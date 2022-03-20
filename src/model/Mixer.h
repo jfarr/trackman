@@ -8,7 +8,7 @@
 
 class TrackList;
 
-class Mixer : public juce::AudioSource {
+class Mixer : public juce::PositionableAudioSource {
   public:
     Mixer(TrackList &trackList, juce::AudioDeviceManager &deviceManager);
     ~Mixer() override;
@@ -26,13 +26,20 @@ class Mixer : public juce::AudioSource {
 
     void setMasterLevelGain(float newLevel);
     void setMasterMute(bool newMuted);
-    void setLooping(bool shouldLoop) { mixerSource.setLooping(shouldLoop); }
 
     //==============================================================================
     // AudioSource
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
     void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
     void releaseResources() override;
+
+    //==============================================================================
+    // PositionableAudioSource
+    void setNextReadPosition(juce::int64 newPosition) override { meteredSource.setNextReadPosition(newPosition); }
+    juce::int64 getNextReadPosition() const override { return meteredSource.getNextReadPosition(); }
+    juce::int64 getTotalLength() const override { return meteredSource.getTotalLength(); }
+    bool isLooping() const override { return meteredSource.isLooping(); }
+    void setLooping(bool shouldLoop) override { meteredSource.setLooping(shouldLoop); }
 
   private:
     TrackList &trackList;
