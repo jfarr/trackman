@@ -9,12 +9,16 @@ using json = nlohmann::json;
 Project::Project(juce::AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
     : deviceManager(deviceManager), trackList(*this, deviceManager, midiRecorder), mixer(trackList, deviceManager) {}
 
-int Project::secondsToTicks(double seconds) { return ::secondsToTicks(tempo, seconds); }
+int Project::secondsToTicks(double seconds) const { return ::secondsToTicks(tempo, seconds); }
 
-double Project::ticksToSeconds(int ticks) { return ::ticksToSeconds(tempo, ticks); }
+double Project::ticksToSeconds(int ticks) const { return ::ticksToSeconds(tempo, ticks); }
 
-double Project::measuresToSeconds(double measures) {
+double Project::measuresToSeconds(double measures) const {
     return timeSignature.measuresToSeconds(measures, tempo);
+}
+
+double Project::secondsToMeasures(double seconds) const {
+    return timeSignature.secondsToMeasures(seconds, tempo);
 }
 
 Track *Project::addTrack() {
@@ -44,6 +48,8 @@ Sample *Project::addSample(
 std::string Project::to_json() {
     json project_json = {{"tempo", tempo}, {"horizontalScale", horizontalScale},
         {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
+    project_json["timeSignature"] = {
+        {"numerator", timeSignature.getNumerator()}, {"denominator", timeSignature.getDenominator()}};
     project_json["tracks"] = json::array();
     juce::MidiFile midiFile;
     midiFile.setTicksPerQuarterNote(ticksPerQuarterNote);
@@ -75,6 +81,8 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
     s >> project_json;
     mixer.removeAllSources();
     tempo = project_json["tempo"];
+    timeSignature =
+        TimeSignature(project_json["timeSignature"]["numerator"], project_json["timeSignature"]["denominator"]);
     horizontalScale = project_json["horizontalScale"];
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);

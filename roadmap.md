@@ -1,8 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Tempo + time signature
-- Fix meter strip scaling with tempo
 - Instruments
 - Oscillator
 - Stretch sample loops instead of resampling
@@ -15,6 +13,7 @@
 - Play instruments when not recording (preview)
 - Use undo manager
 - Undo record midi
+- Undo change tempo / time signature
 - Use ListenerList
 - Song start / end position
 - Loop start / end position

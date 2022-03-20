@@ -72,6 +72,10 @@ class DesktopController : public juce::AudioSource,
     void openProject();
     void exportProject();
 
+    void tempoChanged(float newTempo);
+    void numeratorChanged(int newNumerator);
+    void denominatorChanged(int newDenominator);
+
     //==============================================================================
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;
@@ -89,7 +93,6 @@ class DesktopController : public juce::AudioSource,
     // MasterTrackListener
     void masterLevelChangeFinalized(float previousLevel) override;
     void masterMuteToggled() override;
-    void tempoChanged(float previousTempo, float newTempo) override;
 
     //==============================================================================
     // TrackControlListener
@@ -124,6 +127,8 @@ class DesktopController : public juce::AudioSource,
     juce::File projectFile;
     bool dirty = false;
     Command *saveCommand = nullptr;
+
+    float previousTempo;
 
     void saveProjectFile(const juce::File &file);
     void updateTitleBar();
