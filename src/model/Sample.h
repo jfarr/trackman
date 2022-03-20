@@ -12,14 +12,14 @@ class Sample : public juce::PositionableAudioSource {
     Sample(juce::File file, double startPos, double endPos);
     ~Sample() override;
 
-    [[nodiscard]] juce::File getFile() const { return file; }
-    [[nodiscard]] double getStartPos() const { return startPos; }
-    [[nodiscard]] double getEndPos() const { return endPos; }
-    [[nodiscard]] juce::int64 getLengthInSamples() const;
-    [[nodiscard]] double getLengthInSeconds() const { return length; }
-    [[nodiscard]] bool isLoaded() const { return loaded; }
-    [[nodiscard]] bool isSelected() const { return selected; }
-    [[nodiscard]] bool isDeleted() const { return deleted; }
+    juce::File getFile() const { return file; }
+    double getStartPos() const { return startPos; }
+    double getEndPos() const { return endPos; }
+    juce::int64 getLengthInSamples() const;
+    double getLengthInSeconds() const { return length; }
+    bool isLoaded() const { return loaded; }
+    bool isSelected() const { return selected; }
+    bool isDeleted() const { return deleted; }
 
     void loadFile(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
 
@@ -37,9 +37,9 @@ class Sample : public juce::PositionableAudioSource {
     //==============================================================================
     // PositionableAudioSource
     void setNextReadPosition(juce::int64 newPosition) override;
-    [[nodiscard]] juce::int64 getNextReadPosition() const override;
-    [[nodiscard]] juce::int64 getTotalLength() const override;
-    [[nodiscard]] bool isLooping() const override;
+    juce::int64 getNextReadPosition() const override;
+    juce::int64 getTotalLength() const override;
+    bool isLooping() const override;
     void setLooping(bool shouldLoop) override;
 
   private:
@@ -54,8 +54,8 @@ class Sample : public juce::PositionableAudioSource {
     bool selected = false;
     bool deleted = false;
 
-    [[nodiscard]] juce::int64 getPositionFromTime(double t) const;
-    [[nodiscard]] double getSampleRate() const;
+    juce::int64 getPositionFromTime(double t) const;
+    double getSampleRate() const;
 
     std::unique_ptr<juce::AudioFormatReader> reader;
 };

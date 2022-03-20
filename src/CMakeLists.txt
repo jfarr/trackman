@@ -53,6 +53,8 @@ target_sources(Trackman PRIVATE
         model/Track.h
         model/TrackList.cpp
         model/TrackList.h
+        model/Transport.cpp
+        model/Transport.h
         ui/AudioPlayer.cpp
         ui/AudioPlayer.h
         ui/KeyboardControl.cpp

@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Short-Term
+- Refactor: Transport, TransportController
 - Draw note roll borders
 - Select note rolls
 - Delete note rolls
