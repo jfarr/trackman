@@ -1,11 +1,19 @@
 #include "TimeMeter.h"
 #include "common/mathutil.h"
 
+TimeMeter::TimeMeter(Project &project) : project(project) {
+    setInterceptsMouseClicks(false, false);
+}
+
 void TimeMeter::paint(juce::Graphics &g) {
-    g.fillAll(juce::Colours::grey);
+//    g.fillAll(juce::Colours::grey);
+    const int topStripHeight = 30;
+    g.fillAll(juce::Colours::green);
     auto bounds = getLocalBounds();
+    g.setColour(juce::Colours::grey);
+    g.fillRect(0, 0, bounds.getWidth(), topStripHeight);
     drawTicksInMeasures(g, bounds.removeFromTop(15));
-    drawTicksInSeconds(g, bounds);
+    drawTicksInSeconds(g, bounds.removeFromTop(15));
     drawStartMarker(g);
 }
 

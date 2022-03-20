@@ -6,8 +6,8 @@
 
 class TimeMeter : public juce::Component {
   public:
-    TimeMeter(Project &project) : project(project) {}
-    ~TimeMeter() {}
+    TimeMeter(Project &project);
+    ~TimeMeter() override = default;
 
     //==============================================================================
     // Component
