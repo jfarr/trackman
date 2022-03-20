@@ -6,13 +6,17 @@ MixerPanel::MixerPanel(DesktopController &desktopController, foleys::LevelMeterS
     : desktopController(desktopController), masterTrackControl(desktopController.getMixer(), meterSource),
       mixerViewport(desktopController.getMixerController().getViewport()),
       transportControl(desktopController.getMixer().getTransportSource(), true, &desktopController.getMidiRecorder(),
-          &desktopController.getProject().getTrackList()) {
+          &desktopController.getProject().getTrackList()),
+      previousTempo(desktopController.getProject().getTempo()) {
     createControls();
     masterTrackControl.addListener(&desktopController);
     setSize(preferredWidth, preferredHeight);
 }
 
-MixerPanel::~MixerPanel() { masterTrackControl.removeListener(&desktopController); }
+MixerPanel::~MixerPanel() {
+    masterTrackControl.removeListener(&desktopController);
+    denominatorSelect.setLookAndFeel(nullptr);
+}
 
 void MixerPanel::createControls() {
     tempoLabel.setText("Tempo", juce::dontSendNotification);
@@ -20,10 +24,23 @@ void MixerPanel::createControls() {
     tempoText.setText(juce::String(desktopController.getProject().getTempo()), juce::dontSendNotification);
     tempoText.setJustificationType(juce::Justification::centredLeft);
     tempoText.onTextChange = [this] { tempoChanged(); };
+
+    timeSignatureDivider.setText("/", juce::dontSendNotification);
+    timeSignatureDivider.setInterceptsMouseClicks(false, false);
+    timeSignatureDivider.setJustificationType(juce::Justification::centred);
+    denominatorSelect.setLookAndFeel(&denominatorLF);
+    denominatorSelect.addItem("4", 4);
+    denominatorSelect.addItem("8", 8);
+    denominatorSelect.addItem("16", 16);
+    denominatorSelect.setSelectedId(desktopController.getProject().getTimeSignature().getDenominator(), juce::dontSendNotification);
+
     mixerViewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
+
     addAndMakeVisible(transportControl);
     addAndMakeVisible(tempoLabel);
     addAndMakeVisible(tempoText);
+    addAndMakeVisible(timeSignatureDivider);
+    addAndMakeVisible(denominatorSelect);
     addAndMakeVisible(masterTrackControl);
     addAndMakeVisible(mixerViewport);
 }
@@ -49,6 +66,12 @@ void MixerPanel::resized() {
         tempoArea.removeFromLeft(50).withTrimmedTop(transportMargin - 1).withTrimmedBottom(transportMargin + 1));
     tempoText.setBounds(
         tempoArea.removeFromLeft(45).withTrimmedTop(transportMargin).withTrimmedBottom(transportMargin));
+    timeSignatureDivider.setBounds(
+        tempoArea.removeFromLeft(15).withTrimmedTop(transportMargin - 1).withTrimmedBottom(transportMargin + 1));
+    denominatorSelect.setBounds(tempoArea.removeFromLeft(47)
+                                  .withTrimmedLeft(-5)
+                                  .withTrimmedTop(transportMargin + 2)
+                                  .withTrimmedBottom(transportMargin + 2));
     transportControl.setBounds(area.removeFromTop(transportHeight).reduced(transportMargin));
     area.removeFromTop(1);
     masterTrackControl.setBounds(area.removeFromLeft(masterTrackControl.getPreferredWidth()));
@@ -56,7 +79,8 @@ void MixerPanel::resized() {
 }
 
 void MixerPanel::tempoChanged() {
-    float newTempo = tempoText.getText().getFloatValue();;
+    float newTempo = tempoText.getText().getFloatValue();
+    ;
     notifyTempoChanged(previousTempo, newTempo);
     previousTempo = newTempo;
 }
@@ -69,9 +93,8 @@ void MixerPanel::addListener(MasterTrackListener *listener) {
 
 void MixerPanel::removeListener(MasterTrackListener *listener) { listeners.remove(listener); }
 
-void  MixerPanel::notifyTempoChanged(float previousTempo, float newTempo) {
+void MixerPanel::notifyTempoChanged(float previousTempo, float newTempo) {
     for (MasterTrackListener *listener : listeners) {
         listener->tempoChanged(previousTempo, newTempo);
     }
-
 }

@@ -15,6 +15,7 @@
 - Play instruments when not recording (preview)
 - Use undo manager
 - Undo record midi
+- Undo change tempo / time signature
 - Use ListenerList
 - Song start / end position
 - Loop start / end position

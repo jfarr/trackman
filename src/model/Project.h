@@ -12,6 +12,9 @@ class Project {
     const float getTempo() const { return tempo; };
     void setTempo(const float newTempo) { tempo = newTempo; }
 
+    const TimeSignature &getTimeSignature() const { return timeSignature; }
+    void setTimeSignature(const TimeSignature & newTimeSignature) { timeSignature = newTimeSignature; }
+
     Track *addTrack();
     void deleteTrack(Track *track);
 
