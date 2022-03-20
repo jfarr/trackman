@@ -1,13 +1,11 @@
 #include "MixerPanel.h"
-#include "common/listutil.h"
 #include "ui/desktop/DesktopController.h"
 
 MixerPanel::MixerPanel(DesktopController &desktopController, foleys::LevelMeterSource &meterSource)
     : desktopController(desktopController), masterTrackControl(desktopController.getMixer(), meterSource),
       mixerViewport(desktopController.getMixerController().getViewport()),
       transportControl(desktopController.getMixer().getTransportSource(), true, &desktopController.getMidiRecorder(),
-          &desktopController.getProject().getTrackList()),
-      previousTempo(desktopController.getProject().getTempo()) {
+          &desktopController.getProject().getTrackList()) {
     createControls();
     masterTrackControl.addListener(&desktopController);
     setSize(preferredWidth, preferredHeight);
@@ -23,7 +21,7 @@ void MixerPanel::createControls() {
     tempoLabel.setJustificationType(juce::Justification::centredRight);
     tempoText.setText(juce::String(desktopController.getProject().getTempo()), juce::dontSendNotification);
     tempoText.setJustificationType(juce::Justification::centredLeft);
-    tempoText.onTextChange = [this] { tempoChanged(); };
+    tempoText.onTextChange = [this] { desktopController.tempoChanged(); };
 
     numeratorText.setText(
         juce::String(desktopController.getProject().getTimeSignature().getNumerator()), juce::dontSendNotification);
@@ -85,25 +83,4 @@ void MixerPanel::resized() {
     area.removeFromTop(1);
     masterTrackControl.setBounds(area.removeFromLeft(masterTrackControl.getPreferredWidth()));
     mixerViewport.setBounds(area);
-}
-
-void MixerPanel::tempoChanged() {
-    float newTempo = tempoText.getText().getFloatValue();
-    ;
-    notifyTempoChanged(previousTempo, newTempo);
-    previousTempo = newTempo;
-}
-
-void MixerPanel::addListener(MasterTrackListener *listener) {
-    if (!listContains(listeners, listener)) {
-        listeners.push_front(listener);
-    }
-}
-
-void MixerPanel::removeListener(MasterTrackListener *listener) { listeners.remove(listener); }
-
-void MixerPanel::notifyTempoChanged(float previousTempo, float newTempo) {
-    for (MasterTrackListener *listener : listeners) {
-        listener->tempoChanged(previousTempo, newTempo);
-    }
 }

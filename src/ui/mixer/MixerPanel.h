@@ -40,7 +40,7 @@ class NumeratorTextEditor : public juce::Label {
 class DenominatorLookAndFeel : public juce::LookAndFeel_V4 {
   public:
     DenominatorLookAndFeel() = default;
-    ~DenominatorLookAndFeel() = default;
+    ~DenominatorLookAndFeel() override = default;
 
     void drawComboBox (juce::Graphics& g, int width, int height, bool,
         int, int, int, int, juce::ComboBox& box) override
@@ -78,11 +78,9 @@ class MixerPanel : public juce::Component {
 
     TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
+    float getTempoValue() const { return tempoText.getText().getFloatValue();}
 
     void update();
-
-    void addListener(MasterTrackListener *listener);
-    void removeListener(MasterTrackListener *listener);
 
     //==============================================================================
     // Component
@@ -104,7 +102,6 @@ class MixerPanel : public juce::Component {
 
     juce::Label tempoLabel;
     TempoTextEditor tempoText;
-    float previousTempo;
 
     NumeratorTextEditor numeratorText;
     juce::ComboBox denominatorSelect;
@@ -114,9 +111,6 @@ class MixerPanel : public juce::Component {
     std::list<MasterTrackListener *> listeners;
 
     void createControls();
-    void tempoChanged();
-
-    void notifyTempoChanged(float previousTempo, float newTempo);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerPanel)
 };

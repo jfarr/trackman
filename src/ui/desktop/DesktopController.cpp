@@ -9,7 +9,7 @@
 DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceManager &deviceManager)
     : mainWindow(mainWindow), deviceManager(deviceManager), applicationName(mainWindow.getName()),
       desktopComponent(*this), project(deviceManager, midiRecorder), mixerController(*this), trackListController(*this),
-      instrumentsController(*this), midiRecorder(project, deviceManager) {
+      instrumentsController(*this), midiRecorder(project, deviceManager), previousTempo(project.getTempo()) {
 
     updateTitleBar();
 }
@@ -54,7 +54,10 @@ void DesktopController::masterMuteToggled() {
     desktopComponent.menuItemsChanged();
 }
 
-void DesktopController::tempoChanged(float previousTempo, float newTempo) {
+void DesktopController::tempoChanged() {
+    float newTempo = mixerController.getMixerPanel().getTempoValue();
+    previousTempo = newTempo;
+
     project.setTempo(newTempo);
     juce::MessageManager::callAsync([this]() {
         desktopComponent.repaint();
@@ -303,6 +306,7 @@ void DesktopController::openProject() {
             projectFile = file;
             project.from_json(
                 mainWindow.getMainAudioComponent().getFormatManager(), file.getFullPathName().toStdString());
+            previousTempo = project.getTempo();
             juce::MessageManager::callAsync([this]() {
                 trackListController.update();
                 mixerController.update();
