@@ -5,7 +5,6 @@
 TimeMeter::TimeMeter(Project &project) : project(project) { setInterceptsMouseClicks(false, false); }
 
 void TimeMeter::paint(juce::Graphics &g) {
-    //    g.fillAll(juce::Colours::green);
     auto bounds = getLocalBounds();
     const int topStripHeight = 30;
     const int measureLabelY = bounds.getY() - 7;
@@ -17,16 +16,35 @@ void TimeMeter::paint(juce::Graphics &g) {
     g.setColour(juce::Colours::grey);
     g.fillRect(0, 0, bounds.getWidth(), topStripHeight);
 
-    auto scale = project.getHorizontalScale();
+    const float scale = project.getHorizontalScale();
     const float numerator = project.getTimeSignature().getNumerator();
     const float denominator = project.getTimeSignature().getDenominator();
     const float dashes[]{0.5, 0.5};
-    int increment = std::max(1, (int)(highestPowerOf2((int)(120.0 / scale)) * denominator / numerator));
+    const int increment = std::max(1, (int)(highestPowerOf2((int)(120.0 / scale * denominator / numerator))));
+    const bool drawNotes = increment <= 4;
+    const float width = project.measuresToSeconds(increment + 1) * scale;
 
     for (int measure = 1, x = project.measuresToSeconds(measure) * scale; x < bounds.getWidth();
          measure += increment, x = project.measuresToSeconds(measure) * scale) {
         auto line = juce::Line<float>(x, 0.0, x, bounds.getHeight());
         g.drawDashedLine(line, dashes, 2, 1.0);
+        if (drawNotes) {
+            int numNotes = increment * numerator;
+            float noteWidth = width / numNotes;
+            for (int j = 1; j < numNotes; j++) {
+                float noteX = x + j * noteWidth;
+                line = juce::Line<float>(noteX, 0.0, noteX, bounds.getHeight());
+                g.drawDashedLine(line, dashes, 2, 0.5);
+            }
+        } else {
+            int numMeasures = 8;
+            float measureWidth = width / numMeasures;
+            for (int j = 1; j < numMeasures; j++) {
+                float noteX = x + j * measureWidth;
+                line = juce::Line<float>(noteX, 0.0, noteX, bounds.getHeight());
+                g.drawDashedLine(line, dashes, 2, 0.5);
+            }
+        }
     }
     g.setColour(juce::Colour{0xff282828});
     g.setFont(11);
@@ -39,155 +57,7 @@ void TimeMeter::paint(juce::Graphics &g) {
         g.drawText(::formatSecsAsTime(secs), x + labelMargin, timeLabelY, labelWidth, labelHeight,
             juce::Justification::bottom | juce::Justification::left, true);
     }
-
-    //    for (int secs = increment, x = secs * scale; x < bounds.getWidth(); secs += increment, x = secs * scale) {
-    //        auto line = juce::Line<float>(x, 0.0, x, bounds.getHeight());
-    //        g.drawDashedLine(line, dashes, 2, 1.0);
-    //    }
-
-    //    g.setColour(juce::Colour{0xff282828});
-    //    g.setFont(11);
-    //    for (int secs = increment, x = secs * scale; x < bounds.getWidth(); secs += increment, x = secs * scale) {
-    //        double measure = project.secondsToMeasures(secs);
-    //        g.drawText(juce::String(measure), x + labelMargin, measureLabelY, labelWidth, labelHeight,
-    //            juce::Justification::bottom | juce::Justification::left, true);
-    //        auto t = juce::RelativeTime(secs);
-    //        g.drawText(::formatSecsAsTime(secs), x + labelMargin, timeLabelY, labelWidth, labelHeight,
-    //            juce::Justification::bottom | juce::Justification::left, true);
-    //    }
-
-    //    int i = 0;
-    //    auto denominator = project.getTimeSignature().getDenominator();
-    //    int increment = 1;
-    //    float x = project.measuresToSeconds(i) * project.getHorizontalScale();
-    //    const float dashes[] { 0.5, 0.5 };
-    //    for (; x < bounds.getWidth(); i += increment, x = project.measuresToSeconds(i) * project.getHorizontalScale())
-    //    {
-    ////        g.drawRect(x, 0.0, 1.0, (float)bounds.getHeight(), 1.0);
-    //        auto line = juce::Line<float>(x, 0.0, x, bounds.getHeight());
-    //        g.drawDashedLine(line, dashes, 2, 1.0);
-    //    }
-
-    //    drawTicksInMeasures(g, bounds.removeFromTop(15));
-    //    drawTicksInSeconds(g, bounds.removeFromTop(15));
     drawStartMarker(g);
-}
-
-void TimeMeter::drawTicksInMeasures(juce::Graphics &g, const juce::Rectangle<int> &bounds) const {
-    auto labelY = bounds.getY() - 7;
-    auto labelWidth = 75;
-    auto labelHeight = 20;
-    auto labelMargin = 5;
-    float tickHeight = 15;
-    float scale = project.getHorizontalScale();
-    g.setColour(juce::Colour{0xff282828});
-    g.setFont(11);
-    float y = bounds.getY() + (bounds.getHeight() - tickHeight);
-    double secs = 0;
-    int increment = std::max(1, highestPowerOf2((int)(128.0 / scale)));
-    bool drawHalfNotes = (float)(128.0 / scale) < 1.25;
-    bool drawQuarterNotes = (float)(128.0 / scale) < 0.55;
-    for (int i = 0; secs * scale < bounds.getWidth(); i += increment, secs = project.measuresToSeconds(i)) {
-        float x = secs * scale;
-        g.drawRect(x, y, 1.0, tickHeight, 1.0);
-        //        g.drawText(juce::String(i + 1) + ".1.00", x + labelMargin, labelY, labelWidth, labelHeight,
-        //            juce::Justification::bottom | juce::Justification::left, true);
-        float width = project.measuresToSeconds(i + increment) * scale - x;
-        if (drawHalfNotes) {
-            float tickWidth = width / 2.0;
-            //            g.drawText(juce::String(i + 1) + ".3.00", x + tickWidth + labelMargin, labelY, labelWidth,
-            //            labelHeight,
-            //                juce::Justification::bottom | juce::Justification::left, true);
-        }
-        if (drawQuarterNotes) {
-            float tickWidth = width / 4.0;
-            //            g.drawText(juce::String(i + 1) + ".2.00", x + tickWidth + labelMargin, labelY, labelWidth,
-            //            labelHeight,
-            //                juce::Justification::bottom | juce::Justification::left, true);
-            //            g.drawText(juce::String(i + 1) + ".4.00", x + 3 * tickWidth + labelMargin, labelY, labelWidth,
-            //            labelHeight,
-            //                juce::Justification::bottom | juce::Justification::left, true);
-        }
-    }
-}
-
-void TimeMeter::drawTicksInSeconds(juce::Graphics &g, const juce::Rectangle<int> &bounds) const {
-    auto labelY = bounds.getY() - 12;
-    auto labelWidth = 75;
-    auto labelHeight = 20;
-    auto labelMargin = 5;
-    float tickHeight = 15;
-    float secondTickHeight = 7;
-    float thirdTickHeight = 4;
-    float scale = project.getHorizontalScale();
-    g.setColour(juce::Colour{0xff282828});
-    g.setFont(11);
-    float y = bounds.getY() + (bounds.getHeight() - tickHeight);
-    double secs = 0;
-    int increment = std::max(1, highestPowerOf2((int)(128.0 / scale)));
-    int secondTickIncrement = (increment == 1) ? 4 : std::max(2, std::min(16, increment));
-    int thirdTickIncrement = std::max(4, std::min(16, increment * 4));
-    bool drawHalfNotes = (float)(128.0 / scale) < 1.25;
-    bool drawQuarterNotes = (float)(128.0 / scale) < 0.55;
-    if (drawQuarterNotes || drawHalfNotes) {
-        secondTickIncrement = thirdTickIncrement = 0;
-    }
-
-    for (int i = 0; secs * scale < bounds.getWidth(); i += increment, secs = project.measuresToSeconds(i)) {
-        float x = secs * scale;
-        int minutes = (int)(secs / 60);
-        secs = std::fmod(secs, 60);
-
-        //        g.drawRect(x, y, 1.0, tickHeight, 1.0);
-        //        g.drawText(juce::String(minutes) + ":" + juce::String(secs, 3).paddedLeft('0', 6), x + labelMargin,
-        //        labelY,
-        //            labelWidth, labelHeight, juce::Justification::bottom | juce::Justification::left, true);
-
-        float width = project.measuresToSeconds(i + increment) * scale - x;
-        if (secondTickIncrement > 0) {
-            float tickWidth = width / (float)secondTickIncrement;
-            for (int j = 1; j < secondTickIncrement; j++) {
-                //                g.drawRect(x + j * tickWidth, bounds.getY() + bounds.getHeight() -
-                //                secondTickHeight, 1.0,
-                //                    secondTickHeight, 1.0);
-            }
-        }
-        if (thirdTickIncrement > 0) {
-            float tickWidth = width / (float)thirdTickIncrement;
-            for (int j = 1; j < thirdTickIncrement; j++) {
-                //                g.drawRect(
-                //                    x + j * tickWidth, bounds.getY() + bounds.getHeight() - thirdTickHeight, 1.0,
-                //                    thirdTickHeight, 1.0);
-            }
-        }
-        if (drawHalfNotes) {
-            float tickWidth = width / 2.0;
-            secs = project.measuresToSeconds(i + 0.5);
-            int minutes = (int)(secs / 60);
-            secs = std::fmod(secs, 60);
-            //            g.drawRect(x + tickWidth, y, 1.0, tickHeight, 1.0);
-            //            g.drawText(juce::String(minutes) + ":" + juce::String(secs, 3).paddedLeft('0', 6),
-            //                x + tickWidth + labelMargin, labelY, labelWidth, labelHeight,
-            //                juce::Justification::bottom | juce::Justification::left, true);
-        }
-        if (drawQuarterNotes) {
-            float tickWidth = width / 4.0;
-            secs = project.measuresToSeconds(i + 0.25);
-            int minutes = (int)(secs / 60);
-            secs = std::fmod(secs, 60);
-            //            g.drawRect(x + tickWidth, y, 1.0, tickHeight, 1.0);
-            //            g.drawText(juce::String(minutes) + ":" + juce::String(secs, 3).paddedLeft('0', 6),
-            //                x + tickWidth + labelMargin, labelY, labelWidth, labelHeight,
-            //                juce::Justification::bottom | juce::Justification::left, true);
-            secs = project.measuresToSeconds(i + 0.75);
-            minutes = (int)(secs / 60);
-            secs = std::fmod(secs, 60);
-            //            g.drawRect(x + 3 * tickWidth, y, 1.0, tickHeight, 1.0);
-            //            g.drawText(juce::String(minutes) + ":" + juce::String(secs, 3).paddedLeft('0', 6),
-            //                x +3 * tickWidth + labelMargin, labelY, labelWidth, labelHeight,
-            //                juce::Justification::bottom | juce::Justification::left, true);
-        }
-    }
 }
 
 void TimeMeter::drawStartMarker(juce::Graphics &g) const {
@@ -196,7 +66,7 @@ void TimeMeter::drawStartMarker(juce::Graphics &g) const {
     auto arrowWidth = 18.0;
 
     float audioPosition = 0.0;
-    auto drawPosition = audioPosition * project.getHorizontalScale();
+    float drawPosition = audioPosition * project.getHorizontalScale();
 
     g.setColour(juce::Colours::lightgrey);
     g.drawLine(drawPosition, margin, drawPosition, (float)getHeight(), 1.0f);

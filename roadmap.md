@@ -1,8 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Tempo + time signature
-- Fix meter strip scaling with tempo
 - Instruments
 - Oscillator
 - Stretch sample loops instead of resampling
