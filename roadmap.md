@@ -1,20 +1,24 @@
 # Roadmap
 
 ## Short-Term
+- Midi device input
+- Draw note roll borders
+- Select note rolls
+- Delete note rolls
+- Stretch / loop note rolls
+- Edit note rolls
+- Use undo manager
+  - Undo record midi
+  - Undo change tempo / time signature
+  - Undo delete note roll
+  - Undo edit note roll
+- Use lambdas / ListenerList
 - Instruments
 - Oscillator
 - Stretch sample loops instead of resampling
-- Master track automation
-  - Tempo change
-  - Time signature change
 - Stereo panner
-- Midi CV
 - Hold zoom buttons zooms exponentially faster
 - Play instruments when not recording (preview)
-- Use undo manager
-- Undo record midi
-- Undo change tempo / time signature
-- Use ListenerList
 - Song start / end position
 - Loop start / end position
 - Sample info popup
@@ -25,6 +29,10 @@
 
 ## Long Term
 
+- Midi CV
+- Master track automation
+  - Tempo change
+  - Time signature change
 - Metronome
 - Export midi
 - Time-shift samples (without pitch-shifting)
