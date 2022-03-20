@@ -25,6 +25,7 @@
 
 ## Long Term
 
+- Metronome
 - Export midi
 - Time-shift samples (without pitch-shifting)
 - Snap to nearest quanta
