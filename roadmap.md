@@ -5,6 +5,7 @@
 - Fix meter strip scaling with tempo
 - Instruments
 - Oscillator
+- Stretch sample loops instead of resampling
 - Master track automation
   - Tempo change
   - Time signature change
