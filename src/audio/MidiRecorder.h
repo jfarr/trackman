@@ -4,7 +4,7 @@
 
 class Project;
 
-class MidiRecorder : public juce::MidiKeyboardState::Listener {
+class MidiRecorder : public juce::MidiKeyboardState::Listener, juce::MidiInputCallback {
   public:
     MidiRecorder(Project &project, juce::AudioDeviceManager &deviceManager);
     ~MidiRecorder() override;
@@ -17,12 +17,18 @@ class MidiRecorder : public juce::MidiKeyboardState::Listener {
     void startRecording();
     void stopRecording();
 
+    void setMidiInput(int index);
+
+    static void printEvents(const juce::MidiMessageSequence &midiMessages);
+
     //==============================================================================
-    // juce::MidiKeyboardState::Listener
+    // MidiKeyboardState::Listener
     void handleNoteOn(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
     void handleNoteOff(juce::MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
 
-    static void printEvents(const juce::MidiMessageSequence &midiMessages);
+    //==============================================================================
+    // MidiInputCallback
+    void handleIncomingMidiMessage(juce::MidiInput *source, const juce::MidiMessage &message) override;
 
   private:
     class MidiMessageCallback : public juce::CallbackMessage {
@@ -35,8 +41,8 @@ class MidiRecorder : public juce::MidiKeyboardState::Listener {
         juce::MidiMessage message;
         double time;
     };
-    void postMessage(juce::MidiMessage &message, double time);
-    void handleMessage(juce::MidiMessage &message, double time);
+    void postMessage(const juce::MidiMessage &message, double time);
+    void handleMessage(juce::MidiMessage message, double time);
 
     Project &project;
     juce::AudioDeviceManager &deviceManager;
@@ -44,6 +50,8 @@ class MidiRecorder : public juce::MidiKeyboardState::Listener {
     juce::MidiMessageSequence midiMessages;
     bool recording = false;
     bool looping = false;
+    bool isAddingFromMidiInput = false;
+    int lastInputIndex = 0;
 
     juce::CriticalSection mutex;
 
