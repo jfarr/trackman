@@ -1,23 +1,41 @@
 #include "TimeMeter.h"
 #include "common/mathutil.h"
+#include "common/timeutil.h"
 
 TimeMeter::TimeMeter(Project &project) : project(project) { setInterceptsMouseClicks(false, false); }
 
 void TimeMeter::paint(juce::Graphics &g) {
-    const int topStripHeight = 30;
     //    g.fillAll(juce::Colours::green);
     auto bounds = getLocalBounds();
+    const int topStripHeight = 30;
+    const int measureLabelY = bounds.getY() - 7;
+    const int timeLabelY = bounds.getY() + 3;
+    const int labelWidth = 75;
+    const int labelHeight = 20;
+    const int labelMargin = 5;
+
     g.setColour(juce::Colours::grey);
     g.fillRect(0, 0, bounds.getWidth(), topStripHeight);
+
     auto scale = project.getHorizontalScale();
     const float numerator = project.getTimeSignature().getNumerator();
     const float denominator = project.getTimeSignature().getDenominator();
     const float dashes[]{0.5, 0.5};
     int increment = std::max(1, highestPowerOf2((int)(128.0 / scale))) * 2;
-    DBG("increment: " << increment);
-    for (int secs = increment, x = secs * scale * numerator / denominator; x < bounds.getWidth(); secs += increment, x = secs * scale * numerator / denominator) {
+    //    DBG("increment: " << increment);
+    for (int secs = increment, x = secs * scale; x < bounds.getWidth(); secs += increment, x = secs * scale) {
         auto line = juce::Line<float>(x, 0.0, x, bounds.getHeight());
         g.drawDashedLine(line, dashes, 2, 1.0);
+    }
+    g.setColour(juce::Colour{0xff282828});
+    g.setFont(11);
+    for (int secs = increment, x = secs * scale; x < bounds.getWidth(); secs += increment, x = secs * scale) {
+        //        double measure = project.secondsToMeasures(secs);
+        //        g.drawText(juce::String(measure), x + labelMargin, measureLabelY, labelWidth, labelHeight,
+        //            juce::Justification::bottom | juce::Justification::left, true);
+        auto t = juce::RelativeTime(secs);
+        g.drawText(::formatSecsAsTime(secs), x + labelMargin, timeLabelY, labelWidth, labelHeight,
+            juce::Justification::bottom | juce::Justification::left, true);
     }
 
     //    int i = 0;

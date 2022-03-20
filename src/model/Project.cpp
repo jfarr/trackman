@@ -9,11 +9,17 @@ using json = nlohmann::json;
 Project::Project(juce::AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
     : deviceManager(deviceManager), trackList(*this, deviceManager, midiRecorder), mixer(trackList, deviceManager) {}
 
-int Project::secondsToTicks(double seconds) { return ::secondsToTicks(tempo, seconds); }
+int Project::secondsToTicks(double seconds) const { return ::secondsToTicks(tempo, seconds); }
 
-double Project::ticksToSeconds(int ticks) { return ::ticksToSeconds(tempo, ticks); }
+double Project::ticksToSeconds(int ticks) const { return ::ticksToSeconds(tempo, ticks); }
 
-double Project::measuresToSeconds(double measures) { return timeSignature.measuresToSeconds(measures, tempo); }
+double Project::measuresToSeconds(double measures) const {
+    return timeSignature.measuresToSeconds(measures, tempo);
+}
+
+double Project::secondsToMeasures(double seconds) const {
+    return timeSignature.secondsToMeasures(seconds, tempo);
+}
 
 Track *Project::addTrack() {
     auto *track = trackList.addTrack();
