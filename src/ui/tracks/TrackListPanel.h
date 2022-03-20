@@ -85,6 +85,7 @@ class TrackListPanel : public juce::Component,
     DropBox dropBox;
     int dragSourceOffset = 0;
     juce::Point<int> dragPosition;
+    bool dragging = false;
     bool canDrop();
 
     std::list<SampleListener *> sampleListeners;
@@ -99,7 +100,7 @@ class TrackListPanel : public juce::Component,
     void notifyDragEnded();
     void notifySelectionChanged();
 
-    void timerCallback() override { resize(); }
+    void timerCallback() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListPanel)
 };

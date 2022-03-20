@@ -74,10 +74,12 @@ void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
 }
 
 void TrackListPanel::dragOperationStarted(const DragAndDropTarget::SourceDetails &dragSourceDetails) {
+    dragging = true;
     dragSourceOffset = dragSourceDetails.localPosition.getX();
 }
 
 void TrackListPanel::dragOperationEnded(const DragAndDropTarget::SourceDetails &dragSourceDetails) {
+    dragging = false;
     notifyDragEnded();
 }
 
@@ -100,6 +102,12 @@ void TrackListPanel::resize() {
         lane->resized();
     }
     resized();
+}
+
+void TrackListPanel::timerCallback() {
+    if (!dragging) {
+        resize();
+    }
 }
 
 int TrackListPanel::getPanelWidth() const {
