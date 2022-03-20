@@ -30,7 +30,7 @@ class Project {
 
     double getVerticalScale() const { return verticalScale; }
     double getHorizontalScale() const { return horizontalScale; }
-    double getHorizontalScaleRatio() const { return initialHorizontalScale / horizontalScale; }
+//    double getHorizontalScaleRatio() const { return initialHorizontalScale / horizontalScale; }
 
     void incrementVerticalScale() { verticalScale *= 1.08; }
     void decrementVerticalScale() {

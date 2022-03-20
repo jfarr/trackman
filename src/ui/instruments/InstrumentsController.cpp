@@ -2,7 +2,7 @@
 #include "ui/desktop/DesktopController.h"
 
 InstrumentsController::InstrumentsController(DesktopController &desktopController)
-    : desktopController(desktopController), project(desktopController.getProject()) {
+    : desktopController(desktopController), project(desktopController.getProject()), instrumentsPanel(project) {
     instrumentsPanel.resized();
 }
 

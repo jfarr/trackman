@@ -2,6 +2,7 @@
 
 ## Short-Term
 - Tempo + time signature
+- Fix meter strip scaling with tempo
 - Instruments
 - Oscillator
 - Master track automation

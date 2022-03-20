@@ -55,7 +55,6 @@ void DesktopController::masterMuteToggled() {
 }
 
 void DesktopController::tempoChanged(float previousTempo, float newTempo) {
-    DBG("changed tempo from " << previousTempo << " to " << newTempo);
     project.setTempo(newTempo);
     juce::MessageManager::callAsync([this]() {
         desktopComponent.repaint();

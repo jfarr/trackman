@@ -111,7 +111,8 @@ juce::int64 Track::getTotalLengthInSamples() const {
 }
 
 juce::int64 Track::getMidiLengthInSamples() const {
-    return project.ticksToSeconds(midiMessages.getEndTime()) * deviceManager.getAudioDeviceSetup().sampleRate;
+    return project.ticksToSeconds(midiMessages.getEndTime()) * deviceManager.getAudioDeviceSetup().sampleRate +
+           2 * deviceManager.getAudioDeviceSetup().bufferSize; // overshoot to ensure we get all note off events
 }
 
 void Track::startRecording() {
@@ -155,7 +156,6 @@ void Track::setMidiMessages(const juce::MidiMessageSequence &newMessages) { midi
 
 void Track::processNextMidiBuffer(
     juce::MidiBuffer &buffer, const int startSample, const int numSamples, const juce::int64 currentPos) {
-    // TODO: handle wrap-around
     auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
     const double startTime = currentPos / sampleRate;
     const double endTime = startTime + numSamples / sampleRate;
@@ -168,7 +168,8 @@ void Track::processNextMidiBuffer(
         auto event = p->message;
         const auto pos =
             juce::jlimit(0, numSamples - 1, juce::roundToInt((event.getTimeStamp() - startTime) * scaleFactor));
-        buffer.addEvent(event, startSample + pos);
+        buffer.addEvent(event, event.getTimeStamp());
+        //        buffer.addEvent(event, startSample + pos);
     }
     if (recording) {
         juce::MidiBuffer keyboardBuffer;
