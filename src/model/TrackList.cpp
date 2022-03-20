@@ -1,7 +1,7 @@
 #include "TrackList.h"
 
 Track *TrackList::addTrack() {
-    auto *track = new Track(midiRecorder, deviceManager);
+    auto *track = new Track(project, midiRecorder, deviceManager);
     tracks.push_back(std::unique_ptr<Track>(track));
     renumber();
     return track;

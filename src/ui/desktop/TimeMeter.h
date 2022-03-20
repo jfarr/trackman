@@ -15,4 +15,8 @@ class TimeMeter : public juce::Component {
 
   private:
     Project &project;
+
+    void drawTicksInSeconds(juce::Graphics &g, const juce::Rectangle<int> &bounds) const;
+    void drawTicksInMeasures(juce::Graphics &g, const juce::Rectangle<int> &bounds) const;
+    void drawStartMarker(juce::Graphics &g) const;
 };

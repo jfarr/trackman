@@ -2,11 +2,20 @@
 #include <nlohmann/json.hpp>
 
 #include "Project.h"
+#include "common/timeutil.h"
 
 using json = nlohmann::json;
 
 Project::Project(juce::AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
-    : deviceManager(deviceManager), trackList(deviceManager, midiRecorder), mixer(trackList, deviceManager) {}
+    : deviceManager(deviceManager), trackList(*this, deviceManager, midiRecorder), mixer(trackList, deviceManager) {}
+
+int Project::secondsToTicks(double seconds) { return ::secondsToTicks(tempo, seconds); }
+
+double Project::ticksToSeconds(int ticks) { return ::ticksToSeconds(tempo, ticks); }
+
+double Project::measuresToSeconds(double measures) {
+    return timeSignature.measuresToSeconds(measures, tempo);
+}
 
 Track *Project::addTrack() {
     auto *track = trackList.addTrack();
@@ -33,22 +42,13 @@ Sample *Project::addSample(
 }
 
 std::string Project::to_json() {
-    json project_json = {{"horizontalScale", horizontalScale},
+    json project_json = {{"tempo", tempo}, {"horizontalScale", horizontalScale},
         {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
     project_json["tracks"] = json::array();
-    int ticks = 96;
-    int tempo = 120;
-    double quarterNotesPerSecond = tempo / 60.0;
     juce::MidiFile midiFile;
-    midiFile.setTicksPerQuarterNote(ticks);
-    trackList.eachTrack([&project_json, &midiFile, quarterNotesPerSecond](Track &track) {
+    midiFile.setTicksPerQuarterNote(ticksPerQuarterNote);
+    trackList.eachTrack([&project_json, &midiFile](Track &track) {
         juce::MidiMessageSequence messages = track.getMidiMessages();
-        for (auto m : messages) {
-            auto t = m->message.getTimeStamp();
-            auto noteTime = t * quarterNotesPerSecond;
-            auto noteTicks = (int)(noteTime * 96);
-            m->message.setTimeStamp(noteTicks);
-        }
         midiFile.addTrack(messages);
         MidiRecorder::printEvents(messages);
         json track_json = {{"name", track.getName().toStdString()}, {"gain", track.getLevelGain()},
@@ -74,6 +74,7 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
     json project_json;
     s >> project_json;
     mixer.removeAllSources();
+    tempo = project_json["tempo"];
     horizontalScale = project_json["horizontalScale"];
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);
@@ -83,7 +84,6 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
     juce::MemoryInputStream in(out.getMemoryBlock());
     juce::MidiFile midiFile;
     midiFile.readFrom(in, true);
-    midiFile.convertTimestampTicksToSeconds();
 
     trackList.clear();
     int i = 0;

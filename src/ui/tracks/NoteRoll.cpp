@@ -9,8 +9,8 @@ NoteRoll::NoteRoll(Project &project, Track &track) : project(project), track(tra
 
 void NoteRoll::resize() {
     auto area = getBounds();
-    auto length =
-        track.getCurrentMidiMessages(project.getMixer().getTransportSource().getCurrentPosition()).getEndTime();
+    auto length = project.ticksToSeconds(
+        track.getCurrentMidiMessages(project.getMixer().getTransportSource().getCurrentPosition()).getEndTime());
     auto width = length * project.getHorizontalScale() + 1;
     setBounds(area.withWidth(width));
     repaint();
@@ -43,8 +43,8 @@ void NoteRoll::paint(juce::Graphics &g) {
 
 juce::Rectangle<float> NoteRoll::getNoteRect(const juce::MidiMessage &noteOn, const juce::MidiMessage &noteOff,
     int lowNote, double noteHeight, double x, double h, double scale, double margin) {
-    auto start = noteOn.getTimeStamp();
-    auto end = noteOff.getTimeStamp();
+    auto start = project.ticksToSeconds(noteOn.getTimeStamp());
+    auto end = project.ticksToSeconds(noteOff.getTimeStamp());
     auto noteX = x + start * scale;
     auto noteWidth = (end - start) * scale;
     auto noteDist = noteOn.getNoteNumber() - lowNote;

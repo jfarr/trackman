@@ -10,11 +10,8 @@ void InstrumentsPanel::update() {
 }
 
 void InstrumentsPanel::resize() {
-    setSize(panelWidth,
-        topStripHeight + (instruments.empty() ? 0 : instruments.size() * instruments.back()->getPreferredHeight()));
-    for (auto *instrument : instruments) {
-        instrument->resized();
-    }
+    double paneHeight = getPaneHeight();
+    setSize(panelWidth, topStripHeight + instruments.size() * paneHeight);
     resized();
 }
 
@@ -28,6 +25,11 @@ void InstrumentsPanel::resized() {
     area.removeFromTop(topStripHeight);
     area.removeFromRight(rightMargin);
     for (auto &instrument : instruments) {
-        instrument->setBounds(area.removeFromTop(instrument->getPreferredHeight()));
+        instrument->setBounds(area.removeFromTop(getPaneHeight()));
     }
+}
+
+double InstrumentsPanel::getPaneHeight() {
+    auto paneHeight = instruments.empty() ? 0 : instruments.back()->getPreferredHeight() * project.getVerticalScale();
+    return paneHeight;
 }

@@ -3,12 +3,26 @@
 #include <JuceHeader.h>
 
 #include "MasterTrackControl.h"
+#include "MasterTrackListener.h"
 #include "TrackControl.h"
 #include "model/Mixer.h"
 #include "model/TrackList.h"
 #include "ui/common/TransportControl.h"
 
 class DesktopController;
+
+class TempoTextEditor : public juce::Label {
+  public:
+    TempoTextEditor() { setEditable(true); }
+    ~TempoTextEditor() override {}
+
+  private:
+    juce::TextEditor *createEditorComponent() override {
+        auto editor = juce::Label::createEditorComponent();
+        editor->setInputRestrictions(5, "0123456789.");
+        return editor;
+    }
+};
 
 class MixerPanel : public juce::Component {
   public:
@@ -20,19 +34,37 @@ class MixerPanel : public juce::Component {
     TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
 
+    void update();
+
+    void addListener(MasterTrackListener *listener);
+    void removeListener(MasterTrackListener *listener);
+
     //==============================================================================
     // Component
     void paint(juce::Graphics &g) override;
     void resized() override;
 
   private:
+    const int preferredWidth = 800;
+    const int preferredHeight = 280;
+    const int transportHeight = 35;
+    const int transportWidth = 550;
+    const int transportMargin = 5;
+
     DesktopController &desktopController;
     juce::Viewport &mixerViewport;
 
     TransportControl transportControl;
     MasterTrackControl masterTrackControl;
+    juce::Label tempoLabel;
+    TempoTextEditor tempoText;
+    float previousTempo = 120.0;
+    std::list<MasterTrackListener *> listeners;
 
     void createControls();
+    void tempoChanged();
+
+    void notifyTempoChanged(float previousTempo, float newTempo);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerPanel)
 };

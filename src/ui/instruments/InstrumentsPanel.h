@@ -3,10 +3,11 @@
 #include <JuceHeader.h>
 
 #include "InstrumentControl.h"
+#include "model/Project.h"
 
 class InstrumentsPanel : public juce::Component {
   public:
-    InstrumentsPanel() = default;
+    InstrumentsPanel(Project &project) : project(project) {}
     ~InstrumentsPanel() override = default;
 
     void addTrack(InstrumentControl *lane) { instruments.push_back(lane); }
@@ -20,11 +21,13 @@ class InstrumentsPanel : public juce::Component {
 
   private:
     const int panelWidth = 30;
-    const int topStripHeight = 15;
+    const int topStripHeight = 30;
 
+    Project &project;
     std::list<InstrumentControl *> instruments;
 
     void resize();
+    double getPaneHeight();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentsPanel)
 };

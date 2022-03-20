@@ -1,9 +1,10 @@
 #include "Track.h"
+#include "Project.h"
 
 #include <memory>
 
-Track::Track(MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager)
-    : deviceManager(deviceManager), midiRecorder(midiRecorder), synthAudioSource(*this) {
+Track::Track(Project &project, MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager)
+    : project(project), deviceManager(deviceManager), midiRecorder(midiRecorder), synthAudioSource(*this) {
     synthAudioSource.prepareToPlay(
         deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
     gainSource = std::make_unique<GainAudioSource>(&synthAudioSource, false);
@@ -105,8 +106,13 @@ juce::int64 Track::getTotalLengthInSamples() const {
     if (midiMessages.getNumEvents() == 0) {
         return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
     } else {
-        return midiMessages.getEndTime() * deviceManager.getAudioDeviceSetup().sampleRate;
+        return getMidiLengthInSamples();
     }
+}
+
+juce::int64 Track::getMidiLengthInSamples() const {
+    return project.ticksToSeconds(midiMessages.getEndTime()) * deviceManager.getAudioDeviceSetup().sampleRate +
+           2 * deviceManager.getAudioDeviceSetup().bufferSize; // overshoot to ensure we get all note off events
 }
 
 void Track::startRecording() {
@@ -133,7 +139,7 @@ const juce::MidiMessageSequence Track::getCurrentMidiMessages(double pos) const 
         for (auto i : messages) {
             if (i->message.isNoteOn() && i->noteOffObject == nullptr) {
                 auto noteOff = juce::MidiMessage::noteOff(i->message.getChannel(), i->message.getNoteNumber());
-                noteOff.setTimeStamp(pos);
+                noteOff.setTimeStamp(project.secondsToTicks(pos));
                 noteOffMessages.push_back(noteOff);
             }
         }
@@ -146,27 +152,24 @@ const juce::MidiMessageSequence Track::getCurrentMidiMessages(double pos) const 
     return midiMessages;
 }
 
-void Track::setMidiMessages(const juce::MidiMessageSequence &newMessages) {
-    midiMessages = newMessages;
-
-}
+void Track::setMidiMessages(const juce::MidiMessageSequence &newMessages) { midiMessages = newMessages; }
 
 void Track::processNextMidiBuffer(
     juce::MidiBuffer &buffer, const int startSample, const int numSamples, const juce::int64 currentPos) {
-    // TODO: handle wrap-around
     auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
     const double startTime = currentPos / sampleRate;
     const double endTime = startTime + numSamples / sampleRate;
     const double scaleFactor = numSamples / (double)(endTime + 1 - startTime);
 
-    auto startIndex = midiMessages.getNextIndexAtTime(startTime);
-    auto endIndex = midiMessages.getNextIndexAtTime(endTime);
+    auto startIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(startTime));
+    auto endIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(endTime));
     for (int i = startIndex; i < endIndex; i++) {
         auto p = midiMessages.getEventPointer(i);
         auto event = p->message;
         const auto pos =
             juce::jlimit(0, numSamples - 1, juce::roundToInt((event.getTimeStamp() - startTime) * scaleFactor));
-        buffer.addEvent(event, startSample + pos);
+        buffer.addEvent(event, event.getTimeStamp());
+        //        buffer.addEvent(event, startSample + pos);
     }
     if (recording) {
         juce::MidiBuffer keyboardBuffer;

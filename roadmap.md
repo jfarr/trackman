@@ -1,8 +1,11 @@
 # Roadmap
 
 ## Short-Term
+- Tempo + time signature
+- Fix meter strip scaling with tempo
 - Instruments
 - Oscillator
+- Stretch sample loops instead of resampling
 - Master track automation
   - Tempo change
   - Time signature change
@@ -23,13 +26,15 @@
 
 ## Long Term
 
+- Metronome
+- Export midi
+- Time-shift samples (without pitch-shifting)
+- Snap to nearest quanta
 - Click+drag to select samples
 - Drop multiple files
   - Default one track
   - Ctrl-drag multiple tracks
 - Copy / paste
-- Tempo + time signature
-  - Snap to nearest quanta
 - Console commands
 - Script window
 - Unit tests
