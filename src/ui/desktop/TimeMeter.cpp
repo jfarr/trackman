@@ -21,28 +21,18 @@ void TimeMeter::drawTicksInMeasures(juce::Graphics &g, const juce::Rectangle<int
     float y = bounds.getY() + (bounds.getHeight() - tickHeight);
     double secs = 0;
     int increment = std::max(1, highestPowerOf2((int)(128.0 / scale)));
-    DBG("increment: " << increment << " : " << (float)(128.0 / scale));
-    //    int increment = 1;
-    //    if (scale < 1) {
-    //        increment = 128;
-    //    } else if (scale < 2) {
-    //        increment = 64;
-    //    } else if (scale < 4) {
-    //        increment = 32;
-    //    } else if (scale < 8) {
-    //        increment = 16;
-    //    } else if (scale < 16) {
-    //        increment = 8;
-    //    } else if (scale < 32) {
-    //        increment = 4;
-    //    } else if (scale < 64) {
-    //        increment = 2;
-    //    }
+    bool drawHalfNotes = (float)(128.0 / scale) < 1.25;
     for (int i = 0; secs * scale < bounds.getWidth(); i += increment, secs = project.measuresToSeconds(i)) {
         float x = secs * scale;
         g.drawRect(x, y, 1.0, tickHeight, 1.0);
         g.drawText(juce::String(i + 1) + ".1.00", x + labelMargin, labelY, labelWidth, labelHeight,
             juce::Justification::bottom | juce::Justification::left, true);
+        if (drawHalfNotes) {
+            float width = project.measuresToSeconds(i + increment) * scale - x;
+            float tickWidth = width / 2.0;
+            g.drawText(juce::String(i + 1) + ".3.00", x + tickWidth + labelMargin, labelY, labelWidth, labelHeight,
+                juce::Justification::bottom | juce::Justification::left, true);
+        }
     }
 }
 
@@ -55,45 +45,17 @@ void TimeMeter::drawTicksInSeconds(juce::Graphics &g, const juce::Rectangle<int>
     float secondTickHeight = 7;
     float thirdTickHeight = 4;
     float scale = project.getHorizontalScale();
-    DBG("scale: " << scale);
     g.setColour(juce::Colour{0xff282828});
     g.setFont(11);
     float y = bounds.getY() + (bounds.getHeight() - tickHeight);
     double secs = 0;
-//    int increment = 1;
-//    int secondTickIncrement = 4;
-//    int thirdTickIncrement = 0;
     int increment = std::max(1, highestPowerOf2((int)(128.0 / scale)));
-    int secondTickIncrement = std::max(2, std::min(16, increment));
+    int secondTickIncrement = (increment == 1) ? 4 : std::max(2, std::min(16, increment));
     int thirdTickIncrement = std::max(4, std::min(16, increment * 4));
+    bool drawHalfNotes = (float)(128.0 / scale) < 1.25;
     DBG("increment: " << increment << " : " << (float)(128.0 / scale));
     DBG("secondTickIncrement: " << secondTickIncrement);
     DBG("thirdTickIncrement: " << thirdTickIncrement << " : " << increment * 4);
-//    if (scale < 1) {
-////        increment = 128;
-////        secondTickIncrement = 16;
-//    } else if (scale < 2) {
-////        increment = 64;
-////        secondTickIncrement = 16;
-//    } else if (scale < 4) {
-////        increment = 32;
-////        secondTickIncrement = 16;
-//    } else if (scale < 8) {
-////        increment = 16;
-////        secondTickIncrement = 16;
-//    } else if (scale < 16) {
-////        increment = 8;
-////        secondTickIncrement = 8;
-//        thirdTickIncrement = 16;
-//    } else if (scale < 32) {
-////        increment = 4;
-////        secondTickIncrement = 4;
-//        thirdTickIncrement = 16;
-//    } else if (scale < 64) {
-////        increment = 2;
-////        secondTickIncrement = 2;
-//        thirdTickIncrement = 8;
-//    }
 
     for (int i = 0; secs * scale < bounds.getWidth(); i += increment, secs = project.measuresToSeconds(i)) {
         float x = secs * scale;
@@ -118,6 +80,16 @@ void TimeMeter::drawTicksInSeconds(juce::Graphics &g, const juce::Rectangle<int>
                 g.drawRect(
                     x + j * tickWidth, bounds.getY() + bounds.getHeight() - thirdTickHeight, 1.0, thirdTickHeight, 1.0);
             }
+        }
+        if (drawHalfNotes) {
+            float tickWidth = width / 2.0;
+            secs = project.measuresToSeconds(i + 0.5);
+            int minutes = (int)(secs / 60);
+            secs = std::fmod(secs, 60);
+            g.drawRect(x + tickWidth, y, 1.0, tickHeight, 1.0);
+            g.drawText(juce::String(minutes) + ":" + juce::String(secs, 3).paddedLeft('0', 6),
+                x + tickWidth + labelMargin, labelY, labelWidth, labelHeight,
+                juce::Justification::bottom | juce::Justification::left, true);
         }
     }
 }
