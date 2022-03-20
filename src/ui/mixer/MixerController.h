@@ -42,7 +42,6 @@ class MixerController : public TransportControlListener, public MasterTrackListe
     //==============================================================================
     // MasterTrackListener
     void masterLevelChanged(float level) override;
-//    void tempoChanged(float previousTempo, float newTempo) override;
 
   private:
     DesktopController &desktopController;

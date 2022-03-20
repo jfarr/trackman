@@ -85,5 +85,3 @@ void MixerController::recordingStopped() {
 }
 
 void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevelGain(newLevel); }
-
-//void MixerController::tempoChanged(float previousTempo, float newTempo) { }

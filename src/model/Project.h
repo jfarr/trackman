@@ -52,7 +52,6 @@ class Project {
     const float initialTempo = 120.0;
     const double initialVerticalScale = 1;
     const double initialHorizontalScale = 100;
-//    const int baseHorizontalScale = 75;
     const double scaleIncrement = 5;
 
     juce::AudioDeviceManager &deviceManager;

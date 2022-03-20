@@ -45,19 +45,10 @@ std::string Project::to_json() {
     json project_json = {{"tempo", tempo}, {"horizontalScale", horizontalScale},
         {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
     project_json["tracks"] = json::array();
-    int ticks = 96;
-    int tempo = 120;
-    //    double quarterNotesPerSecond = tempo / 60.0;
     juce::MidiFile midiFile;
     midiFile.setTicksPerQuarterNote(ticksPerQuarterNote);
     trackList.eachTrack([&project_json, &midiFile](Track &track) {
         juce::MidiMessageSequence messages = track.getMidiMessages();
-        //        for (auto m : messages) {
-        //            auto t = m->message.getTimeStamp();
-        //            auto noteTime = t * quarterNotesPerSecond;
-        //            auto noteTicks = (int)(noteTime * 96);
-        //            m->message.setTimeStamp(noteTicks);
-        //        }
         midiFile.addTrack(messages);
         MidiRecorder::printEvents(messages);
         json track_json = {{"name", track.getName().toStdString()}, {"gain", track.getLevelGain()},
@@ -93,7 +84,6 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
     juce::MemoryInputStream in(out.getMemoryBlock());
     juce::MidiFile midiFile;
     midiFile.readFrom(in, true);
-    //    midiFile.convertTimestampTicksToSeconds();
 
     trackList.clear();
     int i = 0;
