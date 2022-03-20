@@ -15,6 +15,7 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
     horizontalScaleButtonPanel.addListener(&desktopController);
 
     addAndMakeVisible(desktopController.getTrackListController().getViewport());
+    addAndMakeVisible(desktopController.getTransportController().getTransportPanel());
     addAndMakeVisible(desktopController.getMixerController().getMixerPanel());
     addAndMakeVisible(desktopController.getInstrumentsController().getInstrumentsPanel());
     addAndMakeVisible(timeMeter);
@@ -191,7 +192,9 @@ void DesktopComponent::resized() {
     auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
     auto area = getLocalBounds();
     auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
+    auto &transportPanel = desktopController.getTransportController().getTransportPanel();
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
+    transportPanel.setBounds(area.removeFromBottom(transportPanel.getPreferredHeight()));
     verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(area.getWidth() - (scaleButtonWidth + scrollBarWidth),
         area.getY() + topStripHeight, scaleButtonWidth, scaleButtonWidth * 2));
     horizontalScaleButtonPanel.setBounds(

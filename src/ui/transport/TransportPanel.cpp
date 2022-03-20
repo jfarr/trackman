@@ -34,6 +34,13 @@ void TransportPanel::createControls() {
     denominatorSelect.addItem("8", 8);
     denominatorSelect.addItem("16", 16);
     denominatorSelect.onChange = [this] { desktopController.denominatorChanged(denominatorSelect.getSelectedId()); };
+
+    addAndMakeVisible(transportControl);
+    addAndMakeVisible(tempoLabel);
+    addAndMakeVisible(tempoText);
+    addAndMakeVisible(numeratorText);
+    addAndMakeVisible(timeSignatureDivider);
+    addAndMakeVisible(denominatorSelect);
 }
 
 void TransportPanel::update() {

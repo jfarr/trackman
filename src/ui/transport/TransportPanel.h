@@ -68,6 +68,8 @@ class TransportPanel : public juce::Component {
     TransportPanel(DesktopController &desktopController);
     ~TransportPanel() noexcept override;
 
+    int getPreferredHeight() const { return preferredHeight; }
+
     void update();
 
     //==============================================================================

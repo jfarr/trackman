@@ -13,6 +13,8 @@ class TransportController {
     TransportController(DesktopController &desktopController);
     ~TransportController() = default;
 
+    TransportPanel &getTransportPanel() { return transportPanel; }
+
   private:
     DesktopController &desktopController;
     TransportPanel transportPanel;
