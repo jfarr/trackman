@@ -4,14 +4,15 @@
 #include "FileDragDropTarget.h"
 #include "TrackListListener.h"
 #include "TrackScaleListener.h"
+#include "audio/MidiRecorder.h"
 #include "commands/CommandList.h"
 #include "model/Project.h"
 #include "model/TrackList.h"
+#include "ui/instruments/InstrumentsController.h"
 #include "ui/mixer/MixerController.h"
 #include "ui/mixer/TrackControlListener.h"
 #include "ui/tracks/TrackListController.h"
-#include "ui/instruments/InstrumentsController.h"
-#include "audio/MidiRecorder.h"
+#include "ui/transport/TransportController.h"
 
 class MainWindow;
 
@@ -115,6 +116,7 @@ class DesktopController : public juce::AudioSource,
 
     CommandList commandList;
     Project project;
+    trackman::TransportController transportController;
     MixerController mixerController;
     TrackListController trackListController;
     InstrumentsController instrumentsController;

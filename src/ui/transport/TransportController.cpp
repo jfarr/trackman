@@ -1,5 +1,9 @@
-//
-// Created by Jonothan Farr on 3/20/22.
-//
-
 #include "TransportController.h"
+#include "ui/desktop/DesktopController.h"
+
+namespace trackman {
+
+TransportController::TransportController(DesktopController &desktopController)
+    : desktopController(desktopController), transportPanel(desktopController) {}
+
+} // namespace trackman

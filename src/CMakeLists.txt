@@ -126,6 +126,8 @@ target_sources(Trackman PRIVATE
         ui/tracks/TrackListViewport.h
         ui/transport/TransportController.cpp
         ui/transport/TransportController.h
+        ui/transport/TransportPanel.cpp
+        ui/transport/TransportPanel.h
         )
 
 target_include_directories(Trackman PRIVATE

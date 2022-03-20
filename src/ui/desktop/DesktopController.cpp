@@ -8,8 +8,9 @@
 
 DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceManager &deviceManager)
     : mainWindow(mainWindow), deviceManager(deviceManager), applicationName(mainWindow.getName()),
-      desktopComponent(*this), project(deviceManager, midiRecorder), mixerController(*this), trackListController(*this),
-      instrumentsController(*this), midiRecorder(project, deviceManager), previousTempo(project.getTempo()) {
+      desktopComponent(*this), project(deviceManager, midiRecorder), transportController(*this), mixerController(*this),
+      trackListController(*this), instrumentsController(*this), midiRecorder(project, deviceManager),
+      previousTempo(project.getTempo()) {
 
     updateTitleBar();
 }
@@ -57,23 +58,17 @@ void DesktopController::masterMuteToggled() {
 void DesktopController::tempoChanged(float newTempo) {
     previousTempo = newTempo;
     project.setTempo(newTempo);
-    juce::MessageManager::callAsync([this]() {
-        desktopComponent.repaint();
-    });
+    juce::MessageManager::callAsync([this]() { desktopComponent.repaint(); });
 }
 
 void DesktopController::numeratorChanged(int newNumerator) {
     project.setTimeSignature(TimeSignature(newNumerator, project.getTimeSignature().getDenominator()));
-    juce::MessageManager::callAsync([this]() {
-        desktopComponent.repaint();
-    });
+    juce::MessageManager::callAsync([this]() { desktopComponent.repaint(); });
 }
 
 void DesktopController::denominatorChanged(int newDenominator) {
     project.setTimeSignature(TimeSignature(project.getTimeSignature().getNumerator(), newDenominator));
-    juce::MessageManager::callAsync([this]() {
-        desktopComponent.repaint();
-    });
+    juce::MessageManager::callAsync([this]() { desktopComponent.repaint(); });
 }
 
 void DesktopController::trackNameChanged(Track &track, juce::String newName) {
@@ -238,17 +233,12 @@ void DesktopController::moveSample(Sample &sample, Track &fromTrack, Track &toTr
 
 void DesktopController::deleteSample(Track &track, Sample *sample) {
     trackListController.deleteSample(track, sample);
-    juce::MessageManager::callAsync([this]() {
-        instrumentsController.update();
-    });
+    juce::MessageManager::callAsync([this]() { instrumentsController.update(); });
 }
 
 void DesktopController::undeleteSample(Track &track, Sample *sample) {
     trackListController.undeleteSample(track, sample);
-    juce::MessageManager::callAsync([this]() {
-        instrumentsController.update();
-    });
-
+    juce::MessageManager::callAsync([this]() { instrumentsController.update(); });
 }
 
 void DesktopController::saveProject(const std::function<void(bool saved)> &callback) {
@@ -356,9 +346,7 @@ void DesktopController::recordingStopped() {
     auto selected = project.getTrackList().getSelectedTrack();
     if (selected != nullptr) {
         selected->stopRecording();
-        juce::MessageManager::callAsync([this]() {
-            trackListController.update();
-        });
+        juce::MessageManager::callAsync([this]() { trackListController.update(); });
     }
 }
 
