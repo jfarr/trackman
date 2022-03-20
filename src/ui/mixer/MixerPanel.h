@@ -24,18 +24,18 @@ class TempoTextEditor : public juce::Label {
     }
 };
 
-// class TempoTextEditor : public juce::Label {
-//   public:
-//     TempoTextEditor() { setEditable(true); }
-//     ~TempoTextEditor() override = default;
-//
-//   private:
-//     juce::TextEditor *createEditorComponent() override {
-//         auto editor = juce::Label::createEditorComponent();
-//         editor->setInputRestrictions(5, "0123456789.");
-//         return editor;
-//     }
-// };
+class NumeratorTextEditor : public juce::Label {
+  public:
+    NumeratorTextEditor() { setEditable(true); }
+    ~NumeratorTextEditor() override = default;
+
+  private:
+    juce::TextEditor *createEditorComponent() override {
+        auto editor = juce::Label::createEditorComponent();
+        editor->setInputRestrictions(2, "0123456789");
+        return editor;
+    }
+};
 
 class DenominatorLookAndFeel : public juce::LookAndFeel_V4 {
   public:
@@ -67,19 +67,6 @@ class DenominatorLookAndFeel : public juce::LookAndFeel_V4 {
   private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DenominatorLookAndFeel)
 
-};
-
-class TimeSignatureDenominatorTextEditor : public juce::Label {
-  public:
-    TimeSignatureDenominatorTextEditor() { setEditable(true); }
-    ~TimeSignatureDenominatorTextEditor() override = default;
-
-  private:
-    juce::TextEditor *createEditorComponent() override {
-        auto editor = juce::Label::createEditorComponent();
-        editor->setInputRestrictions(2, "1486");
-        return editor;
-    }
 };
 
 class MixerPanel : public juce::Component {
@@ -119,7 +106,7 @@ class MixerPanel : public juce::Component {
     TempoTextEditor tempoText;
     float previousTempo;
 
-//    TimeSignatureDenominatorTextEditor denominatorText;
+    NumeratorTextEditor numeratorText;
     juce::ComboBox denominatorSelect;
     juce::Label timeSignatureDivider;
     DenominatorLookAndFeel denominatorLF;
