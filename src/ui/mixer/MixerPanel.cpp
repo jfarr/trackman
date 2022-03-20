@@ -21,7 +21,7 @@ void MixerPanel::createControls() {
     tempoLabel.setJustificationType(juce::Justification::centredRight);
     tempoText.setText(juce::String(desktopController.getProject().getTempo()), juce::dontSendNotification);
     tempoText.setJustificationType(juce::Justification::centredLeft);
-    tempoText.onTextChange = [this] { desktopController.tempoChanged(); };
+    tempoText.onTextChange = [this] { desktopController.tempoChanged( tempoText.getText().getFloatValue()); };
 
     numeratorText.setText(
         juce::String(desktopController.getProject().getTimeSignature().getNumerator()), juce::dontSendNotification);

@@ -72,7 +72,7 @@ class DesktopController : public juce::AudioSource,
     void openProject();
     void exportProject();
 
-    void tempoChanged();
+    void tempoChanged(float newTempo);
 
     //==============================================================================
     // AudioSource

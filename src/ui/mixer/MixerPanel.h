@@ -78,7 +78,6 @@ class MixerPanel : public juce::Component {
 
     TransportControl &getTransportControl() { return transportControl; }
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
-    float getTempoValue() const { return tempoText.getText().getFloatValue();}
 
     void update();
 

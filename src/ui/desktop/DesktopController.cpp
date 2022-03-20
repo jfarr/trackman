@@ -54,10 +54,8 @@ void DesktopController::masterMuteToggled() {
     desktopComponent.menuItemsChanged();
 }
 
-void DesktopController::tempoChanged() {
-    float newTempo = mixerController.getMixerPanel().getTempoValue();
+void DesktopController::tempoChanged(float newTempo) {
     previousTempo = newTempo;
-
     project.setTempo(newTempo);
     juce::MessageManager::callAsync([this]() {
         desktopComponent.repaint();
