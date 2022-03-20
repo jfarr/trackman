@@ -21,22 +21,40 @@ void TimeMeter::paint(juce::Graphics &g) {
     const float numerator = project.getTimeSignature().getNumerator();
     const float denominator = project.getTimeSignature().getDenominator();
     const float dashes[]{0.5, 0.5};
-    int increment = std::max(1, highestPowerOf2((int)(128.0 / scale))) * 2;
-    //    DBG("increment: " << increment);
-    for (int secs = increment, x = secs * scale; x < bounds.getWidth(); secs += increment, x = secs * scale) {
+    int increment = std::max(1, (int)(highestPowerOf2((int)(120.0 / scale)) * denominator / numerator));
+
+    for (int measure = 1, x = project.measuresToSeconds(measure) * scale; x < bounds.getWidth();
+         measure += increment, x = project.measuresToSeconds(measure) * scale) {
         auto line = juce::Line<float>(x, 0.0, x, bounds.getHeight());
         g.drawDashedLine(line, dashes, 2, 1.0);
     }
     g.setColour(juce::Colour{0xff282828});
     g.setFont(11);
-    for (int secs = increment, x = secs * scale; x < bounds.getWidth(); secs += increment, x = secs * scale) {
-        double measure = project.secondsToMeasures(secs);
+    for (int measure = 1, x = project.measuresToSeconds(measure) * scale; x < bounds.getWidth();
+         measure += increment, x = project.measuresToSeconds(measure) * scale) {
+        double secs = project.measuresToSeconds(measure);
         g.drawText(juce::String(measure), x + labelMargin, measureLabelY, labelWidth, labelHeight,
             juce::Justification::bottom | juce::Justification::left, true);
         auto t = juce::RelativeTime(secs);
         g.drawText(::formatSecsAsTime(secs), x + labelMargin, timeLabelY, labelWidth, labelHeight,
             juce::Justification::bottom | juce::Justification::left, true);
     }
+
+    //    for (int secs = increment, x = secs * scale; x < bounds.getWidth(); secs += increment, x = secs * scale) {
+    //        auto line = juce::Line<float>(x, 0.0, x, bounds.getHeight());
+    //        g.drawDashedLine(line, dashes, 2, 1.0);
+    //    }
+
+    //    g.setColour(juce::Colour{0xff282828});
+    //    g.setFont(11);
+    //    for (int secs = increment, x = secs * scale; x < bounds.getWidth(); secs += increment, x = secs * scale) {
+    //        double measure = project.secondsToMeasures(secs);
+    //        g.drawText(juce::String(measure), x + labelMargin, measureLabelY, labelWidth, labelHeight,
+    //            juce::Justification::bottom | juce::Justification::left, true);
+    //        auto t = juce::RelativeTime(secs);
+    //        g.drawText(::formatSecsAsTime(secs), x + labelMargin, timeLabelY, labelWidth, labelHeight,
+    //            juce::Justification::bottom | juce::Justification::left, true);
+    //    }
 
     //    int i = 0;
     //    auto denominator = project.getTimeSignature().getDenominator();
