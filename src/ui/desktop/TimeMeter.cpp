@@ -10,10 +10,12 @@ void TimeMeter::paint(juce::Graphics &g) {
     g.setColour(juce::Colours::grey);
     g.fillRect(0, 0, bounds.getWidth(), topStripHeight);
     auto scale = project.getHorizontalScale();
+    const float numerator = project.getTimeSignature().getNumerator();
+    const float denominator = project.getTimeSignature().getDenominator();
     const float dashes[]{0.5, 0.5};
     int increment = std::max(1, highestPowerOf2((int)(128.0 / scale))) * 2;
     DBG("increment: " << increment);
-    for (int secs = increment, x = secs * scale; x < bounds.getWidth(); secs += increment, x = secs * scale) {
+    for (int secs = increment, x = secs * scale * numerator / denominator; x < bounds.getWidth(); secs += increment, x = secs * scale * numerator / denominator) {
         auto line = juce::Line<float>(x, 0.0, x, bounds.getHeight());
         g.drawDashedLine(line, dashes, 2, 1.0);
     }
