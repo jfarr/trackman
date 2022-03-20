@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Short-Term
-- Midi device input
+- Refactor: Transport, TransportController
 - Draw note roll borders
 - Select note rolls
 - Delete note rolls
@@ -29,6 +29,8 @@
 
 ## Long Term
 
+- Select MIDI devices
+- CPU meter (AudioDeviceManager::getCpuUsage)
 - Midi CV
 - Master track automation
   - Tempo change
