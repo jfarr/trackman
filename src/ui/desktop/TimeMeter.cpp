@@ -27,6 +27,7 @@ void TimeMeter::paint(juce::Graphics &g) {
     for (int measure = 1, x = project.measuresToSeconds(measure) * scale; x < bounds.getWidth();
          measure += increment, x = project.measuresToSeconds(measure) * scale) {
         auto line = juce::Line<float>(x, 0.0, x, bounds.getHeight());
+        g.setColour(juce::Colours::grey);
         g.drawDashedLine(line, dashes, 2, 1.0);
         if (drawNotes) {
             int numNotes = increment * numerator;
@@ -45,6 +46,10 @@ void TimeMeter::paint(juce::Graphics &g) {
                 g.drawDashedLine(line, dashes, 2, 0.5);
             }
         }
+        g.setColour(juce::Colour{0xff282828});
+        line = juce::Line<float>(x, 0.0, x, topStripHeight);
+        g.drawLine(line);
+
     }
     g.setColour(juce::Colour{0xff282828});
     g.setFont(11);
