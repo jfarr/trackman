@@ -13,9 +13,7 @@ int Project::secondsToTicks(double seconds) { return ::secondsToTicks(tempo, sec
 
 double Project::ticksToSeconds(int ticks) { return ::ticksToSeconds(tempo, ticks); }
 
-double Project::measuresToSeconds(double measures) {
-    return timeSignature.measuresToSeconds(measures, tempo);
-}
+double Project::measuresToSeconds(double measures) { return timeSignature.measuresToSeconds(measures, tempo); }
 
 Track *Project::addTrack() {
     auto *track = trackList.addTrack();
@@ -44,6 +42,8 @@ Sample *Project::addSample(
 std::string Project::to_json() {
     json project_json = {{"tempo", tempo}, {"horizontalScale", horizontalScale},
         {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
+    project_json["timeSignature"] = {
+        {"numerator", timeSignature.getNumerator()}, {"denominator", timeSignature.getDenominator()}};
     project_json["tracks"] = json::array();
     juce::MidiFile midiFile;
     midiFile.setTicksPerQuarterNote(ticksPerQuarterNote);
@@ -75,6 +75,8 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
     s >> project_json;
     mixer.removeAllSources();
     tempo = project_json["tempo"];
+    timeSignature =
+        TimeSignature(project_json["timeSignature"]["numerator"], project_json["timeSignature"]["denominator"]);
     horizontalScale = project_json["horizontalScale"];
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);

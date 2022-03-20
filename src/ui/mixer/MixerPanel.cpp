@@ -7,6 +7,7 @@ MixerPanel::MixerPanel(DesktopController &desktopController, foleys::LevelMeterS
       transportControl(desktopController.getMixer().getTransportSource(), true, &desktopController.getMidiRecorder(),
           &desktopController.getProject().getTrackList()) {
     createControls();
+    update();
     masterTrackControl.addListener(&desktopController);
     setSize(preferredWidth, preferredHeight);
 }
@@ -19,22 +20,21 @@ MixerPanel::~MixerPanel() {
 void MixerPanel::createControls() {
     tempoLabel.setText("Tempo", juce::dontSendNotification);
     tempoLabel.setJustificationType(juce::Justification::centredRight);
-    tempoText.setText(juce::String(desktopController.getProject().getTempo()), juce::dontSendNotification);
     tempoText.setJustificationType(juce::Justification::centredLeft);
-    tempoText.onTextChange = [this] { desktopController.tempoChanged( tempoText.getText().getFloatValue()); };
+    tempoText.onTextChange = [this] { desktopController.tempoChanged(tempoText.getText().getFloatValue()); };
 
-    numeratorText.setText(
-        juce::String(desktopController.getProject().getTimeSignature().getNumerator()), juce::dontSendNotification);
     numeratorText.setJustificationType(juce::Justification::centredRight);
+    numeratorText.onTextChange = [this] { desktopController.numeratorChanged(numeratorText.getText().getIntValue()); };
+
     timeSignatureDivider.setText("/", juce::dontSendNotification);
     timeSignatureDivider.setInterceptsMouseClicks(false, false);
     timeSignatureDivider.setJustificationType(juce::Justification::centred);
+
     denominatorSelect.setLookAndFeel(&denominatorLF);
     denominatorSelect.addItem("4", 4);
     denominatorSelect.addItem("8", 8);
     denominatorSelect.addItem("16", 16);
-    denominatorSelect.setSelectedId(
-        desktopController.getProject().getTimeSignature().getDenominator(), juce::dontSendNotification);
+    denominatorSelect.onChange = [this] { desktopController.denominatorChanged(denominatorSelect.getSelectedId()); };
 
     mixerViewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
 
@@ -50,6 +50,10 @@ void MixerPanel::createControls() {
 
 void MixerPanel::update() {
     tempoText.setText(juce::String(desktopController.getProject().getTempo()), juce::dontSendNotification);
+    numeratorText.setText(
+        juce::String(desktopController.getProject().getTimeSignature().getNumerator()), juce::dontSendNotification);
+    denominatorSelect.setSelectedId(
+        desktopController.getProject().getTimeSignature().getDenominator(), juce::dontSendNotification);
 }
 
 //==============================================================================

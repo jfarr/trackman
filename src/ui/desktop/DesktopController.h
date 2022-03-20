@@ -73,6 +73,8 @@ class DesktopController : public juce::AudioSource,
     void exportProject();
 
     void tempoChanged(float newTempo);
+    void numeratorChanged(int newNumerator);
+    void denominatorChanged(int newDenominator);
 
     //==============================================================================
     // AudioSource

@@ -62,6 +62,20 @@ void DesktopController::tempoChanged(float newTempo) {
     });
 }
 
+void DesktopController::numeratorChanged(int newNumerator) {
+    project.setTimeSignature(TimeSignature(newNumerator, project.getTimeSignature().getDenominator()));
+    juce::MessageManager::callAsync([this]() {
+        desktopComponent.repaint();
+    });
+}
+
+void DesktopController::denominatorChanged(int newDenominator) {
+    project.setTimeSignature(TimeSignature(project.getTimeSignature().getNumerator(), newDenominator));
+    juce::MessageManager::callAsync([this]() {
+        desktopComponent.repaint();
+    });
+}
+
 void DesktopController::trackNameChanged(Track &track, juce::String newName) {
     Command *command = new RenameTrackCommand(*this, track, newName);
     commandList.pushCommand(command);
