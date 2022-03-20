@@ -13,18 +13,18 @@ class TimeSignature {
     int getNumerator() const { return numerator; }
     int getDenominator() const { return denominator; }
 
-    double measuresToSeconds(double measures, int tempo) const {
-        double beats = measures * (double)numerator;
-        double bps = (double)tempo * 60.0;
+    double measuresToSeconds(double measures, float tempo) const {
+        double beats = (measures - 1) * (double)numerator;
+        double bps = (double)tempo / 60.0;
         double scale = 4.0 / (double)denominator;
         return beats / bps * scale;
     }
 
-    double secondsToMeasures(double seconds, int tempo) const {
-        double bps = (double)tempo * 60.0;
+    double secondsToMeasures(double seconds, float tempo) const {
+        double bps = (double)tempo / 60.0;
         double beats = seconds * bps;
-        double scale = 4.0 / (double)denominator;
-        return beats * (double)numerator * scale;
+        double measures = beats / (double)numerator;
+        return measures + 1;
     }
 
   private:

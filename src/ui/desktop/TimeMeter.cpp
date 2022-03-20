@@ -30,9 +30,9 @@ void TimeMeter::paint(juce::Graphics &g) {
     g.setColour(juce::Colour{0xff282828});
     g.setFont(11);
     for (int secs = increment, x = secs * scale; x < bounds.getWidth(); secs += increment, x = secs * scale) {
-        //        double measure = project.secondsToMeasures(secs);
-        //        g.drawText(juce::String(measure), x + labelMargin, measureLabelY, labelWidth, labelHeight,
-        //            juce::Justification::bottom | juce::Justification::left, true);
+        double measure = project.secondsToMeasures(secs);
+        g.drawText(juce::String(measure), x + labelMargin, measureLabelY, labelWidth, labelHeight,
+            juce::Justification::bottom | juce::Justification::left, true);
         auto t = juce::RelativeTime(secs);
         g.drawText(::formatSecsAsTime(secs), x + labelMargin, timeLabelY, labelWidth, labelHeight,
             juce::Justification::bottom | juce::Justification::left, true);
