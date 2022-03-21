@@ -55,11 +55,12 @@ void TransportPanel::paint(juce::Graphics &g) {
     g.fillAll(juce::Colours::lightgrey);
     auto area = getLocalBounds();
     g.setColour(juce::Colours::dimgrey);
+    g.fillRect(area.removeFromTop(1));
     g.fillRect(area.removeFromBottom(1));
 }
 
 void TransportPanel::resized() {
-    auto area = getLocalBounds();
+    auto area = getLocalBounds().withTrimmedTop(1).withTrimmedBottom(1);
     auto tempoArea = area.withTrimmedLeft(transportWidth);
     tempoLabel.setBounds(
         tempoArea.removeFromLeft(50).withTrimmedTop(transportMargin - 1).withTrimmedBottom(transportMargin + 1));

@@ -21,13 +21,13 @@ void DesktopController::createKeyboard() {
 }
 
 void DesktopController::prepareToPlay(int blockSize, double sampleRate) {
-    project.getMixer().prepareToPlay(blockSize, sampleRate);
+    project.getTransport().prepareToPlay(blockSize, sampleRate);
 }
 
-void DesktopController::releaseResources() { project.getMixer().releaseResources(); }
+void DesktopController::releaseResources() { project.getTransport().releaseResources(); }
 
 void DesktopController::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    project.getMixer().getNextAudioBlock(bufferToFill);
+    project.getTransport().getNextAudioBlock(bufferToFill);
 }
 
 bool DesktopController::canUndo() const { return !commandList.isEmpty(); }
@@ -353,7 +353,7 @@ void DesktopController::recordingStopped() {
 void DesktopController::selectionChanged(Track *track) {
     project.getTrackList().setSelected(track);
     juce::MessageManager::callAsync([this, track]() {
-        mixerController.getMixerPanel().getTransportControl().selectionChanged(track);
+//        mixerController.getMixerPanel().getTransportControl().selectionChanged(track);
         trackListController.repaint();
         mixerController.repaint();
         instrumentsController.repaint();

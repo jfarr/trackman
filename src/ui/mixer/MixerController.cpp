@@ -8,7 +8,7 @@ MixerController::MixerController(DesktopController &desktopController)
       trackPanel(mixerViewport) {
 
     mixerViewport.setViewedComponent(&trackPanel, false);
-    mixerPanel.getTransportControl().addListener(this);
+//    mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
     update();
 }
@@ -19,7 +19,7 @@ MixerController::~MixerController() {
         track->removeListener((TrackListListener *)this);
     }
     mixerPanel.getMasterTrackControl().removeListener(this);
-    mixerPanel.getTransportControl().removeListener(this);
+//    mixerPanel.getTransportControl().removeListener(this);
 }
 
 void MixerController::update() {

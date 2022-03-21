@@ -22,7 +22,7 @@ class MixerController : public TransportControlListener, public MasterTrackListe
 
     bool isMasterMuted() const { return mixer.isMasterMuted(); }
 
-    MixerPanel &getMixerPanel() { return mixerPanel; }
+    trackman::MixerPanel &getMixerPanel() { return mixerPanel; }
     juce::Viewport &getViewport() { return mixerViewport; }
 
     void update();
@@ -49,7 +49,7 @@ class MixerController : public TransportControlListener, public MasterTrackListe
     Mixer &mixer;
 
     juce::Viewport mixerViewport;
-    MixerPanel mixerPanel;
+    trackman::MixerPanel mixerPanel;
     TrackPanel trackPanel;
     std::list<std::unique_ptr<TrackController>> tracks;
 
