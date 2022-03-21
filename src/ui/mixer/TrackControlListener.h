@@ -6,7 +6,7 @@ namespace trackman {
 
 class TrackControlListener {
   public:
-    virtual void trackNameChanged(Track &track, juce::String newName) {}
+    virtual void trackNameChanged(Track &track, String newName) {}
     virtual void trackLevelChanged(Track &track, float newLevel) {}
     virtual void trackLevelChangeFinalized(Track &track, float previousLevel) {}
     virtual void trackMuteToggled(Track &track) {}

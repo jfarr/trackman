@@ -14,7 +14,7 @@ void InstrumentController::update() { instrumentControl.update(); }
 
 void InstrumentController::repaint() { instrumentControl.repaint(); }
 
-void InstrumentController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }
+void InstrumentController::mouseDown(const MouseEvent &event) { notifySelectionChanged(); }
 
 void InstrumentController::addListener(TrackListListener *listener) {
     if (!listContains(trackListListeners, listener)) {

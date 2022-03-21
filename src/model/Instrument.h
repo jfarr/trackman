@@ -9,7 +9,7 @@ class Track;
 
 class Instrument {
   public:
-    Instrument(Track &track, juce::MidiKeyboardState &keyState) : synth(track) {}
+    Instrument(Track &track, MidiKeyboardState &keyState) : synth(track) {}
     ~Instrument() = default;
 
   private:
