@@ -6,50 +6,58 @@
 #include "audio/MeteredAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
 
+using namespace std;
+using namespace juce;
+using namespace foleys;
+
+namespace trackman {
+
 class TrackList;
 
-class Mixer : public juce::PositionableAudioSource {
+class Mixer : public PositionableAudioSource {
   public:
-    Mixer(TrackList &trackList, juce::AudioDeviceManager &deviceManager);
+    Mixer(TrackList &trackList, AudioDeviceManager &deviceManager);
     ~Mixer() override;
 
     float getMasterLevelGain() const { return level; }
     bool isMasterMuted() const { return muted; }
 
-    foleys::LevelMeterSource &getMeterSource() { return meteredSource.getMeterSource(); }
+    LevelMeterSource &getMeterSource() { return meteredSource.getMeterSource(); }
 
-    void addSource(juce::PositionableAudioSource *source);
-    void removeSource(juce::PositionableAudioSource *source);
+    void addSource(PositionableAudioSource *source);
+    void removeSource(PositionableAudioSource *source);
     void removeAllSources();
 
     void setMasterLevelGain(float newLevel);
     void setMasterMute(bool newMuted);
 
-    void writeAudioFile(const juce::File &file, juce::int64 lengthInSamples);
+    void writeAudioFile(const File &file, int64 lengthInSamples);
 
     //==============================================================================
     // AudioSource
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
     void releaseResources() override;
 
     //==============================================================================
     // PositionableAudioSource
-    void setNextReadPosition(juce::int64 newPosition) override { meteredSource.setNextReadPosition(newPosition); }
-    juce::int64 getNextReadPosition() const override { return meteredSource.getNextReadPosition(); }
-    juce::int64 getTotalLength() const override { return meteredSource.getTotalLength(); }
+    void setNextReadPosition(int64 newPosition) override { meteredSource.setNextReadPosition(newPosition); }
+    int64 getNextReadPosition() const override { return meteredSource.getNextReadPosition(); }
+    int64 getTotalLength() const override { return meteredSource.getTotalLength(); }
     bool isLooping() const override { return meteredSource.isLooping(); }
     void setLooping(bool shouldLoop) override { meteredSource.setLooping(shouldLoop); }
 
   private:
     TrackList &trackList;
-    juce::AudioDeviceManager &deviceManager;
-    std::list<juce::PositionableAudioSource *> sources;
+    AudioDeviceManager &deviceManager;
+    list<PositionableAudioSource *> sources;
     PositionableMixingAudioSource mixerSource;
     GainAudioSource gainSource;
     MeteredAudioSource meteredSource;
-    float level = juce::Decibels::decibelsToGain<float>(0.0);
+    float level = Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Mixer)
 };
+
+} // namespace trackman

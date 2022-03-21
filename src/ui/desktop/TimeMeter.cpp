@@ -60,7 +60,7 @@ void TimeMeter::paint(Graphics &g) {
         g.drawText(String(measure), x + labelMargin, measureLabelY, labelWidth, labelHeight,
             Justification::bottom | Justification::left, true);
         auto t = RelativeTime(secs);
-        g.drawText(::formatSecsAsTime(secs), x + labelMargin, timeLabelY, labelWidth, labelHeight,
+        g.drawText(formatSecsAsTime(secs), x + labelMargin, timeLabelY, labelWidth, labelHeight,
             Justification::bottom | Justification::left, true);
     }
     drawStartMarker(g);

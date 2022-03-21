@@ -1,7 +1,13 @@
 #pragma once
 
+#include <JuceHeader.h>
+
 #include "Command.h"
-#include "JuceHeader.h"
+
+using namespace std;
+using namespace juce;
+
+namespace trackman {
 
 class CommandList {
   public:
@@ -12,11 +18,13 @@ class CommandList {
     void undoLast();
     void clear() { commands.clear(); }
     bool isEmpty() const { return commands.size() == 0; }
-    juce::String getLastCommandName() const;
+    String getLastCommandName() const;
     Command *peek() const;
 
   private:
-    std::list<std::unique_ptr<Command>> commands;
+    list<unique_ptr<Command>> commands;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandList)
 };
+
+} // namespace trackman

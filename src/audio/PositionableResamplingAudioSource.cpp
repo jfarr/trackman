@@ -1,6 +1,8 @@
 #include "PositionableResamplingAudioSource.h"
 
-PositionableResamplingAudioSource::PositionableResamplingAudioSource(juce::PositionableAudioSource *source,
+namespace trackman {
+
+PositionableResamplingAudioSource::PositionableResamplingAudioSource(PositionableAudioSource *source,
     const bool deleteWhenRemoved, double sampleRate, double sourceSampleRateToCorrectFor, int maxNumChannels)
     : source(source), resamplerSource(source, false, maxNumChannels), sampleRate(sampleRate),
       sourceSampleRate(sourceSampleRateToCorrectFor), deleteWhenRemoved(deleteWhenRemoved) {
@@ -11,13 +13,13 @@ PositionableResamplingAudioSource::PositionableResamplingAudioSource(juce::Posit
 
 PositionableResamplingAudioSource::~PositionableResamplingAudioSource() {
     if (deleteWhenRemoved && source != nullptr) {
-        std::unique_ptr<AudioSource> toDelete;
+        unique_ptr<AudioSource> toDelete;
         toDelete.reset(source);
     }
 }
 
 void PositionableResamplingAudioSource::setSourceSampleRateToCorrectFor(double newSampleRate) {
-    const juce::ScopedLock lock(mutex);
+    const ScopedLock lock(mutex);
     sourceSampleRate = newSampleRate;
     if (sourceSampleRate > 0) {
         resamplerSource.setResamplingRatio(sourceSampleRate / sampleRate);
@@ -26,7 +28,7 @@ void PositionableResamplingAudioSource::setSourceSampleRateToCorrectFor(double n
 
 //==============================================================================
 void PositionableResamplingAudioSource::prepareToPlay(int samplesPerBlockExpected, double newSampleRate) {
-    const juce::ScopedLock lock(mutex);
+    const ScopedLock lock(mutex);
     sampleRate = newSampleRate;
     blockSize = samplesPerBlockExpected;
 
@@ -43,23 +45,23 @@ void PositionableResamplingAudioSource::releaseResources() {
     }
 }
 
-void PositionableResamplingAudioSource::getNextAudioBlock(const juce::AudioSourceChannelInfo &info) {
+void PositionableResamplingAudioSource::getNextAudioBlock(const AudioSourceChannelInfo &info) {
     resamplerSource.getNextAudioBlock(info);
 }
 
 //==============================================================================
-void PositionableResamplingAudioSource::setNextReadPosition(juce::int64 newPosition) {
+void PositionableResamplingAudioSource::setNextReadPosition(int64 newPosition) {
     source->setNextReadPosition(newPosition * getSampleRatio());
 }
 
-juce::int64 PositionableResamplingAudioSource::getNextReadPosition() const {
+int64 PositionableResamplingAudioSource::getNextReadPosition() const {
     return source->getNextReadPosition() * getSampleRatio();
 }
 
-juce::int64 PositionableResamplingAudioSource::getTotalLength() const {
-    return source->getTotalLength() * getSampleRatio();
-}
+int64 PositionableResamplingAudioSource::getTotalLength() const { return source->getTotalLength() * getSampleRatio(); }
 
 bool PositionableResamplingAudioSource::isLooping() const { return source->isLooping(); }
 
 void PositionableResamplingAudioSource::setLooping(bool shouldLoop) { source->setLooping(shouldLoop); }
+
+} // namespace trackman

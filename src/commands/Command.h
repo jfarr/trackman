@@ -1,17 +1,23 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
+
+using namespace juce;
+
+namespace trackman {
 
 class Command {
   public:
-    Command(juce::String name) : name(name) {}
+    Command(String name) : name(name) {}
     virtual ~Command() {}
 
-    juce::String getName() { return name; }
+    String getName() { return name; }
 
     virtual void execute() {}
     virtual void undo() = 0;
 
   private:
-    juce::String name;
+    String name;
 };
+
+} // namespace trackman

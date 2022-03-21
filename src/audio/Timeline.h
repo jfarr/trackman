@@ -4,6 +4,10 @@
 
 #include "TimeRange.h"
 
+using namespace std;
+
+namespace trackman {
+
 template <class T> class Timeline {
   public:
     Timeline() = default;
@@ -14,14 +18,14 @@ template <class T> class Timeline {
     void addRange(double startTime, double endTime, T data) {
         timeRanges.push_back(TimeRange(startTime, endTime, data));
     }
-    std::list<T> getAt(double t);
+    list<T> getAt(double t);
 
   private:
-    std::list<TimeRange<T>> timeRanges;
+    list<TimeRange<T>> timeRanges;
 };
 
-template <class T> std::list<T> Timeline<T>::getAt(double t) {
-    std::list<T> found;
+template <class T> list<T> Timeline<T>::getAt(double t) {
+    list<T> found;
     for (TimeRange<T> range : timeRanges) {
         if (range.contains(t)) {
             found.push_back(range.get());
@@ -29,3 +33,5 @@ template <class T> std::list<T> Timeline<T>::getAt(double t) {
     }
     return found;
 }
+
+} // namespace trackman

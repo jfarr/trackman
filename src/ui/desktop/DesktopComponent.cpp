@@ -171,7 +171,7 @@ bool DesktopComponent::perform(const InvocationInfo &info) {
         break;
     case CommandIDs::newAudioPlayer:
         createChildWindow("Audio Player",
-            new trackman::AudioPlayer(desktopController.getMainWindow().getMainAudioComponent().getFormatManager()));
+            new AudioPlayer(desktopController.getMainWindow().getMainAudioComponent().getFormatManager()));
         break;
     case CommandIDs::newMidiKeyboard:
         desktopController.createKeyboard();

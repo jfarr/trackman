@@ -1,5 +1,9 @@
 #pragma once
 
+using namespace juce;
+
+namespace trackman {
+
 static const int ticksPerQuarterNote = 96;
 
 static int secondsToTicks(float tempo, double seconds) {
@@ -12,10 +16,11 @@ static double ticksToSeconds(float tempo, int ticks) {
     return (double)ticks / (double)ticksPerQuarterNote / (double)quarterNotesPerSecond;
 }
 
-static juce::String formatSecsAsTime(double secs) {
-    auto t = juce::RelativeTime(secs);
-    return ((int)t.inHours() > 0 ? juce::String((int)t.inHours()) + ":" : "") +
-           juce::String((int)t.inMinutes() % 60) + ":" +
-           juce::String((int)t.inSeconds() % 60).paddedLeft('0', 2) + "." +
-           juce::String((int)t.inMilliseconds() % 1000).paddedLeft('0', 3);
+static String formatSecsAsTime(double secs) {
+    auto t = RelativeTime(secs);
+    return ((int)t.inHours() > 0 ? String((int)t.inHours()) + ":" : "") + String((int)t.inMinutes() % 60) + ":" +
+           String((int)t.inSeconds() % 60).paddedLeft('0', 2) + "." +
+           String((int)t.inMilliseconds() % 1000).paddedLeft('0', 3);
 }
+
+} // namespace trackman

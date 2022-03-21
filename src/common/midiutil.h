@@ -2,7 +2,11 @@
 
 #include <JuceHeader.h>
 
-static int getLowestNote(const juce::MidiMessageSequence &messages) {
+using namespace juce;
+
+namespace trackman {
+
+static int getLowestNote(const MidiMessageSequence &messages) {
     int note = INT_MAX;
     for (auto i : messages) {
         if (i->message.isNoteOn()) {
@@ -12,7 +16,7 @@ static int getLowestNote(const juce::MidiMessageSequence &messages) {
     return note == INT_MAX ? 0 : note;
 }
 
-static int getHighestNote(const juce::MidiMessageSequence &messages) {
+static int getHighestNote(const MidiMessageSequence &messages) {
     int note = 0;
     for (auto i : messages) {
         if (i->message.isNoteOn()) {
@@ -21,3 +25,5 @@ static int getHighestNote(const juce::MidiMessageSequence &messages) {
     }
     return note;
 }
+
+} // namespace trackman

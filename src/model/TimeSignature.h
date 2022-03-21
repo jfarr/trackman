@@ -2,6 +2,8 @@
 
 #include <JuceHeader.h>
 
+namespace trackman {
+
 class TimeSignature {
   public:
     TimeSignature() = default;
@@ -31,3 +33,5 @@ class TimeSignature {
     int numerator = 4;
     int denominator = 4;
 };
+
+} // namespace trackman

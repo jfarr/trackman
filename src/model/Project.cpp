@@ -6,13 +6,15 @@
 
 using json = nlohmann::json;
 
-Project::Project(juce::AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
+namespace trackman {
+
+Project::Project(AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
     : deviceManager(deviceManager), trackList(*this, deviceManager, midiRecorder), mixer(trackList, deviceManager),
       transport(mixer) {}
 
-int Project::secondsToTicks(double seconds) const { return ::secondsToTicks(tempo, seconds); }
+int Project::secondsToTicks(double seconds) const { return trackman::secondsToTicks(tempo, seconds); }
 
-double Project::ticksToSeconds(int ticks) const { return ::ticksToSeconds(tempo, ticks); }
+double Project::ticksToSeconds(int ticks) const { return trackman::ticksToSeconds(tempo, ticks); }
 
 double Project::measuresToSeconds(double measures) const { return timeSignature.measuresToSeconds(measures, tempo); }
 
@@ -33,7 +35,7 @@ void Project::deleteTrack(Track *track) {
 }
 
 Sample *Project::addSample(
-    Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager) {
+    Track &track, const File &file, double startPos, double endPos, AudioFormatManager &formatManager) {
     if (!track.hasSamples()) {
         mixer.removeSource(track.getSource());
     }
@@ -48,10 +50,10 @@ std::string Project::to_json() {
     project_json["timeSignature"] = {
         {"numerator", timeSignature.getNumerator()}, {"denominator", timeSignature.getDenominator()}};
     project_json["tracks"] = json::array();
-    juce::MidiFile midiFile;
+    MidiFile midiFile;
     midiFile.setTicksPerQuarterNote(ticksPerQuarterNote);
     trackList.eachTrack([&project_json, &midiFile](Track &track) {
-        juce::MidiMessageSequence messages = track.getMidiMessages();
+        MidiMessageSequence messages = track.getMidiMessages();
         midiFile.addTrack(messages);
         MidiRecorder::printEvents(messages);
         json track_json = {{"name", track.getName().toStdString()}, {"gain", track.getLevelGain()},
@@ -63,16 +65,16 @@ std::string Project::to_json() {
         });
         project_json["tracks"].push_back(track_json);
     });
-    juce::MemoryOutputStream out;
+    MemoryOutputStream out;
     midiFile.writeTo(out, 1);
     auto mb = out.getMemoryBlock();
-    auto encoded = juce::Base64::toBase64(mb.getData(), mb.getSize());
+    auto encoded = Base64::toBase64(mb.getData(), mb.getSize());
     project_json["midi"] = encoded.toStdString();
 
     return project_json.dump();
 }
 
-void Project::from_json(juce::AudioFormatManager &formatManager, std::string filename) {
+void Project::from_json(AudioFormatManager &formatManager, std::string filename) {
     std::ifstream s(filename);
     json project_json;
     s >> project_json;
@@ -84,10 +86,10 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);
     std::string encoded = project_json["midi"];
-    juce::MemoryOutputStream out;
-    juce::Base64::convertFromBase64(out, encoded);
-    juce::MemoryInputStream in(out.getMemoryBlock());
-    juce::MidiFile midiFile;
+    MemoryOutputStream out;
+    Base64::convertFromBase64(out, encoded);
+    MemoryInputStream in(out.getMemoryBlock());
+    MidiFile midiFile;
     midiFile.readFrom(in, true);
 
     trackList.clear();
@@ -107,6 +109,6 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
     }
 }
 
-void Project::writeAudioFile(const juce::File &file) {
-    mixer.writeAudioFile(file, trackList.getTotalLengthInSamples());
-}
+void Project::writeAudioFile(const File &file) { mixer.writeAudioFile(file, trackList.getTotalLengthInSamples()); }
+
+} // namespace trackman

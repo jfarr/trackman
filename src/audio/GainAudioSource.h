@@ -4,6 +4,10 @@
 
 #include "PositionableAudioSourceAdapter.h"
 
+using namespace juce;
+
+namespace trackman {
+
 class GainAudioSource : public PositionableAudioSourceAdapter {
   public:
     GainAudioSource(PositionableAudioSource *source, const bool deleteWhenRemoved);
@@ -15,9 +19,11 @@ class GainAudioSource : public PositionableAudioSourceAdapter {
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;
     void releaseResources() override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
 
   private:
-    juce::CriticalSection callbackLock;
+    CriticalSection callbackLock;
     float gain = 1.0f, lastGain = 1.0f;
 };
+
+} // namespace trackman

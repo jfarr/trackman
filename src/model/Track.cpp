@@ -3,13 +3,14 @@
 
 #include <memory>
 
-Track::Track(Project &project, MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager)
+namespace trackman {
+
+Track::Track(Project &project, MidiRecorder &midiRecorder, AudioDeviceManager &deviceManager)
     : project(project), deviceManager(deviceManager), midiRecorder(midiRecorder), synthAudioSource(*this) {
     synthAudioSource.prepareToPlay(
         deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
-    gainSource = std::make_unique<GainAudioSource>(&synthAudioSource, false);
-    meteredSource =
-        std::make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
+    gainSource = make_unique<GainAudioSource>(&synthAudioSource, false);
+    meteredSource = make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
 }
 
 Track::~Track() { samples.clear(); }
@@ -24,7 +25,7 @@ void Track::setLevelGain(float newLevel) {
 void Track::setSelected(bool newSelected) { selected = newSelected; }
 
 Sample *Track::getSelected() const {
-    for (std::shared_ptr<Sample> const &sample : samples) {
+    for (shared_ptr<Sample> const &sample : samples) {
         if (!sample->isDeleted() && sample->isSelected()) {
             return sample.get();
         }
@@ -56,9 +57,8 @@ void Track::moveSampleTo(Sample &sample, Track &toTrack) {
     }
 }
 
-Sample *Track::addSample(
-    const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager) {
-    samples.push_back(std::make_shared<Sample>(file, startPos, endPos));
+Sample *Track::addSample(const File &file, double startPos, double endPos, AudioFormatManager &formatManager) {
+    samples.push_back(make_shared<Sample>(file, startPos, endPos));
     auto sample = &(*samples.back());
     sample->loadFile(deviceManager, formatManager);
     createSamplePlayer();
@@ -70,10 +70,10 @@ Sample *Track::addSample(
 
 void Track::createSamplePlayer() {
     if (samplePlayer == nullptr) {
-        samplePlayer = std::make_unique<SamplePlayer>(samples);
-        gainSource = std::make_unique<GainAudioSource>(samplePlayer.get(), false);
+        samplePlayer = make_unique<SamplePlayer>(samples);
+        gainSource = make_unique<GainAudioSource>(samplePlayer.get(), false);
         meteredSource =
-            std::make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
+            make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
     }
 }
 
@@ -94,15 +94,15 @@ void Track::updateGain(bool anySoloed) {
     }
 }
 
-void Track::eachSample(std::function<void(Sample &sample)> f) {
-    for (std::shared_ptr<Sample> &sample : samples) {
+void Track::eachSample(function<void(Sample &sample)> f) {
+    for (shared_ptr<Sample> &sample : samples) {
         if (!(*sample).isDeleted()) {
             f(*sample);
         }
     }
 }
 
-juce::int64 Track::getTotalLengthInSamples() const {
+int64 Track::getTotalLengthInSamples() const {
     if (midiMessages.getNumEvents() == 0) {
         return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
     } else {
@@ -110,7 +110,7 @@ juce::int64 Track::getTotalLengthInSamples() const {
     }
 }
 
-juce::int64 Track::getMidiLengthInSamples() const {
+int64 Track::getMidiLengthInSamples() const {
     return project.ticksToSeconds(midiMessages.getEndTime()) * deviceManager.getAudioDeviceSetup().sampleRate +
            2 * deviceManager.getAudioDeviceSetup().bufferSize; // overshoot to ensure we get all note off events
 }
@@ -132,13 +132,13 @@ void Track::stopRecording() {
     midiMessages = messages;
 }
 
-const juce::MidiMessageSequence Track::getCurrentMidiMessages(double pos) const {
+const MidiMessageSequence Track::getCurrentMidiMessages(double pos) const {
     if (recording) {
         auto messages = midiRecorder.getMidiMessages();
-        std::list<juce::MidiMessage> noteOffMessages;
+        list<MidiMessage> noteOffMessages;
         for (auto i : messages) {
             if (i->message.isNoteOn() && i->noteOffObject == nullptr) {
-                auto noteOff = juce::MidiMessage::noteOff(i->message.getChannel(), i->message.getNoteNumber());
+                auto noteOff = MidiMessage::noteOff(i->message.getChannel(), i->message.getNoteNumber());
                 noteOff.setTimeStamp(project.secondsToTicks(pos));
                 noteOffMessages.push_back(noteOff);
             }
@@ -152,10 +152,10 @@ const juce::MidiMessageSequence Track::getCurrentMidiMessages(double pos) const 
     return midiMessages;
 }
 
-void Track::setMidiMessages(const juce::MidiMessageSequence &newMessages) { midiMessages = newMessages; }
+void Track::setMidiMessages(const MidiMessageSequence &newMessages) { midiMessages = newMessages; }
 
 void Track::processNextMidiBuffer(
-    juce::MidiBuffer &buffer, const int startSample, const int numSamples, const juce::int64 currentPos) {
+    MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) {
     auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
     const double startTime = currentPos / sampleRate;
     const double endTime = startTime + numSamples / sampleRate;
@@ -166,14 +166,15 @@ void Track::processNextMidiBuffer(
     for (int i = startIndex; i < endIndex; i++) {
         auto p = midiMessages.getEventPointer(i);
         auto event = p->message;
-        const auto pos =
-            juce::jlimit(0, numSamples - 1, juce::roundToInt((event.getTimeStamp() - startTime) * scaleFactor));
+        const auto pos = jlimit(0, numSamples - 1, roundToInt((event.getTimeStamp() - startTime) * scaleFactor));
         buffer.addEvent(event, event.getTimeStamp());
         //        buffer.addEvent(event, startSample + pos);
     }
     if (recording) {
-        juce::MidiBuffer keyboardBuffer;
+        MidiBuffer keyboardBuffer;
         midiRecorder.getKeyboardState().processNextMidiBuffer(keyboardBuffer, startSample, numSamples, true);
         buffer.addEvents(keyboardBuffer, startSample, numSamples, 0);
     }
 }
+
+} // namespace trackman

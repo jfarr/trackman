@@ -1,16 +1,19 @@
 #pragma once
 
 #include <JuceHeader.h>
-
 #include <utility>
 
 #include "Command.h"
 #include "model/Track.h"
 #include "ui/tracks/TrackListController.h"
 
+using namespace juce;
+
+namespace trackman {
+
 class RenameTrackCommand : public Command {
   public:
-    RenameTrackCommand(trackman::DesktopController &desktopController, Track &track, juce::String newName)
+    RenameTrackCommand(DesktopController &desktopController, Track &track, String newName)
         : Command("Rename Track"), desktopController(desktopController), track(track), newName(std::move(newName)),
           prevName(track.getName()) {}
     ~RenameTrackCommand() override = default;
@@ -19,15 +22,15 @@ class RenameTrackCommand : public Command {
     void undo() override { desktopController.renameTrack(track, prevName); }
 
   private:
-    trackman::DesktopController &desktopController;
+    DesktopController &desktopController;
     Track &track;
-    juce::String newName;
-    juce::String prevName;
+    String newName;
+    String prevName;
 };
 
 class AddSampleCommand : public Command {
   public:
-    AddSampleCommand(trackman::DesktopController &desktopController, Track *track, juce::File file, int pos)
+    AddSampleCommand(DesktopController &desktopController, Track *track, File file, int pos)
         : Command("Add Sample"), desktopController(desktopController), track(track), file(std::move(file)), pos(pos) {}
     ~AddSampleCommand() override = default;
 
@@ -46,10 +49,10 @@ class AddSampleCommand : public Command {
     }
 
   private:
-    trackman::DesktopController &desktopController;
+    DesktopController &desktopController;
     Track *track;
     Track *newTrack = nullptr;
-    juce::File file;
+    File file;
     int pos;
     Sample *sample = nullptr;
 
@@ -58,7 +61,7 @@ class AddSampleCommand : public Command {
 
 class DeleteSampleCommand : public Command {
   public:
-    DeleteSampleCommand(trackman::DesktopController &controller, Track &track, Sample &sample)
+    DeleteSampleCommand(DesktopController &controller, Track &track, Sample &sample)
         : Command("Delete Sample"), controller(controller), track(track), sample(sample) {}
     ~DeleteSampleCommand() override = default;
 
@@ -66,15 +69,15 @@ class DeleteSampleCommand : public Command {
     void undo() override { controller.undeleteSample(track, &sample); }
 
   private:
-    trackman::DesktopController &controller;
+    DesktopController &controller;
     Track &track;
     Sample &sample;
 };
 
 class MoveSampleCommand : public Command {
   public:
-    MoveSampleCommand(trackman::DesktopController &controller, Sample &sample, Track &fromTrack, Track *toTrack,
-        double prevPos, double newPos)
+    MoveSampleCommand(
+        DesktopController &controller, Sample &sample, Track &fromTrack, Track *toTrack, double prevPos, double newPos)
         : Command("Move Sample"), controller(controller), sample(sample), fromTrack(fromTrack), toTrack(toTrack),
           prevPos(prevPos), newPos(newPos) {}
     ~MoveSampleCommand() override = default;
@@ -95,7 +98,7 @@ class MoveSampleCommand : public Command {
     }
 
   private:
-    trackman::DesktopController &controller;
+    DesktopController &controller;
     Sample &sample;
     Track &fromTrack;
     Track *toTrack;
@@ -106,7 +109,7 @@ class MoveSampleCommand : public Command {
 
 class ResizeSampleCommand : public Command {
   public:
-    ResizeSampleCommand(trackman::TrackListController &controller, Sample &sample, double prevLen, double newLen)
+    ResizeSampleCommand(TrackListController &controller, Sample &sample, double prevLen, double newLen)
         : Command("Resize Sample"), controller(controller), sample(sample), prevLen(prevLen), newLen(newLen) {}
     ~ResizeSampleCommand() override = default;
 
@@ -114,8 +117,10 @@ class ResizeSampleCommand : public Command {
     void undo() override { controller.resizeSample(sample, prevLen); }
 
   private:
-    trackman::TrackListController &controller;
+    TrackListController &controller;
     Sample &sample;
     double prevLen;
     double newLen;
 };
+
+} // namespace trackman
