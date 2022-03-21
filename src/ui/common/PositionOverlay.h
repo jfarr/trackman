@@ -1,18 +1,23 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "model/Project.h"
 
-class PositionOverlay : public juce::Component, private juce::Timer {
+using namespace juce;
+
+namespace trackman {
+
+class PositionOverlay : public Component, private Timer {
   public:
-    explicit PositionOverlay(juce::AudioTransportSource &transportSource);
+    explicit PositionOverlay(AudioTransportSource &transportSource);
 
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
 
   private:
     void timerCallback() override;
 
-    juce::AudioTransportSource &transportSource;
+    AudioTransportSource &transportSource;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PositionOverlay)
 };
+
+} // namespace trackman

@@ -3,22 +3,25 @@
 #include <memory>
 
 #include "ui/MainWindow.h"
-#include "ui/desktop/DesktopComponent.h"
-#include "ui/desktop/DesktopController.h"
 
-class TrackmanApplication : public juce::JUCEApplication {
+using namespace std;
+using namespace juce;
+
+namespace trackman {
+
+class TrackmanApplication : public JUCEApplication {
   public:
     TrackmanApplication() {}
 
-    const juce::String getApplicationName() override { return ProjectInfo::projectName; }
-    const juce::String getApplicationVersion() override { return ProjectInfo::versionString; }
+    const String getApplicationName() override { return ProjectInfo::projectName; }
+    const String getApplicationVersion() override { return ProjectInfo::versionString; }
     bool moreThanOneInstanceAllowed() override { return true; }
 
     //==============================================================================
-    void initialise(const juce::String & /*commandLine*/) override {
+    void initialise(const String & /*commandLine*/) override {
         // This method is where you should put your application's initialisation
         // code..
-        mainWindow = std::make_unique<MainWindow>(getApplicationName());
+        mainWindow = make_unique<MainWindow>(getApplicationName());
 
         // Bring the main window to the front.
         mainWindow->setAlwaysOnTop(true);
@@ -40,27 +43,32 @@ class TrackmanApplication : public juce::JUCEApplication {
         if (mainWindow == nullptr || !mainWindow->getMainAudioComponent().getDesktopController().isDirty()) {
             quit();
         } else {
-            juce::NativeMessageBox::showYesNoCancelBox(juce::MessageBoxIconType::QuestionIcon, "",
-                "Save project before closing?",
+            NativeMessageBox::showYesNoCancelBox(MessageBoxIconType::QuestionIcon, "", "Save project before closing?",
                 &mainWindow->getMainAudioComponent().getDesktopController().getDesktopComponent(),
-                juce::ModalCallbackFunction::create([this](int result) {
+                ModalCallbackFunction::create([this](int result) {
                     if (result == 2) {
                         quit();
                     } else if (result == 1) {
-                        mainWindow->getMainAudioComponent().getDesktopController().saveProject([](bool saved) { if (saved) { quit();} });
+                        mainWindow->getMainAudioComponent().getDesktopController().saveProject([](bool saved) {
+                            if (saved) {
+                                quit();
+                            }
+                        });
                     }
                 }));
         }
     }
 
-    void anotherInstanceStarted(const juce::String & /*commandLine*/) override {
+    void anotherInstanceStarted(const String & /*commandLine*/) override {
         // When another instance of the app is launched while this one is
         // running, this method is invoked, and the commandLine parameter tells
         // you what the other instance's command-line arguments were.
     }
 
   private:
-    std::unique_ptr<MainWindow> mainWindow;
+    unique_ptr<MainWindow> mainWindow;
 };
 
 START_JUCE_APPLICATION(TrackmanApplication)
+
+} // namespace trackman

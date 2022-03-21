@@ -1,11 +1,15 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
 
 #include "model/Project.h"
 #include "model/Track.h"
 
-class NoteRoll : public juce::Component, public juce::Timer {
+using namespace juce;
+
+namespace trackman {
+
+class NoteRoll : public Component, public Timer {
   public:
     NoteRoll(Project &project, Track &track);
     ~NoteRoll() override = default;
@@ -14,7 +18,7 @@ class NoteRoll : public juce::Component, public juce::Timer {
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
 
     //==============================================================================
     // Timer
@@ -24,8 +28,10 @@ class NoteRoll : public juce::Component, public juce::Timer {
     Project &project;
     Track &track;
 
-    juce::Rectangle<float> getNoteRect(const juce::MidiMessage &noteOn, const juce::MidiMessage &noteOff, int lowNote,
+    Rectangle<float> getNoteRect(const MidiMessage &noteOn, const MidiMessage &noteOff, int lowNote,
         double noteStep, double x, double h, double scale, double margin);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteRoll)
 };
+
+}

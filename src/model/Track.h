@@ -10,32 +10,37 @@
 #include "audio/SamplePlayer.h"
 #include "audio/SynthAudioSource.h"
 
+using namespace std;
+using namespace juce;
+
+namespace trackman {
+
 class Project;
 class TrackList;
 
 class Track {
   public:
-    Track(Project &project, MidiRecorder &midiRecorder, juce::AudioDeviceManager &deviceManager);
+    Track(Project &project, MidiRecorder &midiRecorder, AudioDeviceManager &deviceManager);
     ~Track();
 
     int getTrackNumber() const { return trackNumber; }
-    juce::String getName() const { return name; }
+    String getName() const { return name; }
     float getLevelGain() const { return level; }
     bool isMuted() const { return muted; }
     bool isSoloed() const { return soloed; }
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
-    juce::int64 getTotalLengthInSamples() const;
-    juce::int64 getMidiLengthInSamples() const;
-    juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
+    int64 getTotalLengthInSamples() const;
+    int64 getMidiLengthInSamples() const;
+    AudioDeviceManager &getDeviceManager() { return deviceManager; }
 
-    juce::PositionableAudioSource *getSource() { return meteredSource.get(); }
+    PositionableAudioSource *getSource() { return meteredSource.get(); }
     foleys::LevelMeterSource *getMeterSource() {
         return meteredSource == nullptr ? nullptr : &meteredSource->getMeterSource();
     }
 
     void setTrackNumber(int newNumber) { trackNumber = newNumber; }
-    void setName(const juce::String &newName) { name = newName; }
+    void setName(const String &newName) { name = newName; }
     void setLevelGain(float newLevel);
     void setSelected(bool newSelected);
     Sample *getSelected() const;
@@ -43,7 +48,7 @@ class Track {
 
     void selectSample(Sample *newSelected);
     void moveSampleTo(Sample &sample, Track &toTrack);
-    void eachSample(std::function<void(Sample &sample)> f);
+    void eachSample(function<void(Sample &sample)> f);
     bool hasSamples() const { return !samples.empty(); }
     int getNumSamples() const { return samples.size(); }
 
@@ -52,46 +57,47 @@ class Track {
     bool isRecording() const { return recording; }
     void startRecording();
     void stopRecording();
-    const juce::MidiMessageSequence &getMidiMessages() const { return midiMessages; }
-    const juce::MidiMessageSequence getCurrentMidiMessages(double pos) const;
-    void setMidiMessages(const juce::MidiMessageSequence &newMessages);
+    const MidiMessageSequence &getMidiMessages() const { return midiMessages; }
+    const MidiMessageSequence getCurrentMidiMessages(double pos) const;
+    void setMidiMessages(const MidiMessageSequence &newMessages);
 
-    void processNextMidiBuffer(
-        juce::MidiBuffer &buffer, const int startSample, const int numSamples, const juce::int64 currentPos);
+    void processNextMidiBuffer(MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos);
 
   private:
     friend TrackList;
 
-    Sample *addSample(const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager);
+    Sample *addSample(const File &file, double startPos, double endPos, AudioFormatManager &formatManager);
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
     void updateGain(bool anySoloed);
 
-    const juce::String defaultName = "untitled";
+    const String defaultName = "untitled";
 
     int trackNumber = 0;
-    juce::String name = defaultName;
-    std::unique_ptr<MeteredAudioSource> meteredSource;
-    std::unique_ptr<GainAudioSource> gainSource;
+    String name = defaultName;
+    unique_ptr<MeteredAudioSource> meteredSource;
+    unique_ptr<GainAudioSource> gainSource;
 
-    float level = juce::Decibels::decibelsToGain<float>(0.0);
+    float level = Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
     bool soloed = false;
     bool selected = false;
     bool deleted = false;
     bool recording = false;
 
-    std::list<std::shared_ptr<Sample>> samples;
-    std::unique_ptr<SamplePlayer> samplePlayer;
+    list<shared_ptr<Sample>> samples;
+    unique_ptr<SamplePlayer> samplePlayer;
 
     Project &project;
-    juce::AudioDeviceManager &deviceManager;
+    AudioDeviceManager &deviceManager;
     MidiRecorder &midiRecorder;
     SynthAudioSource synthAudioSource;
-    juce::MidiMessageSequence midiMessages;
+    MidiMessageSequence midiMessages;
 
     void createSamplePlayer();
     void removeSamplePlayer();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
 };
+
+} // namespace trackman

@@ -6,9 +6,14 @@
 #include "model/Track.h"
 #include "NoteRoll.h"
 
-class TrackLaneControl : public juce::Component {
+using namespace std;
+using namespace juce;
+
+namespace trackman {
+
+class TrackLaneControl : public Component {
   public:
-    TrackLaneControl(Project &project, Track &track, juce::AudioTransportSource &transport);
+    TrackLaneControl(Project &project, Track &track, AudioTransportSource &transport);
     ~TrackLaneControl();
 
     Track &getTrack() { return track; }
@@ -20,7 +25,7 @@ class TrackLaneControl : public juce::Component {
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized() override;
 
   private:
@@ -29,13 +34,15 @@ class TrackLaneControl : public juce::Component {
 
     Project &project;
     Track &track;
-    juce::AudioTransportSource &transport;
+    AudioTransportSource &transport;
 
-    juce::Label trackLabel;
-    std::list<SampleThumbnail *> thumbnails;
+    Label trackLabel;
+    list<SampleThumbnail *> thumbnails;
     NoteRoll noteRoll;
 
     void createControls();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackLaneControl)
 };
+
+}

@@ -1,40 +1,48 @@
 #pragma once
 
+#include <JuceHeader.h>
+
 #include "TimeRange.h"
 #include "Timeline.h"
 #include "model/Sample.h"
-#include <JuceHeader.h>
 
-class SamplePlayer : public juce::PositionableAudioSource {
+using namespace std;
+using namespace juce;
+
+namespace trackman {
+
+class SamplePlayer : public PositionableAudioSource {
   public:
-    SamplePlayer(std::list<std::shared_ptr<Sample>> &samples);
+    SamplePlayer(list<shared_ptr<Sample>> &samples);
     ~SamplePlayer() override;
 
     //==============================================================================
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;
     void releaseResources() override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
 
     //==============================================================================
     // PositionableAudioSource
-    void setNextReadPosition(juce::int64 newPosition) override;
-    juce::int64 getNextReadPosition() const override;
-    juce::int64 getTotalLength() const override;
+    void setNextReadPosition(int64 newPosition) override;
+    int64 getNextReadPosition() const override;
+    int64 getTotalLength() const override;
     bool isLooping() const override;
     void setLooping(bool shouldLoop) override;
 
   private:
-    std::list<std::shared_ptr<Sample>> &samples;
+    list<shared_ptr<Sample>> &samples;
     double currentSampleRate = 0;
-    juce::int64 currentPos = 0;
+    int64 currentPos = 0;
     bool looping = false;
-    juce::AudioBuffer<float> tempBuffer;
+    AudioBuffer<float> tempBuffer;
 
     Timeline<Sample *> getCurrentTimeline();
-    double getTimeAtPosition(juce::int64 position) { return position / currentSampleRate; }
+    double getTimeAtPosition(int64 position) { return position / currentSampleRate; }
 
-    juce::CriticalSection mutex;
+    CriticalSection mutex;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplePlayer)
 };
+
+} // namespace trackman

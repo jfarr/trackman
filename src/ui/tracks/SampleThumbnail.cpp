@@ -1,66 +1,67 @@
 #include "SampleThumbnail.h"
 #include "common/listutil.h"
 
-void StretchHandle::paint(juce::Graphics &g) {
-    juce::Path path;
+namespace trackman {
+
+void StretchHandle::paint(Graphics &g) {
+    Path path;
     auto w = getWidth();
     auto h = getHeight();
-    path.addTriangle(juce::Point<float>(0, 0), juce::Point<float>(w, 0), juce::Point<float>(w, h));
-    g.setColour(juce::Colours::grey.withAlpha(0.8f));
+    path.addTriangle(Point<float>(0, 0), Point<float>(w, 0), Point<float>(w, h));
+    g.setColour(Colours::grey.withAlpha(0.8f));
     g.fillPath(path);
 }
 
-void StretchHandle::mouseDrag(const juce::MouseEvent &event) {
-    auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
+void StretchHandle::mouseDrag(const MouseEvent &event) {
+    auto *container = DragAndDropContainer::findParentDragContainerFor(this);
     if (container != nullptr) {
         container->startDragging("clip", this, scaledDragImage);
     }
     auto bounds = thumbnail.getScreenBounds();
     auto x = event.getScreenX();
-    auto newWidth = std::max(x - bounds.getX(), 1);
+    auto newWidth = max(x - bounds.getX(), 1);
     thumbnail.setBounds(thumbnail.getBounds().withWidth(newWidth));
 }
 
-void StretchHandle::mouseDown(const juce::MouseEvent &event) { thumbnail.mouseDown(event); }
+void StretchHandle::mouseDown(const MouseEvent &event) { thumbnail.mouseDown(event); }
 
-void StretchHandle::mouseUp(const juce::MouseEvent &event) {}
+void StretchHandle::mouseUp(const MouseEvent &event) {}
 
-SampleThumbnail::SampleThumbnail(
-    Project &project, Track &track, Sample &sample, juce::AudioFormatManager &formatManager)
+SampleThumbnail::SampleThumbnail(Project &project, Track &track, Sample &sample, AudioFormatManager &formatManager)
     : project(project), track(track), sample(sample), thumbnailCache(5), thumbnail(512, formatManager, thumbnailCache),
-      stretchHandle(*this), dragImage(juce::Image::ARGB, 1, 1, true), scaledDragImage(dragImage) {
-    thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
+      stretchHandle(*this), dragImage(Image::ARGB, 1, 1, true), scaledDragImage(dragImage) {
+    thumbnail.setSource(new FileInputSource(sample.getFile()));
     createControls();
     setSize(200, 81);
 }
 
 void SampleThumbnail::createControls() {
-    filenameLabel.setText(sample.getFile().getFileName(), juce::dontSendNotification);
+    filenameLabel.setText(sample.getFile().getFileName(), dontSendNotification);
     filenameLabel.setFont(missingFileLabel.getFont().withHeight(10));
-    thumbnail.setSource(new juce::FileInputSource(sample.getFile()));
+    thumbnail.setSource(new FileInputSource(sample.getFile()));
     addAndMakeVisible(filenameLabel);
     addAndMakeVisible(stretchHandle);
     if (!sample.isLoaded()) {
-        missingFileLabel.setText("no file", juce::dontSendNotification);
+        missingFileLabel.setText("no file", dontSendNotification);
         missingFileLabel.setFont(missingFileLabel.getFont().withHeight(10));
-        missingFileLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
+        missingFileLabel.setColour(Label::textColourId, Colours::grey);
         addAndMakeVisible(missingFileLabel);
     }
 }
 
-void SampleThumbnail::paint(juce::Graphics &g) {
+void SampleThumbnail::paint(Graphics &g) {
     auto area = getLocalBounds();
     auto margin = 3;
 
-    auto bgcolor = track.isSelected() && sample.isSelected() ? juce::Colours::lightgrey : juce::Colours::dimgrey;
+    auto bgcolor = track.isSelected() && sample.isSelected() ? Colours::lightgrey : Colours::dimgrey;
     g.fillAll(bgcolor);
-    g.setColour(juce::Colours::grey);
+    g.setColour(Colours::grey);
     g.drawRect(0, 0, getWidth(), getHeight());
 
     auto thumbnailBounds = area.reduced(margin);
-    g.setColour(juce::Colours::dimgrey);
+    g.setColour(Colours::dimgrey);
     g.fillRect(thumbnailBounds);
-    g.setColour(juce::Colours::limegreen);
+    g.setColour(Colours::limegreen);
     thumbnail.drawChannels(g, thumbnailBounds, 0.0, thumbnail.getTotalLength(), 1.0f);
 }
 
@@ -76,7 +77,7 @@ void SampleThumbnail::resized() {
     }
 }
 
-void SampleThumbnail::mouseDown(const juce::MouseEvent &event) {
+void SampleThumbnail::mouseDown(const MouseEvent &event) {
     Component::mouseDown(event);
     notifySampleSelected(track, sample);
     if (!dragging) {
@@ -85,10 +86,10 @@ void SampleThumbnail::mouseDown(const juce::MouseEvent &event) {
     }
 }
 
-void SampleThumbnail::mouseUp(const juce::MouseEvent &event) { dragging = false; }
+void SampleThumbnail::mouseUp(const MouseEvent &event) { dragging = false; }
 
-void SampleThumbnail::mouseDrag(const juce::MouseEvent &event) {
-    auto *container = juce::DragAndDropContainer::findParentDragContainerFor(this);
+void SampleThumbnail::mouseDrag(const MouseEvent &event) {
+    auto *container = DragAndDropContainer::findParentDragContainerFor(this);
     if (container != nullptr) {
         container->startDragging("clip", this, scaledDragImage);
     }
@@ -115,3 +116,5 @@ void SampleThumbnail::notifyMouseDragged(SampleThumbnail &thumbnail, int x, int 
         listener->mouseDragged(thumbnail, x, y);
     }
 }
+
+} // namespace trackman

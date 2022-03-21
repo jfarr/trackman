@@ -3,7 +3,7 @@
 
 namespace trackman {
 
-MixerPanel::MixerPanel(DesktopController &desktopController, foleys::LevelMeterSource &meterSource)
+MixerPanel::MixerPanel(DesktopController &desktopController, LevelMeterSource &meterSource)
     : desktopController(desktopController), masterTrackControl(desktopController.getMixer(), meterSource),
       mixerViewport(desktopController.getMixerController().getViewport()) {
 
@@ -18,7 +18,7 @@ MixerPanel::~MixerPanel() {
 }
 
 void MixerPanel::createControls() {
-    mixerViewport.getHorizontalScrollBar().setColour(juce::ScrollBar::thumbColourId, juce::Colours::dimgrey);
+    mixerViewport.getHorizontalScrollBar().setColour(ScrollBar::thumbColourId, Colours::dimgrey);
     addAndMakeVisible(masterTrackControl);
     addAndMakeVisible(mixerViewport);
 }
@@ -27,8 +27,8 @@ void MixerPanel::update() {
 }
 
 //==============================================================================
-void MixerPanel::paint(juce::Graphics &g) {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+void MixerPanel::paint(Graphics &g) {
+    g.fillAll(getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
 }
 
 void MixerPanel::resized() {

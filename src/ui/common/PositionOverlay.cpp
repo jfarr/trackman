@@ -1,12 +1,14 @@
 #include "PositionOverlay.h"
 
-PositionOverlay::PositionOverlay(juce::AudioTransportSource &transportSource) : transportSource(transportSource) {
+namespace trackman {
+
+PositionOverlay::PositionOverlay(AudioTransportSource &transportSource) : transportSource(transportSource) {
     setInterceptsMouseClicks(false, false);
     startTimer(20);
 }
 
-void PositionOverlay::paint(juce::Graphics &g) {
-    g.setColour(juce::Colour{0xff282828});
+void PositionOverlay::paint(Graphics &g) {
+    g.setColour(Colour{0xff282828});
     auto duration = (float)transportSource.getLengthInSeconds();
     auto audioPosition = (float)transportSource.getCurrentPosition();
     auto drawPosition = duration == 0 ? 0 : (audioPosition / duration) * (float)getWidth();
@@ -14,3 +16,5 @@ void PositionOverlay::paint(juce::Graphics &g) {
 }
 
 void PositionOverlay::timerCallback() { repaint(); }
+
+} // namespace trackman

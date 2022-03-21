@@ -10,6 +10,8 @@
 - Views are only referenced by one controller
   - Use callbacks between controllers instead of multiple controllers sending messages to the same view
 - Controllers can reference or own other controllers
+- All code in namespace "trackman"
+- Use "using namespace std" and "using namespace juce"
 
 ## Implementation
 

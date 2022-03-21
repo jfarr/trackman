@@ -2,41 +2,47 @@
 
 #include <JuceHeader.h>
 
-template <typename ProcessorType> class ProcessingAudioSource : public juce::PositionableAudioSource {
+using namespace std;
+using namespace juce;
+using namespace juce::dsp;
+
+namespace trackman {
+
+template <typename ProcessorType> class ProcessingAudioSource : public PositionableAudioSource {
   public:
-    ProcessingAudioSource(juce::PositionableAudioSource *source, juce::dsp::ProcessorWrapper<ProcessorType> *processor,
-        const bool deleteWhenRemoved);
+    ProcessingAudioSource(
+        PositionableAudioSource *source, ProcessorWrapper<ProcessorType> *processor, const bool deleteWhenRemoved);
     ~ProcessingAudioSource() override;
 
     //==============================================================================
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;
     void releaseResources() override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
 
     //==============================================================================
     // PositionableAudioSource
-    void setNextReadPosition(juce::int64 newPosition) override;
-    juce::int64 getNextReadPosition() const override;
-    juce::int64 getTotalLength() const override;
+    void setNextReadPosition(int64 newPosition) override;
+    int64 getNextReadPosition() const override;
+    int64 getTotalLength() const override;
     bool isLooping() const override;
     void setLooping(bool shouldLoop) override;
 
   private:
-    juce::PositionableAudioSource *source;
-    juce::dsp::ProcessorWrapper<ProcessorType> *processor;
-    juce::CriticalSection audioCallbackLock;
+    PositionableAudioSource *source;
+    ProcessorWrapper<ProcessorType> *processor;
+    CriticalSection audioCallbackLock;
     const bool deleteWhenRemoved;
 };
 
 template <typename ProcessorType>
-ProcessingAudioSource<ProcessorType>::ProcessingAudioSource(juce::PositionableAudioSource *source,
-    juce::dsp::ProcessorWrapper<ProcessorType> *processor, const bool deleteWhenRemoved)
+ProcessingAudioSource<ProcessorType>::ProcessingAudioSource(
+    PositionableAudioSource *source, ProcessorWrapper<ProcessorType> *processor, const bool deleteWhenRemoved)
     : source(source), processor(processor), deleteWhenRemoved(deleteWhenRemoved) {}
 
 template <typename ProcessorType> ProcessingAudioSource<ProcessorType>::~ProcessingAudioSource() {
     if (deleteWhenRemoved && source != nullptr) {
-        std::unique_ptr<AudioSource> toDelete;
+        unique_ptr<AudioSource> toDelete;
         toDelete.reset(source);
     }
 }
@@ -45,7 +51,7 @@ template <typename ProcessorType> ProcessingAudioSource<ProcessorType>::~Process
 template <typename ProcessorType>
 void ProcessingAudioSource<ProcessorType>::prepareToPlay(int blockSize, double sampleRate) {
     source->prepareToPlay(blockSize, sampleRate);
-    processor->prepare({sampleRate, (juce::uint32)blockSize, 2});
+    processor->prepare({sampleRate, (uint32)blockSize, 2});
 }
 
 template <typename ProcessorType> void ProcessingAudioSource<ProcessorType>::releaseResources() {
@@ -53,25 +59,25 @@ template <typename ProcessorType> void ProcessingAudioSource<ProcessorType>::rel
 }
 
 template <typename ProcessorType>
-void ProcessingAudioSource<ProcessorType>::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+void ProcessingAudioSource<ProcessorType>::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     source->getNextAudioBlock(bufferToFill);
 
-    juce::dsp::AudioBlock<float> block(*bufferToFill.buffer, (size_t)bufferToFill.startSample);
+    AudioBlock<float> block(*bufferToFill.buffer, (size_t)bufferToFill.startSample);
 
-    juce::ScopedLock audioLock(audioCallbackLock);
-    processor->process(juce::dsp::ProcessContextReplacing<float>(block));
+    ScopedLock audioLock(audioCallbackLock);
+    processor->process(ProcessContextReplacing<float>(block));
 }
 
 //==============================================================================
-template <typename ProcessorType> void ProcessingAudioSource<ProcessorType>::setNextReadPosition(juce::int64 position) {
+template <typename ProcessorType> void ProcessingAudioSource<ProcessorType>::setNextReadPosition(int64 position) {
     source->setNextReadPosition(position);
 }
 
-template <typename ProcessorType> juce::int64 ProcessingAudioSource<ProcessorType>::getNextReadPosition() const {
+template <typename ProcessorType> int64 ProcessingAudioSource<ProcessorType>::getNextReadPosition() const {
     return source->getNextReadPosition();
 }
 
-template <typename ProcessorType> juce::int64 ProcessingAudioSource<ProcessorType>::getTotalLength() const {
+template <typename ProcessorType> int64 ProcessingAudioSource<ProcessorType>::getTotalLength() const {
     return source->getTotalLength();
 }
 
@@ -82,3 +88,5 @@ template <typename ProcessorType> bool ProcessingAudioSource<ProcessorType>::isL
 template <typename ProcessorType> void ProcessingAudioSource<ProcessorType>::setLooping(bool shouldLoop) {
     source->setLooping(shouldLoop);
 }
+
+} // namespace trackman

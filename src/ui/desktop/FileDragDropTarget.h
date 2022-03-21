@@ -2,7 +2,13 @@
 
 #include <JuceHeader.h>
 
-class FileDragDropTarget : public juce::FileDragAndDropTarget {
+using namespace juce;
+
+namespace trackman {
+
+class FileDragDropTarget : public FileDragAndDropTarget {
   public:
-    bool isInterestedInFileDrag(const juce::StringArray &files) override { return true; }
+    bool isInterestedInFileDrag(const StringArray &files) override { return true; }
 };
+
+} // namespace trackman

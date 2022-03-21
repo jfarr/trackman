@@ -1,6 +1,8 @@
 #include "Transport.h"
 
-Transport::Transport(juce::PositionableAudioSource &source) {
+namespace trackman {
+
+Transport::Transport(PositionableAudioSource &source) {
     transportSource.setSource(&source);
     startTimer(20);
 }
@@ -11,10 +13,10 @@ void Transport::prepareToPlay(int blockSize, double sampleRate) {
 
 void Transport::releaseResources() { transportSource.releaseResources(); }
 
-void Transport::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+void Transport::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     transportSource.getNextAudioBlock(bufferToFill);
 }
 
-void Transport::timerCallback() {
+void Transport::timerCallback() {}
 
-}
+} // namespace trackman

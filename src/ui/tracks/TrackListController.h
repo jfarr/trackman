@@ -9,6 +9,9 @@
 #include "ui/desktop/TrackListListener.h"
 #include "ui/tracks/SampleListener.h"
 
+using namespace std;
+using namespace juce;
+
 namespace trackman {
 
 class DesktopController;
@@ -21,7 +24,7 @@ class TrackListController : public TrackListListener, public SampleListener {
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
     TrackListViewport &getViewport() { return trackListViewport; }
 
-    Sample *addSample(Track &track, juce::File file, int pos);
+    Sample *addSample(Track &track, File file, int pos);
     void moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos);
     void resizeSample(Sample &sample, double length);
     void deleteSample(Track &track, Sample *sample);
@@ -30,10 +33,10 @@ class TrackListController : public TrackListListener, public SampleListener {
     void update();
     void repaint();
 
-    void fileDragEnter(const juce::StringArray &files, int x, int y);
-    void fileDragMove(const juce::StringArray &files, int x, int y);
-    void fileDragExit(const juce::StringArray &files);
-    void filesDropped(const juce::StringArray &files, int x, int y);
+    void fileDragEnter(const StringArray &files, int x, int y);
+    void fileDragMove(const StringArray &files, int x, int y);
+    void fileDragExit(const StringArray &files);
+    void filesDropped(const StringArray &files, int x, int y);
 
     //==============================================================================
     // TrackListListener
@@ -53,7 +56,7 @@ class TrackListController : public TrackListListener, public SampleListener {
 
     TrackListViewport trackListViewport;
     TrackListPanel trackListPanel;
-    std::list<std::unique_ptr<TrackLaneController>> lanes;
+    list<unique_ptr<TrackLaneController>> lanes;
     Track *selected = nullptr;
     bool selectingSample = false;
     Track *currentDragTrack = nullptr;

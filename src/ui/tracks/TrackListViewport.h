@@ -3,11 +3,13 @@
 #include <JuceHeader.h>
 #include "model/Project.h"
 
+using namespace juce;
+
 namespace trackman {
 
 class DesktopComponent;
 
-class TrackListViewport : public juce::Viewport, private juce::Timer {
+class TrackListViewport : public Viewport, private Timer {
 
   public:
     TrackListViewport(DesktopComponent &desktop, Project &project) : desktop(desktop), project(project) {
@@ -15,7 +17,7 @@ class TrackListViewport : public juce::Viewport, private juce::Timer {
     }
     ~TrackListViewport() override = default;
 
-    void visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea) override;
+    void visibleAreaChanged(const Rectangle<int> &newVisibleArea) override;
 
   private:
     void timerCallback() override;

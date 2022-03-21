@@ -1,14 +1,19 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
 
-class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
+using namespace std;
+using namespace juce;
+
+namespace trackman {
+
+class PositionableResamplingAudioSource : public PositionableAudioSource {
   public:
-    PositionableResamplingAudioSource(juce::PositionableAudioSource *source, const bool deleteWhenRemoved,
-        double sampleRate, double sourceSampleRateToCorrectFor, int maxNumChannels = 2);
+    PositionableResamplingAudioSource(PositionableAudioSource *source, const bool deleteWhenRemoved, double sampleRate,
+        double sourceSampleRateToCorrectFor, int maxNumChannels = 2);
     ~PositionableResamplingAudioSource() override;
 
-    juce::PositionableAudioSource *getSource() { return source; }
+    PositionableAudioSource *getSource() { return source; }
     double getSampleRate() const { return sampleRate; }
 
     void setSourceSampleRateToCorrectFor(double newSampleRate);
@@ -17,19 +22,19 @@ class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
     // AudioSource
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &info) override;
+    void getNextAudioBlock(const AudioSourceChannelInfo &info) override;
 
     //==============================================================================
     // PositionableAudioSource
-    void setNextReadPosition(juce::int64 newPosition) override;
-    juce::int64 getNextReadPosition() const override;
-    juce::int64 getTotalLength() const override;
+    void setNextReadPosition(int64 newPosition) override;
+    int64 getNextReadPosition() const override;
+    int64 getTotalLength() const override;
     bool isLooping() const override;
     void setLooping(bool shouldLoop) override;
 
   private:
-    juce::PositionableAudioSource *source;
-    juce::ResamplingAudioSource resamplerSource;
+    PositionableAudioSource *source;
+    ResamplingAudioSource resamplerSource;
     double sampleRate, sourceSampleRate;
     int blockSize = 128;
     const bool deleteWhenRemoved;
@@ -38,7 +43,9 @@ class PositionableResamplingAudioSource : public juce::PositionableAudioSource {
         return (sampleRate > 0 && sourceSampleRate > 0) ? sampleRate / sourceSampleRate : 1.0;
     }
 
-    juce::CriticalSection mutex;
+    CriticalSection mutex;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PositionableResamplingAudioSource)
 };
+
+} // namespace trackman

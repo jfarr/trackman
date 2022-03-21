@@ -27,9 +27,9 @@ class AudioPlayer : public AudioAppComponent, public FileListener {
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-    void mouseDown(const juce::MouseEvent &event) override;
+    void mouseDown(const MouseEvent &event) override;
 
     //==============================================================================
     // FileListener
@@ -38,7 +38,7 @@ class AudioPlayer : public AudioAppComponent, public FileListener {
   private:
     AudioFormatManager &formatManager;
     AudioTransportSource transportSource;
-    trackman::TransportControl transportControl;
+    TransportControl transportControl;
     FileChooserControl fileChooserControl;
     ThumbnailComponent thumbnailComponent;
     PositionOverlay positionOverlay;

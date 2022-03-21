@@ -2,8 +2,10 @@
 
 #include <memory>
 
-Sample::Sample(juce::File file, double startPos, double endPos)
-    : file(std::move(file)), startPos(startPos), endPos(endPos), length(endPos - startPos) {}
+namespace trackman {
+
+Sample::Sample(File file, double startPos, double endPos)
+    : file(move(file)), startPos(startPos), endPos(endPos), length(endPos - startPos) {}
 
 Sample::~Sample() {
     if (resamplingSource != nullptr) {
@@ -11,24 +13,24 @@ Sample::~Sample() {
     }
 }
 
-juce::int64 Sample::getLengthInSamples() const {
+int64 Sample::getLengthInSamples() const {
     return resamplingSource == nullptr ? 0 : getPositionFromTime(startPos) + resamplingSource->getTotalLength();
 }
 
-juce::int64 Sample::getPositionFromTime(double t) const {
+int64 Sample::getPositionFromTime(double t) const {
     return resamplingSource == nullptr ? 0 : t * resamplingSource->getSampleRate();
 }
 
 double Sample::getSampleRate() const { return reader->sampleRate * sourceLengthInSeconds / (endPos - startPos); }
 
-void Sample::loadFile(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager) {
+void Sample::loadFile(AudioDeviceManager &deviceManager, AudioFormatManager &formatManager) {
     auto blockSize = deviceManager.getAudioDeviceSetup().bufferSize;
     auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
     reader.reset(formatManager.createReaderFor(file));
     if (reader != nullptr) {
-        fileSource = std::make_unique<juce::AudioFormatReaderSource>(reader.get(), false);
+        fileSource = make_unique<AudioFormatReaderSource>(reader.get(), false);
         sourceLengthInSeconds = reader->lengthInSamples / reader->sampleRate;
-        resamplingSource = std::make_unique<PositionableResamplingAudioSource>(
+        resamplingSource = make_unique<PositionableResamplingAudioSource>(
             fileSource.get(), false, sampleRate, getSampleRate(), 2);
         resamplingSource->prepareToPlay(blockSize, sampleRate);
         loaded = true;
@@ -61,24 +63,24 @@ void Sample::releaseResources() {
     }
 }
 
-void Sample::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+void Sample::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     if (resamplingSource != nullptr) {
         resamplingSource->getNextAudioBlock(bufferToFill);
     }
 }
 
 //==============================================================================
-void Sample::setNextReadPosition(juce::int64 newPosition) {
+void Sample::setNextReadPosition(int64 newPosition) {
     if (resamplingSource != nullptr) {
         resamplingSource->setNextReadPosition(newPosition);
     }
 }
 
-juce::int64 Sample::getNextReadPosition() const {
+int64 Sample::getNextReadPosition() const {
     return resamplingSource == nullptr ? 0 : resamplingSource->getNextReadPosition();
 }
 
-juce::int64 Sample::getTotalLength() const {
+int64 Sample::getTotalLength() const {
     return resamplingSource == nullptr ? 0 : resamplingSource->getTotalLength();
 }
 
@@ -89,3 +91,5 @@ void Sample::setLooping(bool shouldLoop) {
         resamplingSource->setLooping(shouldLoop);
     }
 }
+
+} // namespace trackman

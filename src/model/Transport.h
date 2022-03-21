@@ -2,12 +2,16 @@
 
 #include <JuceHeader.h>
 
-class Transport : public juce::AudioSource, private juce::Timer {
+using namespace juce;
+
+namespace trackman {
+
+class Transport : public AudioSource, private Timer {
   public:
-    Transport(juce::PositionableAudioSource &source);
+    Transport(PositionableAudioSource &source);
     ~Transport() override = default;
 
-    juce::AudioTransportSource &getTransportSource() { return transportSource; }
+    AudioTransportSource &getTransportSource() { return transportSource; }
 
     void setPosition(double newPosition) { transportSource.setPosition(newPosition); }
     double getCurrentPosition() const { return transportSource.getCurrentPosition(); }
@@ -20,12 +24,14 @@ class Transport : public juce::AudioSource, private juce::Timer {
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;
     void releaseResources() override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
 
   private:
-    juce::AudioTransportSource transportSource;
+    AudioTransportSource transportSource;
 
     void timerCallback() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Transport)
 };
+
+} // namespace trackman

@@ -8,9 +8,15 @@
 #include "model/Mixer.h"
 #include "ui/common/DecibelSlider.h"
 
-class MasterTrackControl : public juce::Component, public SliderListener {
+using namespace std;
+using namespace juce;
+using namespace foleys;
+
+namespace trackman {
+
+class MasterTrackControl : public Component, public SliderListener {
   public:
-    MasterTrackControl(Mixer &mixer, foleys::LevelMeterSource &meterSource);
+    MasterTrackControl(Mixer &mixer, LevelMeterSource &meterSource);
     ~MasterTrackControl();
 
     static int getPreferredWidth() { return 150; }
@@ -24,9 +30,9 @@ class MasterTrackControl : public juce::Component, public SliderListener {
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-    void mouseUp(const juce::MouseEvent &event) override;
+    void mouseUp(const MouseEvent &event) override;
 
     //==============================================================================
     // SliderListener
@@ -36,14 +42,14 @@ class MasterTrackControl : public juce::Component, public SliderListener {
     Mixer &mixer;
 
     DecibelSlider decibelSlider;
-    juce::TextButton muteButton;
-    juce::Label channelLabel;
+    TextButton muteButton;
+    Label channelLabel;
     MasterLevelMeterLookAndFeel levelMeterLookAndFeel;
-    foleys::LevelMeter levelMeter;
+    LevelMeter levelMeter;
 
     bool draggingSlider = false;
     float previousLevel;
-    std::list<MasterTrackListener *> listeners;
+    list<MasterTrackListener *> listeners;
 
     void createControls();
     void decibelSliderChanged();
@@ -55,3 +61,5 @@ class MasterTrackControl : public juce::Component, public SliderListener {
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MasterTrackControl)
 };
+
+} // namespace trackman

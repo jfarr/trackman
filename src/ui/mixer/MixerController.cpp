@@ -16,7 +16,7 @@ MixerController::MixerController(DesktopController &desktopController)
 
 MixerController::~MixerController() {
     // TODO: remove this listener, just call the controller directly
-    for (std::unique_ptr<TrackController> &track : tracks) {
+    for (auto &track : tracks) {
         track->removeListener((TrackListListener *)this);
     }
     mixerPanel.getMasterTrackControl().removeListener(this);
@@ -27,7 +27,7 @@ void MixerController::update() {
     trackPanel.clear();
     trackList.eachTrack([this](Track &track) {
         auto controller = new TrackController(desktopController, track);
-        tracks.push_back(std::unique_ptr<TrackController>(controller));
+        tracks.push_back(unique_ptr<TrackController>(controller));
         trackPanel.addTrack(&controller->getTrackControl());
     });
     trackPanel.update();
@@ -35,7 +35,7 @@ void MixerController::update() {
 }
 
 void MixerController::repaint() {
-    for (std::unique_ptr<TrackController> &track : tracks) {
+    for (unique_ptr<TrackController> &track : tracks) {
         track->repaint();
     }
     mixerPanel.repaint();
@@ -53,7 +53,7 @@ void MixerController::setMasterMute(bool newMute) {
 }
 
 void MixerController::setLevel(Track &track, float newLevel) {
-    for (std::unique_ptr<TrackController> &trackController : tracks) {
+    for (unique_ptr<TrackController> &trackController : tracks) {
         if (&trackController->getTrack() == &track) {
             trackController->setLevel(newLevel);
         }
@@ -61,7 +61,7 @@ void MixerController::setLevel(Track &track, float newLevel) {
 }
 
 void MixerController::setMute(Track &track, bool newMute) {
-    for (std::unique_ptr<TrackController> &trackController : tracks) {
+    for (unique_ptr<TrackController> &trackController : tracks) {
         if (&trackController->getTrack() == &track) {
             trackController->setMute(track, newMute);
         }
@@ -69,7 +69,7 @@ void MixerController::setMute(Track &track, bool newMute) {
 }
 
 void MixerController::setSolo(Track &track, bool newSolo) {
-    for (std::unique_ptr<TrackController> &trackController : tracks) {
+    for (unique_ptr<TrackController> &trackController : tracks) {
         if (&trackController->getTrack() == &track) {
             trackController->setSolo(track, newSolo);
         }

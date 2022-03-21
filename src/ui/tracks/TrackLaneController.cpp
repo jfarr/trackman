@@ -5,7 +5,7 @@
 namespace trackman {
 
 TrackLaneController::TrackLaneController(Project &project, Track &track, TrackListController &trackListController,
-    juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
+    AudioTransportSource &transport, AudioFormatManager &formatManager)
     : project(project), track(track), transport(transport), trackListController(trackListController),
       trackLaneControl(project, track, transport), formatManager(formatManager) {
     addListener((TrackListListener *)&trackListController);
@@ -15,13 +15,13 @@ TrackLaneController::TrackLaneController(Project &project, Track &track, TrackLi
 TrackLaneController::~TrackLaneController() { removeListener((TrackListListener *)&trackListController); }
 
 void TrackLaneController::update() {
-    for (std::unique_ptr<SampleThumbnail> &thumbnail : thumbnails) {
+    for (unique_ptr<SampleThumbnail> &thumbnail : thumbnails) {
         thumbnail->removeListener(&trackListController);
     }
     thumbnails.clear();
     trackLaneControl.clear();
     track.eachSample([this](Sample &sample) {
-        thumbnails.push_back(std::make_unique<SampleThumbnail>(project, track, sample, formatManager));
+        thumbnails.push_back(make_unique<SampleThumbnail>(project, track, sample, formatManager));
         thumbnails.back()->addListener(&trackListController);
         trackLaneControl.addThumbnail(thumbnails.back().get());
     });
@@ -32,7 +32,7 @@ void TrackLaneController::update() {
 
 void TrackLaneController::repaint() { trackLaneControl.repaint(); }
 
-void TrackLaneController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }
+void TrackLaneController::mouseDown(const MouseEvent &event) { notifySelectionChanged(); }
 
 void TrackLaneController::selectionChanged(Track *track) { notifySelectionChanged(); }
 

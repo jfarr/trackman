@@ -1,26 +1,31 @@
 #pragma once
 
 #include "Mixer.h"
-#include "TrackList.h"
 #include "TimeSignature.h"
+#include "TrackList.h"
 #include "Transport.h"
+
+using namespace std;
+using namespace juce;
+
+namespace trackman {
 
 class Project {
   public:
-    Project(juce::AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder);
+    Project(AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder);
     ~Project() = default;
 
     const float getTempo() const { return tempo; };
     void setTempo(const float newTempo) { tempo = newTempo; }
 
     const TimeSignature &getTimeSignature() const { return timeSignature; }
-    void setTimeSignature(const TimeSignature & newTimeSignature) { timeSignature = newTimeSignature; }
+    void setTimeSignature(const TimeSignature &newTimeSignature) { timeSignature = newTimeSignature; }
 
     Track *addTrack();
     void deleteTrack(Track *track);
 
     Sample *addSample(
-        Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager);
+        Track &track, const File &file, double startPos, double endPos, AudioFormatManager &formatManager);
 
     TrackList &getTrackList() { return trackList; }
     Mixer &getMixer() { return mixer; }
@@ -36,23 +41,23 @@ class Project {
 
     double getVerticalScale() const { return verticalScale; }
     double getHorizontalScale() const { return horizontalScale; }
-//    double getHorizontalScaleRatio() const { return initialHorizontalScale / horizontalScale; }
+    //    double getHorizontalScaleRatio() const { return initialHorizontalScale / horizontalScale; }
 
     void incrementVerticalScale() { verticalScale *= 1.08; }
     void decrementVerticalScale() {
         verticalScale /= 1.08;
-        verticalScale = std::max(verticalScale, 0.0000001);
+        verticalScale = max(verticalScale, 0.0000001);
     }
     void incrementHorizontalScale() { horizontalScale *= 1.2; }
     void decrementHorizontalScale() {
         horizontalScale /= 1.2;
-        horizontalScale = std::max(horizontalScale, 0.0000001);
+        horizontalScale = max(horizontalScale, 0.0000001);
     }
 
-    std::string to_json();
-    void from_json(juce::AudioFormatManager &formatManager, std::string filename);
+    string to_json();
+    void from_json(AudioFormatManager &formatManager, string filename);
 
-    void writeAudioFile(const juce::File &file);
+    void writeAudioFile(const File &file);
 
   private:
     const float initialTempo = 120.0;
@@ -60,7 +65,7 @@ class Project {
     const double initialHorizontalScale = 100;
     const double scaleIncrement = 5;
 
-    juce::AudioDeviceManager &deviceManager;
+    AudioDeviceManager &deviceManager;
     TrackList trackList;
     Mixer mixer;
     Transport transport;
@@ -69,3 +74,5 @@ class Project {
     double verticalScale = initialVerticalScale;
     double horizontalScale = initialHorizontalScale;
 };
+
+} // namespace trackman

@@ -5,6 +5,8 @@
 #include "model/Sample.h"
 #include "model/Track.h"
 
+namespace trackman {
+
 class SampleThumbnail;
 
 class SampleListener {
@@ -15,3 +17,5 @@ class SampleListener {
     virtual void mouseDragged(SampleThumbnail &thumbnail, int x, int screenY) {}
     virtual void dragEnded() {}
 };
+
+}

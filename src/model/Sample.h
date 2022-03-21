@@ -5,23 +5,28 @@
 
 #include "audio/PositionableResamplingAudioSource.h"
 
+using namespace std;
+using namespace juce;
+
+namespace trackman {
+
 class Track;
 
-class Sample : public juce::PositionableAudioSource {
+class Sample : public PositionableAudioSource {
   public:
-    Sample(juce::File file, double startPos, double endPos);
+    Sample(File file, double startPos, double endPos);
     ~Sample() override;
 
-    juce::File getFile() const { return file; }
+    File getFile() const { return file; }
     double getStartPos() const { return startPos; }
     double getEndPos() const { return endPos; }
-    juce::int64 getLengthInSamples() const;
+    int64 getLengthInSamples() const;
     double getLengthInSeconds() const { return length; }
     bool isLoaded() const { return loaded; }
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
 
-    void loadFile(juce::AudioDeviceManager &deviceManager, juce::AudioFormatManager &formatManager);
+    void loadFile(AudioDeviceManager &deviceManager, AudioFormatManager &formatManager);
 
     void setPosition(double pos);
     void setLength(double newLength);
@@ -32,30 +37,32 @@ class Sample : public juce::PositionableAudioSource {
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;
     void releaseResources() override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
 
     //==============================================================================
     // PositionableAudioSource
-    void setNextReadPosition(juce::int64 newPosition) override;
-    juce::int64 getNextReadPosition() const override;
-    juce::int64 getTotalLength() const override;
+    void setNextReadPosition(int64 newPosition) override;
+    int64 getNextReadPosition() const override;
+    int64 getTotalLength() const override;
     bool isLooping() const override;
     void setLooping(bool shouldLoop) override;
 
   private:
-    juce::File file;
+    File file;
     double startPos;
     double endPos;
     double length;
     double sourceLengthInSeconds = 0;
-    std::unique_ptr<juce::AudioFormatReaderSource> fileSource;
-    std::unique_ptr<PositionableResamplingAudioSource> resamplingSource;
+    unique_ptr<AudioFormatReaderSource> fileSource;
+    unique_ptr<PositionableResamplingAudioSource> resamplingSource;
     bool loaded = false;
     bool selected = false;
     bool deleted = false;
 
-    juce::int64 getPositionFromTime(double t) const;
+    int64 getPositionFromTime(double t) const;
     double getSampleRate() const;
 
-    std::unique_ptr<juce::AudioFormatReader> reader;
+    unique_ptr<AudioFormatReader> reader;
 };
+
+}

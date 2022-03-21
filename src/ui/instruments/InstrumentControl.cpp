@@ -4,15 +4,15 @@ namespace trackman {
 
 InstrumentControl::InstrumentControl(Track &track) : track(track) {
     selectButton.setButtonText("...");
-    selectButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkslategrey);
+    selectButton.setColour(TextButton::buttonColourId, Colours::darkslategrey);
     addAndMakeVisible(selectButton);
 }
 
 void InstrumentControl::update() { selectButton.setEnabled(track.canRecord()); }
 
-void InstrumentControl::paint(juce::Graphics &g) {
-    g.fillAll(track.isSelected() ? juce::Colours::lightgrey : juce::Colours::grey);
-    g.setColour(track.isSelected() ? juce::Colours::slategrey : juce::Colours::darkslategrey);
+void InstrumentControl::paint(Graphics &g) {
+    g.fillAll(track.isSelected() ? Colours::lightgrey : Colours::grey);
+    g.setColour(track.isSelected() ? Colours::slategrey : Colours::darkslategrey);
     g.fillRect(0, getHeight() - 1, getWidth(), 1);
 }
 

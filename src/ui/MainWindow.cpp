@@ -1,12 +1,17 @@
 #include "MainWindow.h"
 #include "MainAudioComponent.h"
 
-MainWindow::MainWindow(juce::String name)
+using namespace juce;
+
+namespace trackman {
+
+MainWindow::MainWindow(String name)
     : DocumentWindow(name,
-          juce::Desktop::getInstance().getDefaultLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId),
-          DocumentWindow::allButtons), mainAudioComponent(*new MainAudioComponent(*this)) {
+          Desktop::getInstance().getDefaultLookAndFeel().findColour(ResizableWindow::backgroundColourId),
+          DocumentWindow::allButtons),
+      mainAudioComponent(*new MainAudioComponent(*this)) {
     setUsingNativeTitleBar(true);
-    auto display = juce::Desktop::getInstance().getDisplays().getPrimaryDisplay();
+    auto display = Desktop::getInstance().getDisplays().getPrimaryDisplay();
     if (display != nullptr) {
         auto r = display->userArea;
         setResizeLimits(250, 250, r.getWidth(), r.getHeight());
@@ -27,5 +32,7 @@ void MainWindow::closeButtonPressed() {
     // This is called when the user tries to close this window. Here,
     // we'll just ask the app to quit when this happens, but you can
     // change this to do whatever you need.
-    juce::JUCEApplication::getInstance()->systemRequestedQuit();
+    JUCEApplication::getInstance()->systemRequestedQuit();
 }
+
+} // namespace trackman

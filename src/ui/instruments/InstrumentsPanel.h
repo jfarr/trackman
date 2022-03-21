@@ -5,9 +5,11 @@
 #include "InstrumentControl.h"
 #include "model/Project.h"
 
+using namespace juce;
+
 namespace trackman {
 
-class InstrumentsPanel : public juce::Component {
+class InstrumentsPanel : public Component {
   public:
     InstrumentsPanel(Project &project) : project(project) {}
     ~InstrumentsPanel() override = default;
@@ -18,7 +20,7 @@ class InstrumentsPanel : public juce::Component {
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized() override;
 
   private:
@@ -26,7 +28,7 @@ class InstrumentsPanel : public juce::Component {
     const int topStripHeight = 30;
 
     Project &project;
-    std::list<InstrumentControl *> instruments;
+    list<InstrumentControl *> instruments;
 
     void resize();
     double getPaneHeight();

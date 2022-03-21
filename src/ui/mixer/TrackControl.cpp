@@ -2,8 +2,9 @@
 
 #include "common/listutil.h"
 
-TrackControl::TrackControl(Track &track)
-    : track(track), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
+namespace trackman {
+
+TrackControl::TrackControl(Track &track) : track(track), levelMeter(LevelMeter::MeterFlags::Minimal) {
     createControls();
     update();
     setSize(getPreferredWidth(), 244);
@@ -24,14 +25,14 @@ void TrackControl::createControls() {
     soloButton.setTooltip("solo");
     soloButton.onClick = [this] { soloButtonClicked(); };
 
-    trackNameLabel.setJustificationType(juce::Justification::horizontallyCentred);
-    trackNameLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
+    trackNameLabel.setJustificationType(Justification::horizontallyCentred);
+    trackNameLabel.setColour(Label::textColourId, Colours::grey);
     trackNameLabel.setEditable(true);
     trackNameLabel.onTextChange = [this] { notifyNameChanged(); };
 
-    trackNumberLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
-    trackNumberLabel.setColour(juce::Label::backgroundColourId, juce::Colours::transparentBlack);
-    trackNumberLabel.setColour(juce::Label::textColourId, juce::Colour{0xff282828});
+    trackNumberLabel.setJustificationType(Justification(Justification::horizontallyCentred));
+    trackNumberLabel.setColour(Label::backgroundColourId, Colours::transparentBlack);
+    trackNumberLabel.setColour(Label::textColourId, Colour{0xff282828});
 
     levelMeter.setLookAndFeel(&levelMeterLookAndFeel);
     levelMeter.setFixedNumChannels(2);
@@ -49,29 +50,28 @@ void TrackControl::createControls() {
 
 void TrackControl::update() {
     previousLevel = track.getLevelGain();
-    decibelSlider.setValue(juce::Decibels::gainToDecibels(track.getLevelGain()));
-    muteButton.setColour(juce::TextButton::buttonColourId,
-        track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    soloButton.setColour(juce::TextButton::buttonColourId,
-        track.isSoloed() ? juce::Colours::orange
-                         : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    trackNameLabel.setText(track.getName(), juce::dontSendNotification);
-    trackNumberLabel.setText("Track " + juce::String(track.getTrackNumber()), juce::dontSendNotification);
+    decibelSlider.setValue(Decibels::gainToDecibels(track.getLevelGain()));
+    muteButton.setColour(TextButton::buttonColourId,
+        track.isMuted() ? Colours::red : getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
+    soloButton.setColour(TextButton::buttonColourId,
+        track.isSoloed() ? Colours::orange : getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
+    trackNameLabel.setText(track.getName(), dontSendNotification);
+    trackNumberLabel.setText("Track " + String(track.getTrackNumber()), dontSendNotification);
 }
 
-void TrackControl::paint(juce::Graphics &g) {
-    auto bgColor = juce::Colour{0xff282828};
+void TrackControl::paint(Graphics &g) {
+    auto bgColor = Colour{0xff282828};
     auto buttonsHeight = 30;
     auto labelHeight = 25;
     g.fillAll(bgColor);
-    g.setColour(track.isSelected() ? juce::Colours::lightgrey : juce::Colours::grey);
+    g.setColour(track.isSelected() ? Colours::lightgrey : Colours::grey);
     g.fillRect(0, 0, getWidth(), buttonsHeight + labelHeight);
     g.fillRect(0, getHeight() - labelHeight, getWidth(), labelHeight);
-    g.setColour(juce::Colours::black);
+    g.setColour(Colours::black);
     g.fillRect(getWidth() - 1, 0, 1, getHeight());
     g.setColour(bgColor);
     g.fillRect(getWidth() - 1, 0, 0, getHeight());
-    g.setColour(juce::Colours::dimgrey);
+    g.setColour(Colours::dimgrey);
     g.fillRect(0, buttonsHeight - 1, getWidth() - 1, 1);
     g.setColour(bgColor);
     g.fillRect(0, buttonsHeight, getWidth() - 1, 1);
@@ -95,7 +95,7 @@ void TrackControl::resized() {
     soloButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
 }
 
-void TrackControl::mouseUp(const juce::MouseEvent &event) {
+void TrackControl::mouseUp(const MouseEvent &event) {
     if (event.eventComponent == &decibelSlider) {
         draggingSlider = false;
         decibelSliderChanged();
@@ -105,7 +105,7 @@ void TrackControl::mouseUp(const juce::MouseEvent &event) {
 void TrackControl::sliderClicked() { draggingSlider = true; }
 
 void TrackControl::decibelSliderChanged() {
-    auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
+    auto level = Decibels::decibelsToGain((float)decibelSlider.getValue());
     notifyLevelChanged(level);
     if (!draggingSlider && level != previousLevel) {
         notifyLevelChangeFinalized(previousLevel);
@@ -115,15 +115,14 @@ void TrackControl::decibelSliderChanged() {
 
 void TrackControl::muteButtonClicked() {
     notifyMuteToggled();
-    muteButton.setColour(juce::TextButton::buttonColourId,
-        track.isMuted() ? juce::Colours::red : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    muteButton.setColour(TextButton::buttonColourId,
+        track.isMuted() ? Colours::red : getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
 }
 
 void TrackControl::soloButtonClicked() {
     notifySoloToggled();
-    soloButton.setColour(juce::TextButton::buttonColourId,
-        track.isSoloed() ? juce::Colours::orange
-                         : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    soloButton.setColour(TextButton::buttonColourId,
+        track.isSoloed() ? Colours::orange : getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
 }
 
 void TrackControl::addListener(TrackControlListener *listener) {
@@ -163,3 +162,5 @@ void TrackControl::notifySoloToggled() {
         listener->trackSoloToggled(track);
     }
 }
+
+} // namespace trackman

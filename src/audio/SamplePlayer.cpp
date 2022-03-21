@@ -1,6 +1,8 @@
 #include "SamplePlayer.h"
 
-SamplePlayer::SamplePlayer(std::list<std::shared_ptr<Sample>> &samples) : samples(samples) {}
+namespace trackman {
+
+SamplePlayer::SamplePlayer(list<shared_ptr<Sample>> &samples) : samples(samples) {}
 
 SamplePlayer::~SamplePlayer() {
     for (auto &sample : samples) {
@@ -10,7 +12,7 @@ SamplePlayer::~SamplePlayer() {
 
 Timeline<Sample *> SamplePlayer::getCurrentTimeline() {
     Timeline<Sample *> timeline;
-    for (std::shared_ptr<Sample> &sample : samples) {
+    for (shared_ptr<Sample> &sample : samples) {
         timeline.addRange(sample->getStartPos(), sample->getEndPos(), sample.get());
     }
     return timeline;
@@ -18,7 +20,7 @@ Timeline<Sample *> SamplePlayer::getCurrentTimeline() {
 
 //==============================================================================
 void SamplePlayer::prepareToPlay(int blockSize, double sampleRate) {
-    const juce::ScopedLock lock(mutex);
+    const ScopedLock lock(mutex);
     currentSampleRate = sampleRate;
     tempBuffer.setSize(2, sampleRate);
 
@@ -28,7 +30,7 @@ void SamplePlayer::prepareToPlay(int blockSize, double sampleRate) {
 }
 
 void SamplePlayer::releaseResources() {
-    const juce::ScopedLock lock(mutex);
+    const ScopedLock lock(mutex);
     for (auto &sample : samples) {
         sample->releaseResources();
     }
@@ -36,12 +38,12 @@ void SamplePlayer::releaseResources() {
     currentSampleRate = 0;
 }
 
-void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    const juce::ScopedLock lock(mutex);
+void SamplePlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
+    const ScopedLock lock(mutex);
     if (bufferToFill.numSamples > 0) {
         Timeline timeline = getCurrentTimeline();
         auto pos = looping ? currentPos % getTotalLength() : currentPos;
-        std::list<Sample *> samplesToPlay = timeline.getAt(getTimeAtPosition(pos));
+        list<Sample *> samplesToPlay = timeline.getAt(getTimeAtPosition(pos));
         if (!samplesToPlay.empty()) {
             auto firstSample = samplesToPlay.front();
             if (!firstSample->isDeleted()) {
@@ -52,9 +54,9 @@ void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferT
 
             if (samplesToPlay.size() > 1) {
                 tempBuffer.setSize(
-                    juce::jmax(1, bufferToFill.buffer->getNumChannels()), bufferToFill.buffer->getNumSamples());
+                    jmax(1, bufferToFill.buffer->getNumChannels()), bufferToFill.buffer->getNumSamples());
 
-                juce::AudioSourceChannelInfo info2(&tempBuffer, 0, bufferToFill.numSamples);
+                AudioSourceChannelInfo info2(&tempBuffer, 0, bufferToFill.numSamples);
                 int i = 0;
                 for (auto *sample : samplesToPlay) {
                     if (i > 0 && !sample->isDeleted()) {
@@ -75,8 +77,8 @@ void SamplePlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferT
 }
 
 //==============================================================================
-void SamplePlayer::setNextReadPosition(juce::int64 newPosition) {
-    const juce::ScopedLock lock(mutex);
+void SamplePlayer::setNextReadPosition(int64 newPosition) {
+    const ScopedLock lock(mutex);
     currentPos = newPosition;
     for (auto &sample : samples) {
         if (!sample->isDeleted()) {
@@ -85,29 +87,29 @@ void SamplePlayer::setNextReadPosition(juce::int64 newPosition) {
     }
 }
 
-juce::int64 SamplePlayer::getNextReadPosition() const {
-    const juce::ScopedLock lock(mutex);
+int64 SamplePlayer::getNextReadPosition() const {
+    const ScopedLock lock(mutex);
     return looping ? currentPos % getTotalLength() : currentPos;
 }
 
-juce::int64 SamplePlayer::getTotalLength() const {
-    const juce::ScopedLock lock(mutex);
-    juce::int64 totalLength = 0;
-    for (std::shared_ptr<Sample> &sample : samples) {
+int64 SamplePlayer::getTotalLength() const {
+    const ScopedLock lock(mutex);
+    int64 totalLength = 0;
+    for (shared_ptr<Sample> &sample : samples) {
         if (!sample->isDeleted()) {
-            totalLength = std::max(totalLength, sample->getLengthInSamples());
+            totalLength = max(totalLength, sample->getLengthInSamples());
         }
     }
     return totalLength;
 }
 
 bool SamplePlayer::isLooping() const {
-    const juce::ScopedLock lock(mutex);
+    const ScopedLock lock(mutex);
     return looping;
 }
 
 void SamplePlayer::setLooping(bool shouldLoop) {
-    const juce::ScopedLock lock(mutex);
+    const ScopedLock lock(mutex);
     looping = shouldLoop;
     for (auto &sample : samples) {
         if (!sample->isDeleted()) {
@@ -115,3 +117,5 @@ void SamplePlayer::setLooping(bool shouldLoop) {
         }
     }
 }
+
+} // namespace trackman

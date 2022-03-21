@@ -1,5 +1,7 @@
 #pragma once
 
+namespace trackman {
+
 template <class T> class TimeRange {
   public:
     TimeRange(double startTime, double endTime, T data) : startTime(startTime), endTime(endTime), data(data) {}
@@ -16,3 +18,5 @@ template <class T> class TimeRange {
     double endTime;
     T data;
 };
+
+} // namespace trackman

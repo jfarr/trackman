@@ -4,16 +4,20 @@
 
 #include "ui/desktop/DesktopController.h"
 
+using namespace juce;
+
+namespace trackman {
+
 class MainWindow;
 
-class MainAudioComponent : public juce::AudioAppComponent {
+class MainAudioComponent : public AudioAppComponent {
   public:
     explicit MainAudioComponent(MainWindow &mainWindow);
     ~MainAudioComponent() override;
 
-    juce::AudioFormatManager &getFormatManager() { return formatManager; }
-    juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
-    trackman::DesktopController &getDesktopController() { return desktopController; }
+    AudioFormatManager &getFormatManager() { return formatManager; }
+    AudioDeviceManager &getDeviceManager() { return deviceManager; }
+    DesktopController &getDesktopController() { return desktopController; }
 
     //==============================================================================
     // Component
@@ -22,14 +26,16 @@ class MainAudioComponent : public juce::AudioAppComponent {
     //==============================================================================
     // AudioAppComponent
     void prepareToPlay(int blockSize, double sampleRate) override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
     void releaseResources() override;
 
   private:
     const int topStripHeight = 15;
 
-    juce::AudioFormatManager formatManager;
-    trackman::DesktopController desktopController;
+    AudioFormatManager formatManager;
+    DesktopController desktopController;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainAudioComponent)
 };
+
+}

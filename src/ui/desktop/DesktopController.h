@@ -16,9 +16,9 @@
 using namespace std;
 using namespace juce;
 
-class MainWindow;
-
 namespace trackman {
+
+class MainWindow;
 
 // TODO: consider using FileBasedDocument
 class DesktopController : public AudioSource,

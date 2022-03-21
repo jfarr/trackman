@@ -4,24 +4,29 @@
 
 #include "Track.h"
 
+using namespace std;
+using namespace juce;
+
+namespace trackman {
+
 class Project;
 
 class TrackList {
   public:
-    TrackList(Project &project, juce::AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
+    TrackList(Project &project, AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
         : project(project), deviceManager(deviceManager), midiRecorder(midiRecorder) {}
     ~TrackList() = default;
 
     void undeleteTrack(Track *track);
     void removeTrack(Track *track);
 
-    [[nodiscard]] int size() const { return (int)tracks.size(); }
-    [[nodiscard]] Track *getSelectedTrack() const;
-    [[nodiscard]] Sample *getSelectedSample() const;
-    [[nodiscard]] double getTotalLengthInSeconds() const;
-    [[nodiscard]] juce::int64 getTotalLengthInSamples() const;
+    int size() const { return (int)tracks.size(); }
+    Track *getSelectedTrack() const;
+    Sample *getSelectedSample() const;
+    double getTotalLengthInSeconds() const;
+    int64 getTotalLengthInSamples() const;
 
-    void eachTrack(std::function<void(Track &track)> f);
+    void eachTrack(function<void(Track &track)> f);
 
     void clear() { tracks.clear(); }
     void setMute(Track &track, bool newMuted);
@@ -30,7 +35,7 @@ class TrackList {
     void selectSample(Sample *selected);
 
     bool canRecord() const { return getSelectedTrack() != nullptr && getSelectedTrack()->canRecord(); }
-    void writeAudioFile(const juce::File &file, juce::AudioSource &source, double sampleRate, int bitsPerSample) const;
+    void writeAudioFile(const File &file, AudioSource &source, double sampleRate, int bitsPerSample) const;
 
   private:
     friend Project;
@@ -38,15 +43,17 @@ class TrackList {
     Track *addTrack();
     void deleteTrack(Track *track);
     Sample *addSample(
-        Track &track, const juce::File &file, double startPos, double endPos, juce::AudioFormatManager &formatManager);
+        Track &track, const File &file, double startPos, double endPos, AudioFormatManager &formatManager);
 
     Project &project;
-    juce::AudioDeviceManager &deviceManager;
+    AudioDeviceManager &deviceManager;
     MidiRecorder &midiRecorder;
-    std::list<std::unique_ptr<Track>> tracks;
+    list<unique_ptr<Track>> tracks;
 
     void renumber();
     bool isAnySoloed() const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackList)
 };
+
+}

@@ -12,6 +12,7 @@
 #include "ui/mixer/MasterTrackListener.h"
 
 using namespace std;
+using namespace juce;
 
 namespace trackman {
 
@@ -25,7 +26,7 @@ class MixerController : public MasterTrackListener {
     bool isMasterMuted() const { return mixer.isMasterMuted(); }
 
     MixerPanel &getMixerPanel() { return mixerPanel; }
-    juce::Viewport &getViewport() { return mixerViewport; }
+    Viewport &getViewport() { return mixerViewport; }
 
     void update();
     void repaint();
@@ -45,10 +46,10 @@ class MixerController : public MasterTrackListener {
     TrackList &trackList;
     Mixer &mixer;
 
-    juce::Viewport mixerViewport;
+    Viewport mixerViewport;
     MixerPanel mixerPanel;
     TrackPanel trackPanel;
-    list<std::unique_ptr<TrackController>> tracks;
+    list<unique_ptr<TrackController>> tracks;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerController)
 };

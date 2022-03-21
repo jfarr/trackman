@@ -1,6 +1,8 @@
 #include "TrackPanel.h"
 
-TrackPanel::TrackPanel(juce::Viewport &viewport) : viewport(viewport) {}
+namespace trackman {
+
+TrackPanel::TrackPanel(Viewport &viewport) : viewport(viewport) {}
 
 void TrackPanel::update() {
     removeAllChildren();
@@ -21,15 +23,11 @@ void TrackPanel::resize() {
     resized();
 }
 
-void TrackPanel::mouseDown(const juce::MouseEvent &event) {
-    Component::mouseDown(event);
-}
+void TrackPanel::mouseDown(const MouseEvent &event) { Component::mouseDown(event); }
 
 int TrackPanel::getTrackWidth() const { return TrackControl::getPreferredWidth() * tracks.size(); }
 
-void TrackPanel::paint(juce::Graphics &g) {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-}
+void TrackPanel::paint(Graphics &g) { g.fillAll(getLookAndFeel().findColour(ResizableWindow::backgroundColourId)); }
 
 void TrackPanel::resized() {
     auto area = getLocalBounds();
@@ -37,3 +35,5 @@ void TrackPanel::resized() {
         track->setBounds(area.removeFromLeft(track->getPreferredWidth()));
     }
 }
+
+} // namespace trackman

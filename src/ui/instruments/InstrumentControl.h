@@ -3,9 +3,11 @@
 #include "model/Track.h"
 #include <JuceHeader.h>
 
+using namespace juce;
+
 namespace trackman {
 
-class InstrumentControl : public juce::Component {
+class InstrumentControl : public Component {
   public:
     InstrumentControl(Track &track);
     ~InstrumentControl() override = default;
@@ -16,14 +18,14 @@ class InstrumentControl : public juce::Component {
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized() override;
 
   private:
     const int preferredHeight = 75;
 
     Track &track;
-    juce::TextButton selectButton;
+    TextButton selectButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentControl)
 };

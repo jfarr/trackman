@@ -1,5 +1,7 @@
 #pragma once
 
+namespace trackman {
+
 class MasterTrackListener {
   public:
     virtual void masterLevelChanged(float level) {}
@@ -7,3 +9,5 @@ class MasterTrackListener {
     virtual void masterMuteToggled() {}
     virtual void tempoChanged(float previousTempo, float newTempo) {}
 };
+
+}

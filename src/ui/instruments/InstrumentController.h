@@ -4,11 +4,13 @@
 #include "ui/desktop/TrackListListener.h"
 #include <JuceHeader.h>
 
+using namespace juce;
+
 namespace trackman {
 
 class InstrumentsController;
 
-class InstrumentController : public juce::MouseListener {
+class InstrumentController : public MouseListener {
   public:
     explicit InstrumentController(InstrumentsController &instrumentsController, Track &track);
     ~InstrumentController() override = default;
@@ -23,12 +25,12 @@ class InstrumentController : public juce::MouseListener {
 
     //==============================================================================
     // MouseListener
-    void mouseDown(const juce::MouseEvent &event) override;
+    void mouseDown(const MouseEvent &event) override;
 
   private:
     Track &track;
     InstrumentControl instrumentControl;
-    std::list<TrackListListener *> trackListListeners;
+    list<TrackListListener *> trackListListeners;
 
     void notifySelectionChanged();
 

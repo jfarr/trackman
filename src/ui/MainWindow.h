@@ -4,9 +4,13 @@
 #include "MainAudioComponent.h"
 #include "ui/desktop/DesktopComponent.h"
 
-class MainWindow : public juce::DocumentWindow {
+using namespace juce;
+
+namespace trackman {
+
+class MainWindow : public DocumentWindow {
   public:
-    MainWindow(juce::String name);
+    MainWindow(String name);
 
     MainAudioComponent &getMainAudioComponent() { return mainAudioComponent; }
 
@@ -17,3 +21,5 @@ class MainWindow : public juce::DocumentWindow {
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
 };
+
+} // namespace trackman

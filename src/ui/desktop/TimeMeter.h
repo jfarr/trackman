@@ -4,19 +4,26 @@
 
 #include "model/Project.h"
 
-class TimeMeter : public juce::Component {
+using namespace std;
+using namespace juce;
+
+namespace trackman {
+
+class TimeMeter : public Component {
   public:
     TimeMeter(Project &project);
     ~TimeMeter() override = default;
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
 
   private:
     Project &project;
 
-    void drawTicksInSeconds(juce::Graphics &g, const juce::Rectangle<int> &bounds) const;
-    void drawTicksInMeasures(juce::Graphics &g, const juce::Rectangle<int> &bounds) const;
-    void drawStartMarker(juce::Graphics &g) const;
+    void drawTicksInSeconds(Graphics &g, const Rectangle<int> &bounds) const;
+    void drawTicksInMeasures(Graphics &g, const Rectangle<int> &bounds) const;
+    void drawStartMarker(Graphics &g) const;
 };
+
+} // namespace trackman

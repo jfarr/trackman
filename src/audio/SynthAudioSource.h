@@ -2,30 +2,31 @@
 
 #include <JuceHeader.h>
 
-struct SineWaveSound : public juce::SynthesiserSound {
+using namespace juce;
+
+namespace trackman {
+
+struct SineWaveSound : public SynthesiserSound {
     SineWaveSound() = default;
 
     bool appliesToNote(int) override { return true; }
     bool appliesToChannel(int) override { return true; }
 };
 
-struct SineWaveVoice : public juce::SynthesiserVoice {
+struct SineWaveVoice : public SynthesiserVoice {
     SineWaveVoice() = default;
 
-    bool canPlaySound(juce::SynthesiserSound *sound) override {
-        return dynamic_cast<SineWaveSound *>(sound) != nullptr;
-    }
+    bool canPlaySound(SynthesiserSound *sound) override { return dynamic_cast<SineWaveSound *>(sound) != nullptr; }
 
-    void startNote(
-        int midiNoteNumber, float velocity, juce::SynthesiserSound *, int /*currentPitchWheelPosition*/) override {
+    void startNote(int midiNoteNumber, float velocity, SynthesiserSound *, int /*currentPitchWheelPosition*/) override {
         currentAngle = 0.0;
         level = velocity * 0.15;
         tailOff = 0.0;
 
-        auto cyclesPerSecond = juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber);
+        auto cyclesPerSecond = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
         auto cyclesPerSample = cyclesPerSecond / getSampleRate();
 
-        angleDelta = cyclesPerSample * 2.0 * juce::MathConstants<double>::pi;
+        angleDelta = cyclesPerSample * 2.0 * MathConstants<double>::pi;
     }
 
     void stopNote(float /*velocity*/, bool allowTailOff) override {
@@ -41,12 +42,12 @@ struct SineWaveVoice : public juce::SynthesiserVoice {
     void pitchWheelMoved(int) override {}
     void controllerMoved(int, int) override {}
 
-    void renderNextBlock(juce::AudioSampleBuffer &outputBuffer, int startSample, int numSamples) override {
+    void renderNextBlock(AudioSampleBuffer &outputBuffer, int startSample, int numSamples) override {
         if (angleDelta != 0.0) {
             if (tailOff > 0.0) // [7]
             {
                 while (--numSamples >= 0) {
-                    auto currentSample = (float)(std::sin(currentAngle) * level * tailOff);
+                    auto currentSample = (float)(sin(currentAngle) * level * tailOff);
 
                     for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
                         outputBuffer.addSample(i, startSample, currentSample);
@@ -66,7 +67,7 @@ struct SineWaveVoice : public juce::SynthesiserVoice {
             } else {
                 while (--numSamples >= 0) // [6]
                 {
-                    auto currentSample = (float)(std::sin(currentAngle) * level);
+                    auto currentSample = (float)(sin(currentAngle) * level);
 
                     for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
                         outputBuffer.addSample(i, startSample, currentSample);
@@ -84,7 +85,7 @@ struct SineWaveVoice : public juce::SynthesiserVoice {
 
 class Track;
 
-class SynthAudioSource : public juce::PositionableAudioSource {
+class SynthAudioSource : public PositionableAudioSource {
   public:
     SynthAudioSource(Track &track) : track(track) {
         for (auto i = 0; i < 4; ++i)
@@ -99,19 +100,21 @@ class SynthAudioSource : public juce::PositionableAudioSource {
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;
     void releaseResources() override {}
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
 
     //==============================================================================
     // PositionableAudioSource
-    void setNextReadPosition(juce::int64 newPosition) override;
-    juce::int64 getNextReadPosition() const override;
-    juce::int64 getTotalLength() const override;
+    void setNextReadPosition(int64 newPosition) override;
+    int64 getNextReadPosition() const override;
+    int64 getTotalLength() const override;
     bool isLooping() const override;
     void setLooping(bool shouldLoop) override;
 
   private:
     Track &track;
-    juce::Synthesiser synth;
-    juce::int64 currentPosition = 0;
+    Synthesiser synth;
+    int64 currentPosition = 0;
     bool looping = false;
 };
+
+} // namespace trackman
