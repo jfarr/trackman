@@ -215,6 +215,7 @@ void TransportControl::changeState(TransportState newState) {
             setButtonImage(pauseButton, pauseButtonOffImage);
             if (recordEnabledFn != nullptr) {
                 setButtonImage(recordButton, recordButtonOffImage);
+                notifyRecordClicked();
                 notifyRecordingStopped();
             }
             recording = false;
