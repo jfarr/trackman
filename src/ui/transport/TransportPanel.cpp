@@ -12,11 +12,12 @@ TransportPanel::TransportPanel(DesktopController &desktopController)
     update();
 }
 
-TransportPanel::~TransportPanel() noexcept {
-    denominatorSelect.setLookAndFeel(nullptr);
-}
+TransportPanel::~TransportPanel() noexcept { denominatorSelect.setLookAndFeel(nullptr); }
 
 void TransportPanel::createControls() {
+
+    transportControl.onLoopingChanged = [this](bool shouldLoop) { desktopController.loopingChanged(shouldLoop); };
+
     tempoLabel.setText("Tempo", juce::dontSendNotification);
     tempoLabel.setJustificationType(juce::Justification::centredRight);
     tempoText.setJustificationType(juce::Justification::centredLeft);

@@ -15,6 +15,10 @@ DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceMa
     updateTitleBar();
 }
 
+void DesktopController::loopingChanged(bool shouldLoop) {
+    project.getMixer().setLooping(shouldLoop);
+}
+
 void DesktopController::createKeyboard() {
     auto keyboard = new KeyboardControl(midiRecorder.getKeyboardState());
     desktopComponent.createChildWindow("MIDI Keyboard", keyboard);

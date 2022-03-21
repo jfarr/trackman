@@ -14,6 +14,7 @@ class Transport : public juce::AudioSource, private juce::Timer {
     void start() { transportSource.start(); }
     void stop() { transportSource.stop(); }
     bool isPlaying() const noexcept { return transportSource.isPlaying(); }
+    void setLooping(bool shouldLoop) { transportSource.setLooping(shouldLoop); }
 
     //==============================================================================
     // AudioSource

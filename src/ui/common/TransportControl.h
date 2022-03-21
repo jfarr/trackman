@@ -25,6 +25,8 @@ class TransportControl : public juce::Component,
     void addListener(TransportControlListener *listener);
     void removeListener(TransportControlListener *listener);
 
+    std::function<void(bool)> onLoopingChanged = nullptr;
+
     //==============================================================================
     // Component
     void paint(juce::Graphics &g) override;

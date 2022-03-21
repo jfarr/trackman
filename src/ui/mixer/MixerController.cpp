@@ -8,7 +8,7 @@ MixerController::MixerController(DesktopController &desktopController)
       trackPanel(mixerViewport) {
 
     mixerViewport.setViewedComponent(&trackPanel, false);
-//    mixerPanel.getTransportControl().addListener(this);
+//        mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
     update();
 }
@@ -19,7 +19,7 @@ MixerController::~MixerController() {
         track->removeListener((TrackListListener *)this);
     }
     mixerPanel.getMasterTrackControl().removeListener(this);
-//    mixerPanel.getTransportControl().removeListener(this);
+    //    mixerPanel.getTransportControl().removeListener(this);
 }
 
 void MixerController::update() {
@@ -76,10 +76,10 @@ void MixerController::setSolo(Track &track, bool newSolo) {
     }
 }
 
-void MixerController::loopingChanged(bool shouldLoop) { mixer.setLooping(shouldLoop); }
+//void MixerController::loopingChanged(bool shouldLoop) {
+//    desktopController.getProject().getMixer().setLooping(shouldLoop);
+//}
 
-void MixerController::recordingStopped() {
-    desktopController.recordingStopped();
-}
+void MixerController::recordingStopped() { desktopController.recordingStopped(); }
 
 void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevelGain(newLevel); }

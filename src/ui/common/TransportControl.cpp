@@ -377,6 +377,9 @@ void TransportControl::notifyLoopingChanged(bool shouldLoop) {
     for (TransportControlListener *listener : listeners) {
         listener->loopingChanged(shouldLoop);
     }
+    if (onLoopingChanged != nullptr) {
+        onLoopingChanged(shouldLoop);
+    }
 }
 
 void TransportControl::notifyRecordingStopped() {

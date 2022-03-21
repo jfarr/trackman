@@ -36,7 +36,7 @@ class MixerController : public TransportControlListener, public MasterTrackListe
 
     //==============================================================================
     // TransportControlListener
-    void loopingChanged(bool shouldLoop) override;
+//    void loopingChanged(bool shouldLoop) override;
     void recordingStopped() override;
 
     //==============================================================================
