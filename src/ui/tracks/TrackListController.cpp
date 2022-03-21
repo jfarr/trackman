@@ -27,7 +27,7 @@ void TrackListController::update() {
     project.getTrackList().eachTrack([this](Track &track) {
         auto lane = new TrackLaneController(project, track, *this, project.getTransport().getTransportSource(),
             desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
-        lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
+        lanes.push_back(unique_ptr<TrackLaneController>(lane));
         trackListPanel.addLane(&lane->getTrackLaneControl());
         lane->update();
     });
@@ -35,37 +35,37 @@ void TrackListController::update() {
 }
 
 void TrackListController::repaint() {
-    for (std::unique_ptr<TrackLaneController> &lane : lanes) {
+    for (unique_ptr<TrackLaneController> &lane : lanes) {
         lane->repaint();
     }
 }
 
-void TrackListController::fileDragEnter(const juce::StringArray &files, int x, int y) {
+void TrackListController::fileDragEnter(const StringArray &files, int x, int y) {
     trackListPanel.fileDragEnter(files, x, y);
 }
 
-void TrackListController::fileDragMove(const juce::StringArray &files, int x, int y) {
+void TrackListController::fileDragMove(const StringArray &files, int x, int y) {
     trackListPanel.fileDragMove(files, x, y);
 }
 
-void TrackListController::fileDragExit(const juce::StringArray &files) { trackListPanel.fileDragExit(files); }
+void TrackListController::fileDragExit(const StringArray &files) { trackListPanel.fileDragExit(files); }
 
-void TrackListController::filesDropped(const juce::StringArray &files, int x, int y) {
+void TrackListController::filesDropped(const StringArray &files, int x, int y) {
     Track *selected = trackListPanel.getTrackAtPos(x, y);
-    desktopController.addNewSample(selected, juce::File(files[0]), x);
+    desktopController.addNewSample(selected, File(files[0]), x);
     trackListPanel.filesDropped(files, x, y);
 }
 
-Sample *TrackListController::addSample(Track &track, juce::File file, int pos) {
+Sample *TrackListController::addSample(Track &track, File file, int pos) {
     auto *reader =
-        desktopController.getMainWindow().getMainAudioComponent().getFormatManager().createReaderFor(juce::File(file));
+        desktopController.getMainWindow().getMainAudioComponent().getFormatManager().createReaderFor(File(file));
     if (reader != nullptr) {
-        auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
+        auto newSource = make_unique<AudioFormatReaderSource>(reader, true);
         auto length = newSource->getTotalLength() / reader->sampleRate;
         auto scale = project.getHorizontalScale();
         auto width = length * scale;
         double offset = width / 2;
-        double startPos = std::max((pos - offset), 0.0);
+        double startPos = max((pos - offset), 0.0);
         double endPos = startPos + width;
         auto sample = project.addSample(track, file, startPos / scale, endPos / scale,
             desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
@@ -155,7 +155,7 @@ void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y
     removeDragLane();
     auto curPos = sample.getStartPos();
     auto scale = project.getHorizontalScale();
-    x = std::max(x, 0);
+    x = max(x, 0);
     double newPos = (double)x / scale;
     Track *toTrack = trackListPanel.getTrackAtPos(x, y);
     desktopController.moveSelectedSample(sample, track, toTrack, curPos, newPos);
@@ -163,12 +163,12 @@ void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y
 
 void TrackListController::sampleResized(Sample &sample, int width) {
     auto curLen = sample.getLengthInSeconds();
-    auto newLen = std::max(width, 2) / project.getHorizontalScale();
+    auto newLen = max(width, 2) / project.getHorizontalScale();
     desktopController.resizeSample(sample, curLen, newLen);
 }
 
 void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int screenY) {
-    x = std::max(x, 0);
+    x = max(x, 0);
     thumbnail.setTopLeftPosition(thumbnail.getPosition().withX(x));
     auto y = screenY - trackListPanel.getScreenPosition().getY();
     auto track = trackListPanel.getTrackAtPos(x, y);

@@ -3,7 +3,7 @@
 
 namespace trackman {
 
-void TrackListViewport::visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea) {
+void TrackListViewport::visibleAreaChanged(const Rectangle<int> &newVisibleArea) {
     desktop.visibleAreaChanged(newVisibleArea);
 }
 
@@ -14,7 +14,7 @@ void TrackListViewport::timerCallback() {
     if (pos > x + w) {
         auto trackListPanel = (TrackListPanel *)getViewedComponent();
         trackListPanel->increaseMaxWidth(w);
-        setViewPosition(juce::Point<int>(x + w, getViewPositionY()));
+        setViewPosition(Point<int>(x + w, getViewPositionY()));
     }
 }
 

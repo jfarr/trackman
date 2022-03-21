@@ -6,14 +6,17 @@
 #include "model/Track.h"
 #include "ui/desktop/TrackListListener.h"
 
+using namespace std;
+using namespace juce;
+
 namespace trackman {
 
 class TrackListController;
 
-class TrackLaneController : public juce::MouseListener, public TrackListListener {
+class TrackLaneController : public MouseListener, public TrackListListener {
   public:
     TrackLaneController(Project &project, Track &track, TrackListController &trackListController,
-        juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager);
+        AudioTransportSource &transport, AudioFormatManager &formatManager);
     ~TrackLaneController();
 
     Track &getTrack() { return track; }
@@ -27,7 +30,7 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
 
     //==============================================================================
     // MouseListener
-    void mouseDown(const juce::MouseEvent &event) override;
+    void mouseDown(const MouseEvent &event) override;
 
     //==============================================================================
     // TrackListListener
@@ -36,13 +39,13 @@ class TrackLaneController : public juce::MouseListener, public TrackListListener
   private:
     Project &project;
     Track &track;
-    juce::AudioTransportSource &transport;
-    juce::AudioFormatManager &formatManager;
+    AudioTransportSource &transport;
+    AudioFormatManager &formatManager;
     TrackListController &trackListController;
 
     TrackLaneControl trackLaneControl;
-    std::list<std::unique_ptr<SampleThumbnail>> thumbnails;
-    std::list<TrackListListener *> trackListListeners;
+    list<unique_ptr<SampleThumbnail>> thumbnails;
+    list<TrackListListener *> trackListListeners;
 
     void notifySelectionChanged();
 

@@ -9,36 +9,39 @@
 #include "ui/common/PositionOverlay.h"
 #include "ui/desktop/TrackListListener.h"
 
+using namespace std;
+using namespace juce;
+
 namespace trackman {
 
 class DesktopController;
 
-class DropBox : public juce::Component {
+class DropBox : public Component {
   public:
-    DropBox(std::function<bool()> canDropFn) : canDropFn(canDropFn) { setSize(200, 60); }
+    DropBox(function<bool()> canDropFn) : canDropFn(canDropFn) { setSize(200, 60); }
     ~DropBox() override {}
 
-    void setSource(std::unique_ptr<juce::AudioFormatReaderSource> &newSource) { source = std::move(newSource); }
+    void setSource(unique_ptr<AudioFormatReaderSource> &newSource) { source = move(newSource); }
 
-    void paint(juce::Graphics &g) override {
-        g.fillAll(canDropFn() ? juce::Colours::dimgrey : juce::Colours::darkred);
-        g.setColour(juce::Colours::grey);
+    void paint(Graphics &g) override {
+        g.fillAll(canDropFn() ? Colours::dimgrey : Colours::darkred);
+        g.setColour(Colours::grey);
         g.drawRect(0, 0, getWidth(), getHeight());
     }
 
   private:
-    std::unique_ptr<juce::AudioFormatReaderSource> source;
-    std::function<bool()> canDropFn;
+    unique_ptr<AudioFormatReaderSource> source;
+    function<bool()> canDropFn;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DropBox)
 };
 
-class TrackListPanel : public juce::Component,
-                       public juce::DragAndDropContainer,
-                       public juce::DragAndDropTarget,
-                       public juce::Timer {
+class TrackListPanel : public Component,
+                       public DragAndDropContainer,
+                       public DragAndDropTarget,
+                       public Timer {
   public:
     TrackListPanel(
-        DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport);
+        DesktopController &desktopController, Viewport &viewport, AudioTransportSource &transport);
     ~TrackListPanel() override;
 
     Track *getTrackAtPos(int x, int y);
@@ -53,10 +56,10 @@ class TrackListPanel : public juce::Component,
     }
     void update();
 
-    void fileDragEnter(const juce::StringArray &files, int x, int y);
-    void fileDragMove(const juce::StringArray &files, int x, int y);
-    void fileDragExit(const juce::StringArray &files);
-    void filesDropped(const juce::StringArray &files, int x, int y);
+    void fileDragEnter(const StringArray &files, int x, int y);
+    void fileDragMove(const StringArray &files, int x, int y);
+    void fileDragExit(const StringArray &files);
+    void filesDropped(const StringArray &files, int x, int y);
 
     void addListener(SampleListener *listener);
     void removeListener(SampleListener *listener);
@@ -75,30 +78,30 @@ class TrackListPanel : public juce::Component,
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-    void mouseDown(const juce::MouseEvent &event) override;
+    void mouseDown(const MouseEvent &event) override;
 
   private:
-    trackman::DesktopController &desktopController;
-    juce::Viewport &viewport;
-    juce::AudioTransportSource &transport;
-    std::list<TrackLaneControl *> lanes;
+    DesktopController &desktopController;
+    Viewport &viewport;
+    AudioTransportSource &transport;
+    list<TrackLaneControl *> lanes;
     PositionOverlay overlay;
     int maxWidth = 0;
 
     DropBox dropBox;
     int dragSourceOffset = 0;
-    juce::Point<int> dragPosition;
+    Point<int> dragPosition;
     bool dragging = false;
     bool canDrop();
 
-    std::list<SampleListener *> sampleListeners;
-    std::list<TrackListListener *> trackListListeners;
+    list<SampleListener *> sampleListeners;
+    list<TrackListListener *> trackListListeners;
 
-    [[nodiscard]] int getPanelWidth() const;
-    [[nodiscard]] int getPanelHeight() const;
-    [[nodiscard]] int getTrackLaneHeight() const;
+    int getPanelWidth() const;
+    int getPanelHeight() const;
+    int getTrackLaneHeight() const;
 
     void notifySampleDropped(SampleThumbnail *thumbnail, int x, int y);
     void notifySampleResized(SampleThumbnail *thumbnail, int width);
