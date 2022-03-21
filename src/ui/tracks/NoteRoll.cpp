@@ -1,6 +1,8 @@
 #include "NoteRoll.h"
 #include "common/midiutil.h"
 
+namespace trackman {
+
 NoteRoll::NoteRoll(Project &project, Track &track) : project(project), track(track) {
     setInterceptsMouseClicks(false, false);
     setSize(200, 81);
@@ -16,7 +18,7 @@ void NoteRoll::resize() {
     repaint();
 }
 
-void NoteRoll::paint(juce::Graphics &g) {
+void NoteRoll::paint(Graphics &g) {
     auto selected = track.isSelected();
     auto area = getLocalBounds();
     auto messages = track.getCurrentMidiMessages(project.getTransport().getTransportSource().getCurrentPosition());
@@ -32,22 +34,24 @@ void NoteRoll::paint(juce::Graphics &g) {
         if (m->message.isNoteOn() && m->noteOffObject != nullptr) {
             auto noteOn = m->message;
             auto noteOff = m->noteOffObject->message;
-            juce::Rectangle<float> r = getNoteRect(noteOn, noteOff, lowNote, noteHeight, x, h, scale, margin);
-            g.setColour(juce::Colours::steelblue.darker(0.3));
+            Rectangle<float> r = getNoteRect(noteOn, noteOff, lowNote, noteHeight, x, h, scale, margin);
+            g.setColour(Colours::steelblue.darker(0.3));
             g.fillRect(r);
-            g.setColour(selected ? juce::Colours::lightgrey : juce::Colours::grey);
+            g.setColour(selected ? Colours::lightgrey : Colours::grey);
             g.drawRect(r.expanded(margin));
         }
     }
 }
 
-juce::Rectangle<float> NoteRoll::getNoteRect(const juce::MidiMessage &noteOn, const juce::MidiMessage &noteOff,
-    int lowNote, double noteHeight, double x, double h, double scale, double margin) {
+Rectangle<float> NoteRoll::getNoteRect(const MidiMessage &noteOn, const MidiMessage &noteOff, int lowNote,
+    double noteHeight, double x, double h, double scale, double margin) {
     auto start = project.ticksToSeconds(noteOn.getTimeStamp());
     auto end = project.ticksToSeconds(noteOff.getTimeStamp());
     auto noteX = x + start * scale;
     auto noteWidth = (end - start) * scale;
     auto noteDist = noteOn.getNoteNumber() - lowNote;
     double noteY = h - noteHeight * (noteDist + 1.0) + margin;
-    return juce::Rectangle<float>(noteX, noteY, noteWidth, noteHeight);
+    return Rectangle<float>(noteX, noteY, noteWidth, noteHeight);
 }
+
+} // namespace trackman
