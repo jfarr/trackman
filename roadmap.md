@@ -1,9 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Code cleanup 
-  - trackman namespace
-  - using std, juce
 - Draw note roll borders
 - Select note rolls
 - Delete note rolls
