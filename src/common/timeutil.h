@@ -4,6 +4,8 @@ using namespace juce;
 
 namespace trackman {
 
+namespace TimeUtils {
+
 static const int ticksPerQuarterNote = 96;
 
 static int secondsToTicks(float tempo, double seconds) {
@@ -23,4 +25,5 @@ static String formatSecsAsTime(double secs) {
            String((int)t.inMilliseconds() % 1000).paddedLeft('0', 3);
 }
 
+} // namespace TimeUtils
 } // namespace trackman

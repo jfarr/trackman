@@ -12,9 +12,9 @@ Project::Project(AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
     : deviceManager(deviceManager), trackList(*this, deviceManager, midiRecorder), mixer(trackList, deviceManager),
       transport(mixer) {}
 
-int Project::secondsToTicks(double seconds) const { return trackman::secondsToTicks(tempo, seconds); }
+int Project::secondsToTicks(double seconds) const { return TimeUtils::secondsToTicks(tempo, seconds); }
 
-double Project::ticksToSeconds(int ticks) const { return trackman::ticksToSeconds(tempo, ticks); }
+double Project::ticksToSeconds(int ticks) const { return TimeUtils::ticksToSeconds(tempo, ticks); }
 
 double Project::measuresToSeconds(double measures) const { return timeSignature.measuresToSeconds(measures, tempo); }
 
@@ -51,7 +51,7 @@ string Project::to_json() {
         {"numerator", timeSignature.getNumerator()}, {"denominator", timeSignature.getDenominator()}};
     project_json["tracks"] = json::array();
     MidiFile midiFile;
-    midiFile.setTicksPerQuarterNote(ticksPerQuarterNote);
+    midiFile.setTicksPerQuarterNote(TimeUtils::ticksPerQuarterNote);
     trackList.eachTrack([&project_json, &midiFile](Track &track) {
         MidiMessageSequence messages = track.getMidiMessages();
         midiFile.addTrack(messages);
