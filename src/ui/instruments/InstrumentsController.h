@@ -6,6 +6,8 @@
 #include "InstrumentsPanel.h"
 #include "model/Project.h"
 
+using namespace std;
+
 namespace trackman {
 
 class DesktopController;
@@ -29,7 +31,7 @@ class InstrumentsController : public TrackListListener {
     Project &project;
 
     InstrumentsPanel instrumentsPanel;
-    std::list<std::unique_ptr<InstrumentController>> instruments;
+    list<unique_ptr<InstrumentController>> instruments;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentsController)
 };

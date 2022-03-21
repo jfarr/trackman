@@ -17,8 +17,8 @@ void InstrumentsPanel::resize() {
     resized();
 }
 
-void InstrumentsPanel::paint(juce::Graphics &g) {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+void InstrumentsPanel::paint(Graphics &g) {
+    g.fillAll(getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
 }
 
 void InstrumentsPanel::resized() {
