@@ -3,6 +3,8 @@
 #include "ui/MainWindow.h"
 #include "ui/desktop/DesktopController.h"
 
+namespace trackman {
+
 TrackListController::TrackListController(DesktopController &desktopController)
     : desktopController(desktopController), project(desktopController.getProject()),
       trackListViewport(desktopController.getDesktopComponent(), desktopController.getProject()),
@@ -210,3 +212,5 @@ void TrackListController::removeDragLane() {
     }
     currentDragTrack = nullptr;
 }
+
+} // namespace trackman

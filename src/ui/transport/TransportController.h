@@ -4,9 +4,9 @@
 
 #include "TransportPanel.h"
 
-class DesktopController;
-
 namespace trackman {
+
+class DesktopController;
 
 class TransportController {
   public:

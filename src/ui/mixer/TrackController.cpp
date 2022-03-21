@@ -2,6 +2,8 @@
 #include "common/listutil.h"
 #include "ui/desktop/DesktopController.h"
 
+namespace trackman {
+
 TrackController::TrackController(DesktopController &desktopController, Track &track)
     : desktopController(desktopController), track(track), trackControl(track) {
     addListener(&desktopController.getTrackListController());
@@ -51,3 +53,5 @@ void TrackController::notifySelectionChanged() {
         listener->selectionChanged(&track);
     }
 }
+
+} // namespace trackman

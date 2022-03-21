@@ -1,6 +1,8 @@
 #include "InstrumentsController.h"
 #include "ui/desktop/DesktopController.h"
 
+namespace trackman {
+
 InstrumentsController::InstrumentsController(DesktopController &desktopController)
     : desktopController(desktopController), project(desktopController.getProject()), instrumentsPanel(project) {
     instrumentsPanel.resized();
@@ -26,6 +28,6 @@ void InstrumentsController::repaint() {
     }
 }
 
-void InstrumentsController::selectionChanged(Track *track) {
-    desktopController.selectionChanged(track);
-}
+void InstrumentsController::selectionChanged(Track *track) { desktopController.selectionChanged(track); }
+
+} // namespace trackman

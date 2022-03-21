@@ -13,25 +13,30 @@
 #include "ui/tracks/TrackListPanel.h"
 #include "ui/tracks/TrackListViewport.h"
 
+using namespace std;
+using namespace juce;
+
+namespace trackman {
+
 class DesktopController;
 
-class Spacer : public juce::Component {
+class Spacer : public Component {
   public:
     Spacer() = default;
     ~Spacer() = default;
 
-    void paint(juce::Graphics &g) override {
-        g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    void paint(Graphics &g) override {
+        g.fillAll(getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
     }
 
   private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Spacer)
 };
 
-class DesktopComponent : public juce::Component,
-                         public juce::ApplicationCommandTarget,
-                         public juce::MenuBarModel,
-                         public juce::FileDragAndDropTarget {
+class DesktopComponent : public Component,
+                         public ApplicationCommandTarget,
+                         public MenuBarModel,
+                         public FileDragAndDropTarget {
   public:
     /** A list of the commands that this menu responds to. */
     enum CommandIDs {
@@ -49,37 +54,37 @@ class DesktopComponent : public juce::Component,
     DesktopComponent(DesktopController &desktopController);
     ~DesktopComponent() override;
 
-    void visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea);
+    void visibleAreaChanged(const Rectangle<int> &newVisibleArea);
 
-    void createChildWindow(const juce::String &name, juce::Component *component);
+    void createChildWindow(const String &name, Component *component);
 
     void addListener(FileDragDropTarget *listener);
     void removeListener(FileDragDropTarget *listener);
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized() override;
 
     //==============================================================================
     // FileDragAndDropTarget
-    bool isInterestedInFileDrag(const juce::StringArray &files) override;
-    void fileDragEnter(const juce::StringArray &files, int x, int y) override;
-    void fileDragMove(const juce::StringArray &files, int x, int y) override;
-    void fileDragExit(const juce::StringArray &files) override;
-    void filesDropped(const juce::StringArray &files, int x, int y) override;
+    bool isInterestedInFileDrag(const StringArray &files) override;
+    void fileDragEnter(const StringArray &files, int x, int y) override;
+    void fileDragMove(const StringArray &files, int x, int y) override;
+    void fileDragExit(const StringArray &files) override;
+    void filesDropped(const StringArray &files, int x, int y) override;
 
     //==============================================================================
     // MenuBarModel
-    juce::StringArray getMenuBarNames() override;
-    juce::PopupMenu getMenuForIndex(int menuIndex, const juce::String & /*menuName*/) override;
+    StringArray getMenuBarNames() override;
+    PopupMenu getMenuForIndex(int menuIndex, const String & /*menuName*/) override;
     void menuItemSelected(int /*menuItemID*/, int /*topLevelMenuIndex*/) override {}
 
     //==============================================================================
     // ApplicationCommandTarget
     ApplicationCommandTarget *getNextCommandTarget() override { return nullptr; }
-    void getAllCommands(juce::Array<juce::CommandID> &c) override;
-    void getCommandInfo(juce::CommandID commandID, juce::ApplicationCommandInfo &result) override;
+    void getAllCommands(Array<CommandID> &c) override;
+    void getCommandInfo(CommandID commandID, ApplicationCommandInfo &result) override;
     bool perform(const InvocationInfo &info) override;
 
   private:
@@ -97,19 +102,21 @@ class DesktopComponent : public juce::Component,
     ScaleButtonPanel verticalScaleButtonPanel;
     Spacer spacer;
 
-    std::list<FileDragDropTarget *> listeners;
+    list<FileDragDropTarget *> listeners;
 
-    juce::ApplicationCommandManager commandManager;
-    juce::MenuBarComponent menuBar;
+    ApplicationCommandManager commandManager;
+    MenuBarComponent menuBar;
 
-    juce::Array<Component::SafePointer<Component>> windows;
+    Array<Component::SafePointer<Component>> windows;
 
     void closeAllWindows();
 
-    void notifyFileDragEnter(const juce::StringArray &files, int x, int y);
-    void notifyFileDragMove(const juce::StringArray &files, int x, int y);
-    void notifyFileDragExit(const juce::StringArray &files);
-    void notifyFilesDropped(const juce::StringArray &files, int x, int y);
+    void notifyFileDragEnter(const StringArray &files, int x, int y);
+    void notifyFileDragMove(const StringArray &files, int x, int y);
+    void notifyFileDragExit(const StringArray &files);
+    void notifyFilesDropped(const StringArray &files, int x, int y);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DesktopComponent)
 };
+
+} // namespace trackman

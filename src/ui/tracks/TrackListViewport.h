@@ -3,13 +3,16 @@
 #include <JuceHeader.h>
 #include "model/Project.h"
 
+namespace trackman {
+
 class DesktopComponent;
 
 class TrackListViewport : public juce::Viewport, private juce::Timer {
 
   public:
-    TrackListViewport(DesktopComponent &desktop, Project &project)
-        : desktop(desktop), project(project) { startTimer(20); }
+    TrackListViewport(DesktopComponent &desktop, Project &project) : desktop(desktop), project(project) {
+        startTimer(20);
+    }
     ~TrackListViewport() override = default;
 
     void visibleAreaChanged(const juce::Rectangle<int> &newVisibleArea) override;
@@ -22,3 +25,5 @@ class TrackListViewport : public juce::Viewport, private juce::Timer {
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListViewport)
 };
+
+}

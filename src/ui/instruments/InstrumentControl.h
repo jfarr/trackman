@@ -1,7 +1,9 @@
 #pragma once
 
-#include <JuceHeader.h>
 #include "model/Track.h"
+#include <JuceHeader.h>
+
+namespace trackman {
 
 class InstrumentControl : public juce::Component {
   public:
@@ -25,3 +27,5 @@ class InstrumentControl : public juce::Component {
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentControl)
 };
+
+} // namespace trackman

@@ -19,17 +19,17 @@ void TransportPanel::createControls() {
     transportControl.onLoopingChanged = [this](bool shouldLoop) { desktopController.loopingChanged(shouldLoop); };
     transportControl.onRecordClicked = [this] { desktopController.recordClicked(); };
 
-    tempoLabel.setText("Tempo", juce::dontSendNotification);
-    tempoLabel.setJustificationType(juce::Justification::centredRight);
-    tempoText.setJustificationType(juce::Justification::centredLeft);
+    tempoLabel.setText("Tempo", dontSendNotification);
+    tempoLabel.setJustificationType(Justification::centredRight);
+    tempoText.setJustificationType(Justification::centredLeft);
     tempoText.onTextChange = [this] { desktopController.tempoChanged(tempoText.getText().getFloatValue()); };
 
-    numeratorText.setJustificationType(juce::Justification::centredRight);
+    numeratorText.setJustificationType(Justification::centredRight);
     numeratorText.onTextChange = [this] { desktopController.numeratorChanged(numeratorText.getText().getIntValue()); };
 
-    timeSignatureDivider.setText("/", juce::dontSendNotification);
+    timeSignatureDivider.setText("/", dontSendNotification);
     timeSignatureDivider.setInterceptsMouseClicks(false, false);
-    timeSignatureDivider.setJustificationType(juce::Justification::centred);
+    timeSignatureDivider.setJustificationType(Justification::centred);
 
     denominatorSelect.setLookAndFeel(&denominatorLF);
     denominatorSelect.addItem("4", 4);
@@ -46,21 +46,19 @@ void TransportPanel::createControls() {
 }
 
 void TransportPanel::update() {
-    tempoText.setText(juce::String(desktopController.getProject().getTempo()), juce::dontSendNotification);
+    tempoText.setText(String(desktopController.getProject().getTempo()), dontSendNotification);
     numeratorText.setText(
-        juce::String(desktopController.getProject().getTimeSignature().getNumerator()), juce::dontSendNotification);
+        String(desktopController.getProject().getTimeSignature().getNumerator()), dontSendNotification);
     denominatorSelect.setSelectedId(
-        desktopController.getProject().getTimeSignature().getDenominator(), juce::dontSendNotification);
+        desktopController.getProject().getTimeSignature().getDenominator(), dontSendNotification);
 }
 
-void TransportPanel::selectionChanged(Track *track) {
-    transportControl.selectionChanged(track);
-}
+void TransportPanel::selectionChanged(Track *track) { transportControl.selectionChanged(track); }
 
-void TransportPanel::paint(juce::Graphics &g) {
-    g.fillAll(juce::Colours::lightgrey);
+void TransportPanel::paint(Graphics &g) {
+    g.fillAll(Colours::lightgrey);
     auto area = getLocalBounds();
-    g.setColour(juce::Colours::dimgrey);
+    g.setColour(Colours::dimgrey);
     g.fillRect(area.removeFromTop(1));
     g.fillRect(area.removeFromBottom(1));
 }

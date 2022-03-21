@@ -5,6 +5,8 @@
 #include "InstrumentControl.h"
 #include "model/Project.h"
 
+namespace trackman {
+
 class InstrumentsPanel : public juce::Component {
   public:
     InstrumentsPanel(Project &project) : project(project) {}
@@ -31,3 +33,5 @@ class InstrumentsPanel : public juce::Component {
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentsPanel)
 };
+
+}

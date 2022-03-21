@@ -3,6 +3,8 @@
 #include "ui/MainWindow.h"
 #include "ui/desktop/DesktopController.h"
 
+namespace trackman {
+
 TrackListPanel::TrackListPanel(
     DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport)
     : desktopController(desktopController), viewport(viewport), transport(transport), overlay(transport),
@@ -190,3 +192,5 @@ void TrackListPanel::notifySelectionChanged() {
         listener->selectionChanged(nullptr);
     }
 }
+
+} // namespace trackman

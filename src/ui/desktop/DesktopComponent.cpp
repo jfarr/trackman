@@ -1,8 +1,10 @@
 #include "DesktopComponent.h"
 #include "DesktopController.h"
 #include "common/listutil.h"
-#include "ui/MainWindow.h"
 #include "ui/KeyboardControl.h"
+#include "ui/MainWindow.h"
+
+namespace trackman {
 
 DesktopComponent::DesktopComponent(DesktopController &desktopController)
     : desktopController(desktopController), timeMeter(desktopController.getProject()),
@@ -252,3 +254,5 @@ void DesktopComponent::notifyFilesDropped(const juce::StringArray &files, int x,
         listener->filesDropped(files, x, y);
     }
 }
+
+} // namespace trackman

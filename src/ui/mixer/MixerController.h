@@ -11,11 +11,11 @@
 #include "model/TrackList.h"
 #include "ui/mixer/MasterTrackListener.h"
 
-class DesktopController;
-
 using namespace std;
 
 namespace trackman {
+
+class DesktopController;
 
 class MixerController : public MasterTrackListener {
   public:

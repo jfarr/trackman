@@ -1,5 +1,7 @@
 #include "InstrumentsPanel.h"
 
+namespace trackman {
+
 void InstrumentsPanel::update() {
     removeAllChildren();
     for (InstrumentControl *instrument : instruments) {
@@ -32,4 +34,6 @@ void InstrumentsPanel::resized() {
 double InstrumentsPanel::getPaneHeight() {
     auto paneHeight = instruments.empty() ? 0 : instruments.back()->getPreferredHeight() * project.getVerticalScale();
     return paneHeight;
+}
+
 }

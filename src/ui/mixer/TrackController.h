@@ -8,6 +8,8 @@
 #include "ui/mixer/TrackControl.h"
 #include "ui/tracks/TrackLaneControl.h"
 
+namespace trackman {
+
 class DesktopController;
 
 class TrackController : public TrackControlListener, public juce::MouseListener {
@@ -45,3 +47,5 @@ class TrackController : public TrackControlListener, public juce::MouseListener 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackController)
 };
+
+}

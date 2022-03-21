@@ -9,6 +9,8 @@
 #include "ui/desktop/TrackListListener.h"
 #include "ui/tracks/SampleListener.h"
 
+namespace trackman {
+
 class DesktopController;
 
 class TrackListController : public TrackListListener, public SampleListener {
@@ -64,3 +66,5 @@ class TrackListController : public TrackListListener, public SampleListener {
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListController)
 };
+
+} // namespace trackman
