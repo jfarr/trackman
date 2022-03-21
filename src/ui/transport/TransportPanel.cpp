@@ -5,8 +5,7 @@ namespace trackman {
 
 TransportPanel::TransportPanel(DesktopController &desktopController)
     : desktopController(desktopController),
-      transportControl(desktopController.getProject().getTransport().getTransportSource(), true,
-          &desktopController.getMidiRecorder(), &desktopController.getProject().getTrackList()) {
+      transportControl(desktopController.getProject().getTransport().getTransportSource(), true, true) {
 
     createControls();
     update();

@@ -19,6 +19,17 @@ void DesktopController::loopingChanged(bool shouldLoop) {
     project.getMixer().setLooping(shouldLoop);
 }
 
+void DesktopController::recordClicked() {
+    auto selected = project.getTrackList().getSelectedTrack();
+    if (selected != nullptr) {
+        if (selected->isRecording()) {
+            selected->stopRecording();
+        } else {
+            selected->startRecording();
+        }
+    }
+}
+
 void DesktopController::createKeyboard() {
     auto keyboard = new KeyboardControl(midiRecorder.getKeyboardState());
     desktopComponent.createChildWindow("MIDI Keyboard", keyboard);

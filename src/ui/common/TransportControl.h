@@ -17,8 +17,7 @@ class TransportControl : public juce::Component,
                          public TrackListListener {
   public:
     //==============================================================================
-    TransportControl(juce::AudioTransportSource &transportSource, bool enabled = true, MidiRecorder *recorder = nullptr,
-        TrackList *trackList = nullptr);
+    TransportControl(juce::AudioTransportSource &transportSource, bool enabled = true, bool recordEnabled = false);
     ~TransportControl() override;
 
     void setEnabled(bool enabled);
@@ -26,6 +25,8 @@ class TransportControl : public juce::Component,
     void removeListener(TransportControlListener *listener);
 
     std::function<void(bool)> onLoopingChanged = nullptr;
+//    std::function<void()> onRecordingStopped = nullptr;
+    std::function<void()> onRecordClicked = nullptr;
 
     //==============================================================================
     // Component
@@ -56,15 +57,17 @@ class TransportControl : public juce::Component,
     juce::String getStateLabel();
     void notifyLoopingChanged(bool shouldLoop);
     void notifyRecordingStopped();
+    void notifyRecordClicked();
 
     //==============================================================================
 
     const float buttonImageWidth = 500;
     const float buttonImageHeight = 210;
 
-    MidiRecorder *recorder;
+    bool recordEnabled;
+//    MidiRecorder *recorder;
     bool recording = false;
-    TrackList *trackList;
+//    TrackList *trackList;
 
     juce::ImageButton startButton;
     juce::ImageButton recordButton;

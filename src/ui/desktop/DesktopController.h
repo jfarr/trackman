@@ -48,6 +48,7 @@ class DesktopController : public juce::AudioSource,
     void resize();
 
     void loopingChanged(bool shouldLoop);
+    void recordClicked();
 
     void createKeyboard();
 
