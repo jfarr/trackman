@@ -10,6 +10,7 @@
 
 using namespace std;
 using namespace juce;
+using namespace foleys;
 
 namespace trackman {
 
@@ -17,7 +18,7 @@ class DesktopController;
 
 class MixerPanel : public Component {
   public:
-    MixerPanel(DesktopController &desktopController, foleys::LevelMeterSource &meterSource);
+    MixerPanel(DesktopController &desktopController, LevelMeterSource &meterSource);
     ~MixerPanel() override;
 
     int getPreferredHeight() const { return max(getHeight(), 280); }

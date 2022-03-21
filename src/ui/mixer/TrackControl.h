@@ -10,6 +10,7 @@
 
 using namespace std;
 using namespace juce;
+using namespace foleys;
 
 namespace trackman {
 
@@ -44,7 +45,7 @@ class TrackControl : public Component, public SliderListener {
     Label trackNameLabel;
     Label trackNumberLabel;
     LevelMeterLookAndFeel levelMeterLookAndFeel;
-    foleys::LevelMeter levelMeter;
+    LevelMeter levelMeter;
 
     bool draggingSlider = false;
     float previousLevel = Decibels::decibelsToGain<float>(0.0);

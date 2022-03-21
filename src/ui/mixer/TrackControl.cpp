@@ -4,7 +4,7 @@
 
 namespace trackman {
 
-TrackControl::TrackControl(Track &track) : track(track), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
+TrackControl::TrackControl(Track &track) : track(track), levelMeter(LevelMeter::MeterFlags::Minimal) {
     createControls();
     update();
     setSize(getPreferredWidth(), 244);

@@ -3,7 +3,7 @@
 
 namespace trackman {
 
-MixerPanel::MixerPanel(DesktopController &desktopController, foleys::LevelMeterSource &meterSource)
+MixerPanel::MixerPanel(DesktopController &desktopController, LevelMeterSource &meterSource)
     : desktopController(desktopController), masterTrackControl(desktopController.getMixer(), meterSource),
       mixerViewport(desktopController.getMixerController().getViewport()) {
 

@@ -3,8 +3,8 @@
 
 namespace trackman {
 
-MasterTrackControl::MasterTrackControl(Mixer &mixer, foleys::LevelMeterSource &meterSource)
-    : mixer(mixer), previousLevel(mixer.getMasterLevelGain()), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
+MasterTrackControl::MasterTrackControl(Mixer &mixer, LevelMeterSource &meterSource)
+    : mixer(mixer), previousLevel(mixer.getMasterLevelGain()), levelMeter(LevelMeter::MeterFlags::Minimal) {
     levelMeter.setMeterSource(&meterSource);
     createControls();
     update();
