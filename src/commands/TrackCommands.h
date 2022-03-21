@@ -14,7 +14,7 @@ namespace trackman {
 class RenameTrackCommand : public Command {
   public:
     RenameTrackCommand(DesktopController &desktopController, Track &track, String newName)
-        : Command("Rename Track"), desktopController(desktopController), track(track), newName(std::move(newName)),
+        : Command("Rename Track"), desktopController(desktopController), track(track), newName(move(newName)),
           prevName(track.getName()) {}
     ~RenameTrackCommand() override = default;
 
@@ -31,7 +31,7 @@ class RenameTrackCommand : public Command {
 class AddSampleCommand : public Command {
   public:
     AddSampleCommand(DesktopController &desktopController, Track *track, File file, int pos)
-        : Command("Add Sample"), desktopController(desktopController), track(track), file(std::move(file)), pos(pos) {}
+        : Command("Add Sample"), desktopController(desktopController), track(track), file(move(file)), pos(pos) {}
     ~AddSampleCommand() override = default;
 
     void execute() override {

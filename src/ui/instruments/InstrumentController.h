@@ -30,7 +30,7 @@ class InstrumentController : public MouseListener {
   private:
     Track &track;
     InstrumentControl instrumentControl;
-    std::list<TrackListListener *> trackListListeners;
+    list<TrackListListener *> trackListListeners;
 
     void notifySelectionChanged();
 

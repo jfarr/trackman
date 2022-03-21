@@ -25,7 +25,7 @@ int64 SynthAudioSource::getNextReadPosition() const {
 
 int64 SynthAudioSource::getTotalLength() const {
     int64 len = track.getMidiLengthInSamples();
-    return track.isRecording() && !looping ? std::max(len, currentPosition) : len;
+    return track.isRecording() && !looping ? max(len, currentPosition) : len;
 }
 
 bool SynthAudioSource::isLooping() const { return looping; }

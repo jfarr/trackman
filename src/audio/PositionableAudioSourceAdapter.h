@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 
+using namespace std;
 using namespace juce;
 
 namespace trackman {
@@ -13,7 +14,7 @@ class PositionableAudioSourceAdapter : public PositionableAudioSource {
     ~PositionableAudioSourceAdapter() override {
         if (deleteWhenRemoved && source != nullptr) {
             source->releaseResources();
-            std::unique_ptr<AudioSource> toDelete;
+            unique_ptr<AudioSource> toDelete;
             toDelete.reset(source);
         }
     }

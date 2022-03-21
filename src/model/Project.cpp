@@ -44,7 +44,7 @@ Sample *Project::addSample(
     return sample;
 }
 
-std::string Project::to_json() {
+string Project::to_json() {
     json project_json = {{"tempo", tempo}, {"horizontalScale", horizontalScale},
         {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
     project_json["timeSignature"] = {
@@ -74,8 +74,8 @@ std::string Project::to_json() {
     return project_json.dump();
 }
 
-void Project::from_json(AudioFormatManager &formatManager, std::string filename) {
-    std::ifstream s(filename);
+void Project::from_json(AudioFormatManager &formatManager, string filename) {
+    ifstream s(filename);
     json project_json;
     s >> project_json;
     mixer.removeAllSources();
@@ -85,7 +85,7 @@ void Project::from_json(AudioFormatManager &formatManager, std::string filename)
     horizontalScale = project_json["horizontalScale"];
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);
-    std::string encoded = project_json["midi"];
+    string encoded = project_json["midi"];
     MemoryOutputStream out;
     Base64::convertFromBase64(out, encoded);
     MemoryInputStream in(out.getMemoryBlock());

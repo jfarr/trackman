@@ -36,7 +36,7 @@ Track *TrackListPanel::getTrackAtPos(int x, int y) {
 void TrackListPanel::fileDragEnter(const StringArray &files, int x, int y) {
     auto *reader = desktopController.getMainWindow().getMainAudioComponent().getFormatManager().createReaderFor(
         File(files[0]));
-    auto newSource = std::make_unique<AudioFormatReaderSource>(reader, true);
+    auto newSource = make_unique<AudioFormatReaderSource>(reader, true);
     auto length = (double)newSource->getTotalLength() / reader->sampleRate;
     auto width = (int)(length * desktopController.getProject().getHorizontalScale());
     addAndMakeVisible(dropBox);
@@ -99,7 +99,7 @@ void TrackListPanel::resize() {
     auto w = getPanelWidth();
     auto h = getPanelHeight();
     setSize(w, h);
-    maxWidth = std::max(maxWidth, w);
+    maxWidth = max(maxWidth, w);
     for (auto *lane : lanes) {
         lane->resized();
     }
@@ -116,15 +116,15 @@ int TrackListPanel::getPanelWidth() const {
     auto currentPos = desktopController.getProject().getTransport().getTransportSource().getCurrentPosition();
     auto trackListLength = desktopController.getProject().getTrackList().getTotalLengthInSeconds();
     auto scale = desktopController.getProject().getHorizontalScale();
-    int trackWidth = (int)(std::max(currentPos, trackListLength) * scale);
-    return std::max(maxWidth, std::max(trackWidth, viewport.getWidth()));
+    int trackWidth = (int)(max(currentPos, trackListLength) * scale);
+    return max(maxWidth, max(trackWidth, viewport.getWidth()));
 }
 
 int TrackListPanel::getPanelHeight() const {
     int trackHeight = !lanes.empty() ? (int)((double)(lanes.size() + 1) * (double)lanes.back()->getPreferredHeight() *
                                              desktopController.getProject().getVerticalScale())
                                      : 0;
-    return std::max(trackHeight, viewport.getHeight());
+    return max(trackHeight, viewport.getHeight());
 }
 
 int TrackListPanel::getTrackLaneHeight() const {
@@ -141,7 +141,7 @@ void TrackListPanel::paint(Graphics &g) {
 void TrackListPanel::resized() {
     auto area = getLocalBounds();
     auto laneHeight = lanes.empty() ? 0 : (int)(getTrackLaneHeight() / lanes.size());
-    auto width = std::max(transport.getLengthInSeconds() * desktopController.getProject().getHorizontalScale(), 2.0);
+    auto width = max(transport.getLengthInSeconds() * desktopController.getProject().getHorizontalScale(), 2.0);
     overlay.setBounds(area.withWidth(width));
     for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(laneHeight));

@@ -48,7 +48,7 @@ void Mixer::writeAudioFile(const File &file, int64 lengthInSamples) {
     int numberOfChannels = 2;
     int bitsPerSample = 16;
     file.deleteFile();
-    if (auto fileStream = std::unique_ptr<FileOutputStream>(file.createOutputStream())) {
+    if (auto fileStream = unique_ptr<FileOutputStream>(file.createOutputStream())) {
         WavAudioFormat wavFormat;
         if (auto writer =
                 wavFormat.createWriterFor(fileStream.get(), sampleRate, numberOfChannels, bitsPerSample, {}, 0)) {

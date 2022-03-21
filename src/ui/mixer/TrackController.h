@@ -1,6 +1,6 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
 
 #include "audio/GainAudioSource.h"
 #include "model/Track.h"

@@ -48,7 +48,7 @@ class Track {
 
     void selectSample(Sample *newSelected);
     void moveSampleTo(Sample &sample, Track &toTrack);
-    void eachSample(std::function<void(Sample &sample)> f);
+    void eachSample(function<void(Sample &sample)> f);
     bool hasSamples() const { return !samples.empty(); }
     int getNumSamples() const { return samples.size(); }
 
@@ -75,8 +75,8 @@ class Track {
 
     int trackNumber = 0;
     String name = defaultName;
-    std::unique_ptr<MeteredAudioSource> meteredSource;
-    std::unique_ptr<GainAudioSource> gainSource;
+    unique_ptr<MeteredAudioSource> meteredSource;
+    unique_ptr<GainAudioSource> gainSource;
 
     float level = Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
@@ -85,8 +85,8 @@ class Track {
     bool deleted = false;
     bool recording = false;
 
-    std::list<std::shared_ptr<Sample>> samples;
-    std::unique_ptr<SamplePlayer> samplePlayer;
+    list<shared_ptr<Sample>> samples;
+    unique_ptr<SamplePlayer> samplePlayer;
 
     Project &project;
     AudioDeviceManager &deviceManager;

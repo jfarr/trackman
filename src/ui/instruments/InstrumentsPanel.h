@@ -28,7 +28,7 @@ class InstrumentsPanel : public Component {
     const int topStripHeight = 30;
 
     Project &project;
-    std::list<InstrumentControl *> instruments;
+    list<InstrumentControl *> instruments;
 
     void resize();
     double getPaneHeight();

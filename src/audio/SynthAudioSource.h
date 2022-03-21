@@ -47,7 +47,7 @@ struct SineWaveVoice : public SynthesiserVoice {
             if (tailOff > 0.0) // [7]
             {
                 while (--numSamples >= 0) {
-                    auto currentSample = (float)(std::sin(currentAngle) * level * tailOff);
+                    auto currentSample = (float)(sin(currentAngle) * level * tailOff);
 
                     for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
                         outputBuffer.addSample(i, startSample, currentSample);
@@ -67,7 +67,7 @@ struct SineWaveVoice : public SynthesiserVoice {
             } else {
                 while (--numSamples >= 0) // [6]
                 {
-                    auto currentSample = (float)(std::sin(currentAngle) * level);
+                    auto currentSample = (float)(sin(currentAngle) * level);
 
                     for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
                         outputBuffer.addSample(i, startSample, currentSample);

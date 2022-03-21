@@ -21,7 +21,7 @@ class TrackmanApplication : public JUCEApplication {
     void initialise(const String & /*commandLine*/) override {
         // This method is where you should put your application's initialisation
         // code..
-        mainWindow = std::make_unique<MainWindow>(getApplicationName());
+        mainWindow = make_unique<MainWindow>(getApplicationName());
 
         // Bring the main window to the front.
         mainWindow->setAlwaysOnTop(true);

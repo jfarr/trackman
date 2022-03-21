@@ -25,7 +25,7 @@ void NoteRoll::paint(Graphics &g) {
     auto scale = project.getHorizontalScale();
     int lowNote = getLowestNote(messages);
     int highNote = getHighestNote(messages);
-    double noteSpan = std::max(24, highNote - lowNote) + 1;
+    double noteSpan = max(24, highNote - lowNote) + 1;
     double margin = 1.0;
     double x = area.getX();
     double h = getHeight() - 2 * margin;
