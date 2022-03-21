@@ -38,7 +38,7 @@ void TrackController::repaint() { trackControl.repaint(); }
 
 void TrackController::trackLevelChanged(Track &track, float newLevel) { track.setLevelGain(newLevel); }
 
-void TrackController::mouseDown(const juce::MouseEvent &event) { notifySelectionChanged(); }
+void TrackController::mouseDown(const MouseEvent &event) { notifySelectionChanged(); }
 
 void TrackController::addListener(TrackListListener *listener) {
     if (!listContains(trackListListeners, listener)) {

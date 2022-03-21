@@ -2,6 +2,8 @@
 
 #import "model/Track.h"
 
+namespace trackman {
+
 class TrackControlListener {
   public:
     virtual void trackNameChanged(Track &track, juce::String newName) {}
@@ -10,3 +12,5 @@ class TrackControlListener {
     virtual void trackMuteToggled(Track &track) {}
     virtual void trackSoloToggled(Track &track) {}
 };
+
+} // namespace trackman

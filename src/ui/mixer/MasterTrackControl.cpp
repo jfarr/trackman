@@ -1,6 +1,8 @@
 #include "MasterTrackControl.h"
 #include "common/listutil.h"
 
+namespace trackman {
+
 MasterTrackControl::MasterTrackControl(Mixer &mixer, foleys::LevelMeterSource &meterSource)
     : mixer(mixer), previousLevel(mixer.getMasterLevelGain()), levelMeter(foleys::LevelMeter::MeterFlags::Minimal) {
     levelMeter.setMeterSource(&meterSource);
@@ -20,10 +22,9 @@ void MasterTrackControl::createControls() {
     muteButton.setTooltip("mute");
     muteButton.onClick = [this] { muteButtonClicked(); };
 
-    channelLabel.setText("MASTER", juce::dontSendNotification);
-    channelLabel.setJustificationType(juce::Justification(juce::Justification::horizontallyCentred));
-    channelLabel.setColour(
-        juce::Label::backgroundColourId, getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    channelLabel.setText("MASTER", dontSendNotification);
+    channelLabel.setJustificationType(Justification(Justification::horizontallyCentred));
+    channelLabel.setColour(Label::backgroundColourId, getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
 
     levelMeter.setLookAndFeel(&levelMeterLookAndFeel);
 
@@ -37,28 +38,27 @@ void MasterTrackControl::update() {
     auto level = mixer.getMasterLevelGain();
     if (level != previousLevel) {
         previousLevel = level;
-        decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
+        decibelSlider.setValue(Decibels::gainToDecibels(level));
     }
-    muteButton.setColour(juce::TextButton::buttonColourId,
-        mixer.isMasterMuted() ? juce::Colours::red
-                              : getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    muteButton.setColour(TextButton::buttonColourId,
+        mixer.isMasterMuted() ? Colours::red : getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
 }
 
 void MasterTrackControl::setLevel(float level) {
     previousLevel = level;
-    decibelSlider.setValue(juce::Decibels::gainToDecibels(level));
+    decibelSlider.setValue(Decibels::gainToDecibels(level));
 }
 
-void MasterTrackControl::paint(juce::Graphics &g) {
-    g.fillAll(juce::Colour{0xff282828});
-    g.setColour(juce::Colours::black);
+void MasterTrackControl::paint(Graphics &g) {
+    g.fillAll(Colour{0xff282828});
+    g.setColour(Colours::black);
     g.fillRect(getWidth() - 1, 0, 1, getHeight());
-    g.setColour(juce::Colour{0xff282828});
+    g.setColour(Colour{0xff282828});
     g.fillRect(getWidth() - 1, 0, 0, getHeight());
     auto buttonsHeight = 30;
-    g.setColour(juce::Colours::lightgrey);
+    g.setColour(Colours::lightgrey);
     g.fillRect(0, 0, getWidth(), buttonsHeight);
-    g.setColour(juce::Colours::dimgrey);
+    g.setColour(Colours::dimgrey);
     g.fillRect(0, buttonsHeight - 1, getWidth(), 1);
 }
 
@@ -79,7 +79,7 @@ void MasterTrackControl::resized() {
     muteButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
 }
 
-void MasterTrackControl::mouseUp(const juce::MouseEvent &event) {
+void MasterTrackControl::mouseUp(const MouseEvent &event) {
     if (event.eventComponent == &decibelSlider) {
         draggingSlider = false;
         decibelSliderChanged();
@@ -89,7 +89,7 @@ void MasterTrackControl::mouseUp(const juce::MouseEvent &event) {
 void MasterTrackControl::sliderClicked() { draggingSlider = true; }
 
 void MasterTrackControl::decibelSliderChanged() {
-    auto level = juce::Decibels::decibelsToGain((float)decibelSlider.getValue());
+    auto level = Decibels::decibelsToGain((float)decibelSlider.getValue());
     notifyLevelChanged(level);
     if (!draggingSlider && level != previousLevel) {
         notifyLevelChangeFinalized(previousLevel);
@@ -127,3 +127,5 @@ void MasterTrackControl::notifyMuteToggled() {
         listener->masterMuteToggled();
     }
 }
+
+} // namespace trackman

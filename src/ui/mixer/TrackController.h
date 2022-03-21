@@ -8,11 +8,14 @@
 #include "ui/mixer/TrackControl.h"
 #include "ui/tracks/TrackLaneControl.h"
 
+using namespace std;
+using namespace juce;
+
 namespace trackman {
 
 class DesktopController;
 
-class TrackController : public TrackControlListener, public juce::MouseListener {
+class TrackController : public TrackControlListener, public MouseListener {
   public:
     TrackController(DesktopController &desktopController, Track &track);
     ~TrackController();
@@ -34,14 +37,14 @@ class TrackController : public TrackControlListener, public juce::MouseListener 
 
     //==============================================================================
     // MouseListener
-    void mouseDown(const juce::MouseEvent &event) override;
+    void mouseDown(const MouseEvent &event) override;
 
   private:
     DesktopController &desktopController;
     Track &track;
 
     TrackControl trackControl;
-    std::list<TrackListListener *> trackListListeners;
+    list<TrackListListener *> trackListListeners;
 
     void notifySelectionChanged();
 

@@ -3,12 +3,17 @@
 #include <JuceHeader.h>
 
 #include "LevelMeterLookAndFeel.h"
+#include "TrackControlListener.h"
 #include "model/Track.h"
 #include "ui/common/DecibelSlider.h"
 #include "ui/common/FileChooserControl.h"
-#include "ui/mixer/TrackControlListener.h"
 
-class TrackControl : public juce::Component, public SliderListener {
+using namespace std;
+using namespace juce;
+
+namespace trackman {
+
+class TrackControl : public Component, public SliderListener {
   public:
     TrackControl(Track &track);
     ~TrackControl();
@@ -22,9 +27,9 @@ class TrackControl : public juce::Component, public SliderListener {
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-    void mouseUp(const juce::MouseEvent &event) override;
+    void mouseUp(const MouseEvent &event) override;
 
     //==============================================================================
     // SliderListener
@@ -34,16 +39,16 @@ class TrackControl : public juce::Component, public SliderListener {
     Track &track;
 
     DecibelSlider decibelSlider;
-    juce::TextButton muteButton;
-    juce::TextButton soloButton;
-    juce::Label trackNameLabel;
-    juce::Label trackNumberLabel;
+    TextButton muteButton;
+    TextButton soloButton;
+    Label trackNameLabel;
+    Label trackNumberLabel;
     LevelMeterLookAndFeel levelMeterLookAndFeel;
     foleys::LevelMeter levelMeter;
 
     bool draggingSlider = false;
-    float previousLevel = juce::Decibels::decibelsToGain<float>(0.0);
-    std::list<TrackControlListener *> listeners;
+    float previousLevel = Decibels::decibelsToGain<float>(0.0);
+    list<TrackControlListener *> listeners;
 
     void createControls();
     void decibelSliderChanged();
@@ -58,3 +63,5 @@ class TrackControl : public juce::Component, public SliderListener {
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackControl)
 };
+
+} // namespace trackman
