@@ -2,18 +2,24 @@
 
 #include <JuceHeader.h>
 
-class KeyboardControl : public juce::Component {
+using namespace juce;
+
+namespace trackman {
+
+class KeyboardControl : public Component {
   public:
-    explicit KeyboardControl(juce::MidiKeyboardState &keyboardState);
+    explicit KeyboardControl(MidiKeyboardState &keyboardState);
     ~KeyboardControl() override = default;
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized() override;
 
   private:
-    juce::MidiKeyboardComponent keyboardComponent;
+    MidiKeyboardComponent keyboardComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyboardControl)
 };
+
+} // namespace trackman

@@ -1,7 +1,9 @@
 #include "KeyboardControl.h"
 
-KeyboardControl::KeyboardControl(juce::MidiKeyboardState &keyboardState)
-    : keyboardComponent(keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard) {
+namespace trackman {
+
+KeyboardControl::KeyboardControl(MidiKeyboardState &keyboardState)
+    : keyboardComponent(keyboardState, MidiKeyboardComponent::horizontalKeyboard) {
 
     setOpaque(true);
     addAndMakeVisible(keyboardComponent);
@@ -9,9 +11,11 @@ KeyboardControl::KeyboardControl(juce::MidiKeyboardState &keyboardState)
     setSize(450, 100);
 }
 
-void KeyboardControl::paint(juce::Graphics &g) { g.fillAll(juce::Colours::black); }
+void KeyboardControl::paint(Graphics &g) { g.fillAll(Colours::black); }
 
 void KeyboardControl::resized() {
     auto area = getLocalBounds();
     keyboardComponent.setBounds(area.removeFromTop(80).reduced(8));
 }
+
+} // namespace trackman
