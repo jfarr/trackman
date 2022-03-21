@@ -1,14 +1,14 @@
 #include "InstrumentControl.h"
 
+namespace trackman {
+
 InstrumentControl::InstrumentControl(Track &track) : track(track) {
     selectButton.setButtonText("...");
     selectButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkslategrey);
     addAndMakeVisible(selectButton);
 }
 
-void InstrumentControl::update() {
-    selectButton.setEnabled(track.canRecord());
-}
+void InstrumentControl::update() { selectButton.setEnabled(track.canRecord()); }
 
 void InstrumentControl::paint(juce::Graphics &g) {
     g.fillAll(track.isSelected() ? juce::Colours::lightgrey : juce::Colours::grey);
@@ -23,3 +23,5 @@ void InstrumentControl::resized() {
     auto buttonArea = area.removeFromLeft(buttonSize);
     selectButton.setBounds(buttonArea.removeFromTop(buttonSize).reduced(margin));
 }
+
+} // namespace trackman

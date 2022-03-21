@@ -9,6 +9,8 @@
 #include "ui/common/PositionOverlay.h"
 #include "ui/desktop/TrackListListener.h"
 
+namespace trackman {
+
 class DesktopController;
 
 class DropBox : public juce::Component {
@@ -45,7 +47,10 @@ class TrackListPanel : public juce::Component,
     void removeLane(TrackLaneControl *lane) { lanes.remove(lane); }
     void clear() { lanes.clear(); }
     void resize();
-    void increaseMaxWidth(int increment) { maxWidth += increment; resize(); }
+    void increaseMaxWidth(int increment) {
+        maxWidth += increment;
+        resize();
+    }
     void update();
 
     void fileDragEnter(const juce::StringArray &files, int x, int y);
@@ -75,7 +80,7 @@ class TrackListPanel : public juce::Component,
     void mouseDown(const juce::MouseEvent &event) override;
 
   private:
-    DesktopController &desktopController;
+    trackman::DesktopController &desktopController;
     juce::Viewport &viewport;
     juce::AudioTransportSource &transport;
     std::list<TrackLaneControl *> lanes;
@@ -104,3 +109,5 @@ class TrackListPanel : public juce::Component,
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackListPanel)
 };
+
+} // namespace trackman

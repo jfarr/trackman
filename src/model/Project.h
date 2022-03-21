@@ -3,6 +3,7 @@
 #include "Mixer.h"
 #include "TrackList.h"
 #include "TimeSignature.h"
+#include "Transport.h"
 
 class Project {
   public:
@@ -23,6 +24,7 @@ class Project {
 
     TrackList &getTrackList() { return trackList; }
     Mixer &getMixer() { return mixer; }
+    Transport &getTransport() { return transport; }
 
     Track *getSelectedTrack() const { return trackList.getSelectedTrack(); }
     Sample *getSelectedSample() const { return trackList.getSelectedSample(); }
@@ -61,6 +63,7 @@ class Project {
     juce::AudioDeviceManager &deviceManager;
     TrackList trackList;
     Mixer mixer;
+    Transport transport;
     TimeSignature timeSignature;
     float tempo = initialTempo;
     double verticalScale = initialVerticalScale;

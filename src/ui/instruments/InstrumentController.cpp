@@ -2,6 +2,8 @@
 #include "InstrumentsController.h"
 #include "common/listutil.h"
 
+namespace trackman {
+
 InstrumentController::InstrumentController(InstrumentsController &instrumentsController, Track &track)
     : track(track), instrumentControl(track) {
     addListener((TrackListListener *)&instrumentsController);
@@ -27,3 +29,5 @@ void InstrumentController::notifySelectionChanged() {
         listener->selectionChanged(&track);
     }
 }
+
+} // namespace trackman

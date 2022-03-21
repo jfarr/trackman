@@ -6,6 +6,8 @@
 #include "InstrumentsPanel.h"
 #include "model/Project.h"
 
+namespace trackman {
+
 class DesktopController;
 
 class InstrumentsController : public TrackListListener {
@@ -31,3 +33,5 @@ class InstrumentsController : public TrackListListener {
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentsController)
 };
+
+} // namespace trackman

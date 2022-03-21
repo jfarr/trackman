@@ -2,6 +2,8 @@
 #include "TrackListController.h"
 #include "common/listutil.h"
 
+namespace trackman {
+
 TrackLaneController::TrackLaneController(Project &project, Track &track, TrackListController &trackListController,
     juce::AudioTransportSource &transport, juce::AudioFormatManager &formatManager)
     : project(project), track(track), transport(transport), trackListController(trackListController),
@@ -24,7 +26,6 @@ void TrackLaneController::update() {
         trackLaneControl.addThumbnail(thumbnails.back().get());
     });
     if (track.getMidiMessages().getNumEvents() > 0) {
-
     }
     trackLaneControl.update();
 }
@@ -48,3 +49,5 @@ void TrackLaneController::notifySelectionChanged() {
         listener->selectionChanged(&track);
     }
 }
+
+} // namespace trackman

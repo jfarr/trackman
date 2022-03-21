@@ -4,6 +4,8 @@
 #include "ui/desktop/TrackListListener.h"
 #include <JuceHeader.h>
 
+namespace trackman {
+
 class InstrumentsController;
 
 class InstrumentController : public juce::MouseListener {
@@ -32,3 +34,5 @@ class InstrumentController : public juce::MouseListener {
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentController)
 };
+
+}

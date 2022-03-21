@@ -6,13 +6,31 @@
 #include "ui/KeyboardControl.h"
 #include "ui/MainWindow.h"
 
-DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceManager &deviceManager)
+namespace trackman {
+
+DesktopController::DesktopController(MainWindow &mainWindow, AudioDeviceManager &deviceManager)
     : mainWindow(mainWindow), deviceManager(deviceManager), applicationName(mainWindow.getName()),
-      desktopComponent(*this), project(deviceManager, midiRecorder), mixerController(*this), trackListController(*this),
-      instrumentsController(*this), midiRecorder(project, deviceManager), previousTempo(project.getTempo()) {
+      desktopComponent(*this), project(deviceManager, midiRecorder), transportController(*this), mixerController(*this),
+      trackListController(*this), instrumentsController(*this), midiRecorder(project, deviceManager),
+      previousTempo(project.getTempo()) {
 
     updateTitleBar();
 }
+
+void DesktopController::loopingChanged(bool shouldLoop) { project.getMixer().setLooping(shouldLoop); }
+
+void DesktopController::recordClicked() {
+    auto selected = project.getTrackList().getSelectedTrack();
+    if (selected != nullptr) {
+        if (selected->isRecording()) {
+            selected->stopRecording();
+        } else {
+            selected->startRecording();
+        }
+    }
+}
+
+bool DesktopController::canRecord() { return project.getTrackList().canRecord(); }
 
 void DesktopController::createKeyboard() {
     auto keyboard = new KeyboardControl(midiRecorder.getKeyboardState());
@@ -20,13 +38,13 @@ void DesktopController::createKeyboard() {
 }
 
 void DesktopController::prepareToPlay(int blockSize, double sampleRate) {
-    project.getMixer().prepareToPlay(blockSize, sampleRate);
+    project.getTransport().prepareToPlay(blockSize, sampleRate);
 }
 
-void DesktopController::releaseResources() { project.getMixer().releaseResources(); }
+void DesktopController::releaseResources() { project.getTransport().releaseResources(); }
 
-void DesktopController::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
-    project.getMixer().getNextAudioBlock(bufferToFill);
+void DesktopController::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
+    project.getTransport().getNextAudioBlock(bufferToFill);
 }
 
 bool DesktopController::canUndo() const { return !commandList.isEmpty(); }
@@ -57,26 +75,20 @@ void DesktopController::masterMuteToggled() {
 void DesktopController::tempoChanged(float newTempo) {
     previousTempo = newTempo;
     project.setTempo(newTempo);
-    juce::MessageManager::callAsync([this]() {
-        desktopComponent.repaint();
-    });
+    MessageManager::callAsync([this]() { desktopComponent.repaint(); });
 }
 
 void DesktopController::numeratorChanged(int newNumerator) {
     project.setTimeSignature(TimeSignature(newNumerator, project.getTimeSignature().getDenominator()));
-    juce::MessageManager::callAsync([this]() {
-        desktopComponent.repaint();
-    });
+    MessageManager::callAsync([this]() { desktopComponent.repaint(); });
 }
 
 void DesktopController::denominatorChanged(int newDenominator) {
     project.setTimeSignature(TimeSignature(project.getTimeSignature().getNumerator(), newDenominator));
-    juce::MessageManager::callAsync([this]() {
-        desktopComponent.repaint();
-    });
+    MessageManager::callAsync([this]() { desktopComponent.repaint(); });
 }
 
-void DesktopController::trackNameChanged(Track &track, juce::String newName) {
+void DesktopController::trackNameChanged(Track &track, String newName) {
     Command *command = new RenameTrackCommand(*this, track, newName);
     commandList.pushCommand(command);
     dirty = true;
@@ -118,7 +130,7 @@ void DesktopController::addNewTrack() {
     desktopComponent.menuItemsChanged();
 }
 
-void DesktopController::addNewSample(Track *track, const juce::File &file, int pos) {
+void DesktopController::addNewSample(Track *track, const File &file, int pos) {
     if (track != nullptr && track->hasMidi()) {
         return;
     }
@@ -159,9 +171,9 @@ void DesktopController::deleteSelected() {
     }
     Track *selected = project.getTrackList().getSelectedTrack();
     if (selected != nullptr) {
-        juce::NativeMessageBox::showOkCancelBox(juce::MessageBoxIconType::QuestionIcon, "",
-            "Delete Track " + juce::String(selected->getTrackNumber()) + "?", &desktopComponent,
-            juce::ModalCallbackFunction::create([this, selected](int result) {
+        NativeMessageBox::showOkCancelBox(MessageBoxIconType::QuestionIcon, "",
+            "Delete Track " + String(selected->getTrackNumber()) + "?", &desktopComponent,
+            ModalCallbackFunction::create([this, selected](int result) {
                 if (result > 0) {
                     Command *command = new DeleteTrackCommand(*this, selected);
                     commandList.pushCommand(command);
@@ -174,7 +186,7 @@ void DesktopController::deleteSelected() {
     desktopComponent.menuItemsChanged();
 }
 
-juce::String DesktopController::getSelectionType() const {
+String DesktopController::getSelectionType() const {
     if (project.getSelectedSample() != nullptr) {
         return "sample";
     } else if (project.getSelectedTrack() != nullptr) {
@@ -185,7 +197,7 @@ juce::String DesktopController::getSelectionType() const {
 
 Track *DesktopController::addTrack() {
     auto track = project.addTrack();
-    juce::MessageManager::callAsync([this]() {
+    MessageManager::callAsync([this]() {
         trackListController.update();
         mixerController.update();
         instrumentsController.update();
@@ -198,7 +210,7 @@ void DesktopController::deleteTrack(Track *track, bool purge) {
     if (purge) {
         project.getTrackList().removeTrack(track);
     }
-    juce::MessageManager::callAsync([this]() {
+    MessageManager::callAsync([this]() {
         trackListController.update();
         mixerController.update();
         instrumentsController.update();
@@ -207,21 +219,21 @@ void DesktopController::deleteTrack(Track *track, bool purge) {
 
 void DesktopController::undeleteTrack(Track *track) {
     project.getTrackList().undeleteTrack(track);
-    juce::MessageManager::callAsync([this]() {
+    MessageManager::callAsync([this]() {
         trackListController.update();
         mixerController.update();
         instrumentsController.update();
     });
 }
 
-void DesktopController::renameTrack(Track &track, const juce::String &newName) {
+void DesktopController::renameTrack(Track &track, const String &newName) {
     track.setName(newName);
-    juce::MessageManager::callAsync([this]() { mixerController.update(); });
+    MessageManager::callAsync([this]() { mixerController.update(); });
 }
 
-Sample *DesktopController::addSample(Track &track, const juce::File &file, int pos) {
+Sample *DesktopController::addSample(Track &track, const File &file, int pos) {
     Sample *sample = trackListController.addSample(track, file, pos);
-    juce::MessageManager::callAsync([this]() {
+    MessageManager::callAsync([this]() {
         mixerController.update();
         instrumentsController.update();
     });
@@ -230,7 +242,7 @@ Sample *DesktopController::addSample(Track &track, const juce::File &file, int p
 
 void DesktopController::moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos) {
     trackListController.moveSample(sample, fromTrack, toTrack, pos);
-    juce::MessageManager::callAsync([this]() {
+    MessageManager::callAsync([this]() {
         mixerController.update();
         instrumentsController.update();
     });
@@ -238,21 +250,16 @@ void DesktopController::moveSample(Sample &sample, Track &fromTrack, Track &toTr
 
 void DesktopController::deleteSample(Track &track, Sample *sample) {
     trackListController.deleteSample(track, sample);
-    juce::MessageManager::callAsync([this]() {
-        instrumentsController.update();
-    });
+    MessageManager::callAsync([this]() { instrumentsController.update(); });
 }
 
 void DesktopController::undeleteSample(Track &track, Sample *sample) {
     trackListController.undeleteSample(track, sample);
-    juce::MessageManager::callAsync([this]() {
-        instrumentsController.update();
-    });
-
+    MessageManager::callAsync([this]() { instrumentsController.update(); });
 }
 
-void DesktopController::saveProject(const std::function<void(bool saved)> &callback) {
-    if (projectFile != juce::File{}) {
+void DesktopController::saveProject(const function<void(bool saved)> &callback) {
+    if (projectFile != File{}) {
         saveProjectFile(projectFile);
         if (callback) {
             callback(true);
@@ -262,14 +269,14 @@ void DesktopController::saveProject(const std::function<void(bool saved)> &callb
     }
 }
 
-void DesktopController::saveProjectAs(std::function<void(bool saved)> callback) {
-    chooser = std::make_unique<juce::FileChooser>("Save project as...", juce::File{}, "*.trackman", true);
-    auto chooserFlags = juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles;
+void DesktopController::saveProjectAs(function<void(bool saved)> callback) {
+    chooser = make_unique<FileChooser>("Save project as...", File{}, "*.trackman", true);
+    auto chooserFlags = FileBrowserComponent::saveMode | FileBrowserComponent::canSelectFiles;
 
-    std::function<void(bool saved)> cb = callback;
-    chooser->launchAsync(chooserFlags, [this, cb](const juce::FileChooser &fc) {
+    function<void(bool saved)> cb = callback;
+    chooser->launchAsync(chooserFlags, [this, cb](const FileChooser &fc) {
         auto file = fc.getResult();
-        if (file != juce::File{}) {
+        if (file != File{}) {
             projectFile = file;
             saveProjectFile(file);
             if (cb)
@@ -281,10 +288,10 @@ void DesktopController::saveProjectAs(std::function<void(bool saved)> callback) 
     });
 }
 
-void DesktopController::saveProjectFile(const juce::File &file) {
-    std::string json = project.to_json();
-    juce::TemporaryFile tempFile(file);
-    juce::FileOutputStream output(tempFile.getFile());
+void DesktopController::saveProjectFile(const File &file) {
+    string json = project.to_json();
+    TemporaryFile tempFile(file);
+    FileOutputStream output(tempFile.getFile());
 
     if (!output.openedOk()) {
         DBG("FileOutputStream didn't open correctly ...");
@@ -292,7 +299,7 @@ void DesktopController::saveProjectFile(const juce::File &file) {
         return;
     }
 
-    output.writeText(juce::String(json), false, false, nullptr);
+    output.writeText(String(json), false, false, nullptr);
     output.flush();
 
     if (output.getStatus().failed()) {
@@ -309,17 +316,17 @@ void DesktopController::saveProjectFile(const juce::File &file) {
 }
 
 void DesktopController::openProject() {
-    chooser = std::make_unique<juce::FileChooser>("Load project...", juce::File{}, "*.trackman", true);
-    auto chooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
+    chooser = make_unique<FileChooser>("Load project...", File{}, "*.trackman", true);
+    auto chooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles;
 
-    chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
+    chooser->launchAsync(chooserFlags, [this](const FileChooser &fc) {
         auto file = fc.getResult();
-        if (file != juce::File{}) {
+        if (file != File{}) {
             projectFile = file;
             project.from_json(
                 mainWindow.getMainAudioComponent().getFormatManager(), file.getFullPathName().toStdString());
             previousTempo = project.getTempo();
-            juce::MessageManager::callAsync([this]() {
+            MessageManager::callAsync([this]() {
                 trackListController.update();
                 mixerController.update();
                 instrumentsController.update();
@@ -334,12 +341,12 @@ void DesktopController::openProject() {
 }
 
 void DesktopController::exportProject() {
-    chooser = std::make_unique<juce::FileChooser>("Save project as...", juce::File{}, "*.wav", true);
-    auto chooserFlags = juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectFiles;
+    chooser = make_unique<FileChooser>("Save project as...", File{}, "*.wav", true);
+    auto chooserFlags = FileBrowserComponent::saveMode | FileBrowserComponent::canSelectFiles;
 
-    chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
+    chooser->launchAsync(chooserFlags, [this](const FileChooser &fc) {
         auto file = fc.getResult();
-        if (file != juce::File{}) {
+        if (file != File{}) {
             project.writeAudioFile(file);
         }
     });
@@ -347,7 +354,7 @@ void DesktopController::exportProject() {
 
 void DesktopController::updateTitleBar() {
     mainWindow.setName(
-        (projectFile != juce::File{} ? projectFile.getFileNameWithoutExtension() + (dirty ? " [modified]" : "")
+        (projectFile != File{} ? projectFile.getFileNameWithoutExtension() + (dirty ? " [modified]" : "")
                                      : "[untitled]") +
         " - " + applicationName);
 }
@@ -356,16 +363,15 @@ void DesktopController::recordingStopped() {
     auto selected = project.getTrackList().getSelectedTrack();
     if (selected != nullptr) {
         selected->stopRecording();
-        juce::MessageManager::callAsync([this]() {
-            trackListController.update();
-        });
+        MessageManager::callAsync([this]() { trackListController.update(); });
     }
 }
 
 void DesktopController::selectionChanged(Track *track) {
     project.getTrackList().setSelected(track);
-    juce::MessageManager::callAsync([this, track]() {
-        mixerController.getMixerPanel().getTransportControl().selectionChanged(track);
+    MessageManager::callAsync([this, track]() {
+        transportController.selectionChanged(track);
+        //        mixerController.getMixerPanel().getTransportControl().selectionChanged(track);
         trackListController.repaint();
         mixerController.repaint();
         instrumentsController.repaint();
@@ -373,23 +379,23 @@ void DesktopController::selectionChanged(Track *track) {
     desktopComponent.menuItemsChanged();
 }
 
-void DesktopController::fileDragEnter(const juce::StringArray &files, int x, int y) {
+void DesktopController::fileDragEnter(const StringArray &files, int x, int y) {
     trackListController.fileDragEnter(files, x, y);
 }
 
-void DesktopController::fileDragMove(const juce::StringArray &files, int x, int y) {
+void DesktopController::fileDragMove(const StringArray &files, int x, int y) {
     trackListController.fileDragMove(files, x, y);
 }
 
-void DesktopController::fileDragExit(const juce::StringArray &files) { trackListController.fileDragExit(files); }
+void DesktopController::fileDragExit(const StringArray &files) { trackListController.fileDragExit(files); }
 
-void DesktopController::filesDropped(const juce::StringArray &files, int x, int y) {
+void DesktopController::filesDropped(const StringArray &files, int x, int y) {
     trackListController.filesDropped(files, x, y);
 }
 
 void DesktopController::verticalScaleIncreased() {
     project.incrementVerticalScale();
-    juce::MessageManager::callAsync([this]() {
+    MessageManager::callAsync([this]() {
         trackListController.update();
         instrumentsController.update();
         desktopComponent.resized();
@@ -398,7 +404,7 @@ void DesktopController::verticalScaleIncreased() {
 
 void DesktopController::verticalScaleDecreased() {
     project.decrementVerticalScale();
-    juce::MessageManager::callAsync([this]() {
+    MessageManager::callAsync([this]() {
         trackListController.update();
         instrumentsController.update();
         desktopComponent.resized();
@@ -407,7 +413,7 @@ void DesktopController::verticalScaleDecreased() {
 
 void DesktopController::horizontalScaleIncreased() {
     project.incrementHorizontalScale();
-    juce::MessageManager::callAsync([this]() {
+    MessageManager::callAsync([this]() {
         trackListController.update();
         instrumentsController.update();
         desktopComponent.resized();
@@ -416,9 +422,11 @@ void DesktopController::horizontalScaleIncreased() {
 
 void DesktopController::horizontalScaleDecreased() {
     project.decrementHorizontalScale();
-    juce::MessageManager::callAsync([this]() {
+    MessageManager::callAsync([this]() {
         trackListController.update();
         instrumentsController.update();
         desktopComponent.resized();
     });
 }
+
+} // namespace trackman

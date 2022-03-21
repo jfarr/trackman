@@ -7,6 +7,15 @@ class Transport : public juce::AudioSource, private juce::Timer {
     Transport(juce::PositionableAudioSource &source);
     ~Transport() override = default;
 
+    juce::AudioTransportSource &getTransportSource() { return transportSource; }
+
+    void setPosition(double newPosition) { transportSource.setPosition(newPosition); }
+    double getCurrentPosition() const { return transportSource.getCurrentPosition(); }
+    void start() { transportSource.start(); }
+    void stop() { transportSource.stop(); }
+    bool isPlaying() const noexcept { return transportSource.isPlaying(); }
+    void setLooping(bool shouldLoop) { transportSource.setLooping(shouldLoop); }
+
     //==============================================================================
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;

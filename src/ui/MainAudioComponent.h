@@ -13,7 +13,7 @@ class MainAudioComponent : public juce::AudioAppComponent {
 
     juce::AudioFormatManager &getFormatManager() { return formatManager; }
     juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
-    DesktopController &getDesktopController() { return desktopController; }
+    trackman::DesktopController &getDesktopController() { return desktopController; }
 
     //==============================================================================
     // Component
@@ -29,7 +29,7 @@ class MainAudioComponent : public juce::AudioAppComponent {
     const int topStripHeight = 15;
 
     juce::AudioFormatManager formatManager;
-    DesktopController desktopController;
+    trackman::DesktopController desktopController;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainAudioComponent)
 };

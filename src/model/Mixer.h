@@ -8,7 +8,7 @@
 
 class TrackList;
 
-class Mixer : public juce::AudioSource {
+class Mixer : public juce::PositionableAudioSource {
   public:
     Mixer(TrackList &trackList, juce::AudioDeviceManager &deviceManager);
     ~Mixer() override;
@@ -16,8 +16,8 @@ class Mixer : public juce::AudioSource {
     float getMasterLevelGain() const { return level; }
     bool isMasterMuted() const { return muted; }
 
-    juce::AudioTransportSource &getTransportSource() { return transportSource; }
-    juce::AudioSource &getSource() { return *((PositionableMixingAudioSource *)&mixerSource); }
+//    juce::AudioTransportSource &getTransportSource() { return transportSource; }
+//    juce::AudioSource &getSource() { return *((PositionableMixingAudioSource *)&mixerSource); }
     foleys::LevelMeterSource &getMeterSource() { return meteredSource.getMeterSource(); }
 
     void addSource(juce::PositionableAudioSource *source);
@@ -26,13 +26,22 @@ class Mixer : public juce::AudioSource {
 
     void setMasterLevelGain(float newLevel);
     void setMasterMute(bool newMuted);
-    void setLooping(bool shouldLoop) { mixerSource.setLooping(shouldLoop); }
+
+    void writeAudioFile(const juce::File &file, juce::int64 lengthInSamples);
 
     //==============================================================================
     // AudioSource
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
     void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
     void releaseResources() override;
+
+    //==============================================================================
+    // PositionableAudioSource
+    void setNextReadPosition(juce::int64 newPosition) override { meteredSource.setNextReadPosition(newPosition); }
+    juce::int64 getNextReadPosition() const override { return meteredSource.getNextReadPosition(); }
+    juce::int64 getTotalLength() const override { return meteredSource.getTotalLength(); }
+    bool isLooping() const override { return meteredSource.isLooping(); }
+    void setLooping(bool shouldLoop) override { meteredSource.setLooping(shouldLoop); }
 
   private:
     TrackList &trackList;
@@ -41,7 +50,7 @@ class Mixer : public juce::AudioSource {
     PositionableMixingAudioSource mixerSource;
     GainAudioSource gainSource;
     MeteredAudioSource meteredSource;
-    juce::AudioTransportSource transportSource;
+//    juce::AudioTransportSource transportSource;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
 

@@ -3,10 +3,13 @@
 #include "ui/MainWindow.h"
 #include "ui/desktop/DesktopController.h"
 
+namespace trackman {
+
 TrackListController::TrackListController(DesktopController &desktopController)
     : desktopController(desktopController), project(desktopController.getProject()),
       trackListViewport(desktopController.getDesktopComponent(), desktopController.getProject()),
-      trackListPanel(desktopController, trackListViewport, desktopController.getMixer().getTransportSource()) {
+      trackListPanel(
+          desktopController, trackListViewport, desktopController.getProject().getTransport().getTransportSource()) {
 
     trackListPanel.addListener((SampleListener *)this);
     trackListPanel.addListener((TrackListListener *)this);
@@ -22,7 +25,7 @@ void TrackListController::update() {
     lanes.clear();
     trackListPanel.clear();
     project.getTrackList().eachTrack([this](Track &track) {
-        auto lane = new TrackLaneController(project, track, *this, project.getMixer().getTransportSource(),
+        auto lane = new TrackLaneController(project, track, *this, project.getTransport().getTransportSource(),
             desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
         lanes.push_back(std::unique_ptr<TrackLaneController>(lane));
         trackListPanel.addLane(&lane->getTrackLaneControl());
@@ -175,8 +178,9 @@ void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int sc
         if (track == nullptr) {
             if (newDragLane == nullptr) {
                 track = new Track(project, desktopController.getMidiRecorder(), desktopController.getDeviceManager());
-                newDragLane = new TrackLaneController(project, *track, *this, project.getMixer().getTransportSource(),
-                    desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
+                newDragLane =
+                    new TrackLaneController(project, *track, *this, project.getTransport().getTransportSource(),
+                        desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
                 trackListPanel.addLane(&newDragLane->getTrackLaneControl());
                 trackListPanel.addAndMakeVisible(&newDragLane->getTrackLaneControl());
                 trackListPanel.resize();
@@ -208,3 +212,5 @@ void TrackListController::removeDragLane() {
     }
     currentDragTrack = nullptr;
 }
+
+} // namespace trackman

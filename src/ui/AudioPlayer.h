@@ -2,21 +2,27 @@
 
 #include <JuceHeader.h>
 
-#include "ui/common/FileChooserControl.h"
-#include "ui/common/PositionOverlay.h"
-#include "ui/common/ThumbnailComponent.h"
-#include "ui/common/TransportControl.h"
+#include "common/FileChooserControl.h"
+#include "common/PositionOverlay.h"
+#include "common/ThumbnailComponent.h"
+#include "common/TransportControl.h"
 
-class AudioPlayer : public juce::AudioAppComponent, public FileListener, public TransportControlListener {
+using namespace std;
+using namespace juce;
+
+namespace trackman {
+
+class AudioPlayer : public AudioAppComponent, public FileListener {
   public:
-    //==============================================================================
-    AudioPlayer(juce::AudioFormatManager &formatManager);
+    AudioPlayer(AudioFormatManager &formatManager);
     ~AudioPlayer() override;
+
+    void loopingChanged(bool shouldLoop);
 
     //==============================================================================
     // AudioAppComponent
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+    void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
     void releaseResources() override;
 
     //==============================================================================
@@ -26,21 +32,17 @@ class AudioPlayer : public juce::AudioAppComponent, public FileListener, public 
     void mouseDown(const juce::MouseEvent &event) override;
 
     //==============================================================================
-    // TransportControlListener
-    void loopingChanged(bool shouldLoop) override;
-
-    //==============================================================================
     // FileListener
-    void fileChosen(juce::File file) override;
+    void fileChosen(File file) override;
 
   private:
-    juce::AudioFormatManager &formatManager;
-    juce::AudioTransportSource transportSource;
-    TransportControl transportControl;
+    AudioFormatManager &formatManager;
+    AudioTransportSource transportSource;
+    trackman::TransportControl transportControl;
     FileChooserControl fileChooserControl;
     ThumbnailComponent thumbnailComponent;
     PositionOverlay positionOverlay;
-    std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
+    unique_ptr<AudioFormatReaderSource> readerSource;
 
     //==============================================================================
 
@@ -48,3 +50,5 @@ class AudioPlayer : public juce::AudioAppComponent, public FileListener, public 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPlayer)
 };
+
+} // namespace trackman

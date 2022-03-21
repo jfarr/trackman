@@ -5,11 +5,7 @@
 #include "ui/desktop/TrackListListener.h"
 #include <JuceHeader.h>
 
-class TransportControlListener {
-  public:
-    virtual void loopingChanged(bool shouldLoop) {}
-    virtual void recordingStopped() {}
-};
+namespace trackman {
 
 class TransportControl : public juce::Component,
                          public juce::ChangeListener,
@@ -17,13 +13,14 @@ class TransportControl : public juce::Component,
                          public TrackListListener {
   public:
     //==============================================================================
-    TransportControl(juce::AudioTransportSource &transportSource, bool enabled = true, MidiRecorder *recorder = nullptr,
-        TrackList *trackList = nullptr);
+    TransportControl(juce::AudioTransportSource &transportSource, bool enabled = true,
+        std::function<bool()> recordEnabledFn = nullptr);
     ~TransportControl() override;
 
     void setEnabled(bool enabled);
-    void addListener(TransportControlListener *listener);
-    void removeListener(TransportControlListener *listener);
+
+    std::function<void(bool)> onLoopingChanged = nullptr;
+    std::function<void()> onRecordClicked = nullptr;
 
     //==============================================================================
     // Component
@@ -35,11 +32,11 @@ class TransportControl : public juce::Component,
     void changeListenerCallback(juce::ChangeBroadcaster *source) override;
 
     //==============================================================================
-    // TrackListListener
+    // Timer
     void timerCallback() override;
 
     //==============================================================================
-    // Timer
+    // TrackListListener
     void selectionChanged(Track *track) override;
 
   private:
@@ -47,22 +44,21 @@ class TransportControl : public juce::Component,
     TransportState state = TransportState::Stopped;
     juce::AudioTransportSource &transportSource;
     bool enabled;
-    std::list<TransportControlListener *> listeners;
 
     void createControls();
     void changeState(TransportState newState);
     juce::String getStateLabel();
-    void notifyLoopingChanged(bool shouldLoop);
-    void notifyRecordingStopped();
+
+    void notifyLoopingChanged(bool shouldLoop) const;
+    void notifyRecordClicked() const;
 
     //==============================================================================
 
     const float buttonImageWidth = 500;
     const float buttonImageHeight = 210;
 
-    MidiRecorder *recorder;
+    std::function<bool()> recordEnabledFn;
     bool recording = false;
-    TrackList *trackList;
 
     juce::ImageButton startButton;
     juce::ImageButton recordButton;
@@ -97,3 +93,5 @@ class TransportControl : public juce::Component,
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TransportControl)
 };
+
+} // namespace trackman

@@ -3,6 +3,8 @@
 #include "ui/MainWindow.h"
 #include "ui/desktop/DesktopController.h"
 
+namespace trackman {
+
 TrackListPanel::TrackListPanel(
     DesktopController &desktopController, juce::Viewport &viewport, juce::AudioTransportSource &transport)
     : desktopController(desktopController), viewport(viewport), transport(transport), overlay(transport),
@@ -111,7 +113,7 @@ void TrackListPanel::timerCallback() {
 }
 
 int TrackListPanel::getPanelWidth() const {
-    auto currentPos = desktopController.getMixer().getTransportSource().getCurrentPosition();
+    auto currentPos = desktopController.getProject().getTransport().getTransportSource().getCurrentPosition();
     auto trackListLength = desktopController.getProject().getTrackList().getTotalLengthInSeconds();
     auto scale = desktopController.getProject().getHorizontalScale();
     int trackWidth = (int)(std::max(currentPos, trackListLength) * scale);
@@ -190,3 +192,5 @@ void TrackListPanel::notifySelectionChanged() {
         listener->selectionChanged(nullptr);
     }
 }
+
+} // namespace trackman

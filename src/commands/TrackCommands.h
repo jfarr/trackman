@@ -10,7 +10,7 @@
 
 class RenameTrackCommand : public Command {
   public:
-    RenameTrackCommand(DesktopController &desktopController, Track &track, juce::String newName)
+    RenameTrackCommand(trackman::DesktopController &desktopController, Track &track, juce::String newName)
         : Command("Rename Track"), desktopController(desktopController), track(track), newName(std::move(newName)),
           prevName(track.getName()) {}
     ~RenameTrackCommand() override = default;
@@ -19,7 +19,7 @@ class RenameTrackCommand : public Command {
     void undo() override { desktopController.renameTrack(track, prevName); }
 
   private:
-    DesktopController &desktopController;
+    trackman::DesktopController &desktopController;
     Track &track;
     juce::String newName;
     juce::String prevName;
@@ -27,7 +27,7 @@ class RenameTrackCommand : public Command {
 
 class AddSampleCommand : public Command {
   public:
-    AddSampleCommand(DesktopController &desktopController, Track *track, juce::File file, int pos)
+    AddSampleCommand(trackman::DesktopController &desktopController, Track *track, juce::File file, int pos)
         : Command("Add Sample"), desktopController(desktopController), track(track), file(std::move(file)), pos(pos) {}
     ~AddSampleCommand() override = default;
 
@@ -46,7 +46,7 @@ class AddSampleCommand : public Command {
     }
 
   private:
-    DesktopController &desktopController;
+    trackman::DesktopController &desktopController;
     Track *track;
     Track *newTrack = nullptr;
     juce::File file;
@@ -58,7 +58,7 @@ class AddSampleCommand : public Command {
 
 class DeleteSampleCommand : public Command {
   public:
-    DeleteSampleCommand(DesktopController &controller, Track &track, Sample &sample)
+    DeleteSampleCommand(trackman::DesktopController &controller, Track &track, Sample &sample)
         : Command("Delete Sample"), controller(controller), track(track), sample(sample) {}
     ~DeleteSampleCommand() override = default;
 
@@ -66,15 +66,15 @@ class DeleteSampleCommand : public Command {
     void undo() override { controller.undeleteSample(track, &sample); }
 
   private:
-    DesktopController &controller;
+    trackman::DesktopController &controller;
     Track &track;
     Sample &sample;
 };
 
 class MoveSampleCommand : public Command {
   public:
-    MoveSampleCommand(
-        DesktopController &controller, Sample &sample, Track &fromTrack, Track *toTrack, double prevPos, double newPos)
+    MoveSampleCommand(trackman::DesktopController &controller, Sample &sample, Track &fromTrack, Track *toTrack,
+        double prevPos, double newPos)
         : Command("Move Sample"), controller(controller), sample(sample), fromTrack(fromTrack), toTrack(toTrack),
           prevPos(prevPos), newPos(newPos) {}
     ~MoveSampleCommand() override = default;
@@ -95,7 +95,7 @@ class MoveSampleCommand : public Command {
     }
 
   private:
-    DesktopController &controller;
+    trackman::DesktopController &controller;
     Sample &sample;
     Track &fromTrack;
     Track *toTrack;
@@ -106,7 +106,7 @@ class MoveSampleCommand : public Command {
 
 class ResizeSampleCommand : public Command {
   public:
-    ResizeSampleCommand(TrackListController &controller, Sample &sample, double prevLen, double newLen)
+    ResizeSampleCommand(trackman::TrackListController &controller, Sample &sample, double prevLen, double newLen)
         : Command("Resize Sample"), controller(controller), sample(sample), prevLen(prevLen), newLen(newLen) {}
     ~ResizeSampleCommand() override = default;
 
@@ -114,7 +114,7 @@ class ResizeSampleCommand : public Command {
     void undo() override { controller.resizeSample(sample, prevLen); }
 
   private:
-    TrackListController &controller;
+    trackman::TrackListController &controller;
     Sample &sample;
     double prevLen;
     double newLen;

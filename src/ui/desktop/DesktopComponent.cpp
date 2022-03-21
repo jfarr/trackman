@@ -1,8 +1,10 @@
 #include "DesktopComponent.h"
 #include "DesktopController.h"
 #include "common/listutil.h"
-#include "ui/MainWindow.h"
 #include "ui/KeyboardControl.h"
+#include "ui/MainWindow.h"
+
+namespace trackman {
 
 DesktopComponent::DesktopComponent(DesktopController &desktopController)
     : desktopController(desktopController), timeMeter(desktopController.getProject()),
@@ -15,6 +17,7 @@ DesktopComponent::DesktopComponent(DesktopController &desktopController)
     horizontalScaleButtonPanel.addListener(&desktopController);
 
     addAndMakeVisible(desktopController.getTrackListController().getViewport());
+    addAndMakeVisible(desktopController.getTransportController().getTransportPanel());
     addAndMakeVisible(desktopController.getMixerController().getMixerPanel());
     addAndMakeVisible(desktopController.getInstrumentsController().getInstrumentsPanel());
     addAndMakeVisible(timeMeter);
@@ -168,7 +171,7 @@ bool DesktopComponent::perform(const InvocationInfo &info) {
         break;
     case CommandIDs::newAudioPlayer:
         createChildWindow("Audio Player",
-            new AudioPlayer(desktopController.getMainWindow().getMainAudioComponent().getFormatManager()));
+            new trackman::AudioPlayer(desktopController.getMainWindow().getMainAudioComponent().getFormatManager()));
         break;
     case CommandIDs::newMidiKeyboard:
         desktopController.createKeyboard();
@@ -191,7 +194,9 @@ void DesktopComponent::resized() {
     auto scrollBarWidth = desktopController.getTrackListController().getViewport().getScrollBarThickness();
     auto area = getLocalBounds();
     auto &mixerPanel = desktopController.getMixerController().getMixerPanel();
+    auto &transportPanel = desktopController.getTransportController().getTransportPanel();
     mixerPanel.setBounds(area.removeFromBottom(mixerPanel.getPreferredHeight()));
+    transportPanel.setBounds(area.removeFromBottom(transportPanel.getPreferredHeight()));
     verticalScaleButtonPanel.setBounds(juce::Rectangle<int>(area.getWidth() - (scaleButtonWidth + scrollBarWidth),
         area.getY() + topStripHeight, scaleButtonWidth, scaleButtonWidth * 2));
     horizontalScaleButtonPanel.setBounds(
@@ -249,3 +254,5 @@ void DesktopComponent::notifyFilesDropped(const juce::StringArray &files, int x,
         listener->filesDropped(files, x, y);
     }
 }
+
+} // namespace trackman
