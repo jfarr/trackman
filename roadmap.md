@@ -1,7 +1,9 @@
 # Roadmap
 
 ## Short-Term
-- Refactor: Transport, TransportController
+- Code cleanup 
+  - trackman namespace
+  - using std, juce
 - Draw note roll borders
 - Select note rolls
 - Delete note rolls
