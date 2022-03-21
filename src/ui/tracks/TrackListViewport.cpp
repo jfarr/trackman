@@ -6,7 +6,7 @@ void TrackListViewport::visibleAreaChanged(const juce::Rectangle<int> &newVisibl
 }
 
 void TrackListViewport::timerCallback() {
-    auto pos = project.getMixer().getTransportSource().getCurrentPosition() * project.getHorizontalScale();
+    auto pos = project.getTransport().getTransportSource().getCurrentPosition() * project.getHorizontalScale();
     auto x = getViewPositionX();
     auto w = getViewWidth();
     if (pos > x + w) {

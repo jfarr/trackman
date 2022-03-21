@@ -10,7 +10,7 @@ NoteRoll::NoteRoll(Project &project, Track &track) : project(project), track(tra
 void NoteRoll::resize() {
     auto area = getBounds();
     auto length = project.ticksToSeconds(
-        track.getCurrentMidiMessages(project.getMixer().getTransportSource().getCurrentPosition()).getEndTime());
+        track.getCurrentMidiMessages(project.getTransport().getTransportSource().getCurrentPosition()).getEndTime());
     auto width = length * project.getHorizontalScale() + 1;
     setBounds(area.withWidth(width));
     repaint();
@@ -19,7 +19,7 @@ void NoteRoll::resize() {
 void NoteRoll::paint(juce::Graphics &g) {
     auto selected = track.isSelected();
     auto area = getLocalBounds();
-    auto messages = track.getCurrentMidiMessages(project.getMixer().getTransportSource().getCurrentPosition());
+    auto messages = track.getCurrentMidiMessages(project.getTransport().getTransportSource().getCurrentPosition());
     auto scale = project.getHorizontalScale();
     int lowNote = getLowestNote(messages);
     int highNote = getHighestNote(messages);

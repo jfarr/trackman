@@ -16,8 +16,8 @@ class Mixer : public juce::PositionableAudioSource {
     float getMasterLevelGain() const { return level; }
     bool isMasterMuted() const { return muted; }
 
-    juce::AudioTransportSource &getTransportSource() { return transportSource; }
-    juce::AudioSource &getSource() { return *((PositionableMixingAudioSource *)&mixerSource); }
+//    juce::AudioTransportSource &getTransportSource() { return transportSource; }
+//    juce::AudioSource &getSource() { return *((PositionableMixingAudioSource *)&mixerSource); }
     foleys::LevelMeterSource &getMeterSource() { return meteredSource.getMeterSource(); }
 
     void addSource(juce::PositionableAudioSource *source);
@@ -26,6 +26,8 @@ class Mixer : public juce::PositionableAudioSource {
 
     void setMasterLevelGain(float newLevel);
     void setMasterMute(bool newMuted);
+
+    void writeAudioFile(const juce::File &file, juce::int64 lengthInSamples);
 
     //==============================================================================
     // AudioSource
@@ -48,7 +50,7 @@ class Mixer : public juce::PositionableAudioSource {
     PositionableMixingAudioSource mixerSource;
     GainAudioSource gainSource;
     MeteredAudioSource meteredSource;
-    juce::AudioTransportSource transportSource;
+//    juce::AudioTransportSource transportSource;
     float level = juce::Decibels::decibelsToGain<float>(0.0);
     bool muted = false;
 
