@@ -31,7 +31,7 @@ class DesktopController : public juce::AudioSource,
     Project &getProject() { return project; }
     juce::AudioDeviceManager &getDeviceManager() { return deviceManager; }
 
-    MixerController &getMixerController() { return mixerController; }
+    trackman::MixerController &getMixerController() { return mixerController; }
     Mixer &getMixer() { return project.getMixer(); }
     MidiRecorder &getMidiRecorder() { return midiRecorder; }
 
@@ -122,7 +122,7 @@ class DesktopController : public juce::AudioSource,
     CommandList commandList;
     Project project;
     trackman::TransportController transportController;
-    MixerController mixerController;
+    trackman::MixerController mixerController;
     TrackListController trackListController;
     InstrumentsController instrumentsController;
 

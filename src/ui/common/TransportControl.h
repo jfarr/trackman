@@ -5,11 +5,7 @@
 #include "ui/desktop/TrackListListener.h"
 #include <JuceHeader.h>
 
-class TransportControlListener {
-  public:
-    virtual void loopingChanged(bool shouldLoop) {}
-    virtual void recordingStopped() {}
-};
+namespace trackman {
 
 class TransportControl : public juce::Component,
                          public juce::ChangeListener,
@@ -22,11 +18,8 @@ class TransportControl : public juce::Component,
     ~TransportControl() override;
 
     void setEnabled(bool enabled);
-    void addListener(TransportControlListener *listener);
-    void removeListener(TransportControlListener *listener);
 
     std::function<void(bool)> onLoopingChanged = nullptr;
-    //    std::function<void()> onRecordingStopped = nullptr;
     std::function<void()> onRecordClicked = nullptr;
 
     //==============================================================================
@@ -51,25 +44,21 @@ class TransportControl : public juce::Component,
     TransportState state = TransportState::Stopped;
     juce::AudioTransportSource &transportSource;
     bool enabled;
-    std::list<TransportControlListener *> listeners;
 
     void createControls();
     void changeState(TransportState newState);
     juce::String getStateLabel();
-    void notifyLoopingChanged(bool shouldLoop);
-    void notifyRecordingStopped();
-    void notifyRecordClicked();
+
+    void notifyLoopingChanged(bool shouldLoop) const;
+    void notifyRecordClicked() const;
 
     //==============================================================================
 
     const float buttonImageWidth = 500;
     const float buttonImageHeight = 210;
 
-//    bool recordEnabled;
     std::function<bool()> recordEnabledFn;
-    //    MidiRecorder *recorder;
     bool recording = false;
-    //    TrackList *trackList;
 
     juce::ImageButton startButton;
     juce::ImageButton recordButton;
@@ -104,3 +93,5 @@ class TransportControl : public juce::Component,
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TransportControl)
 };
+
+} // namespace trackman

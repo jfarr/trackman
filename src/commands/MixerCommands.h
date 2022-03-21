@@ -7,14 +7,14 @@
 
 class ChangeMasterVolumeCommand : public Command {
   public:
-    ChangeMasterVolumeCommand(MixerController &mixerController, float previousLevel)
+    ChangeMasterVolumeCommand(trackman::MixerController &mixerController, float previousLevel)
         : Command("Change Master Volume"), mixerController(mixerController), previousLevel(previousLevel) {}
     ~ChangeMasterVolumeCommand() override = default;
 
     void undo() override { mixerController.setMasterLevel(previousLevel); }
 
   private:
-    MixerController &mixerController;
+    trackman::MixerController &mixerController;
     float previousLevel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChangeMasterVolumeCommand)
@@ -22,7 +22,7 @@ class ChangeMasterVolumeCommand : public Command {
 
 class ToggleMasterMuteCommand : public Command {
   public:
-    explicit ToggleMasterMuteCommand(MixerController &controller)
+    explicit ToggleMasterMuteCommand(trackman::MixerController &controller)
         : Command(juce::String(controller.isMasterMuted() ? "Unmute" : "Mute") + " Master"), controller(controller),
           muted(controller.isMasterMuted()) {}
     ~ToggleMasterMuteCommand() override = default;
@@ -31,13 +31,13 @@ class ToggleMasterMuteCommand : public Command {
     void undo() override { controller.setMasterMute(muted); }
 
   private:
-    MixerController &controller;
+    trackman::MixerController &controller;
     bool muted;
 };
 
 class ChangeTrackVolumeCommand : public Command {
   public:
-    ChangeTrackVolumeCommand(MixerController &mixerController, Track &track, float previousLevel)
+    ChangeTrackVolumeCommand(trackman::MixerController &mixerController, Track &track, float previousLevel)
         : Command("Change Track " + juce::String(track.getTrackNumber()) + " Volume"), mixerController(mixerController),
           track(track), previousLevel(previousLevel) {}
     ~ChangeTrackVolumeCommand() override = default;
@@ -45,7 +45,7 @@ class ChangeTrackVolumeCommand : public Command {
     void undo() override { mixerController.setLevel(track, previousLevel); }
 
   private:
-    MixerController &mixerController;
+    trackman::MixerController &mixerController;
     Track &track;
     float previousLevel;
 
@@ -54,7 +54,7 @@ class ChangeTrackVolumeCommand : public Command {
 
 class ToggleMuteCommand : public Command {
   public:
-    ToggleMuteCommand(MixerController &controller, Track &track)
+    ToggleMuteCommand(trackman::MixerController &controller, Track &track)
         : Command(juce::String(track.isMuted() ? "Unmute" : "Mute") + " Track " + juce::String(track.getTrackNumber())),
           controller(controller), track(track), muted(track.isMuted()) {}
     ~ToggleMuteCommand() override = default;
@@ -63,14 +63,14 @@ class ToggleMuteCommand : public Command {
     void undo() override { controller.setMute(track, muted); }
 
   private:
-    MixerController &controller;
+    trackman::MixerController &controller;
     Track &track;
     bool muted;
 };
 
 class ToggleSoloCommand : public Command {
   public:
-    ToggleSoloCommand(MixerController &controller, Track &track)
+    ToggleSoloCommand(trackman::MixerController &controller, Track &track)
         : Command(juce::String(track.isSoloed() ? "Unsolo" : "Solo") + " Track " + juce::String(track.getTrackNumber())),
           controller(controller), track(track), soloed(track.isSoloed()) {}
     ~ToggleSoloCommand() override = default;
@@ -79,7 +79,7 @@ class ToggleSoloCommand : public Command {
     void undo() override { controller.setSolo(track, soloed); }
 
   private:
-    MixerController &controller;
+    trackman::MixerController &controller;
     Track &track;
     bool soloed;
 };

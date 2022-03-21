@@ -1,6 +1,8 @@
 #include "TransportControl.h"
 #include "common/listutil.h"
 
+namespace trackman {
+
 //==============================================================================
 TransportControl::TransportControl(
     juce::AudioTransportSource &transportSource, bool enabled, std::function<bool()> recordEnabledFn)
@@ -216,7 +218,6 @@ void TransportControl::changeState(TransportState newState) {
             if (recordEnabledFn != nullptr) {
                 setButtonImage(recordButton, recordButtonOffImage);
                 notifyRecordClicked();
-                notifyRecordingStopped();
             }
             recording = false;
             transportSource.setPosition(0.0);
@@ -236,22 +237,10 @@ void TransportControl::changeState(TransportState newState) {
             setButtonImage(pauseButton, pauseButtonOffImage);
             setButtonImage(recordButton, recordButtonOnImage);
             notifyRecordClicked();
-            //            if (recorder != nullptr && trackList != nullptr) {
-            //                auto selected = trackList->getSelectedTrack();
-            //                if (selected != nullptr) {
-            //                    selected->startRecording();
-            //                }
-            //            }
             break;
 
         case TransportState::Pausing:
             notifyRecordClicked();
-            //            if (recorder != nullptr && trackList != nullptr) {
-            //                auto selected = trackList->getSelectedTrack();
-            //                if (selected != nullptr) {
-            //                    selected->stopRecording();
-            //                }
-            //            }
             transportSource.stop();
             break;
 
@@ -336,18 +325,6 @@ void TransportControl::recordButtonClicked() {
             setButtonImage(recordButton, recordButtonOnImage);
         }
         notifyRecordClicked();
-        //        if (recorder != nullptr && trackList != nullptr) {
-        //            auto selected = trackList->getSelectedTrack();
-        //            if (selected != nullptr) {
-        //                if (selected->isRecording()) {
-        //                    selected->stopRecording();
-        //                    setButtonImage(recordButton, recordButtonOffImage);
-        //                } else {
-        //                    selected->startRecording();
-        //                    setButtonImage(recordButton, recordButtonOnImage);
-        //                }
-        //            }
-        //        }
     }
 }
 
@@ -377,31 +354,16 @@ void TransportControl::selectionChanged(Track *track) {
     }
 }
 
-void TransportControl::addListener(TransportControlListener *listener) {
-    if (!listContains(listeners, listener)) {
-        listeners.push_front(listener);
-    }
-}
-
-void TransportControl::removeListener(TransportControlListener *listener) { listeners.remove(listener); }
-
-void TransportControl::notifyLoopingChanged(bool shouldLoop) {
-    for (TransportControlListener *listener : listeners) {
-        listener->loopingChanged(shouldLoop);
-    }
+void TransportControl::notifyLoopingChanged(bool shouldLoop) const {
     if (onLoopingChanged != nullptr) {
         onLoopingChanged(shouldLoop);
     }
 }
 
-void TransportControl::notifyRecordClicked() {
+void TransportControl::notifyRecordClicked() const {
     if (onRecordClicked != nullptr) {
         onRecordClicked();
     }
 }
 
-void TransportControl::notifyRecordingStopped() {
-    for (TransportControlListener *listener : listeners) {
-        listener->recordingStopped();
-    }
-}
+} // namespace trackman

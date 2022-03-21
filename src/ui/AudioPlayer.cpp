@@ -1,8 +1,8 @@
 #include "AudioPlayer.h"
 
-#include <utility>
+namespace trackman {
 
-AudioPlayer::AudioPlayer(juce::AudioFormatManager &formatManager)
+AudioPlayer::AudioPlayer(AudioFormatManager &formatManager)
     : formatManager(formatManager), transportControl(transportSource, false), thumbnailComponent(formatManager),
       positionOverlay(transportSource) {
     setAudioChannels(0, 2);
@@ -11,10 +11,8 @@ AudioPlayer::AudioPlayer(juce::AudioFormatManager &formatManager)
 }
 
 AudioPlayer::~AudioPlayer() {
-    // This shuts down the audio device and clears the audio source.
     shutdownAudio();
     fileChooserControl.removeListener(this);
-    transportControl.removeListener(this);
     transportSource.setSource(nullptr);
 }
 
@@ -25,7 +23,7 @@ void AudioPlayer::createControls() {
     addAndMakeVisible(transportControl);
 
     fileChooserControl.addListener(this);
-    transportControl.addListener(this);
+    transportControl.onLoopingChanged = [this](bool shouldLoop) { loopingChanged(shouldLoop); };
     thumbnailComponent.addMouseListener(this, false);
 }
 
@@ -34,20 +32,19 @@ void AudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) 
     transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
-void AudioPlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+void AudioPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     if (readerSource.get() == nullptr) {
         bufferToFill.clearActiveBufferRegion();
         return;
     }
-
     transportSource.getNextAudioBlock(bufferToFill);
 }
 
 void AudioPlayer::releaseResources() { transportSource.releaseResources(); }
 
 //==============================================================================
-void AudioPlayer::paint(juce::Graphics &g) {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+void AudioPlayer::paint(Graphics &g) {
+    g.fillAll(getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
 }
 
 void AudioPlayer::resized() {
@@ -60,26 +57,24 @@ void AudioPlayer::resized() {
     positionOverlay.setBounds(area.reduced(margin));
 }
 
-void AudioPlayer::mouseDown(const juce::MouseEvent &event) {
+void AudioPlayer::mouseDown(const MouseEvent &event) {
     auto newEvent = event.getEventRelativeTo(&thumbnailComponent);
     auto duration = transportSource.getLengthInSeconds();
 
     if (duration > 0.0) {
         auto clickPosition = newEvent.position.x;
         auto audioPosition = (clickPosition / (float)positionOverlay.getWidth()) * duration;
-
         transportSource.setPosition(audioPosition);
     }
     Component::mouseDown(event);
 }
 
-void AudioPlayer::fileChosen(juce::File file) {
+void AudioPlayer::fileChosen(File file) {
     auto *reader = formatManager.createReaderFor(file);
-
     if (reader != nullptr) {
-        auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
+        auto newSource = make_unique<AudioFormatReaderSource>(reader, true);
         transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
-        readerSource = std::move(newSource);
+        readerSource = move(newSource);
         thumbnailComponent.setSource(file);
         transportControl.setEnabled(true);
     }
@@ -90,3 +85,5 @@ void AudioPlayer::loopingChanged(bool shouldLoop) {
         readerSource->setLooping(shouldLoop);
     }
 }
+
+} // namespace trackman

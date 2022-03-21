@@ -9,20 +9,22 @@
 #include "TrackPanel.h"
 #include "model/Mixer.h"
 #include "model/TrackList.h"
-#include "ui/common/TransportControl.h"
-//#include "ui/desktop/TrackListListener.h"
 #include "ui/mixer/MasterTrackListener.h"
 
 class DesktopController;
 
-class MixerController : public TransportControlListener, public MasterTrackListener {
+using namespace std;
+
+namespace trackman {
+
+class MixerController : public MasterTrackListener {
   public:
     MixerController(DesktopController &desktopController);
     ~MixerController();
 
     bool isMasterMuted() const { return mixer.isMasterMuted(); }
 
-    trackman::MixerPanel &getMixerPanel() { return mixerPanel; }
+    MixerPanel &getMixerPanel() { return mixerPanel; }
     juce::Viewport &getViewport() { return mixerViewport; }
 
     void update();
@@ -35,11 +37,6 @@ class MixerController : public TransportControlListener, public MasterTrackListe
     void setSolo(Track &track, bool newSolo);
 
     //==============================================================================
-    // TransportControlListener
-//    void loopingChanged(bool shouldLoop) override;
-    void recordingStopped() override;
-
-    //==============================================================================
     // MasterTrackListener
     void masterLevelChanged(float level) override;
 
@@ -49,9 +46,11 @@ class MixerController : public TransportControlListener, public MasterTrackListe
     Mixer &mixer;
 
     juce::Viewport mixerViewport;
-    trackman::MixerPanel mixerPanel;
+    MixerPanel mixerPanel;
     TrackPanel trackPanel;
-    std::list<std::unique_ptr<TrackController>> tracks;
+    list<std::unique_ptr<TrackController>> tracks;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MixerController)
 };
+
+} // namespace trackman

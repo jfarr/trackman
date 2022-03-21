@@ -2,13 +2,14 @@
 #include "ui/desktop/DesktopController.h"
 #include "ui/mixer/TrackController.h"
 
+namespace trackman {
+
 MixerController::MixerController(DesktopController &desktopController)
     : desktopController(desktopController), trackList(desktopController.getProject().getTrackList()),
       mixer(desktopController.getProject().getMixer()), mixerPanel(desktopController, mixer.getMeterSource()),
       trackPanel(mixerViewport) {
 
     mixerViewport.setViewedComponent(&trackPanel, false);
-//        mixerPanel.getTransportControl().addListener(this);
     mixerPanel.getMasterTrackControl().addListener(this);
     update();
 }
@@ -19,7 +20,6 @@ MixerController::~MixerController() {
         track->removeListener((TrackListListener *)this);
     }
     mixerPanel.getMasterTrackControl().removeListener(this);
-    //    mixerPanel.getTransportControl().removeListener(this);
 }
 
 void MixerController::update() {
@@ -76,10 +76,6 @@ void MixerController::setSolo(Track &track, bool newSolo) {
     }
 }
 
-//void MixerController::loopingChanged(bool shouldLoop) {
-//    desktopController.getProject().getMixer().setLooping(shouldLoop);
-//}
-
-void MixerController::recordingStopped() { desktopController.recordingStopped(); }
-
 void MixerController::masterLevelChanged(float newLevel) { mixer.setMasterLevelGain(newLevel); }
+
+} // namespace trackman
