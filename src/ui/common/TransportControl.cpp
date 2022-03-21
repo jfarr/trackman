@@ -2,7 +2,8 @@
 #include "common/listutil.h"
 
 //==============================================================================
-TransportControl::TransportControl(juce::AudioTransportSource &transportSource, bool enabled, bool recordEnabled)
+TransportControl::TransportControl(
+    juce::AudioTransportSource &transportSource, bool enabled, std::function<bool()> recordEnabledFn)
     : startButtonImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       recordButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       recordButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
@@ -11,7 +12,7 @@ TransportControl::TransportControl(juce::AudioTransportSource &transportSource, 
       stopButtonImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       pauseButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       pauseButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
-      transportSource(transportSource), enabled(enabled), recordEnabled(recordEnabled) {
+      transportSource(transportSource), enabled(enabled), recordEnabledFn(recordEnabledFn) {
     transportSource.addChangeListener(this);
     createControls();
     startTimer(20);
@@ -33,14 +34,14 @@ void TransportControl::createControls() {
     startButton.setEnabled(enabled);
     addAndMakeVisible(&startButton);
 
-    if (recordEnabled) {
+    if (recordEnabledFn != nullptr) {
         drawRecordButton(
             recordButtonOffImage, juce::Colours::red.withMultipliedLightness(0.75), juce::Colours::dimgrey);
         drawRecordButton(recordButtonOnImage, juce::Colours::red, juce::Colours::grey);
         setButtonImage(recordButton, recordButtonOffImage);
 
         recordButton.onClick = [this] { recordButtonClicked(); };
-//        recordButton.setEnabled(trackList->canRecord());
+        recordButton.setEnabled(recordEnabledFn());
         addAndMakeVisible(&recordButton);
     }
 
@@ -195,7 +196,7 @@ void TransportControl::resized() {
     auto loopButtonWidth = 65;
     auto buttonMargin = 2;
     startButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin).withTrimmedLeft(buttonMargin));
-    if (recordEnabled) {
+    if (recordEnabledFn != nullptr) {
         recordButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
     }
     playButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
@@ -212,7 +213,7 @@ void TransportControl::changeState(TransportState newState) {
         case TransportState::Stopped:
             setButtonImage(playButton, playButtonOffImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
-            if (recordEnabled) {
+            if (recordEnabledFn != nullptr) {
                 setButtonImage(recordButton, recordButtonOffImage);
                 notifyRecordingStopped();
             }
@@ -234,12 +235,12 @@ void TransportControl::changeState(TransportState newState) {
             setButtonImage(pauseButton, pauseButtonOffImage);
             setButtonImage(recordButton, recordButtonOnImage);
             notifyRecordClicked();
-//            if (recorder != nullptr && trackList != nullptr) {
-//                auto selected = trackList->getSelectedTrack();
-//                if (selected != nullptr) {
-//                    selected->startRecording();
-//                }
-//            }
+            //            if (recorder != nullptr && trackList != nullptr) {
+            //                auto selected = trackList->getSelectedTrack();
+            //                if (selected != nullptr) {
+            //                    selected->startRecording();
+            //                }
+            //            }
             break;
 
         case TransportState::Pausing:
@@ -334,18 +335,18 @@ void TransportControl::recordButtonClicked() {
             setButtonImage(recordButton, recordButtonOnImage);
         }
         notifyRecordClicked();
-//        if (recorder != nullptr && trackList != nullptr) {
-//            auto selected = trackList->getSelectedTrack();
-//            if (selected != nullptr) {
-//                if (selected->isRecording()) {
-//                    selected->stopRecording();
-//                    setButtonImage(recordButton, recordButtonOffImage);
-//                } else {
-//                    selected->startRecording();
-//                    setButtonImage(recordButton, recordButtonOnImage);
-//                }
-//            }
-//        }
+        //        if (recorder != nullptr && trackList != nullptr) {
+        //            auto selected = trackList->getSelectedTrack();
+        //            if (selected != nullptr) {
+        //                if (selected->isRecording()) {
+        //                    selected->stopRecording();
+        //                    setButtonImage(recordButton, recordButtonOffImage);
+        //                } else {
+        //                    selected->startRecording();
+        //                    setButtonImage(recordButton, recordButtonOnImage);
+        //                }
+        //            }
+        //        }
     }
 }
 
@@ -370,7 +371,9 @@ void TransportControl::pauseButtonClicked() {
 void TransportControl::loopButtonClicked() { notifyLoopingChanged(loopingToggle.getToggleState()); }
 
 void TransportControl::selectionChanged(Track *track) {
-//    recordButton.setEnabled(trackList->canRecord());
+    if (recordEnabledFn != nullptr) {
+        recordButton.setEnabled(recordEnabledFn());
+    }
 }
 
 void TransportControl::addListener(TransportControlListener *listener) {

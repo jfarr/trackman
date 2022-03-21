@@ -6,4 +6,8 @@ namespace trackman {
 TransportController::TransportController(DesktopController &desktopController)
     : desktopController(desktopController), transportPanel(desktopController) {}
 
+void TransportController::selectionChanged(Track *track) {
+    transportPanel.selectionChanged(track);
+}
+
 } // namespace trackman

@@ -15,9 +15,7 @@ DesktopController::DesktopController(MainWindow &mainWindow, juce::AudioDeviceMa
     updateTitleBar();
 }
 
-void DesktopController::loopingChanged(bool shouldLoop) {
-    project.getMixer().setLooping(shouldLoop);
-}
+void DesktopController::loopingChanged(bool shouldLoop) { project.getMixer().setLooping(shouldLoop); }
 
 void DesktopController::recordClicked() {
     auto selected = project.getTrackList().getSelectedTrack();
@@ -29,6 +27,8 @@ void DesktopController::recordClicked() {
         }
     }
 }
+
+bool DesktopController::canRecord() { return project.getTrackList().canRecord(); }
 
 void DesktopController::createKeyboard() {
     auto keyboard = new KeyboardControl(midiRecorder.getKeyboardState());
@@ -368,6 +368,7 @@ void DesktopController::recordingStopped() {
 void DesktopController::selectionChanged(Track *track) {
     project.getTrackList().setSelected(track);
     juce::MessageManager::callAsync([this, track]() {
+        transportController.selectionChanged(track);
 //        mixerController.getMixerPanel().getTransportControl().selectionChanged(track);
         trackListController.repaint();
         mixerController.repaint();

@@ -15,6 +15,8 @@ class TransportController {
 
     TransportPanel &getTransportPanel() { return transportPanel; }
 
+    void selectionChanged(Track *track);
+
   private:
     DesktopController &desktopController;
     TransportPanel transportPanel;

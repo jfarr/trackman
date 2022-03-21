@@ -5,7 +5,8 @@ namespace trackman {
 
 TransportPanel::TransportPanel(DesktopController &desktopController)
     : desktopController(desktopController),
-      transportControl(desktopController.getProject().getTransport().getTransportSource(), true, true) {
+      transportControl(desktopController.getProject().getTransport().getTransportSource(), true,
+          [&desktopController]() { return desktopController.canRecord(); }) {
 
     createControls();
     update();
@@ -16,6 +17,7 @@ TransportPanel::~TransportPanel() noexcept { denominatorSelect.setLookAndFeel(nu
 void TransportPanel::createControls() {
 
     transportControl.onLoopingChanged = [this](bool shouldLoop) { desktopController.loopingChanged(shouldLoop); };
+    transportControl.onRecordClicked = [this] { desktopController.recordClicked(); };
 
     tempoLabel.setText("Tempo", juce::dontSendNotification);
     tempoLabel.setJustificationType(juce::Justification::centredRight);
@@ -49,6 +51,10 @@ void TransportPanel::update() {
         juce::String(desktopController.getProject().getTimeSignature().getNumerator()), juce::dontSendNotification);
     denominatorSelect.setSelectedId(
         desktopController.getProject().getTimeSignature().getDenominator(), juce::dontSendNotification);
+}
+
+void TransportPanel::selectionChanged(Track *track) {
+    transportControl.selectionChanged(track);
 }
 
 void TransportPanel::paint(juce::Graphics &g) {

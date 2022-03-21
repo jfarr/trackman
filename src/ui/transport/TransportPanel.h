@@ -71,6 +71,7 @@ class TransportPanel : public juce::Component {
     int getPreferredHeight() const { return preferredHeight; }
 
     void update();
+    void selectionChanged(Track *track);
 
     //==============================================================================
     // Component

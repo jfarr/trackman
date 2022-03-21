@@ -10,7 +10,7 @@
 #include "model/Mixer.h"
 #include "model/TrackList.h"
 #include "ui/common/TransportControl.h"
-#include "ui/desktop/TrackListListener.h"
+//#include "ui/desktop/TrackListListener.h"
 #include "ui/mixer/MasterTrackListener.h"
 
 class DesktopController;
