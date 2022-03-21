@@ -1,10 +1,12 @@
 #include "ChildWindow.h"
 
-ChildWindow::ChildWindow(const juce::String &name, juce::Component *component)
+namespace trackman {
+
+ChildWindow::ChildWindow(const String &name, Component *component)
     : DocumentWindow(name,
-          juce::Desktop::getInstance().getDefaultLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId),
-          closeButton, false) {
-    juce::Rectangle<int> area(0, 0, 300, 200);
+          Desktop::getInstance().getDefaultLookAndFeel().findColour(ResizableWindow::backgroundColourId), closeButton,
+          false) {
+    Rectangle<int> area(0, 0, 300, 200);
     setBounds(area);
     setResizable(true, false);
     setUsingNativeTitleBar(false);
@@ -12,3 +14,5 @@ ChildWindow::ChildWindow(const juce::String &name, juce::Component *component)
 }
 
 void ChildWindow::closeButtonPressed() { delete this; }
+
+} // namespace trackman

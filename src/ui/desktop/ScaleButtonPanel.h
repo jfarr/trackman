@@ -4,7 +4,12 @@
 
 #include "TrackScaleListener.h"
 
-class ScaleButtonPanel : public juce::Component {
+using namespace std;
+using namespace juce;
+
+namespace trackman {
+
+class ScaleButtonPanel : public Component {
   public:
     ScaleButtonPanel(bool vertical);
     ~ScaleButtonPanel() override = default;
@@ -14,14 +19,14 @@ class ScaleButtonPanel : public juce::Component {
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized() override;
 
   private:
-    juce::TextButton minusButton;
-    juce::TextButton plusButton;
+    TextButton minusButton;
+    TextButton plusButton;
     bool vertical;
-    std::list<TrackScaleListener *> listeners;
+    list<TrackScaleListener *> listeners;
 
     void minusButtonClicked();
     void plusButtonClicked();
@@ -31,3 +36,5 @@ class ScaleButtonPanel : public juce::Component {
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScaleButtonPanel)
 };
+
+} // namespace trackman

@@ -1,25 +1,27 @@
 #include "ScaleButtonPanel.h"
 #include "common/listutil.h"
 
+namespace trackman {
+
 ScaleButtonPanel::ScaleButtonPanel(bool vertical) : vertical(vertical) {
     minusButton.setButtonText("-");
     minusButton.onClick = [this]() { minusButtonClicked(); };
     plusButton.setButtonText("+");
     plusButton.onClick = [this]() { plusButtonClicked(); };
     if (vertical) {
-        plusButton.setConnectedEdges(juce::Button::ConnectedOnBottom);
-        minusButton.setConnectedEdges(juce::Button::ConnectedOnTop);
+        plusButton.setConnectedEdges(Button::ConnectedOnBottom);
+        minusButton.setConnectedEdges(Button::ConnectedOnTop);
     } else {
-        minusButton.setConnectedEdges(juce::Button::ConnectedOnRight);
-        plusButton.setConnectedEdges(juce::Button::ConnectedOnLeft);
+        minusButton.setConnectedEdges(Button::ConnectedOnRight);
+        plusButton.setConnectedEdges(Button::ConnectedOnLeft);
     }
     addAndMakeVisible(minusButton);
     addAndMakeVisible(plusButton);
 }
 
-void ScaleButtonPanel::paint(juce::Graphics &g) {
-    g.fillAll(juce::Colours::grey.withAlpha(0.5f));
-    g.setColour(juce::Colours::lightgrey.withAlpha(0.2f));
+void ScaleButtonPanel::paint(Graphics &g) {
+    g.fillAll(Colours::grey.withAlpha(0.5f));
+    g.setColour(Colours::lightgrey.withAlpha(0.2f));
     g.drawRect(0, -1, getWidth(), getHeight() + 1);
 }
 
@@ -66,3 +68,5 @@ void ScaleButtonPanel::notifyScaleDecreased() {
         }
     }
 }
+
+} // namespace trackman
