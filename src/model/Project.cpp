@@ -109,5 +109,4 @@ void Project::from_json(juce::AudioFormatManager &formatManager, std::string fil
 
 void Project::writeAudioFile(const juce::File &file) {
     mixer.writeAudioFile(file, trackList.getTotalLengthInSamples());
-//    trackList.writeAudioFile(file, mixer.getSource(), deviceManager.getAudioDeviceSetup().sampleRate, 16);
 }

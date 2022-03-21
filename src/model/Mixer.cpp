@@ -5,22 +5,18 @@
 Mixer::Mixer(TrackList &trackList, juce::AudioDeviceManager &deviceManager)
     : trackList(trackList), deviceManager(deviceManager), gainSource(&mixerSource, false),
       meteredSource(&gainSource, deviceManager.getAudioDeviceSetup().sampleRate) {
-    //    transportSource.setSource(&meteredSource);
 }
 
 Mixer::~Mixer() {
-    //    transportSource.setSource(nullptr);
     mixerSource.removeAllInputs();
 }
 
 void Mixer::addSource(juce::PositionableAudioSource *source) {
     if (source != nullptr && !listContains(sources, source)) {
         sources.push_back(source);
-        //        auto pos = transportSource.getCurrentPosition();
         mixerSource.addInputSource(source);
         source->prepareToPlay(
             deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
-        //        transportSource.setPosition(pos);
     }
 }
 
