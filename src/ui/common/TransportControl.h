@@ -5,31 +5,31 @@
 #include "ui/desktop/TrackListListener.h"
 #include <JuceHeader.h>
 
+using namespace std;
+using namespace juce;
+
 namespace trackman {
 
-class TransportControl : public juce::Component,
-                         public juce::ChangeListener,
-                         public juce::Timer,
-                         public TrackListListener {
+class TransportControl : public Component, public ChangeListener, public Timer, public TrackListListener {
   public:
     //==============================================================================
-    TransportControl(juce::AudioTransportSource &transportSource, bool enabled = true,
-        std::function<bool()> recordEnabledFn = nullptr);
+    TransportControl(
+        AudioTransportSource &transportSource, bool enabled = true, function<bool()> recordEnabledFn = nullptr);
     ~TransportControl() override;
 
     void setEnabled(bool enabled);
 
-    std::function<void(bool)> onLoopingChanged = nullptr;
-    std::function<void()> onRecordClicked = nullptr;
+    function<void(bool)> onLoopingChanged = nullptr;
+    function<void()> onRecordClicked = nullptr;
 
     //==============================================================================
     // Component
-    void paint(juce::Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized() override;
 
     //==============================================================================
     // ChangeListener
-    void changeListenerCallback(juce::ChangeBroadcaster *source) override;
+    void changeListenerCallback(ChangeBroadcaster *source) override;
 
     //==============================================================================
     // Timer
@@ -42,12 +42,12 @@ class TransportControl : public juce::Component,
   private:
     enum class TransportState { Stopped, Starting, Playing, Recording, Pausing, Paused, Stopping };
     TransportState state = TransportState::Stopped;
-    juce::AudioTransportSource &transportSource;
+    AudioTransportSource &transportSource;
     bool enabled;
 
     void createControls();
     void changeState(TransportState newState);
-    juce::String getStateLabel();
+    String getStateLabel();
 
     void notifyLoopingChanged(bool shouldLoop) const;
     void notifyRecordClicked() const;
@@ -57,32 +57,32 @@ class TransportControl : public juce::Component,
     const float buttonImageWidth = 500;
     const float buttonImageHeight = 210;
 
-    std::function<bool()> recordEnabledFn;
+    function<bool()> recordEnabledFn;
     bool recording = false;
 
-    juce::ImageButton startButton;
-    juce::ImageButton recordButton;
-    juce::ImageButton playButton;
-    juce::ImageButton stopButton;
-    juce::ImageButton pauseButton;
-    juce::ToggleButton loopingToggle;
-    juce::Label currentPositionLabel;
+    ImageButton startButton;
+    ImageButton recordButton;
+    ImageButton playButton;
+    ImageButton stopButton;
+    ImageButton pauseButton;
+    ToggleButton loopingToggle;
+    Label currentPositionLabel;
 
-    juce::Image startButtonImage;
-    juce::Image recordButtonOffImage;
-    juce::Image recordButtonOnImage;
-    juce::Image playButtonOffImage;
-    juce::Image playButtonOnImage;
-    juce::Image stopButtonImage;
-    juce::Image pauseButtonOffImage;
-    juce::Image pauseButtonOnImage;
+    Image startButtonImage;
+    Image recordButtonOffImage;
+    Image recordButtonOnImage;
+    Image playButtonOffImage;
+    Image playButtonOnImage;
+    Image stopButtonImage;
+    Image pauseButtonOffImage;
+    Image pauseButtonOnImage;
 
-    void drawStartButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const;
-    void drawRecordButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const;
-    void drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const;
-    void drawStopButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const;
-    void drawPauseButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const;
-    static void setButtonImage(juce::ImageButton &button, juce::Image &image);
+    void drawStartButton(Image &image, Colour bgColor, Colour borderColor) const;
+    void drawRecordButton(Image &image, Colour bgColor, Colour borderColor) const;
+    void drawPlayButton(Image &image, Colour bgColor, Colour borderColor) const;
+    void drawStopButton(Image &image, Colour bgColor, Colour borderColor) const;
+    void drawPauseButton(Image &image, Colour bgColor, Colour borderColor) const;
+    static void setButtonImage(ImageButton &button, Image &image);
 
     void startButtonClicked();
     void recordButtonClicked();

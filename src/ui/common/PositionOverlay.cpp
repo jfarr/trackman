@@ -1,5 +1,7 @@
 #include "PositionOverlay.h"
 
+namespace trackman {
+
 PositionOverlay::PositionOverlay(juce::AudioTransportSource &transportSource) : transportSource(transportSource) {
     setInterceptsMouseClicks(false, false);
     startTimer(20);
@@ -14,3 +16,5 @@ void PositionOverlay::paint(juce::Graphics &g) {
 }
 
 void PositionOverlay::timerCallback() { repaint(); }
+
+} // namespace trackman

@@ -5,16 +5,16 @@ namespace trackman {
 
 //==============================================================================
 TransportControl::TransportControl(
-    juce::AudioTransportSource &transportSource, bool enabled, std::function<bool()> recordEnabledFn)
-    : startButtonImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
-      recordButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
-      recordButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
-      playButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
-      playButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
-      stopButtonImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
-      pauseButtonOffImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
-      pauseButtonOnImage(juce::Image::ARGB, buttonImageWidth, buttonImageHeight, true),
-      transportSource(transportSource), enabled(enabled), recordEnabledFn(recordEnabledFn) {
+    AudioTransportSource &transportSource, bool enabled, function<bool()> recordEnabledFn)
+    : startButtonImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      recordButtonOffImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      recordButtonOnImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      playButtonOffImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      playButtonOnImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      stopButtonImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      pauseButtonOffImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true),
+      pauseButtonOnImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true), transportSource(transportSource),
+      enabled(enabled), recordEnabledFn(recordEnabledFn) {
     transportSource.addChangeListener(this);
     createControls();
     startTimer(20);
@@ -24,10 +24,10 @@ TransportControl::~TransportControl() {}
 
 void TransportControl::createControls() {
 
-    auto bgColorOff = juce::Colours::steelblue;
-    auto bgColorOn = juce::Colour{0xff68ef61};
-    auto borderColorOff = juce::Colours::grey.brighter(0.3f);
-    auto borderColorOn = juce::Colours::lightgrey;
+    auto bgColorOff = Colours::steelblue;
+    auto bgColorOn = Colour{0xff68ef61};
+    auto borderColorOff = Colours::grey.brighter(0.3f);
+    auto borderColorOn = Colours::lightgrey;
 
     drawStartButton(startButtonImage, bgColorOff, borderColorOff);
     setButtonImage(startButton, startButtonImage);
@@ -37,9 +37,8 @@ void TransportControl::createControls() {
     addAndMakeVisible(&startButton);
 
     if (recordEnabledFn != nullptr) {
-        drawRecordButton(
-            recordButtonOffImage, juce::Colours::red.withMultipliedLightness(0.75), juce::Colours::dimgrey);
-        drawRecordButton(recordButtonOnImage, juce::Colours::red, juce::Colours::grey);
+        drawRecordButton(recordButtonOffImage, Colours::red.withMultipliedLightness(0.75), Colours::dimgrey);
+        drawRecordButton(recordButtonOnImage, Colours::red, Colours::grey);
         setButtonImage(recordButton, recordButtonOffImage);
 
         recordButton.onClick = [this] { recordButtonClicked(); };
@@ -67,7 +66,7 @@ void TransportControl::createControls() {
     setButtonImage(pauseButton, pauseButtonOffImage);
 
     pauseButton.onClick = [this] { pauseButtonClicked(); };
-    pauseButton.setConnectedEdges(juce::Button::ConnectedOnLeft);
+    pauseButton.setConnectedEdges(Button::ConnectedOnLeft);
     pauseButton.setEnabled(enabled);
     addAndMakeVisible(&pauseButton);
 
@@ -80,44 +79,44 @@ void TransportControl::createControls() {
     addAndMakeVisible(&currentPositionLabel);
 }
 
-void TransportControl::setButtonImage(juce::ImageButton &button, juce::Image &image) {
-    button.setImages(false, true, false, image, 1.0, juce::Colours::transparentWhite, juce::Image(), 0.9,
-        juce::Colours::transparentWhite, juce::Image(), 1.0, juce::Colour{0x20ffffff});
+void TransportControl::setButtonImage(ImageButton &button, Image &image) {
+    button.setImages(false, true, false, image, 1.0, Colours::transparentWhite, Image(), 0.9, Colours::transparentWhite,
+        Image(), 1.0, Colour{0x20ffffff});
 }
 
-void TransportControl::drawStartButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
-    juce::Graphics g(image);
-    juce::Path path;
+void TransportControl::drawStartButton(Image &image, Colour bgColor, Colour borderColor) const {
+    Graphics g(image);
+    Path path;
     auto cornerSize = 60.0f;
     g.setColour(bgColor);
     path.addRoundedRectangle(
         0.0, 0.0, buttonImageWidth, buttonImageHeight, cornerSize, cornerSize, true, false, true, false);
     g.fillPath(path);
     g.setColour(borderColor);
-    g.strokePath(path, juce::PathStrokeType(5.0f));
+    g.strokePath(path, PathStrokeType(5.0f));
 
-    g.setColour(juce::Colours::white);
-    juce::Path p;
+    g.setColour(Colours::white);
+    Path p;
     auto iconLeft = 180.0f;
     auto iconTop = 50.0f;
     auto iconWidth = 140.0f;
     auto iconHeight = 120.0f;
-    juce::Point<float> left(iconLeft + 40.0, iconTop + iconHeight / 2);
-    juce::Point<float> topRight(iconLeft + iconWidth, iconTop);
-    juce::Point<float> bottomRight(iconLeft + iconWidth, iconTop + iconHeight);
+    Point<float> left(iconLeft + 40.0, iconTop + iconHeight / 2);
+    Point<float> topRight(iconLeft + iconWidth, iconTop);
+    Point<float> bottomRight(iconLeft + iconWidth, iconTop + iconHeight);
     p.addTriangle(left, topRight, bottomRight);
     g.fillRect(iconLeft, iconTop, 30.0, iconHeight);
     g.fillPath(p);
 }
 
-void TransportControl::drawRecordButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
-    juce::Graphics g(image);
+void TransportControl::drawRecordButton(Image &image, Colour bgColor, Colour borderColor) const {
+    Graphics g(image);
     g.setColour(bgColor);
     g.fillRect(0.0, 0.0, buttonImageWidth, buttonImageHeight);
     g.setColour(borderColor);
     g.drawRect(0.0, 0.0, buttonImageWidth, buttonImageHeight, 5.0);
-    g.setColour(juce::Colours::white);
-    juce::Path p;
+    g.setColour(Colours::white);
+    Path p;
     auto iconLeft = 210.0f;
     auto iconTop = 50.0f;
     auto iconWidth = 110.0f;
@@ -126,50 +125,50 @@ void TransportControl::drawRecordButton(juce::Image &image, juce::Colour bgColor
     g.fillPath(p);
 }
 
-void TransportControl::drawPlayButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
-    juce::Graphics g(image);
+void TransportControl::drawPlayButton(Image &image, Colour bgColor, Colour borderColor) const {
+    Graphics g(image);
     g.setColour(bgColor);
     g.fillRect(0.0, 0.0, buttonImageWidth, buttonImageHeight);
     g.setColour(borderColor);
     g.drawRect(0.0, 0.0, buttonImageWidth, buttonImageHeight, 5.0);
-    g.setColour(juce::Colours::white);
-    juce::Path p;
+    g.setColour(Colours::white);
+    Path p;
     auto iconLeft = 210.0f;
     auto iconTop = 50.0f;
     auto iconWidth = 110.0f;
     auto iconHeight = 120.0f;
-    juce::Point<float> topLeft(iconLeft, iconTop);
-    juce::Point<float> bottomLeft(iconLeft, iconTop + iconHeight);
-    juce::Point<float> right(iconLeft + iconWidth, iconTop + iconHeight / 2);
+    Point<float> topLeft(iconLeft, iconTop);
+    Point<float> bottomLeft(iconLeft, iconTop + iconHeight);
+    Point<float> right(iconLeft + iconWidth, iconTop + iconHeight / 2);
     p.addTriangle(topLeft, bottomLeft, right);
     g.fillPath(p);
 }
 
-void TransportControl::drawStopButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
-    juce::Graphics g(image);
+void TransportControl::drawStopButton(Image &image, Colour bgColor, Colour borderColor) const {
+    Graphics g(image);
     g.setColour(bgColor);
     g.fillRect(0.0, 0.0, buttonImageWidth, buttonImageHeight);
     g.setColour(borderColor);
     g.drawRect(0.0, 0.0, buttonImageWidth, buttonImageHeight, 5.0);
-    g.setColour(juce::Colours::white);
+    g.setColour(Colours::white);
     auto iconLeft = 200.0f;
     auto iconTop = 50.0f;
     auto iconSize = 110.0f;
     g.fillRect(iconLeft, iconTop, iconSize, iconSize);
 }
 
-void TransportControl::drawPauseButton(juce::Image &image, juce::Colour bgColor, juce::Colour borderColor) const {
-    juce::Graphics g(image);
-    juce::Path path;
+void TransportControl::drawPauseButton(Image &image, Colour bgColor, Colour borderColor) const {
+    Graphics g(image);
+    Path path;
     auto cornerSize = 60.0f;
     g.setColour(bgColor);
     path.addRoundedRectangle(
         0.0, 0.0, buttonImageWidth, buttonImageHeight, cornerSize, cornerSize, false, true, false, true);
     g.fillPath(path);
     g.setColour(borderColor);
-    g.strokePath(path, juce::PathStrokeType(5.0f));
+    g.strokePath(path, PathStrokeType(5.0f));
 
-    g.setColour(juce::Colours::white);
+    g.setColour(Colours::white);
     float iconLeft = 200.0f;
     float iconTop = 50.0f;
     float iconSize = 110.0f;
@@ -187,8 +186,8 @@ void TransportControl::setEnabled(bool isEnabled) {
     currentPositionLabel.setEnabled(isEnabled);
 }
 
-void TransportControl::paint(juce::Graphics &g) {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+void TransportControl::paint(Graphics &g) {
+    g.fillAll(getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
 }
 
 void TransportControl::resized() {
@@ -255,22 +254,22 @@ void TransportControl::changeState(TransportState newState) {
     }
 }
 
-juce::String TransportControl::getStateLabel() {
+String TransportControl::getStateLabel() {
     switch (state) {
     case TransportState::Stopped:
-        return juce::String("Stopped");
+        return String("Stopped");
     case TransportState::Playing:
-        return juce::String("Playing");
+        return String("Playing");
     case TransportState::Recording:
-        return juce::String("Recording");
+        return String("Recording");
     case TransportState::Paused:
-        return juce::String("Paused");
+        return String("Paused");
     default:
-        return juce::String("");
+        return String("");
     }
 }
 
-void TransportControl::changeListenerCallback(juce::ChangeBroadcaster *source) {
+void TransportControl::changeListenerCallback(ChangeBroadcaster *source) {
     if (source == &transportSource) {
         if (transportSource.isPlaying()) {
             changeState(recording ? TransportState::Recording : TransportState::Playing);
@@ -283,7 +282,7 @@ void TransportControl::changeListenerCallback(juce::ChangeBroadcaster *source) {
 }
 
 void TransportControl::timerCallback() {
-    juce::RelativeTime position(transportSource.getCurrentPosition());
+    RelativeTime position(transportSource.getCurrentPosition());
 
     auto minutes = ((int)position.inMinutes()) % 60;
     auto seconds = ((int)position.inSeconds()) % 60;
@@ -295,12 +294,11 @@ void TransportControl::timerCallback() {
     auto lmillis = (int)(length * 1000.0) % 1000;
 
     auto stateLabel = getStateLabel();
-    auto stateText = stateLabel.isNotEmpty() ? (juce::String(" [") + stateLabel + juce::String("]")) : juce::String("");
-    auto positionString = juce::String::formatted("%02d:%02d:%03d", minutes, seconds, millis);
-    auto lengthString = juce::String::formatted("%02d:%02d:%03d", lmins, lsecs, lmillis);
+    auto stateText = stateLabel.isNotEmpty() ? (String(" [") + stateLabel + String("]")) : String("");
+    auto positionString = String::formatted("%02d:%02d:%03d", minutes, seconds, millis);
+    auto lengthString = String::formatted("%02d:%02d:%03d", lmins, lsecs, lmillis);
 
-    currentPositionLabel.setText(
-        positionString + juce::String(" / ") + lengthString + stateText, juce::dontSendNotification);
+    currentPositionLabel.setText(positionString + String(" / ") + lengthString + stateText, dontSendNotification);
 }
 
 void TransportControl::startButtonClicked() { transportSource.setPosition(0.0); }

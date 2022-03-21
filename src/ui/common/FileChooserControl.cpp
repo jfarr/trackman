@@ -2,7 +2,9 @@
 
 #include "common/listutil.h"
 
-FileChooserControl::FileChooserControl(juce::File file) {
+namespace trackman {
+
+FileChooserControl::FileChooserControl(File file) {
     selectedFile = file;
     createControls();
 }
@@ -17,8 +19,8 @@ void FileChooserControl::createControls() {
     addAndMakeVisible(&selectedFileLabel);
 }
 
-void FileChooserControl::paint(juce::Graphics &g) {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+void FileChooserControl::paint(Graphics &g) {
+    g.fillAll(getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
 }
 
 void FileChooserControl::resized() {
@@ -31,20 +33,20 @@ void FileChooserControl::resized() {
 }
 
 void FileChooserControl::openButtonClicked() {
-    chooser = std::make_unique<juce::FileChooser>("Select a file to play...", selectedFile, "*.wav", true);
-    auto chooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
+    chooser = make_unique<FileChooser>("Select a file to play...", selectedFile, "*.wav", true);
+    auto chooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles;
 
-    chooser->launchAsync(chooserFlags, [this](const juce::FileChooser &fc) {
+    chooser->launchAsync(chooserFlags, [this](const FileChooser &fc) {
         auto file = fc.getResult();
 
-        if (file != juce::File{}) {
-            selectedFileLabel.setText(file.getFileName(), juce::dontSendNotification);
+        if (file != File{}) {
+            selectedFileLabel.setText(file.getFileName(), dontSendNotification);
             notifyFileChosen(file);
         }
     });
 }
 
-void FileChooserControl::notifyFileChosen(juce::File file) {
+void FileChooserControl::notifyFileChosen(File file) {
     for (FileListener *listener : listeners) {
         listener->fileChosen(file);
     }
@@ -57,3 +59,5 @@ void FileChooserControl::addListener(FileListener *listener) {
 }
 
 void FileChooserControl::removeListener(FileListener *listener) { listeners.remove(listener); }
+
+} // namespace trackman
