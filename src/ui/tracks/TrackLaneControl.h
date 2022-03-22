@@ -4,7 +4,7 @@
 
 #include "SampleThumbnail.h"
 #include "model/Track.h"
-#include "NoteRoll.h"
+#include "NoteCanvas.h"
 
 using namespace std;
 using namespace juce;
@@ -38,7 +38,7 @@ class TrackLaneControl : public Component {
 
     Label trackLabel;
     list<SampleThumbnail *> thumbnails;
-    NoteRoll noteRoll;
+    NoteCanvas noteRoll;
 
     void createControls();
 

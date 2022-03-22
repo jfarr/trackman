@@ -1,6 +1,6 @@
 #pragma once
 
-#include "audio/MidiRecorder.h"
+#include "model/MidiRecorder.h"
 #include "model/TrackList.h"
 #include "ui/desktop/TrackListListener.h"
 #include <JuceHeader.h>

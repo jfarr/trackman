@@ -1,15 +1,15 @@
-#include "NoteRoll.h"
+#include "NoteCanvas.h"
 #include "common/midiutil.h"
 
 namespace trackman {
 
-NoteRoll::NoteRoll(Project &project, Track &track) : project(project), track(track) {
+NoteCanvas::NoteCanvas(Project &project, Track &track) : project(project), track(track) {
     setInterceptsMouseClicks(false, false);
     setSize(200, 81);
     startTimer(20);
 }
 
-void NoteRoll::resize() {
+void NoteCanvas::resize() {
     auto area = getBounds();
     auto length = project.ticksToSeconds(
         track.getCurrentMidiMessages(project.getTransport().getTransportSource().getCurrentPosition()).getEndTime());
@@ -18,7 +18,7 @@ void NoteRoll::resize() {
     repaint();
 }
 
-void NoteRoll::paint(Graphics &g) {
+void NoteCanvas::paint(Graphics &g) {
     auto selected = track.isSelected();
     auto area = getLocalBounds();
     auto messages = track.getCurrentMidiMessages(project.getTransport().getTransportSource().getCurrentPosition());
@@ -43,7 +43,7 @@ void NoteRoll::paint(Graphics &g) {
     }
 }
 
-Rectangle<float> NoteRoll::getNoteRect(const MidiMessage &noteOn, const MidiMessage &noteOff, int lowNote,
+Rectangle<float> NoteCanvas::getNoteRect(const MidiMessage &noteOn, const MidiMessage &noteOff, int lowNote,
     double noteHeight, double x, double h, double scale, double margin) {
     auto start = project.ticksToSeconds(noteOn.getTimeStamp());
     auto end = project.ticksToSeconds(noteOff.getTimeStamp());

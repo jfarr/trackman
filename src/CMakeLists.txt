@@ -19,20 +19,20 @@ target_sources(Trackman PRIVATE
         audio/GainAudioSource.h
         audio/MeteredAudioSource.cpp
         audio/MeteredAudioSource.h
-        audio/MidiRecorder.cpp
-        audio/MidiRecorder.h
+        model/MidiRecorder.cpp
+        model/MidiRecorder.h
         audio/PositionableAudioSourceAdapter.h
         audio/PositionableMixingAudioSource.cpp
         audio/PositionableMixingAudioSource.h
         audio/PositionableResamplingAudioSource.cpp
         audio/PositionableResamplingAudioSource.h
         audio/ProcessingAudioSource.h
-        audio/SamplePlayer.cpp
-        audio/SamplePlayer.h
+        model/SamplePlayer.cpp
+        model/SamplePlayer.h
         audio/SynthAudioSource.cpp
         audio/SynthAudioSource.h
-        audio/Timeline.h
-        audio/TimeRange.h
+        model/Timeline.h
+        model/TimeRange.h
         commands/Command.h
         commands/CommandList.cpp
         commands/CommandList.h
@@ -43,6 +43,8 @@ target_sources(Trackman PRIVATE
         model/Instrument.h
         model/Mixer.cpp
         model/Mixer.h
+        model/NoteRoll.cpp
+        model/NoteRoll.h
         model/Project.cpp
         model/Project.h
         model/Sample.cpp
@@ -109,8 +111,8 @@ target_sources(Trackman PRIVATE
         ui/mixer/TrackControlListener.h
         ui/mixer/TrackPanel.cpp
         ui/mixer/TrackPanel.h
-        ui/tracks/NoteRoll.cpp
-        ui/tracks/NoteRoll.h
+        ui/tracks/NoteCanvas.cpp
+        ui/tracks/NoteCanvas.h
         ui/tracks/SampleListener.h
         ui/tracks/SampleThumbnail.cpp
         ui/tracks/SampleThumbnail.h

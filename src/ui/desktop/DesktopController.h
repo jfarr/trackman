@@ -3,7 +3,7 @@
 #include "DesktopComponent.h"
 #include "FileDragDropTarget.h"
 #include "TrackScaleListener.h"
-#include "audio/MidiRecorder.h"
+#include "model/MidiRecorder.h"
 #include "commands/CommandList.h"
 #include "model/Project.h"
 #include "model/TrackList.h"

@@ -73,6 +73,8 @@ class Project {
     float tempo = initialTempo;
     double verticalScale = initialVerticalScale;
     double horizontalScale = initialHorizontalScale;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Project)
 };
 
 } // namespace trackman

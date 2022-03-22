@@ -9,10 +9,10 @@ using namespace juce;
 
 namespace trackman {
 
-class NoteRoll : public Component, public Timer {
+class NoteCanvas : public Component, public Timer {
   public:
-    NoteRoll(Project &project, Track &track);
-    ~NoteRoll() override = default;
+    NoteCanvas(Project &project, Track &track);
+    ~NoteCanvas() override = default;
 
     void resize();
 
@@ -31,7 +31,7 @@ class NoteRoll : public Component, public Timer {
     Rectangle<float> getNoteRect(const MidiMessage &noteOn, const MidiMessage &noteOff, int lowNote,
         double noteStep, double x, double h, double scale, double margin);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteRoll)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteCanvas)
 };
 
 }
