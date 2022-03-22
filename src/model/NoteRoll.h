@@ -9,16 +9,16 @@ using namespace juce;
 
 namespace trackman {
 
-class NoteRoll : public PositionableAudioSource {
+class NoteRoll {
   public:
-    NoteRoll(Project &project, SynthAudioSource &synthAudioSource)
-        : project(project), synthAudioSource(synthAudioSource) {}
+    NoteRoll(const MidiMessageSequence &midiMessages, int startTick, int endTick)
+        : midiMessages(midiMessages), startTick(startTick), endTick(endTick) {}
     ~NoteRoll() = default;
 
   private:
-    Project &project;
-    SynthAudioSource &synthAudioSource;
     MidiMessageSequence midiMessages;
+    int startTick;
+    int endTick;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteRoll)
 };

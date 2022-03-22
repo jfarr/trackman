@@ -41,6 +41,8 @@ target_sources(Trackman PRIVATE
         commands/TrackListCommands.h
         model/Instrument.cpp
         model/Instrument.h
+        model/MidiPlayer.cpp
+        model/MidiPlayer.h
         model/Mixer.cpp
         model/Mixer.h
         model/NoteRoll.cpp
