@@ -1,8 +1,9 @@
 #pragma once
 
+#include <JuceHeader.h>
+
 #include "Project.h"
 #include "audio/SynthAudioSource.h"
-#include <JuceHeader.h>
 
 using namespace juce;
 

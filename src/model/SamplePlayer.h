@@ -1,10 +1,10 @@
 #pragma once
 
-#include "JuceHeader.h"
+#include <JuceHeader.h>
 
+#include "Sample.h"
 #include "TimeRange.h"
 #include "Timeline.h"
-#include "model/Sample.h"
 
 using namespace std;
 using namespace juce;

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "audio/SynthAudioSource.h"
 #include <JuceHeader.h>
+
+#include "audio/SynthAudioSource.h"
 
 namespace trackman {
 

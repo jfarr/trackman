@@ -2,12 +2,12 @@
 
 #include <JuceHeader.h>
 
+#include "MidiRecorder.h"
 #include "Sample.h"
+#include "SamplePlayer.h"
 #include "audio/GainAudioSource.h"
 #include "audio/MeteredAudioSource.h"
-#include "MidiRecorder.h"
 #include "audio/PositionableMixingAudioSource.h"
-#include "SamplePlayer.h"
 #include "audio/SynthAudioSource.h"
 
 using namespace std;
