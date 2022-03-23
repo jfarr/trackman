@@ -1,5 +1,6 @@
 #include "Track.h"
 #include "Project.h"
+#include "MidiPlayer.h"
 
 #include <memory>
 

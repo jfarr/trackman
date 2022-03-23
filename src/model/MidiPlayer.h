@@ -2,38 +2,44 @@
 
 #include <JuceHeader.h>
 
-#include "Project.h"
 #include "audio/SynthAudioSource.h"
 
 using namespace juce;
 
 namespace trackman {
 
-class MidiPlayer : public PositionableAudioSource {
+class Project;
+class Track;
+
+class SynthAudioSource : public PositionableAudioSource {
   public:
-    MidiPlayer(Project &project, SynthAudioSource &synthAudioSource)
-        : project(project), synthAudioSource(synthAudioSource) {}
-    ~MidiPlayer() = default;
+    SynthAudioSource(Track &track) : track(track) {
+        for (auto i = 0; i < 4; ++i)
+            synth.addVoice(new SineWaveVoice());
+
+        synth.addSound(new SineWaveSound());
+    }
+
+    void setUsingSineWaveSound() { synth.clearSounds(); }
 
     //==============================================================================
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;
+    void releaseResources() override {}
     void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
-    void releaseResources() override { synthAudioSource.releaseResources(); }
 
     //==============================================================================
     // PositionableAudioSource
-    void setNextReadPosition(int64 newPosition) override { synthAudioSource.setNextReadPosition(newPosition); }
-    int64 getNextReadPosition() const override { return synthAudioSource.getNextReadPosition(); }
-    int64 getTotalLength() const override { return synthAudioSource.getTotalLength(); }
-    bool isLooping() const override { return synthAudioSource.isLooping(); }
-    void setLooping(bool shouldLoop) override { synthAudioSource.setLooping(shouldLoop); }
+    void setNextReadPosition(int64 newPosition) override;
+    int64 getNextReadPosition() const override;
+    int64 getTotalLength() const override;
+    bool isLooping() const override;
+    void setLooping(bool shouldLoop) override;
 
   private:
-    Project &project;
-    SynthAudioSource &synthAudioSource;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiPlayer)
+    Track &track;
+    Synthesiser synth;
+    int64 currentPosition = 0;
+    bool looping = false;
 };
-
 } // namespace trackman

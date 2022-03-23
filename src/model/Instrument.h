@@ -3,6 +3,7 @@
 #include <JuceHeader.h>
 
 #include "audio/SynthAudioSource.h"
+#include "MidiPlayer.h"
 
 namespace trackman {
 
