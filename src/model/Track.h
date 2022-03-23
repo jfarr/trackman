@@ -4,12 +4,12 @@
 
 #include "MidiPlayer.h"
 #include "MidiRecorder.h"
+#include "NoteRoll.h"
 #include "Sample.h"
 #include "SamplePlayer.h"
 #include "audio/GainAudioSource.h"
 #include "audio/MeteredAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
-//#include "audio/MidiPlayer.h"
 
 using namespace std;
 using namespace juce;
@@ -53,12 +53,12 @@ class Track {
     bool hasSamples() const { return !samples.empty(); }
     int getNumSamples() const { return samples.size(); }
 
-    bool hasMidi() const { return midiMessages.getNumEvents() > 0; }
+    bool hasMidi() const { return getMidiMessages().getNumEvents() > 0; }
     bool canRecord() const { return samplePlayer == nullptr; }
     bool isRecording() const { return recording; }
     void startRecording();
     void stopRecording();
-    const MidiMessageSequence &getMidiMessages() const { return midiMessages; }
+    const MidiMessageSequence &getMidiMessages() const { return noteRolls.back()->getMidiMessages(); }
     const MidiMessageSequence getCurrentMidiMessages(double pos) const;
     void setMidiMessages(const MidiMessageSequence &newMessages);
 
@@ -92,8 +92,8 @@ class Track {
     Project &project;
     AudioDeviceManager &deviceManager;
     MidiRecorder &midiRecorder;
+    list<shared_ptr<NoteRoll>> noteRolls;
     MidiPlayer midiPlayer;
-    MidiMessageSequence midiMessages;
 
     void createSamplePlayer();
     void removeSamplePlayer();

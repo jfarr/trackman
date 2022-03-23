@@ -20,8 +20,6 @@ class MidiPlayer : public PositionableAudioSource {
         synth.addSound(new SineWaveSound());
     }
 
-    void setUsingSineWaveSound() { synth.clearSounds(); }
-
     //==============================================================================
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;

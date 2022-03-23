@@ -1,6 +1,6 @@
 #include "Track.h"
-#include "Project.h"
 #include "MidiPlayer.h"
+#include "Project.h"
 
 #include <memory>
 
@@ -8,6 +8,7 @@ namespace trackman {
 
 Track::Track(Project &project, MidiRecorder &midiRecorder, AudioDeviceManager &deviceManager)
     : project(project), deviceManager(deviceManager), midiRecorder(midiRecorder), midiPlayer(*this) {
+    noteRolls.push_back(make_shared<NoteRoll>(MidiMessageSequence(), 0, 0));
     midiPlayer.prepareToPlay(
         deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
     gainSource = make_unique<GainAudioSource>(&midiPlayer, false);
@@ -104,7 +105,7 @@ void Track::eachSample(function<void(Sample &sample)> f) {
 }
 
 int64 Track::getTotalLengthInSamples() const {
-    if (midiMessages.getNumEvents() == 0) {
+    if (getMidiMessages().getNumEvents() == 0) {
         return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
     } else {
         return getMidiLengthInSamples();
@@ -112,13 +113,13 @@ int64 Track::getTotalLengthInSamples() const {
 }
 
 int64 Track::getMidiLengthInSamples() const {
-    return project.ticksToSeconds(midiMessages.getEndTime()) * deviceManager.getAudioDeviceSetup().sampleRate +
+    return project.ticksToSeconds(getMidiMessages().getEndTime()) * deviceManager.getAudioDeviceSetup().sampleRate +
            2 * deviceManager.getAudioDeviceSetup().bufferSize; // overshoot to ensure we get all note off events
 }
 
 void Track::startRecording() {
     if (!recording) {
-        midiRecorder.setMidiMessages(midiMessages);
+        midiRecorder.setMidiMessages(getMidiMessages());
     }
     midiRecorder.startRecording();
     recording = true;
@@ -130,7 +131,8 @@ void Track::stopRecording() {
     auto messages = midiRecorder.getMidiMessages();
     messages.sort();
     messages.updateMatchedPairs();
-    midiMessages = messages;
+    noteRolls.pop_back();
+    noteRolls.push_back(make_shared<NoteRoll>(messages, 0, 0));
 }
 
 const MidiMessageSequence Track::getCurrentMidiMessages(double pos) const {
@@ -150,26 +152,27 @@ const MidiMessageSequence Track::getCurrentMidiMessages(double pos) const {
         messages.updateMatchedPairs();
         return messages;
     }
-    return midiMessages;
+    return getMidiMessages();
 }
 
-void Track::setMidiMessages(const MidiMessageSequence &newMessages) { midiMessages = newMessages; }
+void Track::setMidiMessages(const MidiMessageSequence &newMessages) {
+    noteRolls.pop_back();
+    noteRolls.push_back(make_shared<NoteRoll>(newMessages, 0, 0));
+}
 
 void Track::processNextMidiBuffer(
     MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) {
     auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
     const double startTime = currentPos / sampleRate;
     const double endTime = startTime + numSamples / sampleRate;
-    const double scaleFactor = numSamples / (double)(endTime + 1 - startTime);
 
+    auto midiMessages = getMidiMessages();
     auto startIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(startTime));
     auto endIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(endTime));
     for (int i = startIndex; i < endIndex; i++) {
         auto p = midiMessages.getEventPointer(i);
         auto event = p->message;
-        const auto pos = jlimit(0, numSamples - 1, roundToInt((event.getTimeStamp() - startTime) * scaleFactor));
         buffer.addEvent(event, event.getTimeStamp());
-        //        buffer.addEvent(event, startSample + pos);
     }
     if (recording) {
         MidiBuffer keyboardBuffer;

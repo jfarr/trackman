@@ -2,7 +2,6 @@
 
 #include <JuceHeader.h>
 
-#include "Project.h"
 #include "audio/SynthAudioSource.h"
 
 using namespace juce;
@@ -14,6 +13,8 @@ class NoteRoll {
     NoteRoll(const MidiMessageSequence &midiMessages, int startTick, int endTick)
         : midiMessages(midiMessages), startTick(startTick), endTick(endTick) {}
     ~NoteRoll() = default;
+
+    const MidiMessageSequence &getMidiMessages() const { return midiMessages; }
 
   private:
     MidiMessageSequence midiMessages;
