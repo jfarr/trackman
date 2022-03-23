@@ -9,7 +9,7 @@
 #include "audio/GainAudioSource.h"
 #include "audio/MeteredAudioSource.h"
 #include "audio/PositionableMixingAudioSource.h"
-//#include "audio/SynthAudioSource.h"
+//#include "audio/MidiPlayer.h"
 
 using namespace std;
 using namespace juce;
@@ -92,7 +92,7 @@ class Track {
     Project &project;
     AudioDeviceManager &deviceManager;
     MidiRecorder &midiRecorder;
-    SynthAudioSource synthAudioSource;
+    MidiPlayer midiPlayer;
     MidiMessageSequence midiMessages;
 
     void createSamplePlayer();

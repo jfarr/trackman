@@ -7,10 +7,10 @@
 namespace trackman {
 
 Track::Track(Project &project, MidiRecorder &midiRecorder, AudioDeviceManager &deviceManager)
-    : project(project), deviceManager(deviceManager), midiRecorder(midiRecorder), synthAudioSource(*this) {
-    synthAudioSource.prepareToPlay(
+    : project(project), deviceManager(deviceManager), midiRecorder(midiRecorder), midiPlayer(*this) {
+    midiPlayer.prepareToPlay(
         deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
-    gainSource = make_unique<GainAudioSource>(&synthAudioSource, false);
+    gainSource = make_unique<GainAudioSource>(&midiPlayer, false);
     meteredSource = make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
 }
 

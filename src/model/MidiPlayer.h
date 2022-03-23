@@ -11,9 +11,9 @@ namespace trackman {
 class Project;
 class Track;
 
-class SynthAudioSource : public PositionableAudioSource {
+class MidiPlayer : public PositionableAudioSource {
   public:
-    SynthAudioSource(Track &track) : track(track) {
+    MidiPlayer(Track &track) : track(track) {
         for (auto i = 0; i < 4; ++i)
             synth.addVoice(new SineWaveVoice());
 

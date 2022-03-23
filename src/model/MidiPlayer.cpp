@@ -4,11 +4,11 @@
 
 namespace trackman {
 
-void SynthAudioSource::prepareToPlay(int /*blockSize*/, double sampleRate) {
+void MidiPlayer::prepareToPlay(int /*blockSize*/, double sampleRate) {
     synth.setCurrentPlaybackSampleRate(sampleRate);
 }
 
-void SynthAudioSource::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
+void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     bufferToFill.clearActiveBufferRegion();
 
     auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
@@ -18,19 +18,19 @@ void SynthAudioSource::getNextAudioBlock(const AudioSourceChannelInfo &bufferToF
     currentPosition += bufferToFill.numSamples;
 }
 
-void SynthAudioSource::setNextReadPosition(int64 newPosition) { currentPosition = newPosition; }
+void MidiPlayer::setNextReadPosition(int64 newPosition) { currentPosition = newPosition; }
 
-int64 SynthAudioSource::getNextReadPosition() const {
+int64 MidiPlayer::getNextReadPosition() const {
     return looping ? currentPosition % getTotalLength() : currentPosition;
 }
 
-int64 SynthAudioSource::getTotalLength() const {
+int64 MidiPlayer::getTotalLength() const {
     int64 len = track.getMidiLengthInSamples();
     return track.isRecording() && !looping ? max(len, currentPosition) : len;
 }
 
-bool SynthAudioSource::isLooping() const { return looping; }
+bool MidiPlayer::isLooping() const { return looping; }
 
-void SynthAudioSource::setLooping(bool shouldLoop) { looping = shouldLoop; }
+void MidiPlayer::setLooping(bool shouldLoop) { looping = shouldLoop; }
 
 } // namespace trackman
