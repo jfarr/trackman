@@ -32,7 +32,6 @@ class Track {
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
     int64 getTotalLengthInSamples() const;
-    int64 getMidiLengthInSamples() const;
     AudioDeviceManager &getDeviceManager() { return deviceManager; }
 
     PositionableAudioSource *getSource() { return meteredSource.get(); }
@@ -53,7 +52,7 @@ class Track {
     bool hasSamples() const { return !samples.empty(); }
     int getNumSamples() const { return samples.size(); }
 
-    bool hasMidi() const { return getMidiMessages().getNumEvents() > 0; }
+    bool hasMidi() const { return !noteRolls.empty(); }
     bool canRecord() const { return samplePlayer == nullptr; }
     bool isRecording() const { return recording; }
     void startRecording();
@@ -63,15 +62,16 @@ class Track {
     void eachNoteRoll(function<void(NoteRoll &noteRoll)> f);
     const MidiMessageSequence &getMidiMessages() const { return noteRolls.back()->getMidiMessages(); }
     const MidiMessageSequence getCurrentMidiMessages(double pos) const;
-    void setMidiMessages(const MidiMessageSequence &newMessages);
-
-    void processNextMidiBuffer(MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos);
+    void processNextMidiBuffer(MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
+    double getMidiLengthInSeconds() const;
+    int64 getMidiLengthInSamples() const;
+//    void setMidiMessages(const MidiMessageSequence &newMessages);
 
   private:
     friend TrackList;
 
-    Sample *addSample(const File &file, double startPos, double endPos, AudioFormatManager &formatManager);
-    NoteRoll *addNoteRoll(const MidiMessageSequence &midiMessages, double startPos, double endPos);
+    Sample *addSample(const File &file, double startPosInSeconds, double endPosInSeconds, AudioFormatManager &formatManager);
+    NoteRoll *addNoteRoll(const MidiMessageSequence &midiMessages, double startPosInSeconds, double endPosInSeconds);
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
     void updateGain(bool anySoloed);
@@ -89,6 +89,7 @@ class Track {
     bool selected = false;
     bool deleted = false;
     bool recording = false;
+    double recordStartPosInSeconds = 0;
 
     list<shared_ptr<Sample>> samples;
     unique_ptr<SamplePlayer> samplePlayer;

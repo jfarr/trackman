@@ -8,7 +8,7 @@ namespace trackman {
 
 Track::Track(Project &project, MidiRecorder &midiRecorder, AudioDeviceManager &deviceManager)
     : project(project), deviceManager(deviceManager), midiRecorder(midiRecorder), midiPlayer(*this) {
-    noteRolls.push_back(make_shared<NoteRoll>(MidiMessageSequence(), 0, 0));
+    //    noteRolls.push_back(make_shared<NoteRoll>(MidiMessageSequence(), 0, 0));
     midiPlayer.prepareToPlay(
         deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
     gainSource = make_unique<GainAudioSource>(&midiPlayer, false);
@@ -59,8 +59,9 @@ void Track::moveSampleTo(Sample &sample, Track &toTrack) {
     }
 }
 
-Sample *Track::addSample(const File &file, double startPos, double endPos, AudioFormatManager &formatManager) {
-    samples.push_back(make_shared<Sample>(file, startPos, endPos));
+Sample *Track::addSample(
+    const File &file, double startPosInSeconds, double endPosInSeconds, AudioFormatManager &formatManager) {
+    samples.push_back(make_shared<Sample>(file, startPosInSeconds, endPosInSeconds));
     auto sample = &(*samples.back());
     sample->loadFile(deviceManager, formatManager);
     createSamplePlayer();
@@ -70,8 +71,9 @@ Sample *Track::addSample(const File &file, double startPos, double endPos, Audio
     return sample;
 }
 
-NoteRoll *Track::addNoteRoll(const MidiMessageSequence &midiMessages, double startPos, double endPos) {
-    noteRolls.push_back(make_shared<NoteRoll>(midiMessages, 0, 0));
+NoteRoll *Track::addNoteRoll(
+    const MidiMessageSequence &midiMessages, double startPosInSeconds, double endPosInSeconds) {
+    noteRolls.push_back(make_shared<NoteRoll>(midiMessages, startPosInSeconds, endPosInSeconds));
     return &(*noteRolls.back());
 }
 
@@ -110,30 +112,24 @@ void Track::eachSample(function<void(Sample &sample)> f) {
 }
 
 int64 Track::getTotalLengthInSamples() const {
-    if (getMidiMessages().getNumEvents() == 0) {
+    if (!hasMidi()) {
         return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
     } else {
         return getMidiLengthInSamples();
     }
 }
 
-int64 Track::getMidiLengthInSamples() const {
-    return project.ticksToSeconds(getMidiMessages().getEndTime()) * deviceManager.getAudioDeviceSetup().sampleRate +
-           2 * deviceManager.getAudioDeviceSetup().bufferSize; // overshoot to ensure we get all note off events
-}
-
 void Track::startRecording() {
     if (!recording) {
         auto noteRoll = addNoteRoll(MidiMessageSequence(), 0, 0);
         midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
+        recordStartPosInSeconds = project.getTransport().getCurrentPosition();
     }
     midiRecorder.startRecording();
     recording = true;
 }
 
-void Track::pauseRecording() {
-    midiRecorder.stopRecording();
-}
+void Track::pauseRecording() { midiRecorder.stopRecording(); }
 
 void Track::stopRecording() {
     midiRecorder.stopRecording();
@@ -141,14 +137,16 @@ void Track::stopRecording() {
     auto messages = midiRecorder.getMidiMessages();
     messages.sort();
     messages.updateMatchedPairs();
-//    noteRolls.pop_back();
-    noteRolls.push_back(make_shared<NoteRoll>(messages, 0, 0));
+    //    noteRolls.pop_back();
+    noteRolls.push_back(
+        make_shared<NoteRoll>(messages, recordStartPosInSeconds, project.getTransport().getCurrentPosition()));
 }
 
 void Track::eachNoteRoll(function<void(NoteRoll &noteRoll)> f) {
-    for (shared_ptr<NoteRoll> &noteRoll : noteRolls) {
-        if (!(*noteRoll).isDeleted()) {
-            f(*noteRoll);
+    for (shared_ptr<NoteRoll> &p : noteRolls) {
+        auto &noteRoll = *p;
+        if (!noteRoll.isDeleted()) {
+            f(noteRoll);
         }
     }
 }
@@ -170,33 +168,53 @@ const MidiMessageSequence Track::getCurrentMidiMessages(double pos) const {
         messages.updateMatchedPairs();
         return messages;
     }
-    return getMidiMessages();
+    return hasMidi() ? getMidiMessages() : MidiMessageSequence();
 }
 
-void Track::setMidiMessages(const MidiMessageSequence &newMessages) {
-    noteRolls.pop_back();
-    noteRolls.push_back(make_shared<NoteRoll>(newMessages, 0, 0));
-}
+//
+// void Track::setMidiMessages(const MidiMessageSequence &newMessages) {
+//    noteRolls.pop_back();
+//    noteRolls.push_back(make_shared<NoteRoll>(newMessages, 0, 0));
+//}
 
 void Track::processNextMidiBuffer(
-    MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) {
+    MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const {
     auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
     const double startTime = currentPos / sampleRate;
     const double endTime = startTime + numSamples / sampleRate;
 
-    auto midiMessages = getMidiMessages();
-    auto startIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(startTime));
-    auto endIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(endTime));
-    for (int i = startIndex; i < endIndex; i++) {
-        auto p = midiMessages.getEventPointer(i);
-        auto event = p->message;
-        buffer.addEvent(event, event.getTimeStamp());
-    }
+//    auto midiMessages = getMidiMessages();
+//    auto startIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(startTime));
+//    auto endIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(endTime));
+//    for (int i = startIndex; i < endIndex; i++) {
+//        auto p = midiMessages.getEventPointer(i);
+//        auto event = p->message;
+//        buffer.addEvent(event, event.getTimeStamp());
+//    }
     if (recording) {
         MidiBuffer keyboardBuffer;
         midiRecorder.getKeyboardState().processNextMidiBuffer(keyboardBuffer, startSample, numSamples, true);
         buffer.addEvents(keyboardBuffer, startSample, numSamples, 0);
     }
+}
+
+double Track::getMidiLengthInSeconds() const {
+    double len = 0;
+    for (const shared_ptr<NoteRoll> &p : noteRolls) {
+        auto &noteRoll = *p;
+        if (!noteRoll.isDeleted()) {
+            len = max(len, noteRoll.getEndPosInSeconds());
+        }
+    }
+    return len;
+}
+
+int64 Track::getMidiLengthInSamples() const {
+    if (!hasMidi()) {
+        return 0;
+    }
+    return project.ticksToSeconds(getMidiLengthInSeconds()) * deviceManager.getAudioDeviceSetup().sampleRate +
+           2 * deviceManager.getAudioDeviceSetup().bufferSize; // overshoot to ensure we get all note off events
 }
 
 } // namespace trackman

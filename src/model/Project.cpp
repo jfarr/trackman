@@ -104,7 +104,7 @@ void Project::from_json(AudioFormatManager &formatManager, string filename) {
             addSample(*track, sample_json["file"], sample_json["startPos"], sample_json["endPos"], formatManager);
         }
         auto midiMessages = midiFile.getTrack(i++);
-        track->setMidiMessages(*midiMessages);
+//        track->setMidiMessages(*midiMessages);
         mixer.addSource(track->getSource());
     }
 }
