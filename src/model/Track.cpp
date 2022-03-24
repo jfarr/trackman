@@ -67,7 +67,12 @@ Sample *Track::addSample(const File &file, double startPos, double endPos, Audio
     if (name == defaultName) {
         name = file.getFileName();
     }
-    return &(*samples.back());
+    return sample;
+}
+
+NoteRoll *Track::addNoteRoll(const MidiMessageSequence &midiMessages, double startPos, double endPos) {
+    noteRolls.push_back(make_shared<NoteRoll>(midiMessages, 0, 0));
+    return &(*noteRolls.back());
 }
 
 void Track::createSamplePlayer() {
@@ -119,10 +124,15 @@ int64 Track::getMidiLengthInSamples() const {
 
 void Track::startRecording() {
     if (!recording) {
-        midiRecorder.setMidiMessages(getMidiMessages());
+        auto noteRoll = addNoteRoll(MidiMessageSequence(), 0, 0);
+        midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
     }
     midiRecorder.startRecording();
     recording = true;
+}
+
+void Track::pauseRecording() {
+    midiRecorder.stopRecording();
 }
 
 void Track::stopRecording() {
@@ -131,8 +141,8 @@ void Track::stopRecording() {
     auto messages = midiRecorder.getMidiMessages();
     messages.sort();
     messages.updateMatchedPairs();
-    noteRolls.pop_back();
-    noteRolls.push_back(make_shared<NoteRoll>(messages, 0, 0));
+//    noteRolls.pop_back();
+//    noteRolls.push_back(make_shared<NoteRoll>(messages, 0, 0));
 }
 
 const MidiMessageSequence Track::getCurrentMidiMessages(double pos) const {

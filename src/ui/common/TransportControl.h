@@ -21,6 +21,9 @@ class TransportControl : public Component, public ChangeListener, public Timer, 
 
     function<void(bool)> onLoopingChanged = nullptr;
     function<void()> onRecordClicked = nullptr;
+    function<void()> onRecordStarted = nullptr;
+    function<void()> onRecordStopped = nullptr;
+    function<void()> onRecordPaused = nullptr;
 
     //==============================================================================
     // Component
@@ -48,9 +51,13 @@ class TransportControl : public Component, public ChangeListener, public Timer, 
     void createControls();
     void changeState(TransportState newState);
     String getStateLabel();
+    bool isRecordEnabled() const { return recordEnabledFn != nullptr; }
 
     void notifyLoopingChanged(bool shouldLoop) const;
-    void notifyRecordClicked() const;
+//    void notifyRecordClicked() const;
+    void notifyRecordStarted() const;
+    void notifyRecordStopped() const;
+    void notifyRecordPaused() const;
 
     //==============================================================================
 

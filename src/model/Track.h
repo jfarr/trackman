@@ -57,6 +57,7 @@ class Track {
     bool canRecord() const { return samplePlayer == nullptr; }
     bool isRecording() const { return recording; }
     void startRecording();
+    void pauseRecording();
     void stopRecording();
     const MidiMessageSequence &getMidiMessages() const { return noteRolls.back()->getMidiMessages(); }
     const MidiMessageSequence getCurrentMidiMessages(double pos) const;
@@ -68,6 +69,7 @@ class Track {
     friend TrackList;
 
     Sample *addSample(const File &file, double startPos, double endPos, AudioFormatManager &formatManager);
+    NoteRoll *addNoteRoll(const MidiMessageSequence &midiMessages, double startPos, double endPos);
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
     void updateGain(bool anySoloed);

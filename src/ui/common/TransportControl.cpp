@@ -197,7 +197,7 @@ void TransportControl::resized() {
     auto loopButtonWidth = 65;
     auto buttonMargin = 2;
     startButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin).withTrimmedLeft(buttonMargin));
-    if (recordEnabledFn != nullptr) {
+    if (isRecordEnabled()) {
         recordButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
     }
     playButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
@@ -214,9 +214,9 @@ void TransportControl::changeState(TransportState newState) {
         case TransportState::Stopped:
             setButtonImage(playButton, playButtonOffImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
-            if (recordEnabledFn != nullptr) {
+            if (isRecordEnabled()) {
                 setButtonImage(recordButton, recordButtonOffImage);
-                notifyRecordClicked();
+                notifyRecordStopped();
             }
             recording = false;
             transportSource.setPosition(0.0);
@@ -229,17 +229,25 @@ void TransportControl::changeState(TransportState newState) {
         case TransportState::Playing:
             setButtonImage(playButton, playButtonOnImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
+            if (isRecordEnabled()) {
+                if (recording) {
+                    setButtonImage(recordButton, recordButtonOffImage);
+                    notifyRecordPaused();
+//                } else {
+//                    setButtonImage(recordButton, recordButtonOnImage);
+                }
+            }
             break;
 
         case TransportState::Recording:
             setButtonImage(playButton, playButtonOnImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
             setButtonImage(recordButton, recordButtonOnImage);
-            notifyRecordClicked();
+            notifyRecordStarted();
             break;
 
         case TransportState::Pausing:
-            notifyRecordClicked();
+            notifyRecordPaused();
             transportSource.stop();
             break;
 
@@ -316,13 +324,10 @@ void TransportControl::recordButtonClicked() {
     recording = !recording;
     if ((state == TransportState::Stopped) || (state == TransportState::Paused)) {
         changeState(TransportState::Starting);
+    } else if (state == TransportState::Recording) {
+        changeState(TransportState::Playing);
     } else if (state == TransportState::Playing) {
-        if (recording) {
-            setButtonImage(recordButton, recordButtonOffImage);
-        } else {
-            setButtonImage(recordButton, recordButtonOnImage);
-        }
-        notifyRecordClicked();
+        changeState(TransportState::Recording);
     }
 }
 
@@ -358,9 +363,27 @@ void TransportControl::notifyLoopingChanged(bool shouldLoop) const {
     }
 }
 
-void TransportControl::notifyRecordClicked() const {
-    if (onRecordClicked != nullptr) {
-        onRecordClicked();
+//void TransportControl::notifyRecordClicked() const {
+//    if (onRecordClicked != nullptr) {
+//        onRecordClicked();
+//    }
+//}
+
+void TransportControl::notifyRecordStarted() const {
+    if (onRecordStarted != nullptr) {
+        onRecordStarted();
+    }
+}
+
+void TransportControl::notifyRecordStopped() const {
+    if (onRecordStopped != nullptr) {
+        onRecordStopped();
+    }
+}
+
+void TransportControl::notifyRecordPaused() const {
+    if (onRecordPaused != nullptr) {
+        onRecordPaused();
     }
 }
 
