@@ -55,6 +55,8 @@ target_sources(Trackman PRIVATE
         model/TimeSignature.h
         model/Track.cpp
         model/Track.h
+        model/TrackRegion.cpp
+        model/TrackRegion.h
         model/TrackList.cpp
         model/TrackList.h
         model/Transport.cpp

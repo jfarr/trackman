@@ -3,7 +3,7 @@
 namespace trackman {
 
 TrackLaneControl::TrackLaneControl(Project &project, Track &track, AudioTransportSource &transport)
-    : project(project), track(track), transport(transport), noteRoll(project, track) {
+    : project(project), track(track), transport(transport) {
     setSize(preferredWidth, preferredHeight);
     createControls();
     update();
@@ -21,7 +21,13 @@ void TrackLaneControl::createControls() {
     }
 }
 
-void TrackLaneControl::addThumbnail(SampleThumbnail *thumbnail) { thumbnails.push_back(thumbnail); }
+void TrackLaneControl::addSampleThumbnail(SampleThumbnail *thumbnail) {
+    thumbnails.push_back(thumbnail);
+}
+
+void TrackLaneControl::addNoteCanvas(NoteCanvas *canvas) {
+    canvases.push_back(canvas);
+}
 
 void TrackLaneControl::update() {
     removeAllChildren();
@@ -30,7 +36,10 @@ void TrackLaneControl::update() {
     for (SampleThumbnail *thumbnail : thumbnails) {
         addAndMakeVisible(thumbnail);
     }
-    addAndMakeVisible(noteRoll);
+    for (NoteCanvas *canvas : canvases) {
+        addAndMakeVisible(canvas);
+    }
+//    addAndMakeVisible(noteRoll);
     resized();
 }
 
@@ -53,11 +62,17 @@ void TrackLaneControl::resized() {
     trackLabel.setBounds(area.removeFromTop(labelHeight).withTrimmedTop(margin));
     area.removeFromTop(margin);
     for (SampleThumbnail *thumbnail : thumbnails) {
-        auto x = thumbnail->getSample().getStartPos() * scale;
-        thumbnail->setBounds(x, area.getY(), thumbnail->getSample().getLengthInSeconds() * scale, area.getHeight());
+        auto &sample = thumbnail->getSample();
+        auto x = sample.getStartPosInSeconds() * scale;
+        thumbnail->setBounds(x, area.getY(), sample.getLengthInSeconds() * scale, area.getHeight());
     }
-    noteRoll.setBounds(noteRoll.getBounds().withY(area.getY()).withHeight(area.getHeight()));
-    noteRoll.resize();
+    for (NoteCanvas *canvas : canvases) {
+        auto &noteRoll = canvas->getNoteRoll();
+        auto x = noteRoll.getStartPosInSeconds() * scale;
+        canvas->setBounds(x, area.getY(), noteRoll.getLengthInSeconds() * scale, area.getHeight());
+    }
+//    noteRoll.setBounds(noteRoll.getBounds().withY(area.getY()).withHeight(area.getHeight()));
+//    noteRoll.resize();
 }
 
 } // namespace trackman

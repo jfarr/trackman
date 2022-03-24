@@ -59,6 +59,8 @@ class Track {
     void startRecording();
     void pauseRecording();
     void stopRecording();
+
+    void eachNoteRoll(function<void(NoteRoll &noteRoll)> f);
     const MidiMessageSequence &getMidiMessages() const { return noteRolls.back()->getMidiMessages(); }
     const MidiMessageSequence getCurrentMidiMessages(double pos) const;
     void setMidiMessages(const MidiMessageSequence &newMessages);

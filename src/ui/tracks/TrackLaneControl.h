@@ -19,7 +19,8 @@ class TrackLaneControl : public Component {
     Track &getTrack() { return track; }
     int getPreferredHeight() const { return preferredHeight; }
 
-    void addThumbnail(SampleThumbnail *thumbnail);
+    void addSampleThumbnail(SampleThumbnail *thumbnail);
+    void addNoteCanvas(NoteCanvas *canvas);
     void clear() { thumbnails.clear(); }
     void update();
 
@@ -38,7 +39,8 @@ class TrackLaneControl : public Component {
 
     Label trackLabel;
     list<SampleThumbnail *> thumbnails;
-    NoteCanvas noteRoll;
+    list<NoteCanvas *> canvases;
+//    NoteCanvas noteRoll;
 
     void createControls();
 

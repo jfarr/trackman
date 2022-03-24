@@ -11,8 +11,10 @@ namespace trackman {
 
 class NoteCanvas : public Component, public Timer {
   public:
-    NoteCanvas(Project &project, Track &track);
+    NoteCanvas(Project &project, Track &track, NoteRoll &noteRoll);
     ~NoteCanvas() override = default;
+
+    NoteRoll &getNoteRoll() { return noteRoll; }
 
     void resize();
 
@@ -27,6 +29,7 @@ class NoteCanvas : public Component, public Timer {
   private:
     Project &project;
     Track &track;
+    NoteRoll &noteRoll;
 
     Rectangle<float> getNoteRect(const MidiMessage &noteOn, const MidiMessage &noteOff, int lowNote,
         double noteStep, double x, double h, double scale, double margin);

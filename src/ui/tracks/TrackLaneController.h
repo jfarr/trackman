@@ -44,9 +44,13 @@ class TrackLaneController : public MouseListener, public TrackListListener {
     TrackListController &trackListController;
 
     TrackLaneControl trackLaneControl;
-    list<unique_ptr<SampleThumbnail>> thumbnails;
+    list<unique_ptr<SampleThumbnail>> sampleThumbnails;
+    list<unique_ptr<NoteCanvas>> noteCanvases;
+
     list<TrackListListener *> trackListListeners;
 
+    void updateSamples();
+    void updateMidi();
     void notifySelectionChanged();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackLaneController)

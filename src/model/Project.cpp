@@ -60,7 +60,7 @@ string Project::to_json() {
             {"muted", track.isMuted()}, {"soloed", track.isSoloed()}};
         track.eachSample([&track_json](Sample &sample) {
             json sample_json = {{"file", sample.getFile().getFullPathName().toStdString()},
-                {"startPos", sample.getStartPos()}, {"endPos", sample.getEndPos()}};
+                {"startPos", sample.getStartPosInSeconds()}, {"endPos", sample.getEndPosInSeconds()}};
             track_json["samples"].push_back(sample_json);
         });
         project_json["tracks"].push_back(track_json);

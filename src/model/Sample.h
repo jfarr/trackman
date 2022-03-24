@@ -3,6 +3,7 @@
 #include <JuceHeader.h>
 #include <utility>
 
+#include "TrackRegion.h"
 #include "audio/PositionableResamplingAudioSource.h"
 
 using namespace std;
@@ -12,24 +13,24 @@ namespace trackman {
 
 class Track;
 
-class Sample : public PositionableAudioSource {
+class Sample : public PositionableAudioSource, public TrackRegion {
   public:
-    Sample(File file, double startPos, double endPos);
+    Sample(File file, double startPosInSeconds, double endPosInSeconds);
     ~Sample() override;
 
     File getFile() const { return file; }
-    double getStartPos() const { return startPos; }
-    double getEndPos() const { return endPos; }
+    double getStartPosInSeconds() const { return startPosInSeconds; }
+    double getEndPosInSeconds() const { return endPosInSeconds; }
+    double getLengthInSeconds() const { return lengthInSeconds; }
     int64 getLengthInSamples() const;
-    double getLengthInSeconds() const { return length; }
     bool isLoaded() const { return loaded; }
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
 
     void loadFile(AudioDeviceManager &deviceManager, AudioFormatManager &formatManager);
 
-    void setPosition(double pos);
-    void setLength(double newLength);
+    void setPosition(double newPosInSeconds);
+    void setLength(double newLengthInSeconds);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
 
@@ -49,9 +50,9 @@ class Sample : public PositionableAudioSource {
 
   private:
     File file;
-    double startPos;
-    double endPos;
-    double length;
+    double startPosInSeconds;
+    double endPosInSeconds;
+    double lengthInSeconds;
     double sourceLengthInSeconds = 0;
     unique_ptr<AudioFormatReaderSource> fileSource;
     unique_ptr<PositionableResamplingAudioSource> resamplingSource;
@@ -67,4 +68,4 @@ class Sample : public PositionableAudioSource {
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Sample)
 };
 
-}
+} // namespace trackman

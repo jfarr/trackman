@@ -13,7 +13,7 @@ SamplePlayer::~SamplePlayer() {
 Timeline<Sample *> SamplePlayer::getCurrentTimeline() {
     Timeline<Sample *> timeline;
     for (shared_ptr<Sample> &sample : samples) {
-        timeline.addRange(sample->getStartPos(), sample->getEndPos(), sample.get());
+        timeline.addRange(sample->getStartPosInSeconds(), sample->getEndPosInSeconds(), sample.get());
     }
     return timeline;
 }

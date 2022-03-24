@@ -8,26 +8,45 @@ TrackLaneController::TrackLaneController(Project &project, Track &track, TrackLi
     AudioTransportSource &transport, AudioFormatManager &formatManager)
     : project(project), track(track), transport(transport), trackListController(trackListController),
       trackLaneControl(project, track, transport), formatManager(formatManager) {
-    addListener((TrackListListener *)&trackListController);
+    addListener(&trackListController);
     trackLaneControl.addMouseListener(this, false);
 }
 
-TrackLaneController::~TrackLaneController() { removeListener((TrackListListener *)&trackListController); }
+TrackLaneController::~TrackLaneController() { removeListener(&trackListController); }
 
 void TrackLaneController::update() {
-    for (unique_ptr<SampleThumbnail> &thumbnail : thumbnails) {
-        thumbnail->removeListener(&trackListController);
-    }
-    thumbnails.clear();
-    trackLaneControl.clear();
-    track.eachSample([this](Sample &sample) {
-        thumbnails.push_back(make_unique<SampleThumbnail>(project, track, sample, formatManager));
-        thumbnails.back()->addListener(&trackListController);
-        trackLaneControl.addThumbnail(thumbnails.back().get());
-    });
-    if (track.getMidiMessages().getNumEvents() > 0) {
+    if (track.hasMidi()) {
+        updateMidi();
+    } else if (track.hasSamples()) {
+        updateSamples();
     }
     trackLaneControl.update();
+}
+
+void TrackLaneController::updateSamples() {
+    for (unique_ptr<SampleThumbnail> &thumbnail : sampleThumbnails) {
+        thumbnail->removeListener(&trackListController);
+    }
+    sampleThumbnails.clear();
+    trackLaneControl.clear();
+    track.eachSample([this](Sample &sample) {
+        sampleThumbnails.push_back(make_unique<SampleThumbnail>(project, track, sample, formatManager));
+        sampleThumbnails.back()->addListener(&trackListController);
+        trackLaneControl.addSampleThumbnail(sampleThumbnails.back().get());
+    });
+}
+
+void TrackLaneController::updateMidi() {
+    for (unique_ptr<NoteCanvas> &canvas : noteCanvases) {
+//        canvas->removeListener(&trackListController);
+    }
+    noteCanvases.clear();
+    trackLaneControl.clear();
+    track.eachNoteRoll([this](NoteRoll &noteRoll) {
+        noteCanvases.push_back(make_unique<NoteCanvas>(project, track, noteRoll));
+//        noteCanvases.back()->addListener(&trackListController);
+        trackLaneControl.addNoteCanvas(noteCanvases.back().get());
+    });
 }
 
 void TrackLaneController::repaint() { trackLaneControl.repaint(); }

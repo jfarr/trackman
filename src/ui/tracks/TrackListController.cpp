@@ -153,7 +153,7 @@ void TrackListController::sampleSelected(Track &track, Sample &sample) {
 
 void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y) {
     removeDragLane();
-    auto curPos = sample.getStartPos();
+    auto curPos = sample.getStartPosInSeconds();
     auto scale = project.getHorizontalScale();
     x = max(x, 0);
     double newPos = (double)x / scale;

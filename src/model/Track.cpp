@@ -145,6 +145,14 @@ void Track::stopRecording() {
     noteRolls.push_back(make_shared<NoteRoll>(messages, 0, 0));
 }
 
+void Track::eachNoteRoll(function<void(NoteRoll &noteRoll)> f) {
+    for (shared_ptr<NoteRoll> &noteRoll : noteRolls) {
+        if (!(*noteRoll).isDeleted()) {
+            f(*noteRoll);
+        }
+    }
+}
+
 const MidiMessageSequence Track::getCurrentMidiMessages(double pos) const {
     if (recording) {
         auto messages = midiRecorder.getMidiMessages();

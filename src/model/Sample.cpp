@@ -4,8 +4,9 @@
 
 namespace trackman {
 
-Sample::Sample(File file, double startPos, double endPos)
-    : file(move(file)), startPos(startPos), endPos(endPos), length(endPos - startPos) {}
+Sample::Sample(File file, double startPosInSeconds, double endPosInSeconds)
+    : file(move(file)), startPosInSeconds(startPosInSeconds), endPosInSeconds(endPosInSeconds),
+      lengthInSeconds(endPosInSeconds - startPosInSeconds) {}
 
 Sample::~Sample() {
     if (resamplingSource != nullptr) {
@@ -14,14 +15,17 @@ Sample::~Sample() {
 }
 
 int64 Sample::getLengthInSamples() const {
-    return resamplingSource == nullptr ? 0 : getPositionFromTime(startPos) + resamplingSource->getTotalLength();
+    return resamplingSource == nullptr ? 0
+                                       : getPositionFromTime(startPosInSeconds) + resamplingSource->getTotalLength();
 }
 
 int64 Sample::getPositionFromTime(double t) const {
     return resamplingSource == nullptr ? 0 : t * resamplingSource->getSampleRate();
 }
 
-double Sample::getSampleRate() const { return reader->sampleRate * sourceLengthInSeconds / (endPos - startPos); }
+double Sample::getSampleRate() const {
+    return reader->sampleRate * sourceLengthInSeconds / (endPosInSeconds - startPosInSeconds);
+}
 
 void Sample::loadFile(AudioDeviceManager &deviceManager, AudioFormatManager &formatManager) {
     auto blockSize = deviceManager.getAudioDeviceSetup().bufferSize;
@@ -30,21 +34,21 @@ void Sample::loadFile(AudioDeviceManager &deviceManager, AudioFormatManager &for
     if (reader != nullptr) {
         fileSource = make_unique<AudioFormatReaderSource>(reader.get(), false);
         sourceLengthInSeconds = reader->lengthInSamples / reader->sampleRate;
-        resamplingSource = make_unique<PositionableResamplingAudioSource>(
-            fileSource.get(), false, sampleRate, getSampleRate(), 2);
+        resamplingSource =
+            make_unique<PositionableResamplingAudioSource>(fileSource.get(), false, sampleRate, getSampleRate(), 2);
         resamplingSource->prepareToPlay(blockSize, sampleRate);
         loaded = true;
     }
 }
 
-void Sample::setPosition(double pos) {
-    startPos = pos;
-    endPos = startPos + length;
+void Sample::setPosition(double newPosInSeconds) {
+    startPosInSeconds = newPosInSeconds;
+    endPosInSeconds = startPosInSeconds + lengthInSeconds;
 }
 
-void Sample::setLength(double newLength) {
-    length = newLength;
-    endPos = startPos + newLength;
+void Sample::setLength(double newLengthInSeconds) {
+    lengthInSeconds = newLengthInSeconds;
+    endPosInSeconds = startPosInSeconds + newLengthInSeconds;
     if (resamplingSource != nullptr) {
         resamplingSource->setSourceSampleRateToCorrectFor(getSampleRate());
     }
@@ -80,9 +84,7 @@ int64 Sample::getNextReadPosition() const {
     return resamplingSource == nullptr ? 0 : resamplingSource->getNextReadPosition();
 }
 
-int64 Sample::getTotalLength() const {
-    return resamplingSource == nullptr ? 0 : resamplingSource->getTotalLength();
-}
+int64 Sample::getTotalLength() const { return resamplingSource == nullptr ? 0 : resamplingSource->getTotalLength(); }
 
 bool Sample::isLooping() const { return false; }
 
