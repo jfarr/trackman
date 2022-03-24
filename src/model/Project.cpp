@@ -12,6 +12,11 @@ Project::Project(AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
     : deviceManager(deviceManager), trackList(*this, deviceManager, midiRecorder), mixer(trackList, deviceManager),
       transport(mixer) {}
 
+bool Project::isRecording() const {
+    auto selected = getSelectedTrack();
+    return selected == nullptr ? false : selected->isRecording();
+}
+
 int Project::secondsToTicks(double seconds) const { return TimeUtils::secondsToTicks(tempo, seconds); }
 
 double Project::ticksToSeconds(int ticks) const { return TimeUtils::ticksToSeconds(tempo, ticks); }

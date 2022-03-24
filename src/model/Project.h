@@ -34,6 +34,8 @@ class Project {
     Track *getSelectedTrack() const { return trackList.getSelectedTrack(); }
     Sample *getSelectedSample() const { return trackList.getSelectedSample(); }
 
+    bool isRecording() const;
+
     int secondsToTicks(double seconds) const;
     double ticksToSeconds(int ticks) const;
     double measuresToSeconds(double measures) const;

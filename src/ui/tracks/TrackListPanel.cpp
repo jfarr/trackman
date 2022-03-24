@@ -107,7 +107,7 @@ void TrackListPanel::resize() {
 }
 
 void TrackListPanel::timerCallback() {
-    if (!dragging) {
+    if (!dragging && desktopController.getProject().isRecording()) {
         resize();
     }
 }

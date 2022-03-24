@@ -121,8 +121,9 @@ int64 Track::getTotalLengthInSamples() const {
 
 void Track::startRecording() {
     if (!recording) {
-        auto noteRoll = addNoteRoll(MidiMessageSequence(), 0, 0);
-        midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
+//        auto noteRoll = addNoteRoll(MidiMessageSequence(), 0, 0);
+//        midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
+        midiRecorder.setMidiMessages(MidiMessageSequence());
         recordStartPosInSeconds = project.getTransport().getCurrentPosition();
     }
     midiRecorder.startRecording();

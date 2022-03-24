@@ -20,8 +20,19 @@ void NoteCanvas::resize() {
 }
 
 void NoteCanvas::paint(Graphics &g) {
-    auto selected = track.isSelected();
     auto area = getLocalBounds();
+    auto selected = track.isSelected();
+    auto border = 3;
+
+    auto bgcolor = selected ? Colours::lightgrey : Colours::dimgrey;
+    g.fillAll(bgcolor);
+    g.setColour(Colours::grey);
+    g.drawRect(0, 0, getWidth(), getHeight());
+
+    auto thumbnailBounds = area.reduced(border);
+    g.setColour(Colours::dimgrey);
+    g.fillRect(thumbnailBounds);
+
     auto messages = track.getCurrentMidiMessages(project.getTransport().getTransportSource().getCurrentPosition());
     auto scale = project.getHorizontalScale();
     int lowNote = getLowestNote(messages);
