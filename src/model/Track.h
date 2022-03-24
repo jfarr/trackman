@@ -66,6 +66,7 @@ class Track {
     double getMidiLengthInSeconds() const;
     int64 getMidiLengthInSamples() const;
 //    void setMidiMessages(const MidiMessageSequence &newMessages);
+    void updateCurrentNoteRoll();
 
   private:
     friend TrackList;

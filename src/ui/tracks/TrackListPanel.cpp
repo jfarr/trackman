@@ -108,7 +108,11 @@ void TrackListPanel::resize() {
 
 void TrackListPanel::timerCallback() {
     if (!dragging && desktopController.getProject().isRecording()) {
-        resize();
+        auto selected = desktopController.getProject().getSelectedTrack();
+        if (selected != nullptr) {
+            selected->updateCurrentNoteRoll();
+//            resize();
+        }
     }
 }
 

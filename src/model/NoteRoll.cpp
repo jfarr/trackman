@@ -6,6 +6,14 @@ NoteRoll::NoteRoll(const MidiMessageSequence &midiMessages, double startPosInSec
     : midiMessages(midiMessages), startPosInSeconds(startPosInSeconds), endPosInSeconds(endPosInSeconds),
       lengthInSeconds(endPosInSeconds - startPosInSeconds) {}
 
+void NoteRoll::update() {
+    midiMessages.sort();
+    midiMessages.updateMatchedPairs();
+    startPosInSeconds = midiMessages.getStartTime();
+    endPosInSeconds = midiMessages.getEndTime();
+    lengthInSeconds = endPosInSeconds - startPosInSeconds;
+}
+
 //==============================================================================
 void NoteRoll::prepareToPlay(int blockSize, double sampleRate) {
 //    if (resamplingSource != nullptr) {

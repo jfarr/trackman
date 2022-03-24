@@ -23,6 +23,7 @@ void DesktopController::recordingStarted() {
     auto selected = project.getTrackList().getSelectedTrack();
     if (selected != nullptr) {
         selected->startRecording();
+        MessageManager::callAsync([this]() { trackListController.update(); });
     }
 }
 

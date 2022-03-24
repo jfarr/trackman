@@ -121,9 +121,9 @@ int64 Track::getTotalLengthInSamples() const {
 
 void Track::startRecording() {
     if (!recording) {
-//        auto noteRoll = addNoteRoll(MidiMessageSequence(), 0, 0);
-//        midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
-        midiRecorder.setMidiMessages(MidiMessageSequence());
+        auto noteRoll = addNoteRoll(MidiMessageSequence(), 0, 0);
+        midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
+//        midiRecorder.setMidiMessages(MidiMessageSequence());
         recordStartPosInSeconds = project.getTransport().getCurrentPosition();
     }
     midiRecorder.startRecording();
@@ -135,12 +135,19 @@ void Track::pauseRecording() { midiRecorder.stopRecording(); }
 void Track::stopRecording() {
     midiRecorder.stopRecording();
     recording = false;
-    auto messages = midiRecorder.getMidiMessages();
-    messages.sort();
-    messages.updateMatchedPairs();
-    //    noteRolls.pop_back();
-    noteRolls.push_back(
-        make_shared<NoteRoll>(messages, recordStartPosInSeconds, project.getTransport().getCurrentPosition()));
+    noteRolls.back()->update();
+//    auto messages = midiRecorder.getMidiMessages();
+//    messages.sort();
+//    messages.updateMatchedPairs();
+//    //    noteRolls.pop_back();
+//    noteRolls.push_back(
+//        make_shared<NoteRoll>(messages, recordStartPosInSeconds, project.getTransport().getCurrentPosition()));
+}
+
+void Track::updateCurrentNoteRoll() {
+    if (!noteRolls.empty()) {
+        noteRolls.back()->update();
+    }
 }
 
 void Track::eachNoteRoll(function<void(NoteRoll &noteRoll)> f) {

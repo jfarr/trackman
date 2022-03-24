@@ -23,6 +23,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
 
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
+    void update();
 
     //==============================================================================
     // AudioSource
