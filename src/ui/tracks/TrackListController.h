@@ -24,14 +24,14 @@ class TrackListController : public TrackListListener, public SampleListener {
     TrackListPanel &getTrackListPanel() { return trackListPanel; }
     TrackListViewport &getViewport() { return trackListViewport; }
 
+    void update();
+    void repaint();
+
     Sample *addSample(Track &track, File file, int pos);
     void moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos);
     void resizeSample(Sample &sample, double length);
     void deleteSample(Track &track, Sample *sample);
     void undeleteSample(Track &track, Sample *sample);
-
-    void update();
-    void repaint();
 
     void fileDragEnter(const StringArray &files, int x, int y);
     void fileDragMove(const StringArray &files, int x, int y);

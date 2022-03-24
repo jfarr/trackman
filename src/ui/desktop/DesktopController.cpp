@@ -19,14 +19,25 @@ DesktopController::DesktopController(MainWindow &mainWindow, AudioDeviceManager 
 
 void DesktopController::loopingChanged(bool shouldLoop) { project.getMixer().setLooping(shouldLoop); }
 
-void DesktopController::recordClicked() {
+void DesktopController::recordingStarted() {
     auto selected = project.getTrackList().getSelectedTrack();
     if (selected != nullptr) {
-        if (selected->isRecording()) {
-            selected->stopRecording();
-        } else {
-            selected->startRecording();
-        }
+        selected->startRecording();
+    }
+}
+
+void DesktopController::recordingStopped() {
+    auto selected = project.getTrackList().getSelectedTrack();
+    if (selected != nullptr) {
+        selected->stopRecording();
+        MessageManager::callAsync([this]() { trackListController.update(); });
+    }
+}
+
+void DesktopController::recordingPaused() {
+    auto selected = project.getTrackList().getSelectedTrack();
+    if (selected != nullptr) {
+        selected->pauseRecording();
     }
 }
 
@@ -353,25 +364,15 @@ void DesktopController::exportProject() {
 }
 
 void DesktopController::updateTitleBar() {
-    mainWindow.setName(
-        (projectFile != File{} ? projectFile.getFileNameWithoutExtension() + (dirty ? " [modified]" : "")
-                                     : "[untitled]") +
-        " - " + applicationName);
-}
-
-void DesktopController::recordingStopped() {
-    auto selected = project.getTrackList().getSelectedTrack();
-    if (selected != nullptr) {
-        selected->stopRecording();
-        MessageManager::callAsync([this]() { trackListController.update(); });
-    }
+    mainWindow.setName((projectFile != File{} ? projectFile.getFileNameWithoutExtension() + (dirty ? " [modified]" : "")
+                                              : "[untitled]") +
+                       " - " + applicationName);
 }
 
 void DesktopController::selectionChanged(Track *track) {
     project.getTrackList().setSelected(track);
     MessageManager::callAsync([this, track]() {
         transportController.selectionChanged(track);
-        //        mixerController.getMixerPanel().getTransportControl().selectionChanged(track);
         trackListController.repaint();
         mixerController.repaint();
         instrumentsController.repaint();

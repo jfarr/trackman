@@ -52,7 +52,9 @@ class DesktopController : public AudioSource,
     void resize();
 
     void loopingChanged(bool shouldLoop);
-    void recordClicked();
+    void recordingStarted();
+    void recordingStopped();
+    void recordingPaused();
     bool canRecord();
 
     void createKeyboard();
@@ -63,7 +65,6 @@ class DesktopController : public AudioSource,
     void resizeSample(Sample &sample, double prevLen, double newLen);
     void deleteSelected();
 
-    void recordingStopped();
     void selectionChanged(Track *track);
     String getSelectionType() const;
 

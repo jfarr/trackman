@@ -216,7 +216,7 @@ void TransportControl::changeState(TransportState newState) {
             setButtonImage(pauseButton, pauseButtonOffImage);
             if (isRecordEnabled()) {
                 setButtonImage(recordButton, recordButtonOffImage);
-                notifyRecordStopped();
+                notifyRecordingStopped();
             }
             recording = false;
             transportSource.setPosition(0.0);
@@ -232,7 +232,7 @@ void TransportControl::changeState(TransportState newState) {
             if (isRecordEnabled()) {
                 if (recording) {
                     setButtonImage(recordButton, recordButtonOffImage);
-                    notifyRecordPaused();
+                    notifyRecordingPaused();
 //                } else {
 //                    setButtonImage(recordButton, recordButtonOnImage);
                 }
@@ -243,11 +243,11 @@ void TransportControl::changeState(TransportState newState) {
             setButtonImage(playButton, playButtonOnImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
             setButtonImage(recordButton, recordButtonOnImage);
-            notifyRecordStarted();
+            notifyRecordingStarted();
             break;
 
         case TransportState::Pausing:
-            notifyRecordPaused();
+            notifyRecordingPaused();
             transportSource.stop();
             break;
 
@@ -363,27 +363,21 @@ void TransportControl::notifyLoopingChanged(bool shouldLoop) const {
     }
 }
 
-//void TransportControl::notifyRecordClicked() const {
-//    if (onRecordClicked != nullptr) {
-//        onRecordClicked();
-//    }
-//}
-
-void TransportControl::notifyRecordStarted() const {
-    if (onRecordStarted != nullptr) {
-        onRecordStarted();
+void TransportControl::notifyRecordingStarted() const {
+    if (onRecordingStarted != nullptr) {
+        onRecordingStarted();
     }
 }
 
-void TransportControl::notifyRecordStopped() const {
-    if (onRecordStopped != nullptr) {
-        onRecordStopped();
+void TransportControl::notifyRecordingStopped() const {
+    if (onRecordingStopped != nullptr) {
+        onRecordingStopped();
     }
 }
 
-void TransportControl::notifyRecordPaused() const {
-    if (onRecordPaused != nullptr) {
-        onRecordPaused();
+void TransportControl::notifyRecordingPaused() const {
+    if (onRecordingPaused != nullptr) {
+        onRecordingPaused();
     }
 }
 

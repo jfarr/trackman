@@ -142,7 +142,7 @@ void Track::stopRecording() {
     messages.sort();
     messages.updateMatchedPairs();
 //    noteRolls.pop_back();
-//    noteRolls.push_back(make_shared<NoteRoll>(messages, 0, 0));
+    noteRolls.push_back(make_shared<NoteRoll>(messages, 0, 0));
 }
 
 const MidiMessageSequence Track::getCurrentMidiMessages(double pos) const {
