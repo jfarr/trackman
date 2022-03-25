@@ -15,7 +15,7 @@ void NoteCanvas::resize() {
     auto border = 3;
     auto length = project.ticksToSeconds(
         track.getCurrentMidiMessages(project.getTransport().getTransportSource().getCurrentPosition()).getEndTime());
-    auto width = length * project.getHorizontalScale() - area.getX() + border + 1;
+    auto width = noteRoll.empty() ? 0 : length * project.getHorizontalScale() - area.getX() + border + 1;
     setBounds(area.withWidth(width));
     repaint();
 }

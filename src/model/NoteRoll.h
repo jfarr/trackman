@@ -17,6 +17,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     ~NoteRoll() = default;
 
     const MidiMessageSequence &getMidiMessages() const;
+    bool empty() const { return getMidiMessages().getNumEvents() == 0; }
     double getStartPosInSeconds() const;
     double getEndPosInSeconds() const;
     double getLengthInSeconds() const;
