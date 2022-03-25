@@ -4,7 +4,7 @@
 namespace trackman {
 
 MidiRecorder::MidiRecorder(Project &project, AudioDeviceManager &deviceManager)
-    : project(project), deviceManager(deviceManager) {
+    : project(project), deviceManager(deviceManager), midiMessages(emptyMidiMessages) {
 
     auto midiInputs = MidiInput::getAvailableDevices();
     StringArray midiInputNames;
