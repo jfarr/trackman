@@ -150,6 +150,12 @@ void TrackListPanel::resized() {
     }
 }
 
+void TrackListPanel::updatePositionOverlay() {
+    auto area = getLocalBounds();
+    auto width = max(transport.getLengthInSeconds() * desktopController.getProject().getHorizontalScale(), 2.0);
+    overlay.setBounds(area.withWidth(width));
+}
+
 void TrackListPanel::mouseDown(const MouseEvent &event) {
     Component::mouseDown(event);
     notifySelectionChanged();
