@@ -65,8 +65,9 @@ void TrackLaneControl::resized() {
     for (NoteCanvas *canvas : canvases) {
         auto &noteRoll = canvas->getNoteRoll();
         auto x = noteRoll.getStartPosInSeconds() * scale;
-        DBG("x: " << x);
-        canvas->setBounds(x, area.getY(), noteRoll.getLengthInSeconds() * scale, area.getHeight());
+        auto w = noteRoll.getLengthInSeconds() * scale - x;
+        DBG("x: " << x << " width: " << w);
+        canvas->setBounds(x, area.getY(), w, area.getHeight());
     }
 }
 
