@@ -39,7 +39,7 @@ void NoteCanvas::paint(Graphics &g) {
     int highNote = getHighestNote(messages);
     double noteSpan = max(24, highNote - lowNote) + 1;
     double margin = 1.0;
-    double x = area.getX();
+    double x = -getBounds().getX();
     double h = getHeight() - 2 * margin;
     double noteHeight = h / noteSpan;
     for (auto m : messages) {
@@ -61,6 +61,7 @@ Rectangle<float> NoteCanvas::getNoteRect(const MidiMessage &noteOn, const MidiMe
     auto start = project.ticksToSeconds(noteOn.getTimeStamp());
     auto end = project.ticksToSeconds(noteOff.getTimeStamp());
     auto noteX = x + start * scale;
+//    auto noteX = start * scale;
     auto noteWidth = (end - start) * scale;
     auto noteDist = noteOn.getNoteNumber() - lowNote;
     double noteY = h - noteHeight * (noteDist + 1.0) + margin;
