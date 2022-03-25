@@ -108,10 +108,11 @@ void TrackListPanel::resize() {
 
 void TrackListPanel::timerCallback() {
     if (!dragging && desktopController.getProject().isRecording()) {
-        auto selected = desktopController.getProject().getSelectedTrack();
-        if (selected != nullptr) {
-            selected->updateCurrentNoteRoll();
-        }
+//        auto selected = desktopController.getProject().getSelectedTrack();
+//        if (selected != nullptr) {
+//            selected->updateCurrentNoteRoll();
+//        }
+        updatePositionOverlay();
     }
 }
 
@@ -145,6 +146,7 @@ void TrackListPanel::resized() {
     overlay.setBounds(area.withWidth(width));
     for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(laneHeight));
+        lane->resized();
     }
 }
 

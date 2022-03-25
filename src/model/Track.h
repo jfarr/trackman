@@ -72,7 +72,7 @@ class Track {
     friend TrackList;
 
     Sample *addSample(const File &file, double startPosInSeconds, double endPosInSeconds, AudioFormatManager &formatManager);
-    NoteRoll *addNoteRoll(const MidiMessageSequence &midiMessages, double startPosInSeconds, double endPosInSeconds);
+    NoteRoll *addNoteRoll(const MidiMessageSequence &midiMessages);
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
     void updateGain(bool anySoloed);

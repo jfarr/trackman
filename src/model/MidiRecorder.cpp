@@ -73,6 +73,9 @@ void MidiRecorder::handleMessage(MidiMessage message, double time) {
     auto timestamp = project.getTransport().getTransportSource().getCurrentPosition();
     message.setTimeStamp(project.secondsToTicks(timestamp + offset));
     midiMessages.addEvent(message);
+    if (onMidiMessage != nullptr) {
+        onMidiMessage(message, time);
+    }
 }
 
 void MidiRecorder::setMidiInput(int index) {

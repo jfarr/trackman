@@ -72,7 +72,7 @@ Sample *Track::addSample(
 }
 
 NoteRoll *Track::addNoteRoll(
-    const MidiMessageSequence &midiMessages, double startPosInSeconds, double endPosInSeconds) {
+    const MidiMessageSequence &midiMessages) {
     noteRolls.push_back(make_shared<NoteRoll>(project, midiMessages));
     return &(*noteRolls.back());
 }
@@ -121,7 +121,7 @@ int64 Track::getTotalLengthInSamples() const {
 
 void Track::startRecording() {
     if (!recording) {
-        auto noteRoll = addNoteRoll(MidiMessageSequence(), 0, 0);
+        auto noteRoll = addNoteRoll(MidiMessageSequence());
         midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
 //        midiRecorder.setMidiMessages(MidiMessageSequence());
         recordStartPosInSeconds = project.getTransport().getCurrentPosition();
