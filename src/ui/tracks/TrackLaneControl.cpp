@@ -63,10 +63,18 @@ void TrackLaneControl::resized() {
         auto x = sample.getStartPosInSeconds() * scale;
         thumbnail->setBounds(x, area.getY(), sample.getLengthInSeconds() * scale, area.getHeight());
     }
+    DBG("TrackLaneControl::resized");
+    DBG("note rolls: " << canvases.size());
+//    DBG("size: " << noteRolls.size());
+    for (NoteCanvas * canvas : canvases) {
+        DBG("count: " << canvas->getNoteRoll().getMidiMessages().getNumEvents());
+    }
+
     for (NoteCanvas *canvas : canvases) {
         auto &noteRoll = canvas->getNoteRoll();
         auto x = noteRoll.getStartPosInSeconds() * scale - border;
         auto w = noteRoll.empty() ? 0 : noteRoll.getLengthInSeconds() * scale + border + 1;
+        DBG("empty: " << (noteRoll.empty() ? "true" : "false") << " bounds: " << x << "," << area.getY() << "," << w << "," << area.getHeight());
         canvas->setBounds(x, area.getY(), w, area.getHeight());
     }
 }

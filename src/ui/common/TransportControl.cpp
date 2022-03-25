@@ -233,8 +233,6 @@ void TransportControl::changeState(TransportState newState) {
                 if (!recording) {
                     setButtonImage(recordButton, recordButtonOffImage);
                     notifyRecordingPaused();
-//                } else {
-//                    setButtonImage(recordButton, recordButtonOnImage);
                 }
             }
             break;

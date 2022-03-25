@@ -71,8 +71,7 @@ Sample *Track::addSample(
     return sample;
 }
 
-NoteRoll *Track::addNoteRoll(
-    const MidiMessageSequence &midiMessages) {
+NoteRoll *Track::addNoteRoll(const MidiMessageSequence &midiMessages) {
     noteRolls.push_back(make_shared<NoteRoll>(project, midiMessages));
     return &(*noteRolls.back());
 }
@@ -123,7 +122,6 @@ void Track::startRecording() {
     if (!recording) {
         auto noteRoll = addNoteRoll(MidiMessageSequence());
         midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
-//        midiRecorder.setMidiMessages(MidiMessageSequence());
         recordStartPosInSeconds = project.getTransport().getCurrentPosition();
     }
     midiRecorder.startRecording();
@@ -136,12 +134,9 @@ void Track::stopRecording() {
     midiRecorder.stopRecording();
     recording = false;
     noteRolls.back()->setMidiMessages(midiRecorder.getMidiMessages());
-//    auto messages = midiRecorder.getMidiMessages();
-//    messages.sort();
-//    messages.updateMatchedPairs();
-//    //    noteRolls.pop_back();
-//    noteRolls.push_back(
-//        make_shared<NoteRoll>(messages, recordStartPosInSeconds, project.getTransport().getCurrentPosition()));
+    DBG("Track::stopRecording");
+    DBG("size: " << noteRolls.size());
+    eachNoteRoll([](NoteRoll &noteRoll) { DBG("count: " << noteRoll.getMidiMessages().getNumEvents()); });
 }
 
 void Track::updateCurrentNoteRoll() {
@@ -191,14 +186,14 @@ void Track::processNextMidiBuffer(
     const double startTime = currentPos / sampleRate;
     const double endTime = startTime + numSamples / sampleRate;
 
-//    auto midiMessages = getMidiMessages();
-//    auto startIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(startTime));
-//    auto endIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(endTime));
-//    for (int i = startIndex; i < endIndex; i++) {
-//        auto p = midiMessages.getEventPointer(i);
-//        auto event = p->message;
-//        buffer.addEvent(event, event.getTimeStamp());
-//    }
+    //    auto midiMessages = getMidiMessages();
+    //    auto startIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(startTime));
+    //    auto endIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(endTime));
+    //    for (int i = startIndex; i < endIndex; i++) {
+    //        auto p = midiMessages.getEventPointer(i);
+    //        auto event = p->message;
+    //        buffer.addEvent(event, event.getTimeStamp());
+    //    }
     if (recording) {
         MidiBuffer keyboardBuffer;
         midiRecorder.getKeyboardState().processNextMidiBuffer(keyboardBuffer, startSample, numSamples, true);

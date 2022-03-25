@@ -34,7 +34,8 @@ void NoteCanvas::paint(Graphics &g) {
     g.setColour(Colours::dimgrey);
     g.fillRect(thumbnailBounds);
 
-    auto messages = track.getCurrentMidiMessages(project.getTransport().getTransportSource().getCurrentPosition());
+//    auto messages = track.getCurrentMidiMessages(project.getTransport().getTransportSource().getCurrentPosition());
+    auto messages = noteRoll.getMidiMessages();
     auto scale = project.getHorizontalScale();
     int lowNote = getLowestNote(messages);
     int highNote = getHighestNote(messages);
