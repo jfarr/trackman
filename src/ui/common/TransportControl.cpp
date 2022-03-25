@@ -230,7 +230,7 @@ void TransportControl::changeState(TransportState newState) {
             setButtonImage(playButton, playButtonOnImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
             if (isRecordEnabled()) {
-                if (recording) {
+                if (!recording) {
                     setButtonImage(recordButton, recordButtonOffImage);
                     notifyRecordingPaused();
 //                } else {
