@@ -2,6 +2,8 @@
 
 #include <JuceHeader.h>
 
+#include "NoteRoll.h"
+
 using namespace std;
 using namespace juce;
 
@@ -11,14 +13,14 @@ class Project;
 
 class MidiRecorder : public MidiKeyboardState::Listener, MidiInputCallback {
   public:
-    MidiRecorder(Project &project, AudioDeviceManager &deviceManager);
+    MidiRecorder(NoteRoll &noteRoll, MidiKeyboardState &keyboardState, AudioDeviceManager &deviceManager);
     ~MidiRecorder() override;
 
     MidiKeyboardState &getKeyboardState() { return keyboardState; }
-    MidiMessageSequence &getMidiMessages() { return midiMessages; }
+    const MidiMessageSequence &getMidiMessages() const { return noteRoll.getMidiMessages(); }
     bool isRecording() const;
 
-    void setMidiMessages(const MidiMessageSequence &newMessages) { midiMessages = newMessages; }
+//    void setMidiMessages(const MidiMessageSequence &newMessages) { midiMessages = newMessages; }
     void startRecording();
     void stopRecording();
 
@@ -51,11 +53,12 @@ class MidiRecorder : public MidiKeyboardState::Listener, MidiInputCallback {
     void postMessage(const MidiMessage &message, double time);
     void handleMessage(MidiMessage message, double time);
 
-    Project &project;
+//    Project &project;
+    NoteRoll &noteRoll;
     AudioDeviceManager &deviceManager;
-    MidiKeyboardState keyboardState;
-    MidiMessageSequence &midiMessages;
-    MidiMessageSequence emptyMidiMessages;
+    MidiKeyboardState &keyboardState;
+//    MidiMessageSequence &midiMessages;
+//    MidiMessageSequence emptyMidiMessages;
     bool recording = false;
     bool looping = false;
     bool isAddingFromMidiInput = false;

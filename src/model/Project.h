@@ -35,7 +35,8 @@ class Project {
     Sample *getSelectedSample() const { return trackList.getSelectedSample(); }
 
     bool isRecording() const;
-    MidiRecorder &getMidiRecorder() { return midiRecorder; }
+    MidiRecorder *getMidiRecorder() { return trackList.getMidiRecorder(); }
+    MidiKeyboardState &getKeyboardState() { return keyboardState; }
 
     int secondsToTicks(double seconds) const;
     double ticksToSeconds(int ticks) const;
@@ -69,7 +70,8 @@ class Project {
     const double scaleIncrement = 5;
 
     AudioDeviceManager &deviceManager;
-    MidiRecorder midiRecorder;
+    MidiKeyboardState keyboardState;
+//    MidiRecorder midiRecorder;
     TrackList trackList;
     Mixer mixer;
     Transport transport;

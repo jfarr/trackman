@@ -13,9 +13,12 @@ DesktopController::DesktopController(MainWindow &mainWindow, AudioDeviceManager 
       desktopComponent(*this), project(deviceManager), transportController(*this), mixerController(*this),
       trackListController(*this), instrumentsController(*this), previousTempo(project.getTempo()) {
 
-    project.getMidiRecorder().onMidiMessage = [this](const MidiMessage &message, double time) {
-        midiMessageReceived(message, time);
-    };
+//    auto *midiRecorder = project.getMidiRecorder();
+//    if (midiRecorder != nullptr) {
+//        midiRecorder.onMidiMessage = [this](const MidiMessage &message, double time) {
+//            midiMessageReceived(message, time);
+//        };
+//    }
     updateTitleBar();
 }
 
@@ -25,6 +28,12 @@ void DesktopController::recordingStarted() {
     auto selected = project.getTrackList().getSelectedTrack();
     if (selected != nullptr) {
         selected->startRecording();
+        auto *midiRecorder = selected->getMidiRecorder();
+        if (midiRecorder != nullptr) {
+            midiRecorder->onMidiMessage = [this](const MidiMessage &message, double time) {
+                midiMessageReceived(message, time);
+            };
+        }
         MessageManager::callAsync([this]() { trackListController.update(); });
     }
 }
@@ -54,7 +63,7 @@ void DesktopController::midiMessageReceived(const MidiMessage &message, double t
 }
 
 void DesktopController::createKeyboard() {
-    auto keyboard = new KeyboardControl(getMidiRecorder().getKeyboardState());
+    auto keyboard = new KeyboardControl(project.getKeyboardState());
     desktopComponent.createChildWindow("MIDI Keyboard", keyboard);
 }
 

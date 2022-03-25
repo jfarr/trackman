@@ -37,7 +37,7 @@ class DesktopController : public AudioSource,
 
     MixerController &getMixerController() { return mixerController; }
     Mixer &getMixer() { return project.getMixer(); }
-    MidiRecorder &getMidiRecorder() { return project.getMidiRecorder(); }
+//    MidiRecorder &getMidiRecorder() { return project.getMidiRecorder(); }
     void midiMessageReceived(const MidiMessage &message, double time);
 
     TransportController &getTransportController() { return transportController; }

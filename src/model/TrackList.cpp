@@ -3,7 +3,7 @@
 namespace trackman {
 
 Track *TrackList::addTrack() {
-    auto *track = new Track(project, midiRecorder, deviceManager);
+    auto *track = new Track(project, deviceManager);
     tracks.push_back(unique_ptr<Track>(track));
     renumber();
     return track;
@@ -122,6 +122,11 @@ bool TrackList::isAnySoloed() const {
         }
     }
     return false;
+}
+
+MidiRecorder *TrackList::getMidiRecorder() {
+    auto selected = getSelectedTrack();
+    return selected == nullptr ? nullptr : selected->getMidiRecorder();
 }
 
 void TrackList::writeAudioFile(const File &file, AudioSource &source, double sampleRate, int bitsPerSample) const {

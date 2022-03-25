@@ -3,8 +3,8 @@
 
 namespace trackman {
 
-MidiRecorder::MidiRecorder(Project &project, AudioDeviceManager &deviceManager)
-    : project(project), deviceManager(deviceManager), midiMessages(emptyMidiMessages) {
+MidiRecorder::MidiRecorder(NoteRoll &noteRoll, MidiKeyboardState &keyboardState, AudioDeviceManager &deviceManager)
+    : noteRoll(noteRoll), keyboardState(keyboardState), deviceManager(deviceManager) {
 
     auto midiInputs = MidiInput::getAvailableDevices();
     StringArray midiInputNames;
@@ -70,6 +70,8 @@ void MidiRecorder::postMessage(const MidiMessage &message, double time) {
 void MidiRecorder::handleMessage(MidiMessage message, double time) {
     auto t = Time::getMillisecondCounterHiRes();
     auto offset = (time - t) * .001;
+    auto &project = noteRoll.getProject();
+    auto &midiMessages = noteRoll.getMidiMessages();
     auto timestamp = project.getTransport().getTransportSource().getCurrentPosition();
     message.setTimeStamp(project.secondsToTicks(timestamp + offset));
     midiMessages.addEvent(message);

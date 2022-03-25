@@ -21,7 +21,7 @@ class TrackList;
 
 class Track {
   public:
-    Track(Project &project, MidiRecorder &midiRecorder, AudioDeviceManager &deviceManager);
+    Track(Project &project, AudioDeviceManager &deviceManager);
     ~Track();
 
     int getTrackNumber() const { return trackNumber; }
@@ -54,7 +54,8 @@ class Track {
 
     bool hasMidi() const { return !noteRolls.empty(); }
     bool canRecord() const { return samplePlayer == nullptr; }
-    bool isRecording() const { return recording; }
+    bool isRecording() const { return midiRecorder != nullptr; }
+    MidiRecorder *getMidiRecorder() { return midiRecorder.get(); }
     void startRecording();
     void pauseRecording();
     void stopRecording();
@@ -72,7 +73,7 @@ class Track {
     friend TrackList;
 
     Sample *addSample(const File &file, double startPosInSeconds, double endPosInSeconds, AudioFormatManager &formatManager);
-    NoteRoll *addNoteRoll(const MidiMessageSequence &midiMessages);
+    NoteRoll *addNoteRoll();
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
     void updateGain(bool anySoloed);
@@ -89,7 +90,7 @@ class Track {
     bool soloed = false;
     bool selected = false;
     bool deleted = false;
-    bool recording = false;
+//    bool recording = false;
     double recordStartPosInSeconds = 0;
 
     list<shared_ptr<Sample>> samples;
@@ -97,7 +98,7 @@ class Track {
 
     Project &project;
     AudioDeviceManager &deviceManager;
-    MidiRecorder &midiRecorder;
+    unique_ptr<MidiRecorder> midiRecorder = nullptr;
     list<shared_ptr<NoteRoll>> noteRolls;
     MidiPlayer midiPlayer;
 

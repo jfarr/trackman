@@ -13,20 +13,21 @@ class Project;
 
 class NoteRoll : public PositionableAudioSource, public TrackRegion {
   public:
-    NoteRoll(Project &project, const MidiMessageSequence &midiMessages);
+    NoteRoll(Project &project);
     ~NoteRoll() = default;
 
-    const MidiMessageSequence &getMidiMessages() const;
-    bool empty() const { return getMidiMessages().getNumEvents() == 0; }
-    double getStartPosInSeconds() const;
-    double getEndPosInSeconds() const;
-    double getLengthInSeconds() const;
+    Project &getProject() { return project; }
+    MidiMessageSequence &getMidiMessages();
+    bool empty() { return getMidiMessages().getNumEvents() == 0; }
+    double getStartPosInSeconds();
+    double getEndPosInSeconds();
+    double getLengthInSeconds();
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
 
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
-    void setMidiMessages(const MidiMessageSequence &newMidiMessages);
+//    void setMidiMessages(const MidiMessageSequence &newMidiMessages);
     void update();
 
     //==============================================================================

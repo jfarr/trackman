@@ -9,7 +9,7 @@ using json = nlohmann::json;
 namespace trackman {
 
 Project::Project(AudioDeviceManager &deviceManager)
-    : deviceManager(deviceManager), midiRecorder(*this, deviceManager), trackList(*this, deviceManager, midiRecorder),
+    : deviceManager(deviceManager), trackList(*this, deviceManager),
       mixer(trackList, deviceManager), transport(mixer) {}
 
 bool Project::isRecording() const {

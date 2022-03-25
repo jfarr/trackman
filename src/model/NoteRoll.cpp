@@ -3,25 +3,25 @@
 
 namespace trackman {
 
-NoteRoll::NoteRoll(Project &project, const MidiMessageSequence &midiMessages)
-    : project(project), midiMessages(midiMessages) {}
+NoteRoll::NoteRoll(Project &project)
+    : project(project) {}
 
-const MidiMessageSequence &NoteRoll::getMidiMessages() const {
-    return project.isRecording() ? project.getMidiRecorder().getMidiMessages() : midiMessages;
+MidiMessageSequence &NoteRoll::getMidiMessages() {
+    return midiMessages;
 }
 
-double NoteRoll::getStartPosInSeconds() const {
+double NoteRoll::getStartPosInSeconds() {
     return project.ticksToSeconds(getMidiMessages().getStartTime());
 }
 
-double NoteRoll::getEndPosInSeconds() const { return project.ticksToSeconds(getMidiMessages().getEndTime()); }
+double NoteRoll::getEndPosInSeconds() { return project.ticksToSeconds(getMidiMessages().getEndTime()); }
 
-double NoteRoll::getLengthInSeconds() const { return getEndPosInSeconds() - getStartPosInSeconds(); }
-
-void NoteRoll::setMidiMessages(const MidiMessageSequence &newMidiMessages) {
-    midiMessages = newMidiMessages;
-    update();
-}
+double NoteRoll::getLengthInSeconds() { return getEndPosInSeconds() - getStartPosInSeconds(); }
+//
+//void NoteRoll::setMidiMessages(const MidiMessageSequence &newMidiMessages) {
+//    midiMessages = newMidiMessages;
+//    update();
+//}
 
 void NoteRoll::update() {
     midiMessages.sort();

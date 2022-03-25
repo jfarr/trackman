@@ -6,8 +6,8 @@
 
 namespace trackman {
 
-Track::Track(Project &project, MidiRecorder &midiRecorder, AudioDeviceManager &deviceManager)
-    : project(project), deviceManager(deviceManager), midiRecorder(midiRecorder), midiPlayer(*this) {
+Track::Track(Project &project, AudioDeviceManager &deviceManager)
+    : project(project), deviceManager(deviceManager), midiPlayer(*this) {
     //    noteRolls.push_back(make_shared<NoteRoll>(MidiMessageSequence(), 0, 0));
     midiPlayer.prepareToPlay(
         deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
@@ -71,8 +71,8 @@ Sample *Track::addSample(
     return sample;
 }
 
-NoteRoll *Track::addNoteRoll(const MidiMessageSequence &midiMessages) {
-    noteRolls.push_back(make_shared<NoteRoll>(project, midiMessages));
+NoteRoll *Track::addNoteRoll() {
+    noteRolls.push_back(make_shared<NoteRoll>(project));
     return &(*noteRolls.back());
 }
 
@@ -119,24 +119,35 @@ int64 Track::getTotalLengthInSamples() const {
 }
 
 void Track::startRecording() {
-    if (!recording) {
-        auto noteRoll = addNoteRoll(MidiMessageSequence());
-        midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
+    if (midiRecorder == nullptr) {
+        auto *noteRoll = addNoteRoll();
+        midiRecorder.reset(new MidiRecorder(*noteRoll, project.getKeyboardState(), deviceManager));
+        //        midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
         recordStartPosInSeconds = project.getTransport().getCurrentPosition();
     }
-    midiRecorder.startRecording();
-    recording = true;
+    midiRecorder->startRecording();
+    //    recording = true;
 }
 
-void Track::pauseRecording() { midiRecorder.stopRecording(); }
+void Track::pauseRecording() {
+    if (midiRecorder != nullptr) {
+        midiRecorder->stopRecording();
+    }
+}
 
 void Track::stopRecording() {
-    midiRecorder.stopRecording();
-    recording = false;
-    noteRolls.back()->setMidiMessages(midiRecorder.getMidiMessages());
+    if (midiRecorder == nullptr) {
+        return;
+    }
+    midiRecorder->onMidiMessage = nullptr;
+    midiRecorder->stopRecording();
+    //    recording = false;
+    //    noteRolls.back()->setMidiMessages(midiRecorder.getMidiMessages());
     DBG("Track::stopRecording");
     DBG("size: " << noteRolls.size());
     eachNoteRoll([](NoteRoll &noteRoll) { DBG("count: " << noteRoll.getMidiMessages().getNumEvents()); });
+    //    midiRecorder.release();
+    midiRecorder = nullptr;
 }
 
 void Track::updateCurrentNoteRoll() {
@@ -155,8 +166,8 @@ void Track::eachNoteRoll(function<void(NoteRoll &noteRoll)> f) {
 }
 
 const MidiMessageSequence Track::getCurrentMidiMessages(double pos) const {
-    if (recording) {
-        auto messages = midiRecorder.getMidiMessages();
+    if (midiRecorder != nullptr) {
+        auto messages = midiRecorder->getMidiMessages();
         list<MidiMessage> noteOffMessages;
         for (auto i : messages) {
             if (i->message.isNoteOn() && i->noteOffObject == nullptr) {
@@ -194,9 +205,9 @@ void Track::processNextMidiBuffer(
     //        auto event = p->message;
     //        buffer.addEvent(event, event.getTimeStamp());
     //    }
-    if (recording) {
+    if (midiRecorder != nullptr) {
         MidiBuffer keyboardBuffer;
-        midiRecorder.getKeyboardState().processNextMidiBuffer(keyboardBuffer, startSample, numSamples, true);
+        midiRecorder->getKeyboardState().processNextMidiBuffer(keyboardBuffer, startSample, numSamples, true);
         buffer.addEvents(keyboardBuffer, startSample, numSamples, 0);
     }
 }
