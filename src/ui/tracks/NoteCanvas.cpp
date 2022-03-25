@@ -57,7 +57,7 @@ void NoteCanvas::paint(Graphics &g) {
 
 Rectangle<float> NoteCanvas::getNoteRect(const MidiMessage &noteOn, const MidiMessage &noteOff, int lowNote,
     double noteHeight, double x, double h, double scale, double margin) {
-    DBG("NoteCanvas::getNoteRect " << noteOn.getTimeStamp() << "," << noteOff.getTimeStamp());
+//    DBG("NoteCanvas::getNoteRect " << noteOn.getTimeStamp() << "," << noteOff.getTimeStamp());
     auto start = project.ticksToSeconds(noteOn.getTimeStamp());
     auto end = project.ticksToSeconds(noteOff.getTimeStamp());
     auto noteX = x + start * scale;

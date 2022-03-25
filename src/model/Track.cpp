@@ -73,7 +73,7 @@ Sample *Track::addSample(
 
 NoteRoll *Track::addNoteRoll(
     const MidiMessageSequence &midiMessages, double startPosInSeconds, double endPosInSeconds) {
-    noteRolls.push_back(make_shared<NoteRoll>(project, midiMessages, startPosInSeconds, endPosInSeconds));
+    noteRolls.push_back(make_shared<NoteRoll>(project, midiMessages));
     return &(*noteRolls.back());
 }
 

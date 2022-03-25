@@ -13,13 +13,13 @@ class Project;
 
 class NoteRoll : public PositionableAudioSource, public TrackRegion {
   public:
-    NoteRoll(Project &project, const MidiMessageSequence &midiMessages, double startPosInSeconds, double endPosInSeconds);
+    NoteRoll(Project &project, const MidiMessageSequence &midiMessages);
     ~NoteRoll() = default;
 
     MidiMessageSequence &getMidiMessages() { return midiMessages; }
-    double getStartPosInSeconds() const { return startPosInSeconds; }
-    double getEndPosInSeconds() const { return endPosInSeconds; }
-    double getLengthInSeconds() const { return lengthInSeconds; }
+    double getStartPosInSeconds() const;
+    double getEndPosInSeconds() const;
+    double getLengthInSeconds() const;
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
 
@@ -45,9 +45,9 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
   private:
     Project &project;
     MidiMessageSequence midiMessages;
-    double startPosInSeconds;
-    double endPosInSeconds;
-    double lengthInSeconds;
+//    double startPosInSeconds;
+//    double endPosInSeconds;
+//    double lengthInSeconds;
     bool selected = false;
     bool deleted = false;
 

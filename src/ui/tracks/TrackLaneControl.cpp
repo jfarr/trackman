@@ -21,13 +21,9 @@ void TrackLaneControl::createControls() {
     }
 }
 
-void TrackLaneControl::addSampleThumbnail(SampleThumbnail *thumbnail) {
-    thumbnails.push_back(thumbnail);
-}
+void TrackLaneControl::addSampleThumbnail(SampleThumbnail *thumbnail) { thumbnails.push_back(thumbnail); }
 
-void TrackLaneControl::addNoteCanvas(NoteCanvas *canvas) {
-    canvases.push_back(canvas);
-}
+void TrackLaneControl::addNoteCanvas(NoteCanvas *canvas) { canvases.push_back(canvas); }
 
 void TrackLaneControl::update() {
     removeAllChildren();
@@ -39,7 +35,7 @@ void TrackLaneControl::update() {
     for (NoteCanvas *canvas : canvases) {
         addAndMakeVisible(canvas);
     }
-//    addAndMakeVisible(noteRoll);
+    //    addAndMakeVisible(noteRoll);
     resized();
 }
 
@@ -71,8 +67,6 @@ void TrackLaneControl::resized() {
         auto x = noteRoll.getStartPosInSeconds() * scale;
         canvas->setBounds(x, area.getY(), noteRoll.getLengthInSeconds() * scale, area.getHeight());
     }
-//    noteRoll.setBounds(noteRoll.getBounds().withY(area.getY()).withHeight(area.getHeight()));
-//    noteRoll.resize();
 }
 
 } // namespace trackman
