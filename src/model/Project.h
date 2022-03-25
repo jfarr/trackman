@@ -12,7 +12,7 @@ namespace trackman {
 
 class Project {
   public:
-    Project(AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder);
+    Project(AudioDeviceManager &deviceManager);
     ~Project() = default;
 
     const float getTempo() const { return tempo; };
@@ -35,6 +35,7 @@ class Project {
     Sample *getSelectedSample() const { return trackList.getSelectedSample(); }
 
     bool isRecording() const;
+    MidiRecorder &getMidiRecorder() { return midiRecorder; }
 
     int secondsToTicks(double seconds) const;
     double ticksToSeconds(int ticks) const;
@@ -68,6 +69,7 @@ class Project {
     const double scaleIncrement = 5;
 
     AudioDeviceManager &deviceManager;
+    MidiRecorder midiRecorder;
     TrackList trackList;
     Mixer mixer;
     Transport transport;

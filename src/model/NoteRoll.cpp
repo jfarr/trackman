@@ -6,6 +6,13 @@ namespace trackman {
 NoteRoll::NoteRoll(Project &project, const MidiMessageSequence &midiMessages)
     : project(project), midiMessages(midiMessages) {}
 
+MidiMessageSequence &NoteRoll::getMidiMessages() {
+    if (project.isRecording()) {
+        return project.getMidiRecorder().getMidiMessages();
+    }
+    return midiMessages;
+}
+
 double NoteRoll::getStartPosInSeconds() const {
     DBG("NoteRoll::getStartPosInSeconds size: " << midiMessages.getNumEvents()
                                                 << " messages: " << String::toHexString((long)&midiMessages));

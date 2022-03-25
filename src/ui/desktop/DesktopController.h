@@ -37,7 +37,7 @@ class DesktopController : public AudioSource,
 
     MixerController &getMixerController() { return mixerController; }
     Mixer &getMixer() { return project.getMixer(); }
-    MidiRecorder &getMidiRecorder() { return midiRecorder; }
+    MidiRecorder &getMidiRecorder() { return project.getMidiRecorder(); }
 
     TransportController &getTransportController() { return transportController; }
     TrackListController &getTrackListController() { return trackListController; }
@@ -133,7 +133,7 @@ class DesktopController : public AudioSource,
 
     DesktopComponent desktopComponent;
 
-    MidiRecorder midiRecorder;
+//    MidiRecorder midiRecorder;
 
     unique_ptr<FileChooser> chooser;
     File projectFile;

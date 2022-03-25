@@ -10,8 +10,8 @@ namespace trackman {
 
 DesktopController::DesktopController(MainWindow &mainWindow, AudioDeviceManager &deviceManager)
     : mainWindow(mainWindow), deviceManager(deviceManager), applicationName(mainWindow.getName()),
-      desktopComponent(*this), project(deviceManager, midiRecorder), transportController(*this), mixerController(*this),
-      trackListController(*this), instrumentsController(*this), midiRecorder(project, deviceManager),
+      desktopComponent(*this), project(deviceManager), transportController(*this), mixerController(*this),
+      trackListController(*this), instrumentsController(*this),
       previousTempo(project.getTempo()) {
 
     updateTitleBar();
@@ -45,7 +45,7 @@ void DesktopController::recordingPaused() {
 bool DesktopController::canRecord() { return project.getTrackList().canRecord(); }
 
 void DesktopController::createKeyboard() {
-    auto keyboard = new KeyboardControl(midiRecorder.getKeyboardState());
+    auto keyboard = new KeyboardControl(getMidiRecorder().getKeyboardState());
     desktopComponent.createChildWindow("MIDI Keyboard", keyboard);
 }
 

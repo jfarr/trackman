@@ -8,9 +8,9 @@ using json = nlohmann::json;
 
 namespace trackman {
 
-Project::Project(AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
-    : deviceManager(deviceManager), trackList(*this, deviceManager, midiRecorder), mixer(trackList, deviceManager),
-      transport(mixer) {}
+Project::Project(AudioDeviceManager &deviceManager)
+    : deviceManager(deviceManager), midiRecorder(*this, deviceManager), trackList(*this, deviceManager, midiRecorder),
+      mixer(trackList, deviceManager), transport(mixer) {}
 
 bool Project::isRecording() const {
     auto selected = getSelectedTrack();
@@ -109,7 +109,7 @@ void Project::from_json(AudioFormatManager &formatManager, string filename) {
             addSample(*track, sample_json["file"], sample_json["startPos"], sample_json["endPos"], formatManager);
         }
         auto midiMessages = midiFile.getTrack(i++);
-//        track->setMidiMessages(*midiMessages);
+        //        track->setMidiMessages(*midiMessages);
         mixer.addSource(track->getSource());
     }
 }
