@@ -73,7 +73,7 @@ Sample *Track::addSample(
 
 NoteRoll *Track::addNoteRoll(
     const MidiMessageSequence &midiMessages, double startPosInSeconds, double endPosInSeconds) {
-    noteRolls.push_back(make_shared<NoteRoll>(midiMessages, startPosInSeconds, endPosInSeconds));
+    noteRolls.push_back(make_shared<NoteRoll>(project, midiMessages, startPosInSeconds, endPosInSeconds));
     return &(*noteRolls.back());
 }
 
@@ -135,7 +135,7 @@ void Track::pauseRecording() { midiRecorder.stopRecording(); }
 void Track::stopRecording() {
     midiRecorder.stopRecording();
     recording = false;
-    noteRolls.back()->update();
+    noteRolls.back()->setMidiMessages(midiRecorder.getMidiMessages());
 //    auto messages = midiRecorder.getMidiMessages();
 //    messages.sort();
 //    messages.updateMatchedPairs();

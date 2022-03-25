@@ -1,16 +1,22 @@
 #include "NoteRoll.h"
+#include "Project.h"
 
 namespace trackman {
 
-NoteRoll::NoteRoll(const MidiMessageSequence &midiMessages, double startPosInSeconds, double endPosInSeconds)
-    : midiMessages(midiMessages), startPosInSeconds(startPosInSeconds), endPosInSeconds(endPosInSeconds),
+NoteRoll::NoteRoll(Project &project, const MidiMessageSequence &midiMessages, double startPosInSeconds, double endPosInSeconds)
+    : project(project), midiMessages(midiMessages), startPosInSeconds(startPosInSeconds), endPosInSeconds(endPosInSeconds),
       lengthInSeconds(endPosInSeconds - startPosInSeconds) {}
+
+void NoteRoll::setMidiMessages(const MidiMessageSequence &newMidiMessages) {
+    midiMessages = newMidiMessages;
+    update();
+}
 
 void NoteRoll::update() {
     midiMessages.sort();
     midiMessages.updateMatchedPairs();
-    startPosInSeconds = midiMessages.getStartTime();
-    endPosInSeconds = midiMessages.getEndTime();
+    startPosInSeconds = project.ticksToSeconds(midiMessages.getStartTime());
+    endPosInSeconds = project.ticksToSeconds(midiMessages.getEndTime());
     lengthInSeconds = endPosInSeconds - startPosInSeconds;
 }
 

@@ -9,9 +9,11 @@ using namespace juce;
 
 namespace trackman {
 
+class Project;
+
 class NoteRoll : public PositionableAudioSource, public TrackRegion {
   public:
-    NoteRoll(const MidiMessageSequence &midiMessages, double startPosInSeconds, double endPosInSeconds);
+    NoteRoll(Project &project, const MidiMessageSequence &midiMessages, double startPosInSeconds, double endPosInSeconds);
     ~NoteRoll() = default;
 
     const MidiMessageSequence &getMidiMessages() const { return midiMessages; }
@@ -23,6 +25,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
 
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
+    void setMidiMessages(const MidiMessageSequence &newMidiMessages);
     void update();
 
     //==============================================================================
@@ -40,6 +43,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     void setLooping(bool shouldLoop) override;
 
   private:
+    Project &project;
     MidiMessageSequence midiMessages;
     double startPosInSeconds;
     double endPosInSeconds;
