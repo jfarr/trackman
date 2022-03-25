@@ -6,27 +6,15 @@ namespace trackman {
 NoteRoll::NoteRoll(Project &project, const MidiMessageSequence &midiMessages)
     : project(project), midiMessages(midiMessages) {}
 
-MidiMessageSequence &NoteRoll::getMidiMessages() {
-    if (project.isRecording()) {
-        return project.getMidiRecorder().getMidiMessages();
-    }
-    return midiMessages;
+const MidiMessageSequence &NoteRoll::getMidiMessages() const {
+    return project.isRecording() ? project.getMidiRecorder().getMidiMessages() : midiMessages;
 }
 
 double NoteRoll::getStartPosInSeconds() const {
-    DBG("NoteRoll::getStartPosInSeconds size: " << midiMessages.getNumEvents()
-                                                << " messages: " << String::toHexString((long)&midiMessages));
-    double startTime = 0;
-    for (auto i : midiMessages) {
-        auto message = i->message;
-        if (message.isNoteOn()) {
-            startTime = max(startTime, message.getTimeStamp());
-        }
-    }
-    return project.ticksToSeconds(startTime);
+    return project.ticksToSeconds(getMidiMessages().getStartTime());
 }
 
-double NoteRoll::getEndPosInSeconds() const { return project.ticksToSeconds(midiMessages.getEndTime()); }
+double NoteRoll::getEndPosInSeconds() const { return project.ticksToSeconds(getMidiMessages().getEndTime()); }
 
 double NoteRoll::getLengthInSeconds() const { return getEndPosInSeconds() - getStartPosInSeconds(); }
 

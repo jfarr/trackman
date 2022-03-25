@@ -18,7 +18,7 @@ class MidiRecorder : public MidiKeyboardState::Listener, MidiInputCallback {
     MidiMessageSequence &getMidiMessages() { return midiMessages; }
     bool isRecording() const;
 
-    void setMidiMessages(MidiMessageSequence &newMessages) { midiMessages = newMessages; }
+    void setMidiMessages(const MidiMessageSequence &newMessages) { midiMessages = newMessages; }
     void startRecording();
     void stopRecording();
 

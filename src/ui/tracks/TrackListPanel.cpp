@@ -111,8 +111,6 @@ void TrackListPanel::timerCallback() {
         auto selected = desktopController.getProject().getSelectedTrack();
         if (selected != nullptr) {
             selected->updateCurrentNoteRoll();
-//            resized();
-            //            resize();
         }
     }
 }

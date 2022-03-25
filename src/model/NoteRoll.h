@@ -16,7 +16,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     NoteRoll(Project &project, const MidiMessageSequence &midiMessages);
     ~NoteRoll() = default;
 
-    MidiMessageSequence &getMidiMessages();
+    const MidiMessageSequence &getMidiMessages() const;
     double getStartPosInSeconds() const;
     double getEndPosInSeconds() const;
     double getLengthInSeconds() const;
