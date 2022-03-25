@@ -40,13 +40,14 @@ void NoteCanvas::paint(Graphics &g) {
     double noteSpan = max(24, highNote - lowNote) + 1;
     double margin = 1.0;
     double x = -getBounds().getX();
-    double h = getHeight() - 2 * margin;
+    double h = getHeight() - 2 * border;
     double noteHeight = h / noteSpan;
     for (auto m : messages) {
         if (m->message.isNoteOn() && m->noteOffObject != nullptr) {
             auto noteOn = m->message;
             auto noteOff = m->noteOffObject->message;
             Rectangle<float> r = getNoteRect(noteOn, noteOff, lowNote, noteHeight, x, h, scale, margin);
+            r.setY(r.getY() + border);
             g.setColour(Colours::steelblue.darker(0.3));
             g.fillRect(r);
             g.setColour(selected ? Colours::lightgrey : Colours::grey);
@@ -64,7 +65,7 @@ Rectangle<float> NoteCanvas::getNoteRect(const MidiMessage &noteOn, const MidiMe
     //    auto noteX = start * scale;
     auto noteWidth = (end - start) * scale;
     auto noteDist = noteOn.getNoteNumber() - lowNote;
-    double noteY = h - noteHeight * (noteDist + 1.0) + margin;
+    double noteY = h - noteHeight * (noteDist + 1.0);
     return Rectangle<float>(noteX, noteY, noteWidth, noteHeight);
 }
 
