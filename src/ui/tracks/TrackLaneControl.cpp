@@ -54,6 +54,7 @@ void TrackLaneControl::resized() {
     auto area = getLocalBounds();
     auto labelHeight = 12;
     auto margin = 3;
+    auto border = 3;
     auto scale = project.getHorizontalScale();
     trackLabel.setBounds(area.removeFromTop(labelHeight).withTrimmedTop(margin));
     area.removeFromTop(margin);
@@ -64,8 +65,8 @@ void TrackLaneControl::resized() {
     }
     for (NoteCanvas *canvas : canvases) {
         auto &noteRoll = canvas->getNoteRoll();
-        auto x = noteRoll.getStartPosInSeconds() * scale;
-        auto w = noteRoll.getLengthInSeconds() * scale;
+        auto x = noteRoll.getStartPosInSeconds() * scale - border;
+        auto w = noteRoll.getLengthInSeconds() * scale + border + 1;
         canvas->setBounds(x, area.getY(), w, area.getHeight());
     }
 }

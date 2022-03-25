@@ -32,7 +32,7 @@ class NoteCanvas : public Component, public Timer {
     NoteRoll &noteRoll;
 
     Rectangle<float> getNoteRect(const MidiMessage &noteOn, const MidiMessage &noteOff, int lowNote,
-        double noteStep, double x, double h, double scale, double margin);
+        double noteStep, double x, double h, double scale);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteCanvas)
 };
