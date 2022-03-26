@@ -143,12 +143,6 @@ void Track::stopRecording() {
     }
     midiRecorder->onMidiMessage = nullptr;
     midiRecorder->stopRecording();
-    //    recording = false;
-    //    noteRolls.back()->setMidiMessages(midiRecorder.getMidiMessages());
-    //    DBG("Track::stopRecording");
-    //    DBG("size: " << noteRolls.size());
-    //    eachNoteRoll([](NoteRoll &noteRoll) { DBG("count: " << noteRoll.getMidiMessages().getNumEvents()); });
-    //    midiRecorder.release();
     auto &noteRoll = midiRecorder->getNoteRoll();
     if (noteRoll.empty()) {
         removeNoteRoll(&noteRoll);
@@ -242,7 +236,7 @@ int64 Track::getMidiLengthInSamples() const {
     if (!hasMidi()) {
         return 0;
     }
-    return project.ticksToSeconds(getMidiLengthInSeconds()) * deviceManager.getAudioDeviceSetup().sampleRate +
+    return getMidiLengthInSeconds() * deviceManager.getAudioDeviceSetup().sampleRate +
            2 * deviceManager.getAudioDeviceSetup().bufferSize; // overshoot to ensure we get all note off events
 }
 
