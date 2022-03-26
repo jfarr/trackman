@@ -20,8 +20,10 @@ Timeline<Sample *> SamplePlayer::getCurrentTimeline() {
 
 //==============================================================================
 void SamplePlayer::prepareToPlay(int blockSize, double sampleRate) {
-    const ScopedLock lock(mutex);
-    currentSampleRate = sampleRate;
+    {
+        const ScopedLock lock(mutex);
+        currentSampleRate = sampleRate;
+    }
     tempBuffer.setSize(2, sampleRate);
 
     for (auto &sample : samples) {
@@ -95,9 +97,9 @@ int64 SamplePlayer::getNextReadPosition() const {
 int64 SamplePlayer::getTotalLength() const {
     const ScopedLock lock(mutex);
     int64 totalLength = 0;
-    for (shared_ptr<Sample> &sample : samples) {
+    for (auto &sample : samples) {
         if (!sample->isDeleted()) {
-            totalLength = max(totalLength, sample->getLengthInSamples());
+            totalLength = max(totalLength, sample->getTotalLengthInSamples());
         }
     }
     return totalLength;

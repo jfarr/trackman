@@ -24,6 +24,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     double getStartPosInSeconds() const;
     double getEndPosInSeconds() const;
     double getLengthInSeconds() const;
+    int64 getTotalLengthInSamples() const;
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
     bool isRecording() const { return recording; }
@@ -66,6 +67,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     int64 currentPosition = 0;
     atomic<bool> looping = false;
 
+    int64 getPositionFromTime(double t) const;
     void processNextMidiBuffer(
         MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
 

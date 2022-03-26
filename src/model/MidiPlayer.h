@@ -20,6 +20,7 @@ class MidiPlayer : public PositionableAudioSource {
     ~MidiPlayer() override = default;
 
     Synthesiser &getSynth() { return synth; }
+//    void setRecording(bool newRecording) { recording = newRecording; }
 
     //==============================================================================
     // AudioSource
@@ -42,6 +43,7 @@ class MidiPlayer : public PositionableAudioSource {
     double currentSampleRate = 0;
     int64 currentPosition = 0;
     bool looping = false;
+//    bool recording = false;
     AudioBuffer<float> tempBuffer;
 
     Timeline<NoteRoll *> getCurrentTimeline();

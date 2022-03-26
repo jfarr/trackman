@@ -56,7 +56,10 @@ class Track {
 
     bool hasMidi() const { return !noteRolls.empty(); }
     bool canRecord() const { return samplePlayer == nullptr; }
-    bool isRecording() const { return midiRecorder != nullptr; }
+    bool isRecording() const {
+        DBG("isRecording: " << (midiRecorder != nullptr ? "true" : "false"));
+        return midiRecorder != nullptr;
+    }
     MidiRecorder *getMidiRecorder() { return midiRecorder.get(); }
     NoteRoll *getSelectedNoteRoll() const;
     void startRecording();
@@ -70,8 +73,8 @@ class Track {
     double getCurrentMidiEndTime(const NoteRoll &noteRoll, const double pos) const;
     void processNextMidiBuffer(
         MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
-    double getMidiLengthInSeconds() const;
-    int64 getMidiLengthInSamples() const;
+//    double getMidiLengthInSeconds() const;
+//    int64 getMidiLengthInSamples() const;
 
   private:
     friend TrackList;

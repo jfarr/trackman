@@ -16,6 +16,10 @@ double NoteRoll::getEndPosInSeconds() const { return project.ticksToSeconds(midi
 
 double NoteRoll::getLengthInSeconds() const { return getEndPosInSeconds() - getStartPosInSeconds(); }
 
+int64 NoteRoll::getTotalLengthInSamples() const { return getPositionFromTime(getEndPosInSeconds()); }
+
+int64 NoteRoll::getPositionFromTime(double t) const { return t * currentSampleRate; }
+
 MidiMessageSequence::MidiEventHolder *NoteRoll::addEvent(const MidiMessage &newMessage) {
     auto event = midiMessages.addEvent(newMessage);
     midiMessages.sort();

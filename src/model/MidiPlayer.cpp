@@ -41,6 +41,8 @@ void MidiPlayer::releaseResources() {
 }
 
 void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
+    const ScopedLock lock(mutex);
+//    DBG("MidiPlayer::getNextAudioBlock pos: " << currentPosition << " numSamples: " << bufferToFill.numSamples);
     if (bufferToFill.numSamples > 0) {
         Timeline timeline = getCurrentTimeline();
         auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
@@ -69,11 +71,11 @@ void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
                     i++;
                 }
             }
+        } else {
+            bufferToFill.clearActiveBufferRegion();
         }
-    } else {
-        bufferToFill.clearActiveBufferRegion();
+        currentPosition += bufferToFill.numSamples;
     }
-    currentPosition += bufferToFill.numSamples;
 }
 
 void MidiPlayer::processNextMidiBuffer(
@@ -85,15 +87,37 @@ void MidiPlayer::processNextMidiBuffer(
     buffer.addEvents(keyboardBuffer, startSample, numSamples, 0);
 }
 
-void MidiPlayer::setNextReadPosition(int64 newPosition) { currentPosition = newPosition; }
-
-int64 MidiPlayer::getNextReadPosition() const {
-    return looping ? currentPosition % getTotalLength() : currentPosition;
+//==============================================================================
+void MidiPlayer::setNextReadPosition(int64 newPosition) {
+    const ScopedLock lock(mutex);
+    for (auto &noteRoll : noteRolls) {
+        if (!noteRoll->isDeleted()) {
+            noteRoll->setNextReadPosition(newPosition);
+        }
+    }
+    currentPosition = newPosition;
 }
 
+int64 MidiPlayer::getNextReadPosition() const { return looping ? currentPosition % getTotalLength() : currentPosition; }
+
 int64 MidiPlayer::getTotalLength() const {
-    int64 len = track.getMidiLengthInSamples();
-    return track.isRecording() && !looping ? max(len, currentPosition) : len;
+    //    int64 len = track.getMidiLengthInSamples();
+    //    return track.isRecording() && !looping ? max(len, currentPosition) : len;
+    const ScopedLock lock(mutex);
+    int64 totalLength = 0;
+    for (auto &noteRoll : noteRolls) {
+        if (!noteRoll->isDeleted()) {
+            totalLength = max(totalLength, noteRoll->getTotalLengthInSamples());
+        }
+    }
+//    if (recording && !looping) {
+    if (track.isRecording() && !looping) {
+        DBG("recording length: " << max(totalLength, currentPosition));
+        return max(totalLength, currentPosition);
+    }
+    //    return track.isRecording() && !looping ? max(totalLength, currentPosition) : totalLength;
+    DBG("length: " << totalLength);
+    return totalLength;
 }
 
 bool MidiPlayer::isLooping() const { return looping; }

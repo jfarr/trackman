@@ -111,11 +111,11 @@ void Track::eachSample(function<void(Sample &sample)> f) {
 }
 
 int64 Track::getTotalLengthInSamples() const {
-    if (!hasMidi()) {
+//    if (!hasMidi()) {
         return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
-    } else {
-        return getMidiLengthInSamples();
-    }
+//    } else {
+//        return midiPlayer.getTotalLength();
+//    }
 }
 
 void Track::startRecording() {
@@ -128,12 +128,14 @@ void Track::startRecording() {
     }
     //    noteRoll.startRecording();
     midiRecorder->startRecording();
+//    midiPlayer.setRecording(true);
     //    recording = true;
 }
 
 void Track::pauseRecording() {
     if (midiRecorder != nullptr) {
         midiRecorder->stopRecording();
+//        midiPlayer.setRecording(false);
     }
 }
 
@@ -141,12 +143,14 @@ void Track::stopRecording() {
     if (midiRecorder == nullptr) {
         return;
     }
+//    midiPlayer.setRecording(false);
     midiRecorder->onMidiMessage = nullptr;
     midiRecorder->stopRecording();
     auto &noteRoll = midiRecorder->getNoteRoll();
     if (noteRoll.empty()) {
         removeNoteRoll(&noteRoll);
     }
+    DBG("set midiRecorder = nullptr");
     midiRecorder = nullptr;
 }
 
@@ -220,24 +224,24 @@ void Track::processNextMidiBuffer(
         buffer.addEvents(keyboardBuffer, startSample, numSamples, 0);
     }
 }
-
-double Track::getMidiLengthInSeconds() const {
-    double len = 0;
-    for (const shared_ptr<NoteRoll> &p : noteRolls) {
-        auto &noteRoll = *p;
-        if (!noteRoll.isDeleted()) {
-            len = max(len, noteRoll.getEndPosInSeconds());
-        }
-    }
-    return len;
-}
-
-int64 Track::getMidiLengthInSamples() const {
-    if (!hasMidi()) {
-        return 0;
-    }
-    return getMidiLengthInSeconds() * deviceManager.getAudioDeviceSetup().sampleRate +
-           2 * deviceManager.getAudioDeviceSetup().bufferSize; // overshoot to ensure we get all note off events
-}
+//
+//double Track::getMidiLengthInSeconds() const {
+//    double len = 0;
+//    for (const shared_ptr<NoteRoll> &p : noteRolls) {
+//        auto &noteRoll = *p;
+//        if (!noteRoll.isDeleted()) {
+//            len = max(len, noteRoll.getEndPosInSeconds());
+//        }
+//    }
+//    return len;
+//}
+//
+//int64 Track::getMidiLengthInSamples() const {
+//    if (!hasMidi()) {
+//        return 0;
+//    }
+//    return getMidiLengthInSeconds() * deviceManager.getAudioDeviceSetup().sampleRate +
+//           2 * deviceManager.getAudioDeviceSetup().bufferSize; // overshoot to ensure we get all note off events
+//}
 
 } // namespace trackman

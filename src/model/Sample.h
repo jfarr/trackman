@@ -22,7 +22,7 @@ class Sample : public PositionableAudioSource, public TrackRegion {
     double getStartPosInSeconds() const { return startPosInSeconds; }
     double getEndPosInSeconds() const { return endPosInSeconds; }
     double getLengthInSeconds() const { return lengthInSeconds; }
-    int64 getLengthInSamples() const;
+    int64 getTotalLengthInSamples() const;
     bool isLoaded() const { return loaded; }
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }

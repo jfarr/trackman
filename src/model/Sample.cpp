@@ -14,7 +14,7 @@ Sample::~Sample() {
     }
 }
 
-int64 Sample::getLengthInSamples() const {
+int64 Sample::getTotalLengthInSamples() const {
     return resamplingSource == nullptr ? 0
                                        : getPositionFromTime(startPosInSeconds) + resamplingSource->getTotalLength();
 }

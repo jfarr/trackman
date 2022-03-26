@@ -223,6 +223,9 @@ void TransportControl::changeState(TransportState newState) {
             break;
 
         case TransportState::Starting:
+            if (recording) {
+                notifyRecordingStarted();
+            }
             transportSource.start();
             break;
 
@@ -241,7 +244,6 @@ void TransportControl::changeState(TransportState newState) {
             setButtonImage(playButton, playButtonOnImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
             setButtonImage(recordButton, recordButtonOnImage);
-            notifyRecordingStarted();
             break;
 
         case TransportState::Pausing:
