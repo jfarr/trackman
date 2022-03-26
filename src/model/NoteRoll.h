@@ -24,7 +24,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     double getStartPosInSeconds() const;
     double getEndPosInSeconds() const;
     double getLengthInSeconds() const;
-    int64 getTotalLengthInSamples() const;
+//    int64 getTotalLengthInSamples() const;
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
     bool isRecording() const { return recording; }
@@ -43,6 +43,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     double getEndTime() const { return midiMessages.getEndTime(); }
 
     void printEvents() const;
+    void printEvents(const MidiMessageSequence& midiMessages) const;
 
     //==============================================================================
     // AudioSource

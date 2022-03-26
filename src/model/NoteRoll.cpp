@@ -16,26 +16,24 @@ double NoteRoll::getEndPosInSeconds() const { return endPosInSeconds; }
 
 double NoteRoll::getLengthInSeconds() const { return lengthInSeconds; }
 
-int64 NoteRoll::getTotalLengthInSamples() const { return getPositionFromTime(getEndPosInSeconds()); }
+// int64 NoteRoll::getTotalLengthInSamples() const { return getPositionFromTime(getEndPosInSeconds()); }
 
 int64 NoteRoll::getPositionFromTime(double t) const { return t * currentSampleRate; }
 
-void NoteRoll::startRecording() {
-    recording = true;
-}
+void NoteRoll::startRecording() { recording = true; }
 
 void NoteRoll::stopRecording() {
     recording = false;
     auto startTimeInTicks = midiMessages.getStartTime();
-    auto endTimeInTicks = midiMessages.getEndTime();
+    auto endTimeInTicks = midiMessages.getEndTime() + 1;
     startPosInSeconds = project.ticksToSeconds(startTimeInTicks);
     endPosInSeconds = project.ticksToSeconds(endTimeInTicks);
     lengthInSeconds = endPosInSeconds - startPosInSeconds;
-    DBG("startTimeInTicks: " << startTimeInTicks);
-    DBG("endTimeInTicks: " << endTimeInTicks);
-    DBG("startPosInSeconds: " << startPosInSeconds);
-    DBG("endPosInSeconds: " << endPosInSeconds);
-    DBG("lengthInSeconds: " << lengthInSeconds);
+//    DBG("startTimeInTicks: " << startTimeInTicks);
+//    DBG("endTimeInTicks: " << endTimeInTicks);
+//    DBG("startPosInSeconds: " << startPosInSeconds);
+//    DBG("endPosInSeconds: " << endPosInSeconds);
+//    DBG("lengthInSeconds: " << lengthInSeconds);
     auto offset = -startTimeInTicks;
     for (auto messageHandle : midiMessages) {
         messageHandle->message.addToTimeStamp(offset);
@@ -72,7 +70,7 @@ void NoteRoll::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     MidiBuffer incomingMidi;
     bufferToFill.clearActiveBufferRegion();
     auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
-    DBG("note roll pos: " << pos);
+    DBG("note roll pos: " << pos << " to " << pos + bufferToFill.numSamples);
     processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, pos);
     track.getSynth().renderNextBlock(
         *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
@@ -92,6 +90,8 @@ void NoteRoll::processNextMidiBuffer(
         auto event = p->message;
         buffer.addEvent(event, event.getTimeStamp());
     }
+    DBG("playing notes:");
+    printEvents(midiMessages);
 }
 
 //==============================================================================
@@ -105,19 +105,34 @@ int64 NoteRoll::getNextReadPosition() const {
     return currentPosition;
 }
 
-int64 NoteRoll::getTotalLength() const { return 0; }
+int64 NoteRoll::getTotalLength() const {
+    //    auto len = getPositionFromTime(getEndPosInSeconds());
+    //    return len == 0 ? 0 : len + 1024;
+    return getPositionFromTime(getEndPosInSeconds());
+}
 
 bool NoteRoll::isLooping() const { return looping; }
 
 void NoteRoll::setLooping(bool shouldLoop) { looping = shouldLoop; }
 
 void NoteRoll::printEvents() const {
+    printEvents(midiMessages);
+    //    for (auto i = midiMessages.begin(); i != midiMessages.end(); i++) {
+    //        auto m = (*i)->message;
+    //        auto t = project.ticksToSeconds(m.getTimeStamp());
+    //        DBG(String("note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
+    //            << t << " (" << m.getTimeStamp() << " ticks): noteNumber=" << m.getNoteNumber()
+    //            << " velocity=" << m.getVelocity());
+    //    }
+}
+
+void NoteRoll::printEvents(const MidiMessageSequence &midiMessages) const {
     for (auto i = midiMessages.begin(); i != midiMessages.end(); i++) {
         auto m = (*i)->message;
         auto t = project.ticksToSeconds(m.getTimeStamp());
         DBG(String("note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
-            << t << " (" << m.getTimeStamp() << " ticks): noteNumber=" << m.getNoteNumber()
-            << " velocity=" << m.getVelocity());
+            << t << " (" << m.getTimeStamp() << " ticks, " << (t * currentSampleRate)
+            << " samples): noteNumber=" << m.getNoteNumber() << " velocity=" << m.getVelocity());
     }
 }
 

@@ -45,6 +45,7 @@ void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
 //    DBG("MidiPlayer::getNextAudioBlock pos: " << currentPosition << " numSamples: " << bufferToFill.numSamples);
     DBG("midi player pos: " << currentPosition);
     if (bufferToFill.numSamples > 0) {
+        bufferToFill.clearActiveBufferRegion();
         Timeline timeline = getCurrentTimeline();
         auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
         list<NoteRoll *> noteRollsToPlay = timeline.getAt(getTimeAtPosition(pos));
@@ -72,8 +73,8 @@ void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
                     i++;
                 }
             }
-        } else {
-            bufferToFill.clearActiveBufferRegion();
+//        } else {
+//            bufferToFill.clearActiveBufferRegion();
         }
         currentPosition += bufferToFill.numSamples;
     }
@@ -106,12 +107,13 @@ int64 MidiPlayer::getTotalLength() const {
     int64 totalLength = 0;
     for (auto &noteRoll : noteRolls) {
         if (!noteRoll->isDeleted()) {
-            totalLength = max(totalLength, noteRoll->getTotalLengthInSamples());
+            totalLength = max(totalLength, noteRoll->getTotalLength());
         }
     }
     if (track.isRecording() && !looping) {
-        return max(totalLength, currentPosition);
+        totalLength = max(totalLength, currentPosition);
     }
+//    return totalLength > 0 ? totalLength + 1024 : 0;
     return totalLength;
 }
 
