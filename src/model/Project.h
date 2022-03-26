@@ -65,6 +65,8 @@ class Project {
 
     void writeAudioFile(const File &file);
 
+    void printEvents(const MidiMessageSequence &midiMessages) const;
+
   private:
     const float initialTempo = 120.0;
     const double initialVerticalScale = 1;

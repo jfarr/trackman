@@ -16,6 +16,23 @@ DesktopController::DesktopController(MainWindow &mainWindow, AudioDeviceManager 
     updateTitleBar();
 }
 
+void DesktopController::playbackStarted() {
+//    auto selectedTrack = project.getTrackList().getSelectedTrack();
+//    if (selectedTrack != nullptr) {
+//        selectedTrack->dumpMidi();
+//    }
+}
+
+void DesktopController::playbackStopped() {
+    project.getTrackList().eachTrack([](Track &track) {
+        track.getSynth().allNotesOff(0, true);
+    });
+//    auto selectedTrack = project.getTrackList().getSelectedTrack();
+//    if (selectedTrack != nullptr) {
+//        selectedTrack->dumpMidi();
+//    }
+}
+
 void DesktopController::loopingChanged(bool shouldLoop) { project.getMixer().setLooping(shouldLoop); }
 
 void DesktopController::recordingStarted() {

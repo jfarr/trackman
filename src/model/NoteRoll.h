@@ -43,7 +43,6 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     double getEndTime() const { return midiMessages.getEndTime(); }
 
     void printEvents() const;
-    void printEvents(const MidiMessageSequence& midiMessages) const;
 
     //==============================================================================
     // AudioSource

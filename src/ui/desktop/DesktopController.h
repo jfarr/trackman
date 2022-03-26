@@ -51,6 +51,8 @@ class DesktopController : public AudioSource,
 
     void resize();
 
+    void playbackStarted();
+    void playbackStopped();
     void loopingChanged(bool shouldLoop);
     void recordingStarted();
     void recordingStopped();

@@ -19,6 +19,8 @@ class TransportControl : public Component, public ChangeListener, public Timer, 
 
     void setEnabled(bool enabled);
 
+    function<void()> onPlaybackStarted = nullptr;
+    function<void()> onPlaybackStopped = nullptr;
     function<void(bool)> onLoopingChanged = nullptr;
     function<void()> onRecordingStarted = nullptr;
     function<void()> onRecordingStopped = nullptr;

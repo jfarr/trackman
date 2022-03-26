@@ -76,6 +76,8 @@ class Track {
 //    double getMidiLengthInSeconds() const;
 //    int64 getMidiLengthInSamples() const;
 
+//    void dumpMidi() { midiPlayer.dump(); }
+
   private:
     friend TrackList;
     friend MidiPlayer;

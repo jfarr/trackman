@@ -123,6 +123,7 @@ void Track::startRecording() {
         recordStartPosInSeconds = project.getTransport().getCurrentPosition();
         auto *noteRoll = addNoteRoll(recordStartPosInSeconds);
         noteRoll->setSelected(true);
+        project.getKeyboardState().reset();
         midiRecorder.reset(new MidiRecorder(*noteRoll, project.getKeyboardState(), deviceManager));
         //        midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
     }

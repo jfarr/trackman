@@ -116,4 +116,15 @@ void Project::from_json(AudioFormatManager &formatManager, string filename) {
 
 void Project::writeAudioFile(const File &file) { mixer.writeAudioFile(file, trackList.getTotalLengthInSamples()); }
 
+void Project::printEvents(const MidiMessageSequence &midiMessages) const {
+    auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
+    for (auto i = midiMessages.begin(); i != midiMessages.end(); i++) {
+        auto m = (*i)->message;
+        auto t = ticksToSeconds(m.getTimeStamp());
+        DBG(String("note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
+            << t << " (" << m.getTimeStamp() << " ticks, " << (t * sampleRate)
+            << " samples): noteNumber=" << m.getNoteNumber() << " velocity=" << m.getVelocity());
+    }
+}
+
 } // namespace trackman

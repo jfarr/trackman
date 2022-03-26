@@ -30,6 +30,7 @@ void MidiPlayer::prepareToPlay(int blockSize, double sampleRate) {
     for (auto &noteRoll : noteRolls) {
         noteRoll->prepareToPlay(blockSize, sampleRate);
     }
+//    dumping = true;
 }
 
 void MidiPlayer::releaseResources() {
@@ -43,8 +44,9 @@ void MidiPlayer::releaseResources() {
 
 void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     const ScopedLock lock(mutex);
-//    DBG("MidiPlayer::getNextAudioBlock pos: " << currentPosition << " to: " << currentPosition + bufferToFill.numSamples);
-//    DBG("midi player pos: " << currentPosition);
+//    DBG("MidiPlayer::getNextAudioBlock writing to buffer: " << String::toHexString((long)bufferToFill.buffer));
+    //    DBG("MidiPlayer::getNextAudioBlock pos: " << currentPosition << " to: " << currentPosition +
+    //    bufferToFill.numSamples); DBG("midi player pos: " << currentPosition);
     if (bufferToFill.numSamples > 0) {
         bufferToFill.clearActiveBufferRegion();
         Timeline timeline = getCurrentTimeline();
@@ -53,46 +55,49 @@ void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
 //        if (track.isRecording()) {
 //            MidiBuffer incomingMidi;
 //            processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, pos);
-////
-////            for (auto i = incomingMidi.begin(); i != incomingMidi.end(); i++) {
-////                auto m = (*i).getMessage();
-////                auto t = track.getProject().ticksToSeconds(m.getTimeStamp());
-////                DBG(String("note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
-////                    << t << " (" << m.getTimeStamp() << " ticks, " << (t * currentSampleRate)
-////                    << " samples): noteNumber=" << m.getNoteNumber() << " velocity=" << m.getVelocity());
-////            }
-////
+//
+//            for (auto i = incomingMidi.begin(); i != incomingMidi.end(); i++) {
+//                auto m = (*i).getMessage();
+//                auto t = track.getProject().ticksToSeconds(m.getTimeStamp());
+//                DBG(String("got keyboard note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
+//                    << t << " (" << m.getTimeStamp() << " ticks, " << (t * currentSampleRate)
+//                    << " samples): noteNumber=" << m.getNoteNumber() << " velocity=" << m.getVelocity());
+//            }
 //            track.getSynth().renderNextBlock(
 //                *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
 //            noteRollsToPlay.remove(&track.getMidiRecorder()->getNoteRoll());
 //        }
         if (!noteRollsToPlay.empty()) {
-            auto firstNoteRoll = noteRollsToPlay.front();
-            if (!firstNoteRoll->isDeleted()) {
-                firstNoteRoll->getNextAudioBlock(bufferToFill);
-            } else {
-                bufferToFill.clearActiveBufferRegion();
-            }
-            if (noteRollsToPlay.size() > 1) {
-                tempBuffer.setSize(
-                    jmax(1, bufferToFill.buffer->getNumChannels()), bufferToFill.buffer->getNumSamples());
+            tempBuffer.setSize(jmax(1, bufferToFill.buffer->getNumChannels()), bufferToFill.buffer->getNumSamples());
 
-                AudioSourceChannelInfo info2(&tempBuffer, 0, bufferToFill.numSamples);
-                int i = 0;
-                for (auto *noteRoll : noteRollsToPlay) {
-                    if (i > 0 && !noteRoll->isDeleted()) {
-                        noteRoll->getNextAudioBlock(info2);
-                        for (int chan = 0; chan < bufferToFill.buffer->getNumChannels(); ++chan) {
-                            bufferToFill.buffer->addFrom(
-                                chan, bufferToFill.startSample, tempBuffer, chan, 0, bufferToFill.numSamples);
-                        }
+            AudioSourceChannelInfo info2(&tempBuffer, 0, bufferToFill.numSamples);
+            for (auto *noteRoll : noteRollsToPlay) {
+                if (!noteRoll->isDeleted()) {
+                    noteRoll->getNextAudioBlock(info2);
+                    for (int chan = 0; chan < bufferToFill.buffer->getNumChannels(); ++chan) {
+                        bufferToFill.buffer->addFrom(
+                            chan, bufferToFill.startSample, tempBuffer, chan, 0, bufferToFill.numSamples);
                     }
-                    i++;
                 }
             }
-//        } else {
-//            bufferToFill.clearActiveBufferRegion();
         }
+
+//        if (dumping) {
+//            bool nonzero = false;
+//            auto *p = bufferToFill.buffer->getReadPointer(0);
+//            String s;
+//            for (int i = 0; i < bufferToFill.numSamples; i++) {
+//                s = s << *(p + i) << ",";
+//                if (*(p + 1) != 0) {
+//                    nonzero = true;
+//                }
+//            }
+//            if (nonzero) {
+//                DBG(s);
+//                dumping = false;
+//            }
+//        }
+
         currentPosition += bufferToFill.numSamples;
     }
 }
@@ -100,10 +105,18 @@ void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
 void MidiPlayer::processNextMidiBuffer(
     MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const {
 
+    const double startTime = currentPos / currentSampleRate;
+    const double endTime = startTime + numSamples / currentSampleRate;
+//    DBG("MidiPlayer::processNextMidiBuffer pos: " << currentPos << " (" << startTime << " to " << endTime << ")");
+
     MidiBuffer keyboardBuffer;
     auto &keyboardState = track.getProject().getKeyboardState();
     keyboardState.processNextMidiBuffer(keyboardBuffer, startSample, numSamples, true);
     buffer.addEvents(keyboardBuffer, startSample, numSamples, 0);
+    for (auto e : keyboardBuffer) {
+        DBG("MidiPlayer::processNextMidiBuffer adding " << (e.getMessage().isNoteOn() ? "noteOn" : "noteOff") << " event at "
+                      << e.getMessage().getTimeStamp());
+    }
 }
 
 //==============================================================================
@@ -130,7 +143,7 @@ int64 MidiPlayer::getTotalLength() const {
     if (track.isRecording() && !looping) {
         totalLength = max(totalLength, currentPosition);
     }
-//    return totalLength > 0 ? totalLength + 1024 : 0;
+    //    return totalLength > 0 ? totalLength + 1024 : 0;
     return totalLength;
 }
 

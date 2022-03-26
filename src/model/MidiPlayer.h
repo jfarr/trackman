@@ -36,6 +36,8 @@ class MidiPlayer : public PositionableAudioSource {
     bool isLooping() const override;
     void setLooping(bool shouldLoop) override;
 
+//    void dump() { dumping = true; }
+
   private:
     Track &track;
     Synthesiser synth;
@@ -45,6 +47,7 @@ class MidiPlayer : public PositionableAudioSource {
     bool looping = false;
 //    bool recording = false;
     AudioBuffer<float> tempBuffer;
+//    bool dumping = false;
 
     Timeline<NoteRoll *> getCurrentTimeline();
     double getTimeAtPosition(int64 position) { return position / currentSampleRate; }

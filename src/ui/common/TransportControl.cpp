@@ -214,6 +214,9 @@ void TransportControl::changeState(TransportState newState) {
         case TransportState::Stopped:
             setButtonImage(playButton, playButtonOffImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
+            if (onPlaybackStopped != nullptr) {
+                onPlaybackStopped();
+            }
             if (isRecordEnabled()) {
                 setButtonImage(recordButton, recordButtonOffImage);
                 notifyRecordingStopped();
@@ -232,6 +235,9 @@ void TransportControl::changeState(TransportState newState) {
         case TransportState::Playing:
             setButtonImage(playButton, playButtonOnImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
+            if (onPlaybackStarted != nullptr) {
+                onPlaybackStarted();
+            }
             if (isRecordEnabled()) {
                 if (!recording) {
                     setButtonImage(recordButton, recordButtonOffImage);
@@ -244,6 +250,9 @@ void TransportControl::changeState(TransportState newState) {
             setButtonImage(playButton, playButtonOnImage);
             setButtonImage(pauseButton, pauseButtonOffImage);
             setButtonImage(recordButton, recordButtonOnImage);
+            if (onPlaybackStarted != nullptr) {
+                onPlaybackStarted();
+            }
             break;
 
         case TransportState::Pausing:
