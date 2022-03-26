@@ -69,8 +69,8 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     //    double recordStartPosInSeconds;
     double startPosInSeconds = 0;
     double endPosInSeconds = 0;
-    double lengthInSeconds = 0;
-    double sourceLengthInSeconds = 0;
+//    double lengthInSeconds = 0;
+//    double sourceLengthInSeconds = 0;
     bool selected = false;
     bool deleted = false;
     bool recording = false;

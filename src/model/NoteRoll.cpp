@@ -18,7 +18,7 @@ double NoteRoll::getStartPosInSeconds() const {
 
 double NoteRoll::getEndPosInSeconds() const { return endPosInSeconds; }
 
-double NoteRoll::getLengthInSeconds() const { return lengthInSeconds; }
+double NoteRoll::getLengthInSeconds() const { return endPosInSeconds - startPosInSeconds; }
 
 // int64 NoteRoll::getTotalLengthInSamples() const { return getPositionFromTime(getEndPosInSeconds()); }
 
@@ -35,8 +35,8 @@ MidiMessageSequence::MidiEventHolder *NoteRoll::addEvent(const MidiMessage &newM
     if (newMessage.isNoteOff()) {
         endPosInSeconds = project.ticksToSeconds(newMessage.getTimeStamp() + 1);
     }
-    lengthInSeconds = max(0.0, endPosInSeconds - startPosInSeconds);
-    sourceLengthInSeconds = lengthInSeconds;
+//    lengthInSeconds = max(0.0, endPosInSeconds - startPosInSeconds);
+//    sourceLengthInSeconds = lengthInSeconds;
     //    auto offset = newMessage.getTimeStamp() - startPosInSeconds;
     auto offset = project.secondsToTicks(startPosInSeconds);
     auto event = midiMessages.addEvent(newMessage.withTimeStamp(newMessage.getTimeStamp() - offset));
@@ -68,7 +68,7 @@ void NoteRoll::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     const ScopedLock lock(mutex);
     MidiBuffer midiEvents;
     bufferToFill.clearActiveBufferRegion();
-    int64 sourceLengthInSamples = (int64)sourceLengthInSeconds * (int64)currentSampleRate;
+    int64 sourceLengthInSamples = (int64)getLengthInSeconds() * (int64)currentSampleRate;
     //    DBG("endPosInSeconds: " << endPosInSeconds);
     //    DBG("sourceLengthInSamples: " << sourceLengthInSamples);
     auto pos = looping ? currentPosition % sourceLengthInSamples : currentPosition;
@@ -87,14 +87,16 @@ void NoteRoll::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
 void NoteRoll::processNextMidiBuffer(
     MidiBuffer &buffer, const int /*startSample*/, const int numSamples, const int64 currentPos) {
     const ScopedLock lock(mutex);
-    int64 sourceLengthInSamples = (int64)sourceLengthInSeconds * (int64)currentSampleRate;
+    auto sourceLengthInSamples = (int64)(getLengthInSeconds() * (double)currentSampleRate);
     auto pos = looping ? currentPosition % sourceLengthInSamples : currentPosition;
 
     //    const int64 pos = currentPosition - (int64)startPosInSeconds * (int64)currentSampleRate;
     const double startTime = pos / currentSampleRate;
     const double endTime = startTime + numSamples / currentSampleRate;
-//    DBG("NoteRoll::processNextMidiBuffer startPos: " << startPosInSeconds << " pos: " << pos << " (" << startTime
-//                                                     << " to " << endTime << ")");
+    DBG("NoteRoll::processNextMidiBuffer looping: " << (looping ? "true" : "false")
+                                                    << " pos: " << pos << " secs: " << getLengthInSeconds() << " len: " << sourceLengthInSamples
+                                                    << " startPos: " << startPosInSeconds << " pos: " << pos << " ("
+                                                    << startTime << " to " << endTime << ")");
 
     //    auto midiMessages = getMidiMessages();
     auto startTick = project.secondsToTicks(startTime);
@@ -102,7 +104,7 @@ void NoteRoll::processNextMidiBuffer(
     DBG("start tick: " << startTick << " end tick: " << endTick);
     auto startIndex = midiMessages.getNextIndexAtTime(startTick);
     auto endIndex = midiMessages.getNextIndexAtTime(endTick);
-//    DBG("startIndex: " << startIndex << " endIndex:" << endIndex);
+    //    DBG("startIndex: " << startIndex << " endIndex:" << endIndex);
     for (int i = startIndex; i < endIndex; i++) {
         auto p = midiMessages.getEventPointer(i);
         auto event = p->message;
