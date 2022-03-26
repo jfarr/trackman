@@ -71,13 +71,43 @@ void MidiRecorder::handleMessage(MidiMessage message, double time) {
     auto t = Time::getMillisecondCounterHiRes();
     auto offset = (time - t) * .001;
     auto &project = noteRoll.getProject();
-    auto &midiMessages = noteRoll.getMidiMessages();
+    //    auto &midiMessages = noteRoll.getMidiMessages();
     auto timestamp = project.getTransport().getTransportSource().getCurrentPosition();
     message.setTimeStamp(project.secondsToTicks(timestamp + offset));
-    midiMessages.addEvent(message);
+    noteRoll.addEvent(message);
     if (onMidiMessage != nullptr) {
         onMidiMessage(message, time);
     }
+}
+
+MidiMessageSequence MidiRecorder::getMidiMessages(double pos) const {
+    MidiMessageSequence messages;
+    noteRoll.eachMidiMessage([this, pos, &messages](const MidiMessageSequence::MidiEventHolder &eventHandle) {
+        messages.addEvent(eventHandle.message);
+        if (eventHandle.message.isNoteOn() && eventHandle.noteOffObject == nullptr) {
+            auto noteOff = MidiMessage::noteOff(eventHandle.message.getChannel(), eventHandle.message.getNoteNumber());
+            noteOff.setTimeStamp(noteRoll.getProject().secondsToTicks(pos));
+            messages.addEvent(noteOff);
+        }
+    });
+    messages.updateMatchedPairs();
+    return messages;
+    //
+    //    //        list<MidiMessage> noteOffMessages;
+    //
+    //    for (auto i : messages) {
+    //        if (i->message.isNoteOn() && i->noteOffObject == nullptr) {
+    //            auto noteOff = MidiMessage::noteOff(i->message.getChannel(), i->message.getNoteNumber());
+    //            noteOff.setTimeStamp(project.secondsToTicks(pos));
+    //            noteOffMessages.push_back(noteOff);
+    //        }
+    //    }
+    //    for (auto noteOff : noteOffMessages) {
+    //        messages.addEvent(noteOff);
+    //    }
+    //    messages.updateMatchedPairs();
+    //    return messages;
+    //
 }
 
 void MidiRecorder::setMidiInput(int index) {

@@ -6,6 +6,8 @@ using namespace juce;
 
 namespace trackman {
 
+namespace midiutil {
+
 static int getLowestNote(const MidiMessageSequence &messages) {
     int note = INT_MAX;
     for (auto i : messages) {
@@ -25,5 +27,7 @@ static int getHighestNote(const MidiMessageSequence &messages) {
     }
     return note;
 }
+
+} // namespace midiutil
 
 } // namespace trackman

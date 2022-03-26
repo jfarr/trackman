@@ -1,35 +1,51 @@
 #include "NoteRoll.h"
 #include "Project.h"
+#include "common/midiutil.h"
 
 namespace trackman {
 
-NoteRoll::NoteRoll(Project &project)
-    : project(project) {}
+NoteRoll::NoteRoll(Project &project) : project(project) {}
 
-MidiMessageSequence &NoteRoll::getMidiMessages() {
-    return midiMessages;
-}
+ MidiMessageSequence NoteRoll::getMidiMessages() const {
+     return midiMessages;
+ }
 
-double NoteRoll::getStartPosInSeconds() {
-    return project.ticksToSeconds(getMidiMessages().getStartTime());
-}
+double NoteRoll::getStartPosInSeconds() const { return project.ticksToSeconds(midiMessages.getStartTime()); }
 
-double NoteRoll::getEndPosInSeconds() { return project.ticksToSeconds(getMidiMessages().getEndTime()); }
+double NoteRoll::getEndPosInSeconds() const { return project.ticksToSeconds(midiMessages.getEndTime()); }
 
-double NoteRoll::getLengthInSeconds() { return getEndPosInSeconds() - getStartPosInSeconds(); }
+double NoteRoll::getLengthInSeconds() const { return getEndPosInSeconds() - getStartPosInSeconds(); }
 //
-//void NoteRoll::setMidiMessages(const MidiMessageSequence &newMidiMessages) {
+// void NoteRoll::setMidiMessages(const MidiMessageSequence &newMidiMessages) {
 //    midiMessages = newMidiMessages;
 //    update();
 //}
 
-void NoteRoll::update() {
+MidiMessageSequence::MidiEventHolder *NoteRoll::addEvent(const MidiMessage &newMessage) {
+    auto event = midiMessages.addEvent(newMessage);
     midiMessages.sort();
     midiMessages.updateMatchedPairs();
-    //    startPosInSeconds = project.ticksToSeconds(midiMessages.getStartTime());
-    //    endPosInSeconds = project.ticksToSeconds(midiMessages.getEndTime());
-    //    lengthInSeconds = endPosInSeconds - startPosInSeconds;
+    return event;
 }
+
+void NoteRoll::eachMidiMessage(function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const {
+    for (auto m : midiMessages) {
+        f(*m);
+    }
+}
+
+int NoteRoll::getLowestNote() const { return midiutil::getLowestNote(midiMessages); }
+
+int NoteRoll::getHighestNote() const { return midiutil::getHighestNote(midiMessages); }
+
+//
+// void NoteRoll::update() {
+//    midiMessages.sort();
+//    midiMessages.updateMatchedPairs();
+//    //    startPosInSeconds = project.ticksToSeconds(midiMessages.getStartTime());
+//    //    endPosInSeconds = project.ticksToSeconds(midiMessages.getEndTime());
+//    //    lengthInSeconds = endPosInSeconds - startPosInSeconds;
+//}
 
 //==============================================================================
 void NoteRoll::prepareToPlay(int blockSize, double sampleRate) {

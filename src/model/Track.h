@@ -61,8 +61,9 @@ class Track {
     void stopRecording();
 
     void eachNoteRoll(function<void(NoteRoll &noteRoll)> f);
-    const MidiMessageSequence &getMidiMessages() const { return noteRolls.back()->getMidiMessages(); }
-    const MidiMessageSequence getCurrentMidiMessages(double pos) const;
+//    const MidiMessageSequence &getMidiMessages() const { return noteRolls.back()->getMidiMessages(); }
+    void eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos, function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
+    double getCurrentMidiEndTime(const NoteRoll &noteRoll, const double pos) const;
     void processNextMidiBuffer(MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
     double getMidiLengthInSeconds() const;
     int64 getMidiLengthInSamples() const;

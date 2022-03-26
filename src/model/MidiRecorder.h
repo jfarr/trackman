@@ -17,12 +17,13 @@ class MidiRecorder : public MidiKeyboardState::Listener, MidiInputCallback {
     ~MidiRecorder() override;
 
     MidiKeyboardState &getKeyboardState() { return keyboardState; }
-    const MidiMessageSequence &getMidiMessages() const { return noteRoll.getMidiMessages(); }
+//    const MidiMessageSequence &getMidiMessages() const { return noteRoll.getMidiMessages(); }
     bool isRecording() const;
 
 //    void setMidiMessages(const MidiMessageSequence &newMessages) { midiMessages = newMessages; }
     void startRecording();
     void stopRecording();
+    MidiMessageSequence getMidiMessages(double pos) const;
 
     void setMidiInput(int index);
 

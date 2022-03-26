@@ -4,7 +4,7 @@ using namespace juce;
 
 namespace trackman {
 
-namespace TimeUtils {
+namespace timeutil {
 
 static const int ticksPerQuarterNote = 96;
 
@@ -25,5 +25,5 @@ static String formatSecsAsTime(double secs) {
            String((int)t.inMilliseconds() % 1000).paddedLeft('0', 3);
 }
 
-} // namespace TimeUtils
+} // namespace timeutil
 } // namespace trackman

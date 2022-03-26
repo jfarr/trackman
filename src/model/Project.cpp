@@ -17,9 +17,9 @@ bool Project::isRecording() const {
     return selected == nullptr ? false : selected->isRecording();
 }
 
-int Project::secondsToTicks(double seconds) const { return TimeUtils::secondsToTicks(tempo, seconds); }
+int Project::secondsToTicks(double seconds) const { return timeutil::secondsToTicks(tempo, seconds); }
 
-double Project::ticksToSeconds(int ticks) const { return TimeUtils::ticksToSeconds(tempo, ticks); }
+double Project::ticksToSeconds(int ticks) const { return timeutil::ticksToSeconds(tempo, ticks); }
 
 double Project::measuresToSeconds(double measures) const { return timeSignature.measuresToSeconds(measures, tempo); }
 
@@ -56,11 +56,11 @@ string Project::to_json() {
         {"numerator", timeSignature.getNumerator()}, {"denominator", timeSignature.getDenominator()}};
     project_json["tracks"] = json::array();
     MidiFile midiFile;
-    midiFile.setTicksPerQuarterNote(TimeUtils::ticksPerQuarterNote);
+    midiFile.setTicksPerQuarterNote(timeutil::ticksPerQuarterNote);
     trackList.eachTrack([&project_json, &midiFile](Track &track) {
-        MidiMessageSequence messages = track.getMidiMessages();
-        midiFile.addTrack(messages);
-        MidiRecorder::printEvents(messages);
+//        MidiMessageSequence messages = track.getMidiMessages();
+//        midiFile.addTrack(messages);
+//        MidiRecorder::printEvents(messages);
         json track_json = {{"name", track.getName().toStdString()}, {"gain", track.getLevelGain()},
             {"muted", track.isMuted()}, {"soloed", track.isSoloed()}};
         track.eachSample([&track_json](Sample &sample) {

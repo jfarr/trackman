@@ -5,6 +5,7 @@
 #include "TrackRegion.h"
 #include "audio/SynthAudioSource.h"
 
+using namespace std;
 using namespace juce;
 
 namespace trackman {
@@ -17,18 +18,25 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     ~NoteRoll() = default;
 
     Project &getProject() { return project; }
-    MidiMessageSequence &getMidiMessages();
-    bool empty() { return getMidiMessages().getNumEvents() == 0; }
-    double getStartPosInSeconds();
-    double getEndPosInSeconds();
-    double getLengthInSeconds();
+    MidiMessageSequence getMidiMessages() const;
+    bool empty() { return midiMessages.getNumEvents() == 0; }
+    double getStartPosInSeconds() const;
+    double getEndPosInSeconds() const;
+    double getLengthInSeconds() const;
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
 
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
-//    void setMidiMessages(const MidiMessageSequence &newMidiMessages);
-    void update();
+    //    void setMidiMessages(const MidiMessageSequence &newMidiMessages);
+
+    MidiMessageSequence::MidiEventHolder *addEvent(const MidiMessage &newMessage);
+    void eachMidiMessage(function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
+    int getLowestNote() const;
+    int getHighestNote() const;
+    double getEndTime() const { return midiMessages.getEndTime(); }
+
+    //    void update();
 
     //==============================================================================
     // AudioSource
@@ -47,9 +55,9 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
   private:
     Project &project;
     MidiMessageSequence midiMessages;
-//    double startPosInSeconds;
-//    double endPosInSeconds;
-//    double lengthInSeconds;
+    //    double startPosInSeconds;
+    //    double endPosInSeconds;
+    //    double lengthInSeconds;
     bool selected = false;
     bool deleted = false;
 

@@ -143,17 +143,17 @@ void Track::stopRecording() {
     midiRecorder->stopRecording();
     //    recording = false;
     //    noteRolls.back()->setMidiMessages(midiRecorder.getMidiMessages());
-    DBG("Track::stopRecording");
-    DBG("size: " << noteRolls.size());
-    eachNoteRoll([](NoteRoll &noteRoll) { DBG("count: " << noteRoll.getMidiMessages().getNumEvents()); });
+    //    DBG("Track::stopRecording");
+    //    DBG("size: " << noteRolls.size());
+    //    eachNoteRoll([](NoteRoll &noteRoll) { DBG("count: " << noteRoll.getMidiMessages().getNumEvents()); });
     //    midiRecorder.release();
     midiRecorder = nullptr;
 }
 
 void Track::updateCurrentNoteRoll() {
-    if (!noteRolls.empty()) {
-        noteRolls.back()->update();
-    }
+    //    if (!noteRolls.empty()) {
+    //        noteRolls.back()->update();
+    //    }
 }
 
 void Track::eachNoteRoll(function<void(NoteRoll &noteRoll)> f) {
@@ -165,24 +165,42 @@ void Track::eachNoteRoll(function<void(NoteRoll &noteRoll)> f) {
     }
 }
 
-const MidiMessageSequence Track::getCurrentMidiMessages(double pos) const {
+void Track::eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos,
+    function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const {
     if (midiRecorder != nullptr) {
-        auto messages = midiRecorder->getMidiMessages();
-        list<MidiMessage> noteOffMessages;
-        for (auto i : messages) {
-            if (i->message.isNoteOn() && i->noteOffObject == nullptr) {
-                auto noteOff = MidiMessage::noteOff(i->message.getChannel(), i->message.getNoteNumber());
-                noteOff.setTimeStamp(project.secondsToTicks(pos));
-                noteOffMessages.push_back(noteOff);
-            }
+        auto messages = midiRecorder->getMidiMessages(pos);
+        for (auto eventHandle : messages) {
+            f(*eventHandle);
         }
-        for (auto noteOff : noteOffMessages) {
-            messages.addEvent(noteOff);
-        }
-        messages.updateMatchedPairs();
-        return messages;
+    } else {
+        noteRoll.eachMidiMessage(f);
     }
-    return hasMidi() ? getMidiMessages() : MidiMessageSequence();
+    //        auto messages = midiRecorder->getMidiMessages();
+    //        MidiMessageSequence messages;
+    ////        list<MidiMessage> noteOffMessages;
+    //
+    //        for (auto i : messages) {
+    //            if (i->message.isNoteOn() && i->noteOffObject == nullptr) {
+    //                auto noteOff = MidiMessage::noteOff(i->message.getChannel(), i->message.getNoteNumber());
+    //                noteOff.setTimeStamp(project.secondsToTicks(pos));
+    //                noteOffMessages.push_back(noteOff);
+    //            }
+    //        }
+    //        for (auto noteOff : noteOffMessages) {
+    //            messages.addEvent(noteOff);
+    //        }
+    //        messages.updateMatchedPairs();
+    //        return messages;
+    //    return MidiMessageSequence();
+}
+
+double Track::getCurrentMidiEndTime(const NoteRoll &noteRoll, const double pos) const {
+    if (midiRecorder != nullptr) {
+        auto messages = midiRecorder->getMidiMessages(pos);
+        return messages.getEndTime();
+    } else {
+        return noteRoll.getEndTime();
+    }
 }
 
 //
