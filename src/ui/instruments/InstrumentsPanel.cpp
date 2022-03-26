@@ -2,18 +2,19 @@
 
 namespace trackman {
 
-InstrumentsPanel::InstrumentsPanel(Project &project) : project(project) {
+InstrumentsPanel::InstrumentsPanel(Project &project)
+    : project(project), instrumentPlayer(project.getInstrumentPlayer()) {
     setAudioChannels(0, 2);
-    project.getMidiHandler().onMidiMessage = [this](const MidiMessage &message, const double time) {
-        midiMessageReceived(message, time);
-    };
+    //    project.getMidiHandler().onMidiMessage = [this](const MidiMessage &message, const double time) {
+    //        midiMessageReceived(message, time);
+    //    };
 }
 
 InstrumentsPanel::~InstrumentsPanel() { shutdownAudio(); }
 
-void InstrumentsPanel::midiMessageReceived(const MidiMessage &message, const double time) {
-    DBG("midi " << (message.isNoteOn() ? "on" : "off") << " at " << time);
-}
+// void InstrumentsPanel::midiMessageReceived(const MidiMessage &message, const double time) {
+//     DBG("midi " << (message.isNoteOn() ? "on" : "off") << " at " << time);
+// }
 
 void InstrumentsPanel::update() {
     removeAllChildren();
@@ -49,12 +50,16 @@ double InstrumentsPanel::getPaneHeight() {
     return paneHeight;
 }
 
-void InstrumentsPanel::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {}
+void InstrumentsPanel::prepareToPlay(int blockSize, double sampleRate) {
+    instrumentPlayer.prepareToPlay(blockSize, sampleRate);
+}
 
-void InstrumentsPanel::releaseResources() {}
+void InstrumentsPanel::releaseResources() {
+    instrumentPlayer.releaseResources();
+}
 
 void InstrumentsPanel::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
-    bufferToFill.clearActiveBufferRegion();
+    instrumentPlayer.getNextAudioBlock(bufferToFill);
 }
 
 } // namespace trackman

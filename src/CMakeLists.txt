@@ -35,6 +35,8 @@ target_sources(Trackman PRIVATE
         commands/TrackListCommands.h
         model/Instrument.cpp
         model/Instrument.h
+        model/InstrumentPlayer.cpp
+        model/InstrumentPlayer.h
         model/MidiHandler.cpp
         model/MidiHandler.h
         model/MidiPlayer.cpp

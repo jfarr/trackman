@@ -5,9 +5,9 @@
 namespace trackman {
 
 MidiPlayer::MidiPlayer(Track &track) : track(track), noteRolls(track.getNoteRolls()) {
-    for (auto i = 0; i < 4; ++i)
+    for (auto i = 0; i < 4; ++i) {
         synth.addVoice(new SineWaveVoice());
-
+    }
     synth.addSound(new SineWaveSound());
 }
 

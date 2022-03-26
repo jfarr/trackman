@@ -18,7 +18,7 @@ class InstrumentsPanel : public AudioAppComponent {
     void clear() { instruments.clear(); }
     void update();
 
-    void midiMessageReceived(const MidiMessage &message, const double time);
+//    void midiMessageReceived(const MidiMessage &message, const double time);
 
     //==============================================================================
     // Component
@@ -27,7 +27,7 @@ class InstrumentsPanel : public AudioAppComponent {
 
     //==============================================================================
     // AudioAppComponent
-    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    void prepareToPlay(int blockSize, double sampleRate) override;
     void releaseResources() override;
     void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
 
@@ -36,6 +36,7 @@ class InstrumentsPanel : public AudioAppComponent {
     const int topStripHeight = 30;
 
     Project &project;
+    InstrumentPlayer &instrumentPlayer;
     list<InstrumentControl *> instruments;
 
     void resize();

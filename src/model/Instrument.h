@@ -11,11 +11,13 @@ class Track;
 
 class Instrument {
   public:
-    Instrument(Track &track, MidiKeyboardState &keyState) : synth(track) {}
+    Instrument(Track &track, MidiKeyboardState &keyState) {}
     ~Instrument() = default;
 
+    Synthesiser &getSynth() { return synth; }
+
   private:
-    MidiPlayer synth;
+    Synthesiser synth;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Instrument)
 };

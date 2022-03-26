@@ -13,6 +13,12 @@ Track::Track(Project &project, AudioDeviceManager &deviceManager)
         deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
     gainSource = make_unique<GainAudioSource>(&midiPlayer, false);
     meteredSource = make_unique<MeteredAudioSource>(gainSource.get(), deviceManager.getAudioDeviceSetup().sampleRate);
+
+    for (auto i = 0; i < 4; ++i) {
+        liveSynth.addVoice(new SineWaveVoice());
+    }
+    liveSynth.addSound(new SineWaveSound());
+    liveSynth.setCurrentPlaybackSampleRate(deviceManager.getAudioDeviceSetup().sampleRate);
 }
 
 Track::~Track() { samples.clear(); }

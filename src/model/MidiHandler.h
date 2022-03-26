@@ -33,7 +33,7 @@ class MidiHandler : public MidiKeyboardState::Listener, public MidiInputCallback
     // MidiInputCallback
     void handleIncomingMidiMessage(MidiInput *source, const MidiMessage &message) override;
 
-  private:
+  protected:
     class MidiMessageCallback : public CallbackMessage {
       public:
         MidiMessageCallback(MidiHandler *o, const MidiMessage &m, double t) : owner(o), message(m), time(t) {}
@@ -50,9 +50,11 @@ class MidiHandler : public MidiKeyboardState::Listener, public MidiInputCallback
     Project &project;
 //    AudioDeviceManager &deviceManager;
 //    MidiKeyboardState &keyboardState;
+    MidiMessageCollector midiCollector;
     bool isAddingFromMidiInput = false;
     int lastInputIndex = 0;
 
+  private:
     CriticalSection mutex;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiHandler)

@@ -67,6 +67,7 @@ class Track {
     void stopRecording();
 
     Synthesiser &getSynth() { return midiPlayer.getSynth(); }
+    Synthesiser &getLiveSynth() { return liveSynth; }
     void eachNoteRoll(function<void(NoteRoll &noteRoll)> f);
     void eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos,
         function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
@@ -111,6 +112,7 @@ class Track {
     unique_ptr<MidiRecorder> midiRecorder = nullptr;
     list<shared_ptr<NoteRoll>> noteRolls;
     MidiPlayer midiPlayer;
+    Synthesiser liveSynth;
 
     void createSamplePlayer();
     void removeSamplePlayer();
