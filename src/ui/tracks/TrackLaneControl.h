@@ -40,7 +40,6 @@ class TrackLaneControl : public Component {
     Label trackLabel;
     list<SampleThumbnail *> thumbnails;
     list<NoteCanvas *> canvases;
-//    NoteCanvas noteRoll;
 
     void createControls();
 

@@ -29,7 +29,6 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
 
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
-    //    void setMidiMessages(const MidiMessageSequence &newMidiMessages);
 
     void startRecording() { recording = true; }
     void stopRecording() { recording = false; }
@@ -39,8 +38,6 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     int getLowestNote() const;
     int getHighestNote() const;
     double getEndTime() const { return midiMessages.getEndTime(); }
-
-    //    void update();
 
     //==============================================================================
     // AudioSource
@@ -59,9 +56,6 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
   private:
     Project &project;
     MidiMessageSequence midiMessages;
-    //    double startPosInSeconds;
-    //    double endPosInSeconds;
-    //    double lengthInSeconds;
     bool selected = false;
     bool deleted = false;
     bool recording = false;

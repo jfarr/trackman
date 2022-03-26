@@ -14,9 +14,6 @@ void NoteCanvas::resize() {
     auto area = getBounds();
     auto border = 3;
     auto pos = project.getTransport().getTransportSource().getCurrentPosition();
-    //    auto messages = track.isRecording() ? track.getCurrentMidiMessages(pos) : noteRoll.getMidiMessages();
-    ////    auto length = project.ticksToSeconds(track.getCurrentMidiMessages(pos).getEndTime());
-    //    auto length =  project.ticksToSeconds(messages.getEndTime());
     auto length = project.ticksToSeconds(track.getCurrentMidiEndTime(noteRoll, pos));
     auto width = noteRoll.empty() ? 0 : length * project.getHorizontalScale() - area.getX() + border + 1;
     setBounds(area.withWidth(width));
@@ -37,9 +34,6 @@ void NoteCanvas::paint(Graphics &g) {
     g.setColour(Colours::dimgrey);
     g.fillRect(thumbnailBounds);
 
-    //    auto messages =
-    //    track.getCurrentMidiMessages(project.getTransport().getTransportSource().getCurrentPosition());
-    //    auto messages = noteRoll.getMidiMessages();
     auto scale = project.getHorizontalScale();
     int lowNote = noteRoll.getLowestNote();
     int highNote = noteRoll.getHighestNote();
@@ -63,18 +57,6 @@ void NoteCanvas::paint(Graphics &g) {
                 g.drawRect(r.expanded(margin));
             }
         });
-    //    for (auto m : messages) {
-    //        if (m->message.isNoteOn() && m->noteOffObject != nullptr) {
-    //            auto noteOn = m->message;
-    //            auto noteOff = m->noteOffObject->message;
-    //            Rectangle<float> r = getNoteRect(noteOn, noteOff, lowNote, noteHeight, x, h, scale);
-    //            r.setY(r.getY() + border);
-    //            g.setColour(Colours::steelblue.darker(0.3));
-    //            g.fillRect(r);
-    //            g.setColour(selected ? Colours::lightgrey : Colours::grey);
-    //            g.drawRect(r.expanded(margin));
-    //        }
-    //    }
 }
 
 Rectangle<float> NoteCanvas::getNoteRect(const MidiMessage &noteOn, const MidiMessage &noteOff, int lowNote,

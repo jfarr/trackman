@@ -71,7 +71,6 @@ class Project {
 
     AudioDeviceManager &deviceManager;
     MidiKeyboardState keyboardState;
-//    MidiRecorder midiRecorder;
     TrackList trackList;
     Mixer mixer;
     Transport transport;

@@ -6,20 +6,13 @@ namespace trackman {
 
 NoteRoll::NoteRoll(Project &project) : project(project) {}
 
- MidiMessageSequence NoteRoll::getMidiMessages() const {
-     return midiMessages;
- }
+MidiMessageSequence NoteRoll::getMidiMessages() const { return midiMessages; }
 
 double NoteRoll::getStartPosInSeconds() const { return project.ticksToSeconds(midiMessages.getStartTime()); }
 
 double NoteRoll::getEndPosInSeconds() const { return project.ticksToSeconds(midiMessages.getEndTime()); }
 
 double NoteRoll::getLengthInSeconds() const { return getEndPosInSeconds() - getStartPosInSeconds(); }
-//
-// void NoteRoll::setMidiMessages(const MidiMessageSequence &newMidiMessages) {
-//    midiMessages = newMidiMessages;
-//    update();
-//}
 
 MidiMessageSequence::MidiEventHolder *NoteRoll::addEvent(const MidiMessage &newMessage) {
     auto event = midiMessages.addEvent(newMessage);
@@ -37,15 +30,6 @@ void NoteRoll::eachMidiMessage(function<void(const MidiMessageSequence::MidiEven
 int NoteRoll::getLowestNote() const { return midiutil::getLowestNote(midiMessages); }
 
 int NoteRoll::getHighestNote() const { return midiutil::getHighestNote(midiMessages); }
-
-//
-// void NoteRoll::update() {
-//    midiMessages.sort();
-//    midiMessages.updateMatchedPairs();
-//    //    startPosInSeconds = project.ticksToSeconds(midiMessages.getStartTime());
-//    //    endPosInSeconds = project.ticksToSeconds(midiMessages.getEndTime());
-//    //    lengthInSeconds = endPosInSeconds - startPosInSeconds;
-//}
 
 //==============================================================================
 void NoteRoll::prepareToPlay(int blockSize, double sampleRate) {

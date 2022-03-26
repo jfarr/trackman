@@ -37,7 +37,6 @@ class DesktopController : public AudioSource,
 
     MixerController &getMixerController() { return mixerController; }
     Mixer &getMixer() { return project.getMixer(); }
-//    MidiRecorder &getMidiRecorder() { return project.getMidiRecorder(); }
     void midiMessageReceived(const MidiMessage &message, double time);
 
     TransportController &getTransportController() { return transportController; }
@@ -133,8 +132,6 @@ class DesktopController : public AudioSource,
     InstrumentsController instrumentsController;
 
     DesktopComponent desktopComponent;
-
-//    MidiRecorder midiRecorder;
 
     unique_ptr<FileChooser> chooser;
     File projectFile;

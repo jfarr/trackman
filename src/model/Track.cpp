@@ -126,7 +126,7 @@ void Track::startRecording() {
         //        midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
         recordStartPosInSeconds = project.getTransport().getCurrentPosition();
     }
-//    noteRoll.startRecording();
+    //    noteRoll.startRecording();
     midiRecorder->startRecording();
     //    recording = true;
 }
@@ -166,12 +166,6 @@ void Track::removeNoteRoll(const NoteRoll *noteRoll) {
     }
 }
 
-void Track::updateCurrentNoteRoll() {
-    //    if (!noteRolls.empty()) {
-    //        noteRolls.back()->update();
-    //    }
-}
-
 NoteRoll *Track::getSelectedNoteRoll() const {
     for (const shared_ptr<NoteRoll> &p : noteRolls) {
         auto &noteRoll = *p;
@@ -201,23 +195,6 @@ void Track::eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos,
     } else {
         noteRoll.eachMidiMessage(f);
     }
-    //        auto messages = midiRecorder->getMidiMessages();
-    //        MidiMessageSequence messages;
-    ////        list<MidiMessage> noteOffMessages;
-    //
-    //        for (auto i : messages) {
-    //            if (i->message.isNoteOn() && i->noteOffObject == nullptr) {
-    //                auto noteOff = MidiMessage::noteOff(i->message.getChannel(), i->message.getNoteNumber());
-    //                noteOff.setTimeStamp(project.secondsToTicks(pos));
-    //                noteOffMessages.push_back(noteOff);
-    //            }
-    //        }
-    //        for (auto noteOff : noteOffMessages) {
-    //            messages.addEvent(noteOff);
-    //        }
-    //        messages.updateMatchedPairs();
-    //        return messages;
-    //    return MidiMessageSequence();
 }
 
 double Track::getCurrentMidiEndTime(const NoteRoll &noteRoll, const double pos) const {
@@ -228,12 +205,6 @@ double Track::getCurrentMidiEndTime(const NoteRoll &noteRoll, const double pos) 
         return noteRoll.getEndTime();
     }
 }
-
-//
-// void Track::setMidiMessages(const MidiMessageSequence &newMessages) {
-//    noteRolls.pop_back();
-//    noteRolls.push_back(make_shared<NoteRoll>(newMessages, 0, 0));
-//}
 
 void Track::processNextMidiBuffer(
     MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const {

@@ -17,12 +17,10 @@ class MidiRecorder : public MidiKeyboardState::Listener, MidiInputCallback {
     ~MidiRecorder() override;
 
     MidiKeyboardState &getKeyboardState() { return keyboardState; }
-//    const MidiMessageSequence &getMidiMessages() const { return noteRoll.getMidiMessages(); }
-    bool isRecording() const;
 
-//    void setMidiMessages(const MidiMessageSequence &newMessages) { midiMessages = newMessages; }
     void startRecording();
     void stopRecording();
+    bool isRecording() const;
     NoteRoll &getNoteRoll() { return noteRoll; }
 
     MidiMessageSequence getMidiMessages(double pos) const;
@@ -56,12 +54,9 @@ class MidiRecorder : public MidiKeyboardState::Listener, MidiInputCallback {
     void postMessage(const MidiMessage &message, double time);
     void handleMessage(MidiMessage message, double time);
 
-//    Project &project;
     NoteRoll &noteRoll;
     AudioDeviceManager &deviceManager;
     MidiKeyboardState &keyboardState;
-//    MidiMessageSequence &midiMessages;
-//    MidiMessageSequence emptyMidiMessages;
     bool recording = false;
     bool looping = false;
     bool isAddingFromMidiInput = false;

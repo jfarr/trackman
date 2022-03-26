@@ -62,19 +62,19 @@ class Track {
     void stopRecording();
 
     void eachNoteRoll(function<void(NoteRoll &noteRoll)> f);
-//    const MidiMessageSequence &getMidiMessages() const { return noteRolls.back()->getMidiMessages(); }
-    void eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos, function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
+    void eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos,
+        function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
     double getCurrentMidiEndTime(const NoteRoll &noteRoll, const double pos) const;
-    void processNextMidiBuffer(MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
+    void processNextMidiBuffer(
+        MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
     double getMidiLengthInSeconds() const;
     int64 getMidiLengthInSamples() const;
-//    void setMidiMessages(const MidiMessageSequence &newMessages);
-    void updateCurrentNoteRoll();
 
   private:
     friend TrackList;
 
-    Sample *addSample(const File &file, double startPosInSeconds, double endPosInSeconds, AudioFormatManager &formatManager);
+    Sample *addSample(
+        const File &file, double startPosInSeconds, double endPosInSeconds, AudioFormatManager &formatManager);
     NoteRoll *addNoteRoll();
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
@@ -92,7 +92,6 @@ class Track {
     bool soloed = false;
     bool selected = false;
     bool deleted = false;
-//    bool recording = false;
     double recordStartPosInSeconds = 0;
 
     list<shared_ptr<Sample>> samples;

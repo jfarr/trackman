@@ -48,7 +48,6 @@ class TrackList {
 
     Project &project;
     AudioDeviceManager &deviceManager;
-//    MidiRecorder &midiRecorder;
     list<unique_ptr<Track>> tracks;
 
     void renumber();

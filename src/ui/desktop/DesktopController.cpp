@@ -13,12 +13,6 @@ DesktopController::DesktopController(MainWindow &mainWindow, AudioDeviceManager 
       desktopComponent(*this), project(deviceManager), transportController(*this), mixerController(*this),
       trackListController(*this), instrumentsController(*this), previousTempo(project.getTempo()) {
 
-    //    auto *midiRecorder = project.getMidiRecorder();
-    //    if (midiRecorder != nullptr) {
-    //        midiRecorder.onMidiMessage = [this](const MidiMessage &message, double time) {
-    //            midiMessageReceived(message, time);
-    //        };
-    //    }
     updateTitleBar();
 }
 
