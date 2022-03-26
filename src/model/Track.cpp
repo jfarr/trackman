@@ -149,6 +149,16 @@ void Track::stopRecording() {
     //    DBG("size: " << noteRolls.size());
     //    eachNoteRoll([](NoteRoll &noteRoll) { DBG("count: " << noteRoll.getMidiMessages().getNumEvents()); });
     //    midiRecorder.release();
+    if (midiRecorder->getNoteRoll().empty()) {
+        for (auto i = noteRolls.begin(); i != noteRolls.end(); i++) {
+            auto &p = *i;
+            if (p.get() == &midiRecorder->getNoteRoll()) {
+                noteRolls.erase(i);
+                break;
+            }
+        }
+//        noteRolls.remove(shared_ptr<NoteRoll>(&midiRecorder->getNoteRoll()));
+    }
     midiRecorder = nullptr;
 }
 
