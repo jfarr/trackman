@@ -24,17 +24,21 @@ class NoteCanvas : public Component, public Timer {
 
     //==============================================================================
     // Timer
-    void timerCallback() override { resize(); }
+    void timerCallback() override {
+        if (noteRoll.isRecording()) {
+            resize();
+        }
+    }
 
   private:
     Project &project;
     Track &track;
     NoteRoll &noteRoll;
 
-    Rectangle<float> getNoteRect(const MidiMessage &noteOn, const MidiMessage &noteOff, int lowNote,
-        double noteStep, double x, double h, double scale);
+    Rectangle<float> getNoteRect(const MidiMessage &noteOn, const MidiMessage &noteOff, int lowNote, double noteStep,
+        double x, double h, double scale);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteCanvas)
 };
 
-}
+} // namespace trackman

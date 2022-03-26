@@ -4,9 +4,9 @@ namespace trackman {
 
 TrackLaneControl::TrackLaneControl(Project &project, Track &track, AudioTransportSource &transport)
     : project(project), track(track), transport(transport) {
-    setSize(preferredWidth, preferredHeight);
     createControls();
     update();
+    setSize(preferredWidth, preferredHeight);
 }
 
 TrackLaneControl::~TrackLaneControl() {}
@@ -67,6 +67,9 @@ void TrackLaneControl::resized() {
     DBG("TrackLaneControl::resized");
     DBG("note rolls: " << canvases.size());
 //    DBG("size: " << noteRolls.size());
+    if (canvases.size() == 0) {
+        DBG("got here");
+    }
     for (NoteCanvas * canvas : canvases) {
         DBG("count: " << canvas->getNoteRoll().getMidiMessages().getNumEvents());
     }
