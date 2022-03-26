@@ -43,13 +43,29 @@ void MidiPlayer::releaseResources() {
 
 void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     const ScopedLock lock(mutex);
-//    DBG("MidiPlayer::getNextAudioBlock pos: " << currentPosition << " numSamples: " << bufferToFill.numSamples);
+//    DBG("MidiPlayer::getNextAudioBlock pos: " << currentPosition << " to: " << currentPosition + bufferToFill.numSamples);
 //    DBG("midi player pos: " << currentPosition);
     if (bufferToFill.numSamples > 0) {
         bufferToFill.clearActiveBufferRegion();
         Timeline timeline = getCurrentTimeline();
         auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
         list<NoteRoll *> noteRollsToPlay = timeline.getAt(getTimeAtPosition(pos));
+//        if (track.isRecording()) {
+//            MidiBuffer incomingMidi;
+//            processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, pos);
+////
+////            for (auto i = incomingMidi.begin(); i != incomingMidi.end(); i++) {
+////                auto m = (*i).getMessage();
+////                auto t = track.getProject().ticksToSeconds(m.getTimeStamp());
+////                DBG(String("note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
+////                    << t << " (" << m.getTimeStamp() << " ticks, " << (t * currentSampleRate)
+////                    << " samples): noteNumber=" << m.getNoteNumber() << " velocity=" << m.getVelocity());
+////            }
+////
+//            track.getSynth().renderNextBlock(
+//                *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
+//            noteRollsToPlay.remove(&track.getMidiRecorder()->getNoteRoll());
+//        }
         if (!noteRollsToPlay.empty()) {
             auto firstNoteRoll = noteRollsToPlay.front();
             if (!firstNoteRoll->isDeleted()) {

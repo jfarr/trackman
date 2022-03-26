@@ -28,20 +28,20 @@ void NoteRoll::startRecording() { recording = true; }
 
 void NoteRoll::stopRecording() {
     recording = false;
-//    auto startTimeInTicks = midiMessages.getStartTime();
-//    auto endTimeInTicks = midiMessages.getEndTime() + 1;
-//    startPosInSeconds = project.ticksToSeconds(startTimeInTicks);
-//    endPosInSeconds = project.ticksToSeconds(endTimeInTicks);
-//    lengthInSeconds = endPosInSeconds - startPosInSeconds;
+    //    auto startTimeInTicks = midiMessages.getStartTime();
+    //    auto endTimeInTicks = midiMessages.getEndTime() + 1;
+    //    startPosInSeconds = project.ticksToSeconds(startTimeInTicks);
+    //    endPosInSeconds = project.ticksToSeconds(endTimeInTicks);
+    //    lengthInSeconds = endPosInSeconds - startPosInSeconds;
     //    DBG("startTimeInTicks: " << startTimeInTicks);
     //    DBG("endTimeInTicks: " << endTimeInTicks);
     //    DBG("startPosInSeconds: " << startPosInSeconds);
     //    DBG("endPosInSeconds: " << endPosInSeconds);
     //    DBG("lengthInSeconds: " << lengthInSeconds);
-//    auto offset = -startTimeInTicks;
-//    for (auto messageHandle : midiMessages) {
-//        messageHandle->message.addToTimeStamp(offset);
-//    }
+    //    auto offset = -startTimeInTicks;
+    //    for (auto messageHandle : midiMessages) {
+    //        messageHandle->message.addToTimeStamp(offset);
+    //    }
 }
 
 MidiMessageSequence::MidiEventHolder *NoteRoll::addEvent(const MidiMessage &newMessage) {
@@ -74,6 +74,7 @@ int NoteRoll::getHighestNote() const { return midiutil::getHighestNote(midiMessa
 void NoteRoll::prepareToPlay(int blockSize, double sampleRate) {
     const ScopedLock lock(mutex);
     currentSampleRate = sampleRate;
+    track.getSynth().allNotesOff(0, false);
 }
 
 void NoteRoll::releaseResources() {}
@@ -83,7 +84,7 @@ void NoteRoll::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     MidiBuffer incomingMidi;
     bufferToFill.clearActiveBufferRegion();
     auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
-//    DBG("note roll pos: " << pos << " to " << pos + bufferToFill.numSamples);
+    //    DBG("note roll pos: " << pos << " to " << pos + bufferToFill.numSamples);
     processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, pos);
     track.getSynth().renderNextBlock(
         *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
@@ -94,17 +95,20 @@ void NoteRoll::processNextMidiBuffer(
     MidiBuffer &buffer, const int /*startSample*/, const int numSamples, const int64 currentPos) const {
     const double startTime = currentPos / currentSampleRate;
     const double endTime = startTime + numSamples / currentSampleRate;
+    DBG("processNextMidiBuffer pos: " << currentPos << " (" << startTime << " to " << endTime << ")");
 
     auto midiMessages = getMidiMessages();
     auto startIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(startTime));
     auto endIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(endTime));
+    DBG("startIndex: " << startIndex << " endIndex:" << endIndex);
     for (int i = startIndex; i < endIndex; i++) {
         auto p = midiMessages.getEventPointer(i);
         auto event = p->message;
+        DBG("adding event at: " << event.getTimeStamp());
         buffer.addEvent(event, event.getTimeStamp());
     }
-//    DBG("playing notes:");
-//    printEvents(midiMessages);
+    //    DBG("playing notes:");
+    //    printEvents(midiMessages);
 }
 
 //==============================================================================
@@ -119,9 +123,12 @@ int64 NoteRoll::getNextReadPosition() const {
 }
 
 int64 NoteRoll::getTotalLength() const {
-    //    auto len = getPositionFromTime(getEndPosInSeconds());
-    //    return len == 0 ? 0 : len + 1024;
-    return getPositionFromTime(getEndPosInSeconds());
+    auto pos = getEndPosInSeconds();
+    auto len = getPositionFromTime(pos);
+//    len = len == 0 ? 0 : len + 102400;
+    //    DBG("end pos: " << pos << " len: " << len);
+    return len;
+    //    return getPositionFromTime(getEndPosInSeconds()) + 1;
 }
 
 bool NoteRoll::isLooping() const { return looping; }

@@ -146,6 +146,8 @@ void Track::stopRecording() {
 //    midiPlayer.setRecording(false);
     midiRecorder->onMidiMessage = nullptr;
     midiRecorder->stopRecording();
+    auto pos = midiRecorder->getNoteRoll().getStartPosInSeconds();
+    DBG("note roll starts at: " << pos << " (" << pos * deviceManager.getAudioDeviceSetup().sampleRate << " samples)");
     midiRecorder->printEvents();
     auto &noteRoll = midiRecorder->getNoteRoll();
     if (noteRoll.empty()) {
