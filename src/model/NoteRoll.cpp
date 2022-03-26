@@ -84,23 +84,17 @@ void NoteRoll::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     currentPosition += bufferToFill.numSamples;
 }
 
-void NoteRoll::processNextMidiBuffer(
-    MidiBuffer &buffer, const int /*startSample*/, const int numSamples, const int64 currentPos) {
-    const ScopedLock lock(mutex);
-    auto sourceLengthInSamples = (int64)(getLengthInSeconds() * (double)currentSampleRate);
-    auto pos = looping ? currentPosition % sourceLengthInSamples : currentPosition;
-
-    //    const int64 pos = currentPosition - (int64)startPosInSeconds * (int64)currentSampleRate;
-    const double startTime = pos / currentSampleRate;
-    const double endTime = startTime + numSamples / currentSampleRate;
-    DBG("NoteRoll::processNextMidiBuffer looping: " << (looping ? "true" : "false")
-                                                    << " pos: " << pos << " secs: " << getLengthInSeconds() << " len: " << sourceLengthInSamples
-                                                    << " startPos: " << startPosInSeconds << " pos: " << pos << " ("
-                                                    << startTime << " to " << endTime << ")");
+void NoteRoll::processMidiBuffer(MidiBuffer &buffer, int64 startTimeInSamples, int64 endTimeInSamples) {
+    const double startTimeInSeconds = startTimeInSamples / currentSampleRate;
+    const double endTimeInSeconds = endTimeInSamples / currentSampleRate;
+//    DBG("NoteRoll::processNextMidiBuffer looping: " << (looping ? "true" : "false")
+//                                                    << " pos: " << pos << " secs: " << getLengthInSeconds() << " len: " << sourceLengthInSamples
+//                                                    << " startPos: " << startPosInSeconds << " pos: " << pos << " ("
+//                                                    << startTime << " to " << endTime << ")");
 
     //    auto midiMessages = getMidiMessages();
-    auto startTick = project.secondsToTicks(startTime);
-    auto endTick = project.secondsToTicks(endTime);
+    auto startTick = project.secondsToTicks(startTimeInSeconds);
+    auto endTick = project.secondsToTicks(endTimeInSeconds);
     DBG("start tick: " << startTick << " end tick: " << endTick);
     auto startIndex = midiMessages.getNextIndexAtTime(startTick);
     auto endIndex = midiMessages.getNextIndexAtTime(endTick);
@@ -112,9 +106,53 @@ void NoteRoll::processNextMidiBuffer(
                                                       << " event at: " << event.getTimeStamp());
         buffer.addEvent(event, event.getTimeStamp());
     }
-    //    DBG("playing notes:");
-    //    printEvents(midiMessages);
+}
+
+void NoteRoll::processNextMidiBuffer(
+    MidiBuffer &buffer, const int /*startSample*/, const int numSamples, const int64 currentPos) {
+    const ScopedLock lock(mutex);
+//    auto sourceLengthInSamples = (int64)(getLengthInSeconds() * (double)currentSampleRate);
+    if (looping) {
+        auto sourceLengthInSamples = (int64)(getLengthInSeconds() * currentSampleRate);
+        auto newStartPos = currentPosition % sourceLengthInSamples;
+        auto newEndPos = (currentPosition + numSamples) % sourceLengthInSamples;
+        if (newEndPos < newStartPos) {
+            DBG("WRAPPED!!!!!!");
+            processMidiBuffer(buffer, newStartPos, sourceLengthInSamples);
+            processMidiBuffer(buffer, 0, newEndPos);
+        } else {
+            processMidiBuffer(buffer, newStartPos, newEndPos);
+        }
+    }
     currentPosition += numSamples;
+
+//    auto pos = looping ? currentPosition % sourceLengthInSamples : currentPosition;
+//
+//    //    const int64 pos = currentPosition - (int64)startPosInSeconds * (int64)currentSampleRate;
+//    const double startTime = pos / currentSampleRate;
+//    const double endTime = startTime + numSamples / currentSampleRate;
+//    DBG("NoteRoll::processNextMidiBuffer looping: " << (looping ? "true" : "false")
+//                                                    << " pos: " << pos << " secs: " << getLengthInSeconds() << " len: " << sourceLengthInSamples
+//                                                    << " startPos: " << startPosInSeconds << " pos: " << pos << " ("
+//                                                    << startTime << " to " << endTime << ")");
+//
+//    //    auto midiMessages = getMidiMessages();
+//    auto startTick = project.secondsToTicks(startTime);
+//    auto endTick = project.secondsToTicks(endTime);
+//    DBG("start tick: " << startTick << " end tick: " << endTick);
+//    auto startIndex = midiMessages.getNextIndexAtTime(startTick);
+//    auto endIndex = midiMessages.getNextIndexAtTime(endTick);
+//    //    DBG("startIndex: " << startIndex << " endIndex:" << endIndex);
+//    for (int i = startIndex; i < endIndex; i++) {
+//        auto p = midiMessages.getEventPointer(i);
+//        auto event = p->message;
+//        DBG("NoteRoll::processNextMidiBuffer adding " << (event.isNoteOn() ? "note on" : "note off")
+//                                                      << " event at: " << event.getTimeStamp());
+//        buffer.addEvent(event, event.getTimeStamp());
+//    }
+//    //    DBG("playing notes:");
+//    //    printEvents(midiMessages);
+//    currentPosition += numSamples;
 }
 
 //==============================================================================

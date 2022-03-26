@@ -46,7 +46,7 @@ class MidiPlayer : public PositionableAudioSource {
     int64 currentPosition = 0;
     bool looping = false;
 //    bool recording = false;
-    AudioBuffer<float> tempBuffer;
+//    AudioBuffer<float> tempBuffer;
 //    bool dumping = false;
 
     Timeline<NoteRoll *> getCurrentTimeline();

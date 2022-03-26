@@ -82,6 +82,8 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
 
     CriticalSection mutex;
 
+    void processMidiBuffer(MidiBuffer &buffer, int64 startTimeInSamples, int64 endTimeInSamples);
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteRoll)
 };
 

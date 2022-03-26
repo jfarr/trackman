@@ -20,12 +20,12 @@ Timeline<NoteRoll *> MidiPlayer::getCurrentTimeline() {
 }
 
 void MidiPlayer::prepareToPlay(int blockSize, double sampleRate) {
-    track.getProject().getKeyboardState().reset();
+//    track.getProject().getKeyboardState().reset();
     {
         const ScopedLock lock(mutex);
         currentSampleRate = sampleRate;
     }
-    tempBuffer.setSize(2, sampleRate);
+//    tempBuffer.setSize(2, sampleRate);
     //    synth.setCurrentPlaybackSampleRate(sampleRate);
     for (auto &noteRoll : noteRolls) {
         noteRoll->prepareToPlay(blockSize, sampleRate);
@@ -38,7 +38,7 @@ void MidiPlayer::releaseResources() {
     for (auto &noteRoll : noteRolls) {
         noteRoll->releaseResources();
     }
-    tempBuffer.setSize(2, 0);
+//    tempBuffer.setSize(2, 0);
     currentSampleRate = 0;
 }
 
