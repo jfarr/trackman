@@ -24,9 +24,9 @@ void DesktopController::playbackStarted() {
 }
 
 void DesktopController::playbackStopped() {
-    project.getTrackList().eachTrack([](Track &track) {
-        track.getSynth().allNotesOff(0, true);
-    });
+//    project.getTrackList().eachTrack([](Track &track) {
+//        track.getSynth().allNotesOff(0, true);
+//    });
 //    auto selectedTrack = project.getTrackList().getSelectedTrack();
 //    if (selectedTrack != nullptr) {
 //        selectedTrack->dumpMidi();

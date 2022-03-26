@@ -19,7 +19,7 @@ class MidiPlayer : public PositionableAudioSource {
     MidiPlayer(Track &track);
     ~MidiPlayer() override = default;
 
-    Synthesiser &getSynth() { return synth; }
+//    Synthesiser &getSynth() { return synth; }
 //    void setRecording(bool newRecording) { recording = newRecording; }
 
     //==============================================================================
@@ -40,7 +40,7 @@ class MidiPlayer : public PositionableAudioSource {
 
   private:
     Track &track;
-    Synthesiser synth;
+//    Synthesiser synth;
     list<shared_ptr<NoteRoll>> &noteRolls;
     double currentSampleRate = 0;
     int64 currentPosition = 0;
@@ -50,9 +50,9 @@ class MidiPlayer : public PositionableAudioSource {
 //    bool dumping = false;
 
     Timeline<NoteRoll *> getCurrentTimeline();
-    double getTimeAtPosition(int64 position) { return position / currentSampleRate; }
-    void processNextMidiBuffer(
-        MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
+    double getTimeAtPosition(int64 position) const { return position / currentSampleRate; }
+//    void processNextMidiBuffer(
+//        MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
 
     CriticalSection mutex;
 

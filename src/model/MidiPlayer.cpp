@@ -5,10 +5,10 @@
 namespace trackman {
 
 MidiPlayer::MidiPlayer(Track &track) : track(track), noteRolls(track.getNoteRolls()) {
-    for (auto i = 0; i < 4; ++i) {
-        synth.addVoice(new SineWaveVoice());
-    }
-    synth.addSound(new SineWaveSound());
+//    for (auto i = 0; i < 4; ++i) {
+//        synth.addVoice(new SineWaveVoice());
+//    }
+//    synth.addSound(new SineWaveSound());
 }
 
 Timeline<NoteRoll *> MidiPlayer::getCurrentTimeline() {
@@ -26,7 +26,7 @@ void MidiPlayer::prepareToPlay(int blockSize, double sampleRate) {
         currentSampleRate = sampleRate;
     }
     tempBuffer.setSize(2, sampleRate);
-    synth.setCurrentPlaybackSampleRate(sampleRate);
+//    synth.setCurrentPlaybackSampleRate(sampleRate);
     for (auto &noteRoll : noteRolls) {
         noteRoll->prepareToPlay(blockSize, sampleRate);
     }
@@ -52,7 +52,7 @@ void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
         Timeline timeline = getCurrentTimeline();
         auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
         list<NoteRoll *> noteRollsToPlay = timeline.getAt(getTimeAtPosition(pos));
-//        if (track.isRecording()) {
+        if (track.isRecording()) {
 //            MidiBuffer incomingMidi;
 //            processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, pos);
 //
@@ -65,8 +65,8 @@ void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
 //            }
 //            track.getSynth().renderNextBlock(
 //                *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
-//            noteRollsToPlay.remove(&track.getMidiRecorder()->getNoteRoll());
-//        }
+            noteRollsToPlay.remove(&track.getMidiRecorder()->getNoteRoll());
+        }
         if (!noteRollsToPlay.empty()) {
             tempBuffer.setSize(jmax(1, bufferToFill.buffer->getNumChannels()), bufferToFill.buffer->getNumSamples());
 
@@ -101,23 +101,23 @@ void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
         currentPosition += bufferToFill.numSamples;
     }
 }
-
-void MidiPlayer::processNextMidiBuffer(
-    MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const {
-
-    const double startTime = currentPos / currentSampleRate;
-    const double endTime = startTime + numSamples / currentSampleRate;
-//    DBG("MidiPlayer::processNextMidiBuffer pos: " << currentPos << " (" << startTime << " to " << endTime << ")");
-
-    MidiBuffer keyboardBuffer;
-    auto &keyboardState = track.getProject().getKeyboardState();
-    keyboardState.processNextMidiBuffer(keyboardBuffer, startSample, numSamples, true);
-    buffer.addEvents(keyboardBuffer, startSample, numSamples, 0);
-    for (auto e : keyboardBuffer) {
-        DBG("MidiPlayer::processNextMidiBuffer adding " << (e.getMessage().isNoteOn() ? "noteOn" : "noteOff") << " event at "
-                      << e.getMessage().getTimeStamp());
-    }
-}
+//
+//void MidiPlayer::processNextMidiBuffer(
+//    MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const {
+//
+//    const double startTime = currentPos / currentSampleRate;
+//    const double endTime = startTime + numSamples / currentSampleRate;
+////    DBG("MidiPlayer::processNextMidiBuffer pos: " << currentPos << " (" << startTime << " to " << endTime << ")");
+//
+//    MidiBuffer keyboardBuffer;
+//    auto &keyboardState = track.getProject().getKeyboardState();
+//    keyboardState.processNextMidiBuffer(keyboardBuffer, startSample, numSamples, true);
+//    buffer.addEvents(keyboardBuffer, startSample, numSamples, 0);
+//    for (auto e : keyboardBuffer) {
+//        DBG("MidiPlayer::processNextMidiBuffer adding " << (e.getMessage().isNoteOn() ? "noteOn" : "noteOff") << " event at "
+//                      << e.getMessage().getTimeStamp());
+//    }
+//}
 
 //==============================================================================
 void MidiPlayer::setNextReadPosition(int64 newPosition) {
@@ -149,6 +149,13 @@ int64 MidiPlayer::getTotalLength() const {
 
 bool MidiPlayer::isLooping() const { return looping; }
 
-void MidiPlayer::setLooping(bool shouldLoop) { looping = shouldLoop; }
+void MidiPlayer::setLooping(bool shouldLoop) {
+    looping = shouldLoop;
+    for (auto &noteRoll : noteRolls) {
+        if (!noteRoll->isDeleted()) {
+            noteRoll->setLooping(shouldLoop);
+        }
+    }
+}
 
 } // namespace trackman

@@ -19,7 +19,7 @@ class Project {
     AudioDeviceManager &getDeviceManager() { return deviceManager; }
 //    MidiHandler &getMidiHandler() { return midiHandler; }
     InstrumentPlayer &getInstrumentPlayer() { return instrumentPlayer; }
-    Synthesiser *getSynth();
+//    Synthesiser *getSynth();
     Synthesiser *getLiveSynth();
 
     const float getTempo() const { return tempo; };

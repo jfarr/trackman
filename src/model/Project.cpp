@@ -11,11 +11,11 @@ namespace trackman {
 Project::Project(AudioDeviceManager &deviceManager)
     : deviceManager(deviceManager), instrumentPlayer(*this), trackList(*this, deviceManager),
       mixer(trackList, deviceManager), transport(mixer) {}
-
-Synthesiser *Project::getSynth() {
-    auto selected = getSelectedTrack();
-    return selected == nullptr ? nullptr : &selected->getSynth();
-}
+//
+//Synthesiser *Project::getSynth() {
+//    auto selected = getSelectedTrack();
+//    return selected == nullptr ? nullptr : &selected->getSynth();
+//}
 
 Synthesiser *Project::getLiveSynth() {
     auto selected = getSelectedTrack();

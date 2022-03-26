@@ -66,7 +66,7 @@ class Track {
     void pauseRecording();
     void stopRecording();
 
-    Synthesiser &getSynth() { return midiPlayer.getSynth(); }
+//    Synthesiser &getSynth() { return midiPlayer.getSynth(); }
     Synthesiser &getLiveSynth() { return liveSynth; }
     void eachNoteRoll(function<void(NoteRoll &noteRoll)> f);
     void eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos,

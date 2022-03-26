@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 
+#include "Instrument.h"
 #include "TrackRegion.h"
 #include "audio/SynthAudioSource.h"
 
@@ -24,7 +25,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     double getStartPosInSeconds() const;
     double getEndPosInSeconds() const;
     double getLengthInSeconds() const;
-//    int64 getTotalLengthInSamples() const;
+    //    int64 getTotalLengthInSamples() const;
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
     bool isRecording() const { return recording; }
@@ -62,7 +63,8 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     Project &project;
     Track &track;
     MidiMessageSequence midiMessages;
-//    double recordStartPosInSeconds;
+    Instrument instrument;
+    //    double recordStartPosInSeconds;
     double startPosInSeconds = 0;
     double endPosInSeconds = 0;
     double lengthInSeconds = 0;
