@@ -33,6 +33,7 @@ void TrackLaneControl::update() {
         addAndMakeVisible(thumbnail);
     }
     for (NoteCanvas *canvas : canvases) {
+        DBG("make visible: " << String::toHexString((long) canvas));
         addAndMakeVisible(canvas);
     }
     //    addAndMakeVisible(noteRoll);

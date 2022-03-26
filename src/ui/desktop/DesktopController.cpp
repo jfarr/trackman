@@ -13,22 +13,22 @@ DesktopController::DesktopController(MainWindow &mainWindow, AudioDeviceManager 
       desktopComponent(*this), project(deviceManager), transportController(*this), mixerController(*this),
       trackListController(*this), instrumentsController(*this), previousTempo(project.getTempo()) {
 
-//    auto *midiRecorder = project.getMidiRecorder();
-//    if (midiRecorder != nullptr) {
-//        midiRecorder.onMidiMessage = [this](const MidiMessage &message, double time) {
-//            midiMessageReceived(message, time);
-//        };
-//    }
+    //    auto *midiRecorder = project.getMidiRecorder();
+    //    if (midiRecorder != nullptr) {
+    //        midiRecorder.onMidiMessage = [this](const MidiMessage &message, double time) {
+    //            midiMessageReceived(message, time);
+    //        };
+    //    }
     updateTitleBar();
 }
 
 void DesktopController::loopingChanged(bool shouldLoop) { project.getMixer().setLooping(shouldLoop); }
 
 void DesktopController::recordingStarted() {
-    auto selected = project.getTrackList().getSelectedTrack();
-    if (selected != nullptr) {
-        selected->startRecording();
-        auto *midiRecorder = selected->getMidiRecorder();
+    auto selectedTrack = project.getTrackList().getSelectedTrack();
+    if (selectedTrack != nullptr) {
+        selectedTrack->startRecording();
+        auto *midiRecorder = selectedTrack->getMidiRecorder();
         if (midiRecorder != nullptr) {
             midiRecorder->onMidiMessage = [this](const MidiMessage &message, double time) {
                 midiMessageReceived(message, time);
@@ -39,17 +39,17 @@ void DesktopController::recordingStarted() {
 }
 
 void DesktopController::recordingStopped() {
-    auto selected = project.getTrackList().getSelectedTrack();
-    if (selected != nullptr) {
-        selected->stopRecording();
+    auto selectedTrack = project.getTrackList().getSelectedTrack();
+    if (selectedTrack != nullptr) {
+        selectedTrack->stopRecording();
         MessageManager::callAsync([this]() { trackListController.update(); });
     }
 }
 
 void DesktopController::recordingPaused() {
-    auto selected = project.getTrackList().getSelectedTrack();
-    if (selected != nullptr) {
-        selected->pauseRecording();
+    auto selectedTrack = project.getTrackList().getSelectedTrack();
+    if (selectedTrack != nullptr) {
+        selectedTrack->pauseRecording();
     }
 }
 

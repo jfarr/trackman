@@ -32,11 +32,13 @@ void MidiRecorder::startRecording() {
     const ScopedLock lock(mutex);
     keyboardState.reset();
     recording = true;
+    noteRoll.startRecording();
 }
 
 void MidiRecorder::stopRecording() {
     const ScopedLock lock(mutex);
     recording = false;
+    noteRoll.stopRecording();
 }
 
 bool MidiRecorder::isRecording() const {

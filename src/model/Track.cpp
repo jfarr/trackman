@@ -121,10 +121,12 @@ int64 Track::getTotalLengthInSamples() const {
 void Track::startRecording() {
     if (midiRecorder == nullptr) {
         auto *noteRoll = addNoteRoll();
+        noteRoll->setSelected(true);
         midiRecorder.reset(new MidiRecorder(*noteRoll, project.getKeyboardState(), deviceManager));
         //        midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
         recordStartPosInSeconds = project.getTransport().getCurrentPosition();
     }
+//    noteRoll.startRecording();
     midiRecorder->startRecording();
     //    recording = true;
 }
@@ -156,6 +158,16 @@ void Track::updateCurrentNoteRoll() {
     //    }
 }
 
+NoteRoll *Track::getSelectedNoteRoll() const {
+    for (const shared_ptr<NoteRoll> &p : noteRolls) {
+        auto &noteRoll = *p;
+        if (!noteRoll.isDeleted() && noteRoll.isSelected()) {
+            return &noteRoll;
+        }
+    }
+    return nullptr;
+}
+
 void Track::eachNoteRoll(function<void(NoteRoll &noteRoll)> f) {
     for (shared_ptr<NoteRoll> &p : noteRolls) {
         auto &noteRoll = *p;
@@ -167,7 +179,7 @@ void Track::eachNoteRoll(function<void(NoteRoll &noteRoll)> f) {
 
 void Track::eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos,
     function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const {
-    if (midiRecorder != nullptr) {
+    if (noteRoll.isRecording() && midiRecorder != nullptr) {
         auto messages = midiRecorder->getMidiMessages(pos);
         for (auto eventHandle : messages) {
             f(*eventHandle);

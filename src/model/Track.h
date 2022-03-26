@@ -56,6 +56,7 @@ class Track {
     bool canRecord() const { return samplePlayer == nullptr; }
     bool isRecording() const { return midiRecorder != nullptr; }
     MidiRecorder *getMidiRecorder() { return midiRecorder.get(); }
+    NoteRoll *getSelectedNoteRoll() const;
     void startRecording();
     void pauseRecording();
     void stopRecording();

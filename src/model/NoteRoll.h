@@ -25,10 +25,14 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     double getLengthInSeconds() const;
     bool isSelected() const { return selected; }
     bool isDeleted() const { return deleted; }
+    bool isRecording() const { return recording; }
 
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
     //    void setMidiMessages(const MidiMessageSequence &newMidiMessages);
+
+    void startRecording() { recording = true; }
+    void stopRecording() { recording = false; }
 
     MidiMessageSequence::MidiEventHolder *addEvent(const MidiMessage &newMessage);
     void eachMidiMessage(function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
@@ -60,6 +64,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     //    double lengthInSeconds;
     bool selected = false;
     bool deleted = false;
+    bool recording = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteRoll)
 };
