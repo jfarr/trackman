@@ -15,8 +15,8 @@ void NoteCanvas::resize() {
     auto border = 3;
     auto pos = project.getTransport().getTransportSource().getCurrentPosition();
     auto length = project.ticksToSeconds(track.getCurrentMidiEndTime(noteRoll, pos));
-    auto width = noteRoll.empty() ? 0 : length * project.getHorizontalScale() - area.getX() + border + 1;
-    setBounds(area.withWidth(width));
+    auto w = noteRoll.empty() ? 0 : length * project.getHorizontalScale() + 2 * border + 1;
+    setBounds(area.withWidth(w));
     repaint();
 }
 
@@ -39,7 +39,8 @@ void NoteCanvas::paint(Graphics &g) {
     int highNote = noteRoll.getHighestNote();
     double noteSpan = max(24, highNote - lowNote) + 1;
     double margin = 1.0;
-    double x = -getBounds().getX();
+//    double x = -getBounds().getX();
+    double x = border;
     double h = getHeight() - 2 * border;
     double noteHeight = h / noteSpan;
     auto pos = project.getTransport().getTransportSource().getCurrentPosition();

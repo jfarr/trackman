@@ -27,7 +27,7 @@ class MidiRecorder : public MidiKeyboardState::Listener, MidiInputCallback {
 
     void setMidiInput(int index);
 
-    static void printEvents(const MidiMessageSequence &midiMessages);
+    void printEvents() const;
 
     function<void(const MidiMessage &message, double time)> onMidiMessage = nullptr;
 

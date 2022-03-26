@@ -113,12 +113,6 @@ void MidiRecorder::handleIncomingMidiMessage(MidiInput *source, const MidiMessag
     postMessage(message, t);
 }
 
-void MidiRecorder::printEvents(const MidiMessageSequence &midiMessages) {
-    for (auto i = midiMessages.begin(); i != midiMessages.end(); i++) {
-        auto m = (*i)->message;
-        DBG(String("note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
-            << m.getTimeStamp() << ": noteNumber=" << m.getNoteNumber() << " velocity=" << m.getVelocity());
-    }
-}
+void MidiRecorder::printEvents() const { noteRoll.printEvents(); }
 
 } // namespace trackman

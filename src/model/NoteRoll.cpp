@@ -10,15 +10,37 @@ NoteRoll::NoteRoll(Project &project, Track &track)
 
 MidiMessageSequence NoteRoll::getMidiMessages() const { return midiMessages; }
 
-double NoteRoll::getStartPosInSeconds() const { return project.ticksToSeconds(midiMessages.getStartTime()); }
+double NoteRoll::getStartPosInSeconds() const { return startPosInSeconds; }
 
-double NoteRoll::getEndPosInSeconds() const { return project.ticksToSeconds(midiMessages.getEndTime()); }
+double NoteRoll::getEndPosInSeconds() const { return endPosInSeconds; }
 
-double NoteRoll::getLengthInSeconds() const { return getEndPosInSeconds() - getStartPosInSeconds(); }
+double NoteRoll::getLengthInSeconds() const { return lengthInSeconds; }
 
 int64 NoteRoll::getTotalLengthInSamples() const { return getPositionFromTime(getEndPosInSeconds()); }
 
 int64 NoteRoll::getPositionFromTime(double t) const { return t * currentSampleRate; }
+
+void NoteRoll::startRecording() {
+    recording = true;
+}
+
+void NoteRoll::stopRecording() {
+    recording = false;
+    auto startTimeInTicks = midiMessages.getStartTime();
+    auto endTimeInTicks = midiMessages.getEndTime();
+    startPosInSeconds = project.ticksToSeconds(startTimeInTicks);
+    endPosInSeconds = project.ticksToSeconds(endTimeInTicks);
+    lengthInSeconds = endPosInSeconds - startPosInSeconds;
+    DBG("startTimeInTicks: " << startTimeInTicks);
+    DBG("endTimeInTicks: " << endTimeInTicks);
+    DBG("startPosInSeconds: " << startPosInSeconds);
+    DBG("endPosInSeconds: " << endPosInSeconds);
+    DBG("lengthInSeconds: " << lengthInSeconds);
+    auto offset = -startTimeInTicks;
+    for (auto messageHandle : midiMessages) {
+        messageHandle->message.addToTimeStamp(offset);
+    }
+}
 
 MidiMessageSequence::MidiEventHolder *NoteRoll::addEvent(const MidiMessage &newMessage) {
     auto event = midiMessages.addEvent(newMessage);
@@ -50,6 +72,7 @@ void NoteRoll::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     MidiBuffer incomingMidi;
     bufferToFill.clearActiveBufferRegion();
     auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
+    DBG("note roll pos: " << pos);
     processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, pos);
     track.getSynth().renderNextBlock(
         *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
@@ -87,5 +110,15 @@ int64 NoteRoll::getTotalLength() const { return 0; }
 bool NoteRoll::isLooping() const { return looping; }
 
 void NoteRoll::setLooping(bool shouldLoop) { looping = shouldLoop; }
+
+void NoteRoll::printEvents() const {
+    for (auto i = midiMessages.begin(); i != midiMessages.end(); i++) {
+        auto m = (*i)->message;
+        auto t = project.ticksToSeconds(m.getTimeStamp());
+        DBG(String("note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
+            << t << " (" << m.getTimeStamp() << " ticks): noteNumber=" << m.getNoteNumber()
+            << " velocity=" << m.getVelocity());
+    }
+}
 
 } // namespace trackman
