@@ -15,6 +15,8 @@ class Project {
     Project(AudioDeviceManager &deviceManager);
     ~Project() = default;
 
+    AudioDeviceManager &getDeviceManager() { return deviceManager; }
+
     const float getTempo() const { return tempo; };
     void setTempo(const float newTempo) { tempo = newTempo; }
 

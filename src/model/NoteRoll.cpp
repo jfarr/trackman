@@ -1,10 +1,12 @@
 #include "NoteRoll.h"
 #include "Project.h"
+#include "Track.h"
 #include "common/midiutil.h"
 
 namespace trackman {
 
-NoteRoll::NoteRoll(Project &project) : project(project) {}
+NoteRoll::NoteRoll(Project &project, Track &track)
+    : project(project), track(track), currentSampleRate(project.getDeviceManager().getAudioDeviceSetup().sampleRate) {}
 
 MidiMessageSequence NoteRoll::getMidiMessages() const { return midiMessages; }
 
@@ -33,46 +35,53 @@ int NoteRoll::getHighestNote() const { return midiutil::getHighestNote(midiMessa
 
 //==============================================================================
 void NoteRoll::prepareToPlay(int blockSize, double sampleRate) {
-    //    if (resamplingSource != nullptr) {
-    //        resamplingSource->prepareToPlay(blockSize, sampleRate);
-    //    }
+    const ScopedLock lock(mutex);
+    currentSampleRate = sampleRate;
 }
 
-void NoteRoll::releaseResources() {
-    //    if (resamplingSource != nullptr) {
-    //        resamplingSource->releaseResources();
-    //    }
-}
+void NoteRoll::releaseResources() {}
 
 void NoteRoll::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
-    //    if (resamplingSource != nullptr) {
-    //        resamplingSource->getNextAudioBlock(bufferToFill);
-    //    }
+    const ScopedLock lock(mutex);
+    MidiBuffer incomingMidi;
+    bufferToFill.clearActiveBufferRegion();
+    auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
+    processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, pos);
+    track.getSynth().renderNextBlock(
+        *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
+    currentPosition += bufferToFill.numSamples;
+}
+
+void NoteRoll::processNextMidiBuffer(
+    MidiBuffer &buffer, const int /*startSample*/, const int numSamples, const int64 currentPos) const {
+    const double startTime = currentPos / currentSampleRate;
+    const double endTime = startTime + numSamples / currentSampleRate;
+
+    auto midiMessages = getMidiMessages();
+    auto startIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(startTime));
+    auto endIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(endTime));
+    for (int i = startIndex; i < endIndex; i++) {
+        auto p = midiMessages.getEventPointer(i);
+        auto event = p->message;
+        buffer.addEvent(event, event.getTimeStamp());
+    }
 }
 
 //==============================================================================
 void NoteRoll::setNextReadPosition(int64 newPosition) {
-    //    if (resamplingSource != nullptr) {
-    //        resamplingSource->setNextReadPosition(newPosition);
-    //    }
+    const ScopedLock lock(mutex);
+    currentPosition = newPosition;
 }
 
 int64 NoteRoll::getNextReadPosition() const {
-    //    return resamplingSource == nullptr ? 0 : resamplingSource->getNextReadPosition();
-    return 0;
+    const ScopedLock lock(mutex);
+    return currentPosition;
 }
 
-int64 NoteRoll::getTotalLength() const {
-    //    return resamplingSource == nullptr ? 0 : resamplingSource->getTotalLength();
-    return 0;
-}
+int64 NoteRoll::getTotalLength() const { return 0; }
 
-bool NoteRoll::isLooping() const { return false; }
+bool NoteRoll::isLooping() const { return looping; }
 
-void NoteRoll::setLooping(bool shouldLoop) {
-    //    if (resamplingSource != nullptr) {
-    //        resamplingSource->setLooping(shouldLoop);
-    //    }
-}
+void NoteRoll::setLooping(bool shouldLoop) { looping = shouldLoop; }
 
 } // namespace trackman

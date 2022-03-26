@@ -72,7 +72,7 @@ Sample *Track::addSample(
 }
 
 NoteRoll *Track::addNoteRoll() {
-    noteRolls.push_back(make_shared<NoteRoll>(project));
+    noteRolls.push_back(make_shared<NoteRoll>(project, *this));
     return &(*noteRolls.back());
 }
 

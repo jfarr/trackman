@@ -11,10 +11,11 @@ using namespace juce;
 namespace trackman {
 
 class Project;
+class Track;
 
 class NoteRoll : public PositionableAudioSource, public TrackRegion {
   public:
-    NoteRoll(Project &project);
+    NoteRoll(Project &project, Track &track);
     ~NoteRoll() = default;
 
     Project &getProject() { return project; }
@@ -34,6 +35,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     void stopRecording() { recording = false; }
 
     MidiMessageSequence::MidiEventHolder *addEvent(const MidiMessage &newMessage);
+
     void eachMidiMessage(function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
     int getLowestNote() const;
     int getHighestNote() const;
@@ -55,10 +57,19 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
 
   private:
     Project &project;
+    Track &track;
     MidiMessageSequence midiMessages;
     bool selected = false;
     bool deleted = false;
     bool recording = false;
+    double currentSampleRate;
+    int64 currentPosition = 0;
+    atomic<bool> looping = false;
+
+    void processNextMidiBuffer(
+        MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
+
+    CriticalSection mutex;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteRoll)
 };

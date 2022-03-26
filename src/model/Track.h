@@ -24,6 +24,8 @@ class Track {
     Track(Project &project, AudioDeviceManager &deviceManager);
     ~Track();
 
+    Project &getProject() { return project; }
+
     int getTrackNumber() const { return trackNumber; }
     String getName() const { return name; }
     float getLevelGain() const { return level; }
@@ -61,6 +63,7 @@ class Track {
     void pauseRecording();
     void stopRecording();
 
+    Synthesiser &getSynth() { return midiPlayer.getSynth(); }
     void eachNoteRoll(function<void(NoteRoll &noteRoll)> f);
     void eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos,
         function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
@@ -72,6 +75,7 @@ class Track {
 
   private:
     friend TrackList;
+    friend MidiPlayer;
 
     Sample *addSample(
         const File &file, double startPosInSeconds, double endPosInSeconds, AudioFormatManager &formatManager);
@@ -106,6 +110,7 @@ class Track {
     void createSamplePlayer();
     void removeSamplePlayer();
 
+    list<shared_ptr<NoteRoll>> &getNoteRolls() { return noteRolls; }
     void removeNoteRoll(const NoteRoll *noteRoll);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
