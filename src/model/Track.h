@@ -57,7 +57,7 @@ class Track {
     bool hasMidi() const { return !noteRolls.empty(); }
     bool canRecord() const { return samplePlayer == nullptr; }
     bool isRecording() const {
-        DBG("isRecording: " << (midiRecorder != nullptr ? "true" : "false"));
+//        DBG("isRecording: " << (midiRecorder != nullptr ? "true" : "false"));
         return midiRecorder != nullptr;
     }
     MidiRecorder *getMidiRecorder() { return midiRecorder.get(); }

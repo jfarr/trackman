@@ -112,11 +112,11 @@ int64 MidiPlayer::getTotalLength() const {
     }
 //    if (recording && !looping) {
     if (track.isRecording() && !looping) {
-        DBG("recording length: " << max(totalLength, currentPosition));
+//        DBG("recording length: " << max(totalLength, currentPosition));
         return max(totalLength, currentPosition);
     }
     //    return track.isRecording() && !looping ? max(totalLength, currentPosition) : totalLength;
-    DBG("length: " << totalLength);
+//    DBG("length: " << totalLength);
     return totalLength;
 }
 

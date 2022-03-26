@@ -150,7 +150,7 @@ void Track::stopRecording() {
     if (noteRoll.empty()) {
         removeNoteRoll(&noteRoll);
     }
-    DBG("set midiRecorder = nullptr");
+//    DBG("set midiRecorder = nullptr");
     midiRecorder = nullptr;
 }
 
