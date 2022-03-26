@@ -78,6 +78,7 @@ class Track {
 //    int64 getMidiLengthInSamples() const;
 
 //    void dumpMidi() { midiPlayer.dump(); }
+    Instrument &getInstrument() { return instrument; }
 
   private:
     friend TrackList;
@@ -112,6 +113,7 @@ class Track {
     unique_ptr<MidiRecorder> midiRecorder = nullptr;
     list<shared_ptr<NoteRoll>> noteRolls;
     MidiPlayer midiPlayer;
+    Instrument instrument;
     Synthesiser liveSynth;
 
     void createSamplePlayer();

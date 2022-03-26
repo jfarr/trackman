@@ -37,6 +37,8 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     void stopRecording();
 
     MidiMessageSequence::MidiEventHolder *addEvent(const MidiMessage &newMessage);
+    void processNextMidiBuffer(
+        MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos);
 
     void eachMidiMessage(function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
     int getLowestNote() const;
@@ -63,7 +65,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     Project &project;
     Track &track;
     MidiMessageSequence midiMessages;
-    Instrument instrument;
+//    Instrument instrument;
     //    double recordStartPosInSeconds;
     double startPosInSeconds = 0;
     double endPosInSeconds = 0;
@@ -77,8 +79,6 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     atomic<bool> looping = false;
 
     int64 getPositionFromTime(double t) const;
-    void processNextMidiBuffer(
-        MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
 
     CriticalSection mutex;
 

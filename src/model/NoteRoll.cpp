@@ -6,8 +6,7 @@
 namespace trackman {
 
 NoteRoll::NoteRoll(Project &project, Track &track, double recordStartPosInSeconds)
-    : project(project), track(track), instrument(track),
-      currentSampleRate(project.getDeviceManager().getAudioDeviceSetup().sampleRate) {}
+    : project(project), track(track), currentSampleRate(project.getDeviceManager().getAudioDeviceSetup().sampleRate) {}
 
 MidiMessageSequence NoteRoll::getMidiMessages() const { return midiMessages; }
 
@@ -70,28 +69,40 @@ void NoteRoll::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     MidiBuffer midiEvents;
     bufferToFill.clearActiveBufferRegion();
     int64 sourceLengthInSamples = (int64)sourceLengthInSeconds * (int64)currentSampleRate;
-//    DBG("endPosInSeconds: " << endPosInSeconds);
-//    DBG("sourceLengthInSamples: " << sourceLengthInSamples);
+    //    DBG("endPosInSeconds: " << endPosInSeconds);
+    //    DBG("sourceLengthInSamples: " << sourceLengthInSamples);
     auto pos = looping ? currentPosition % sourceLengthInSamples : currentPosition;
-//    DBG("note roll pos: " << pos << " to " << pos + bufferToFill.numSamples);
+    //    DBG("note roll pos: " << pos << " to " << pos + bufferToFill.numSamples);
     processNextMidiBuffer(midiEvents, bufferToFill.startSample, bufferToFill.numSamples, pos);
     //    DBG("NoteRoll::getNextAudioBlock writing to buffer: " << String::toHexString((long)bufferToFill.buffer));
-    //    track.getSynth().renderNextBlock(
+    //    track.getSynth().renderNextPlaybackBlock(
     //        *bufferToFill.buffer, midiEvents, bufferToFill.startSample, bufferToFill.numSamples);
-    instrument.renderNextBlock(*bufferToFill.buffer, midiEvents, bufferToFill.startSample, bufferToFill.numSamples);
+
+    //    instrument.renderNextPlaybackBlock(
+    //        *bufferToFill.buffer, midiEvents, bufferToFill.startSample, bufferToFill.numSamples);
+
     currentPosition += bufferToFill.numSamples;
 }
 
 void NoteRoll::processNextMidiBuffer(
-    MidiBuffer &buffer, const int /*startSample*/, const int numSamples, const int64 currentPos) const {
-    const double startTime = currentPos / currentSampleRate;
+    MidiBuffer &buffer, const int /*startSample*/, const int numSamples, const int64 currentPos) {
+    const ScopedLock lock(mutex);
+    int64 sourceLengthInSamples = (int64)sourceLengthInSeconds * (int64)currentSampleRate;
+    auto pos = looping ? currentPosition % sourceLengthInSamples : currentPosition;
+
+    //    const int64 pos = currentPosition - (int64)startPosInSeconds * (int64)currentSampleRate;
+    const double startTime = pos / currentSampleRate;
     const double endTime = startTime + numSamples / currentSampleRate;
-//    DBG("NoteRoll::processNextMidiBuffer pos: " << currentPos << " (" << startTime << " to " << endTime << ")");
+//    DBG("NoteRoll::processNextMidiBuffer startPos: " << startPosInSeconds << " pos: " << pos << " (" << startTime
+//                                                     << " to " << endTime << ")");
 
     //    auto midiMessages = getMidiMessages();
-    auto startIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(startTime));
-    auto endIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(endTime));
-    //    DBG("startIndex: " << startIndex << " endIndex:" << endIndex);
+    auto startTick = project.secondsToTicks(startTime);
+    auto endTick = project.secondsToTicks(endTime);
+    DBG("start tick: " << startTick << " end tick: " << endTick);
+    auto startIndex = midiMessages.getNextIndexAtTime(startTick);
+    auto endIndex = midiMessages.getNextIndexAtTime(endTick);
+//    DBG("startIndex: " << startIndex << " endIndex:" << endIndex);
     for (int i = startIndex; i < endIndex; i++) {
         auto p = midiMessages.getEventPointer(i);
         auto event = p->message;
@@ -101,6 +112,7 @@ void NoteRoll::processNextMidiBuffer(
     }
     //    DBG("playing notes:");
     //    printEvents(midiMessages);
+    currentPosition += numSamples;
 }
 
 //==============================================================================

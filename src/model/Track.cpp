@@ -7,7 +7,7 @@
 namespace trackman {
 
 Track::Track(Project &project, AudioDeviceManager &deviceManager)
-    : project(project), deviceManager(deviceManager), midiPlayer(*this) {
+    : project(project), deviceManager(deviceManager), midiPlayer(*this), instrument(*this) {
     //    noteRolls.push_back(make_shared<NoteRoll>(MidiMessageSequence(), 0, 0));
     midiPlayer.prepareToPlay(
         deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
@@ -117,11 +117,11 @@ void Track::eachSample(function<void(Sample &sample)> f) {
 }
 
 int64 Track::getTotalLengthInSamples() const {
-//    if (!hasMidi()) {
-        return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
-//    } else {
-//        return midiPlayer.getTotalLength();
-//    }
+    //    if (!hasMidi()) {
+    return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
+    //    } else {
+    //        return midiPlayer.getTotalLength();
+    //    }
 }
 
 void Track::startRecording() {
@@ -135,14 +135,14 @@ void Track::startRecording() {
     }
     //    noteRoll.startRecording();
     midiRecorder->startRecording();
-//    midiPlayer.setRecording(true);
+    //    midiPlayer.setRecording(true);
     //    recording = true;
 }
 
 void Track::pauseRecording() {
     if (midiRecorder != nullptr) {
         midiRecorder->stopRecording();
-//        midiPlayer.setRecording(false);
+        //        midiPlayer.setRecording(false);
     }
 }
 
@@ -150,17 +150,18 @@ void Track::stopRecording() {
     if (midiRecorder == nullptr) {
         return;
     }
-//    midiPlayer.setRecording(false);
+    //    midiPlayer.setRecording(false);
     midiRecorder->onMidiMessage = nullptr;
     midiRecorder->stopRecording();
     auto pos = midiRecorder->getNoteRoll().getStartPosInSeconds();
-    DBG("note roll starts at: " << pos << " (" << pos * deviceManager.getAudioDeviceSetup().sampleRate << " samples)");
+    DBG("note roll starts at: " << pos << " (" << project.secondsToTicks(pos) << " ticks, "
+                                << pos * deviceManager.getAudioDeviceSetup().sampleRate << " samples)");
     midiRecorder->printEvents();
     auto &noteRoll = midiRecorder->getNoteRoll();
     if (noteRoll.empty()) {
         removeNoteRoll(&noteRoll);
     }
-//    DBG("set midiRecorder = nullptr");
+    //    DBG("set midiRecorder = nullptr");
     midiRecorder = nullptr;
 }
 
@@ -235,7 +236,7 @@ void Track::processNextMidiBuffer(
     }
 }
 //
-//double Track::getMidiLengthInSeconds() const {
+// double Track::getMidiLengthInSeconds() const {
 //    double len = 0;
 //    for (const shared_ptr<NoteRoll> &p : noteRolls) {
 //        auto &noteRoll = *p;
@@ -246,7 +247,7 @@ void Track::processNextMidiBuffer(
 //    return len;
 //}
 //
-//int64 Track::getMidiLengthInSamples() const {
+// int64 Track::getMidiLengthInSamples() const {
 //    if (!hasMidi()) {
 //        return 0;
 //    }
