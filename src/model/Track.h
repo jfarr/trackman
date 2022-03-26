@@ -70,7 +70,7 @@ class Track {
     void eachNoteRoll(function<void(NoteRoll &noteRoll)> f);
     void eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos,
         function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
-    double getCurrentMidiEndTime(const NoteRoll &noteRoll, const double pos) const;
+    double getCurrentMidiEndTimeInTicks(const NoteRoll &noteRoll, const double pos) const;
     void processNextMidiBuffer(
         MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
 //    double getMidiLengthInSeconds() const;
@@ -82,7 +82,7 @@ class Track {
 
     Sample *addSample(
         const File &file, double startPosInSeconds, double endPosInSeconds, AudioFormatManager &formatManager);
-    NoteRoll *addNoteRoll();
+    NoteRoll *addNoteRoll(double startPosInSeconds);
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
     void updateGain(bool anySoloed);

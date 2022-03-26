@@ -71,8 +71,8 @@ Sample *Track::addSample(
     return sample;
 }
 
-NoteRoll *Track::addNoteRoll() {
-    noteRolls.push_back(make_shared<NoteRoll>(project, *this));
+NoteRoll *Track::addNoteRoll(double startPosInSeconds) {
+    noteRolls.push_back(make_shared<NoteRoll>(project, *this, startPosInSeconds));
     return &(*noteRolls.back());
 }
 
@@ -120,11 +120,11 @@ int64 Track::getTotalLengthInSamples() const {
 
 void Track::startRecording() {
     if (midiRecorder == nullptr) {
-        auto *noteRoll = addNoteRoll();
+        recordStartPosInSeconds = project.getTransport().getCurrentPosition();
+        auto *noteRoll = addNoteRoll(recordStartPosInSeconds);
         noteRoll->setSelected(true);
         midiRecorder.reset(new MidiRecorder(*noteRoll, project.getKeyboardState(), deviceManager));
         //        midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
-        recordStartPosInSeconds = project.getTransport().getCurrentPosition();
     }
     //    noteRoll.startRecording();
     midiRecorder->startRecording();
@@ -196,10 +196,10 @@ void Track::eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos,
     }
 }
 
-double Track::getCurrentMidiEndTime(const NoteRoll &noteRoll, const double pos) const {
+double Track::getCurrentMidiEndTimeInTicks(const NoteRoll &noteRoll, const double pos) const {
     if (midiRecorder != nullptr) {
         auto messages = midiRecorder->getMidiMessages(pos);
-        return messages.getEndTime();
+        return messages.getEndTime(); // - project.secondsToTicks(noteRoll.getStartPosInSeconds());
     } else {
         return noteRoll.getEndTime();
     }

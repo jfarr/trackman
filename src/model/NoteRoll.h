@@ -15,7 +15,7 @@ class Track;
 
 class NoteRoll : public PositionableAudioSource, public TrackRegion {
   public:
-    NoteRoll(Project &project, Track &track);
+    NoteRoll(Project &project, Track &track, double recordStartPosInSeconds);
     ~NoteRoll() = default;
 
     Project &getProject() { return project; }
@@ -63,6 +63,7 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     Project &project;
     Track &track;
     MidiMessageSequence midiMessages;
+//    double recordStartPosInSeconds;
     double startPosInSeconds = 0;
     double endPosInSeconds = 0;
     double lengthInSeconds = 0;

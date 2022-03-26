@@ -81,13 +81,13 @@ void MidiRecorder::handleMessage(MidiMessage message, double time) {
     }
 }
 
-MidiMessageSequence MidiRecorder::getMidiMessages(double pos) const {
+MidiMessageSequence MidiRecorder::getMidiMessages(double posInSeconds) const {
     MidiMessageSequence messages;
-    noteRoll.eachMidiMessage([this, pos, &messages](const MidiMessageSequence::MidiEventHolder &eventHandle) {
+    noteRoll.eachMidiMessage([this, posInSeconds, &messages](const MidiMessageSequence::MidiEventHolder &eventHandle) {
         messages.addEvent(eventHandle.message);
         if (eventHandle.message.isNoteOn() && eventHandle.noteOffObject == nullptr) {
             auto noteOff = MidiMessage::noteOff(eventHandle.message.getChannel(), eventHandle.message.getNoteNumber());
-            noteOff.setTimeStamp(noteRoll.getProject().secondsToTicks(pos));
+            noteOff.setTimeStamp(noteRoll.getProject().secondsToTicks(posInSeconds - noteRoll.getStartPosInSeconds()));
             messages.addEvent(noteOff);
         }
     });

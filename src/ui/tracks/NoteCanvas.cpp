@@ -14,7 +14,7 @@ void NoteCanvas::resize() {
     auto area = getBounds();
     auto border = 3;
     auto pos = project.getTransport().getTransportSource().getCurrentPosition();
-    auto length = project.ticksToSeconds(track.getCurrentMidiEndTime(noteRoll, pos));
+    auto length = project.ticksToSeconds(track.getCurrentMidiEndTimeInTicks(noteRoll, pos));
     auto w = noteRoll.empty() ? 0 : length * project.getHorizontalScale() + 2 * border + 1;
     setBounds(area.withWidth(w));
     repaint();
@@ -64,6 +64,7 @@ Rectangle<float> NoteCanvas::getNoteRect(const MidiMessage &noteOn, const MidiMe
     double noteHeight, double x, double h, double scale) {
     auto start = project.ticksToSeconds(noteOn.getTimeStamp());
     auto end = project.ticksToSeconds(noteOff.getTimeStamp());
+//    DBG("draw: " << start << ":" << end);
     auto noteX = x + start * scale;
     auto noteWidth = (end - start) * scale;
     auto noteDist = noteOn.getNoteNumber() - lowNote;

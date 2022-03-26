@@ -5,12 +5,16 @@
 
 namespace trackman {
 
-NoteRoll::NoteRoll(Project &project, Track &track)
+NoteRoll::NoteRoll(Project &project, Track &track, double recordStartPosInSeconds)
     : project(project), track(track), currentSampleRate(project.getDeviceManager().getAudioDeviceSetup().sampleRate) {}
 
 MidiMessageSequence NoteRoll::getMidiMessages() const { return midiMessages; }
 
-double NoteRoll::getStartPosInSeconds() const { return startPosInSeconds; }
+double NoteRoll::getStartPosInSeconds() const {
+    auto startTimeInTicks = midiMessages.getStartTime();
+    auto firstNotePosInSeconds = project.ticksToSeconds(startTimeInTicks);
+    return max(startPosInSeconds, firstNotePosInSeconds);
+}
 
 double NoteRoll::getEndPosInSeconds() const { return endPosInSeconds; }
 
@@ -24,24 +28,33 @@ void NoteRoll::startRecording() { recording = true; }
 
 void NoteRoll::stopRecording() {
     recording = false;
-    auto startTimeInTicks = midiMessages.getStartTime();
-    auto endTimeInTicks = midiMessages.getEndTime() + 1;
-    startPosInSeconds = project.ticksToSeconds(startTimeInTicks);
-    endPosInSeconds = project.ticksToSeconds(endTimeInTicks);
-    lengthInSeconds = endPosInSeconds - startPosInSeconds;
-//    DBG("startTimeInTicks: " << startTimeInTicks);
-//    DBG("endTimeInTicks: " << endTimeInTicks);
-//    DBG("startPosInSeconds: " << startPosInSeconds);
-//    DBG("endPosInSeconds: " << endPosInSeconds);
-//    DBG("lengthInSeconds: " << lengthInSeconds);
-    auto offset = -startTimeInTicks;
-    for (auto messageHandle : midiMessages) {
-        messageHandle->message.addToTimeStamp(offset);
-    }
+//    auto startTimeInTicks = midiMessages.getStartTime();
+//    auto endTimeInTicks = midiMessages.getEndTime() + 1;
+//    startPosInSeconds = project.ticksToSeconds(startTimeInTicks);
+//    endPosInSeconds = project.ticksToSeconds(endTimeInTicks);
+//    lengthInSeconds = endPosInSeconds - startPosInSeconds;
+    //    DBG("startTimeInTicks: " << startTimeInTicks);
+    //    DBG("endTimeInTicks: " << endTimeInTicks);
+    //    DBG("startPosInSeconds: " << startPosInSeconds);
+    //    DBG("endPosInSeconds: " << endPosInSeconds);
+    //    DBG("lengthInSeconds: " << lengthInSeconds);
+//    auto offset = -startTimeInTicks;
+//    for (auto messageHandle : midiMessages) {
+//        messageHandle->message.addToTimeStamp(offset);
+//    }
 }
 
 MidiMessageSequence::MidiEventHolder *NoteRoll::addEvent(const MidiMessage &newMessage) {
-    auto event = midiMessages.addEvent(newMessage);
+    if (midiMessages.getNumEvents() == 0) {
+        startPosInSeconds = project.ticksToSeconds(newMessage.getTimeStamp());
+    }
+    if (newMessage.isNoteOff()) {
+        endPosInSeconds = project.ticksToSeconds(newMessage.getTimeStamp() + 1);
+    }
+    lengthInSeconds = max(0.0, endPosInSeconds - startPosInSeconds);
+    //    auto offset = newMessage.getTimeStamp() - startPosInSeconds;
+    auto offset = project.secondsToTicks(startPosInSeconds);
+    auto event = midiMessages.addEvent(newMessage.withTimeStamp(newMessage.getTimeStamp() - offset));
     midiMessages.sort();
     midiMessages.updateMatchedPairs();
     return event;
@@ -70,7 +83,7 @@ void NoteRoll::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     MidiBuffer incomingMidi;
     bufferToFill.clearActiveBufferRegion();
     auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
-    DBG("note roll pos: " << pos << " to " << pos + bufferToFill.numSamples);
+//    DBG("note roll pos: " << pos << " to " << pos + bufferToFill.numSamples);
     processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, pos);
     track.getSynth().renderNextBlock(
         *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
@@ -90,8 +103,8 @@ void NoteRoll::processNextMidiBuffer(
         auto event = p->message;
         buffer.addEvent(event, event.getTimeStamp());
     }
-    DBG("playing notes:");
-    printEvents(midiMessages);
+//    DBG("playing notes:");
+//    printEvents(midiMessages);
 }
 
 //==============================================================================

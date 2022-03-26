@@ -23,7 +23,7 @@ class MidiRecorder : public MidiKeyboardState::Listener, MidiInputCallback {
     bool isRecording() const;
     NoteRoll &getNoteRoll() { return noteRoll; }
 
-    MidiMessageSequence getMidiMessages(double pos) const;
+    MidiMessageSequence getMidiMessages(double posInSeconds) const;
 
     void setMidiInput(int index);
 

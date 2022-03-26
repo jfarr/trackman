@@ -20,6 +20,7 @@ Timeline<NoteRoll *> MidiPlayer::getCurrentTimeline() {
 }
 
 void MidiPlayer::prepareToPlay(int blockSize, double sampleRate) {
+    track.getProject().getKeyboardState().reset();
     {
         const ScopedLock lock(mutex);
         currentSampleRate = sampleRate;
@@ -43,7 +44,7 @@ void MidiPlayer::releaseResources() {
 void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     const ScopedLock lock(mutex);
 //    DBG("MidiPlayer::getNextAudioBlock pos: " << currentPosition << " numSamples: " << bufferToFill.numSamples);
-    DBG("midi player pos: " << currentPosition);
+//    DBG("midi player pos: " << currentPosition);
     if (bufferToFill.numSamples > 0) {
         bufferToFill.clearActiveBufferRegion();
         Timeline timeline = getCurrentTimeline();
