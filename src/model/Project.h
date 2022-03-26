@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MidiHandler.h"
 #include "Mixer.h"
 #include "TimeSignature.h"
 #include "TrackList.h"
@@ -16,6 +17,7 @@ class Project {
     ~Project() = default;
 
     AudioDeviceManager &getDeviceManager() { return deviceManager; }
+    MidiHandler &getMidiHandler() { return midiHandler; }
 
     const float getTempo() const { return tempo; };
     void setTempo(const float newTempo) { tempo = newTempo; }
@@ -75,6 +77,7 @@ class Project {
 
     AudioDeviceManager &deviceManager;
     MidiKeyboardState keyboardState;
+    MidiHandler midiHandler;
     TrackList trackList;
     Mixer mixer;
     Transport transport;
