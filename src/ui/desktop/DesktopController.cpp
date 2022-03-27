@@ -1,5 +1,6 @@
 #include "DesktopController.h"
 #include "commands/MixerCommands.h"
+#include "commands/NoteRollCommands.h"
 #include "commands/SampleCommands.h"
 #include "commands/TrackCommands.h"
 #include "commands/TrackListCommands.h"
@@ -40,7 +41,14 @@ void DesktopController::recordingStarted() {
 void DesktopController::recordingStopped() {
     auto selectedTrack = project.getTrackList().getSelectedTrack();
     if (selectedTrack != nullptr) {
-        selectedTrack->stopRecording();
+        NoteRoll *noteRoll = selectedTrack->stopRecording();
+        if (noteRoll != nullptr) {
+            Command *command = new AddNoteRollCommand(*this, selectedTrack, noteRoll);
+            commandList.pushCommand(command);
+            dirty = true;
+            updateTitleBar();
+            desktopComponent.menuItemsChanged();
+        }
         MessageManager::callAsync([this]() { trackListController.update(); });
     }
 }
@@ -53,6 +61,12 @@ void DesktopController::recordingPaused() {
 }
 
 bool DesktopController::canRecord() { return project.getTrackList().canRecord(); }
+
+
+void DesktopController::deleteNoteRoll(Track &track, NoteRoll *noteRoll) {
+    trackListController.deleteNoteRoll(track, noteRoll);
+    MessageManager::callAsync([this]() { instrumentsController.update(); });
+}
 
 void DesktopController::midiMessageReceived(const MidiMessage &message, double time) {
     trackListController.getTrackListPanel().resized();

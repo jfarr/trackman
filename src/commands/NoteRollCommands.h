@@ -10,32 +10,19 @@ namespace trackman {
 
 class AddNoteRollCommand : public Command {
   public:
-    AddNoteRollCommand(DesktopController &desktopController, Track *track, int pos)
-        : Command("Add Sample"), desktopController(desktopController), track(track), pos(pos) {}
+    AddNoteRollCommand(DesktopController &desktopController, Track *track, NoteRoll *noteRoll)
+        : Command("Record MIDI"), desktopController(desktopController), track(track), noteRoll(noteRoll) {}
     ~AddNoteRollCommand() override = default;
 
-    void execute() override {
-//        if (track == nullptr) {
-//            newTrack = desktopController.addTrack();
-//            track = newTrack;
-//        }
-//        sample = desktopController.addSample(*track, file, pos);
-    }
-    void undo() override {
-//        desktopController.deleteSample(*track, sample);
-//        if (newTrack != nullptr) {
-//            desktopController.deleteTrack(newTrack, true);
-//        }
-    }
+    void execute() override {}
+    void undo() override { desktopController.deleteNoteRoll(*track, noteRoll); }
 
   private:
     DesktopController &desktopController;
     Track *track;
-    Track *newTrack = nullptr;
-    int pos;
     NoteRoll *noteRoll = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AddNoteRollCommand)
 };
 
-}
+} // namespace trackman

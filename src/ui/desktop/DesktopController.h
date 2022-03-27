@@ -58,6 +58,7 @@ class DesktopController : public AudioSource,
     void recordingStopped();
     void recordingPaused();
     bool canRecord();
+    void deleteNoteRoll(Track &track, NoteRoll *noteRoll);
 
     void createKeyboard();
 

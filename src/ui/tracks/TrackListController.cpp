@@ -156,6 +156,13 @@ void TrackListController::noteRollSelected(Track &track, NoteRoll &noteRoll) {
     trackListPanel.repaint();
 }
 
+void TrackListController::deleteNoteRoll(Track &track, NoteRoll *noteRoll) {
+    if (noteRoll != nullptr) {
+        noteRoll->setDeleted(true);
+        updateLane(track);
+    }
+}
+
 void TrackListController::sampleSelected(Track &track, Sample &sample) {
     selectingSample = true;
     project.getTrackList().selectSample(&sample);

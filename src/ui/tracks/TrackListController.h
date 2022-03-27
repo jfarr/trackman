@@ -39,6 +39,7 @@ class TrackListController : public TrackListListener, public SampleListener {
     void filesDropped(const StringArray &files, int x, int y);
 
     void noteRollSelected(Track &track, NoteRoll &noteRoll);
+    void deleteNoteRoll(Track &track, NoteRoll *noteRoll);
 
     //==============================================================================
     // TrackListListener
