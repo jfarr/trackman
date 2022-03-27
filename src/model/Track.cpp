@@ -81,6 +81,11 @@ NoteRoll *Track::addNoteRoll() {
     return &(*noteRolls.back());
 }
 
+NoteRoll *Track::addNoteRoll(int startPosInTicks, int endPosInTicks, const MidiMessageSequence &midiMessages) {
+    noteRolls.push_back(make_shared<NoteRoll>(project, *this, startPosInTicks, endPosInTicks, midiMessages));
+    return &(*noteRolls.back());
+}
+
 void Track::createSamplePlayer() {
     if (samplePlayer == nullptr) {
         samplePlayer = make_unique<SamplePlayer>(samples);

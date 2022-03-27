@@ -17,6 +17,8 @@ class Track;
 class NoteRoll : public TrackRegion {
   public:
     NoteRoll(Project &project, Track &track);
+    NoteRoll(Project &project, Track &track, int startPosInTicks, int endPosInTicks,
+        const MidiMessageSequence &midiMessages);
     ~NoteRoll() = default;
 
     Project &getProject() { return project; }
@@ -44,6 +46,7 @@ class NoteRoll : public TrackRegion {
     int getHighestNote() const;
     double getEndTime() const { return midiMessages.getEndTime(); }
 
+    string toMidiFile() const;
     void printEvents() const;
 
   private:

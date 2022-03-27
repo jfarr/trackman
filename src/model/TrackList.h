@@ -36,7 +36,8 @@ class TrackList {
 
     bool canRecord() const { return getSelectedTrack() != nullptr && getSelectedTrack()->canRecord(); }
     MidiRecorder *getMidiRecorder();
-    void writeAudioFile(const File &file, AudioSource &source, double sampleRate, int bitsPerSample) const;
+
+//    void writeAudioFile(const File &file, AudioSource &source, double sampleRate, int bitsPerSample) const;
 
   private:
     friend Project;

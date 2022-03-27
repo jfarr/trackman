@@ -54,22 +54,36 @@ Sample *Project::addSample(
     return sample;
 }
 
+NoteRoll *Project::addNoteRoll(Track &track, int startPos, int endPos, string encodedMidi) {
+    if (track.hasSamples()) {
+        mixer.removeSource(track.getSource());
+    }
+    MemoryOutputStream out;
+    Base64::convertFromBase64(out, encodedMidi);
+    MemoryInputStream in(out.getMemoryBlock());
+    MidiFile midiFile;
+    midiFile.readFrom(in, true);
+    auto midiMessages = midiFile.getTrack(0);
+    if (midiMessages != nullptr) {
+        int startPosInTicks = startPos;
+        int endPosInTicks = endPos;
+        return track.addNoteRoll(startPosInTicks, endPosInTicks, *midiMessages);
+    }
+    return nullptr;
+}
+
 string Project::to_json() {
     json project_json = {{"tempo", tempo}, {"horizontalScale", horizontalScale},
         {"mixer", {{"gain", mixer.getMasterLevelGain()}, {"muted", mixer.isMasterMuted()}}}};
     project_json["timeSignature"] = {
         {"numerator", timeSignature.getNumerator()}, {"denominator", timeSignature.getDenominator()}};
     project_json["tracks"] = json::array();
-    MidiFile midiFile;
-    midiFile.setTicksPerQuarterNote(timeutil::ticksPerQuarterNote);
-    trackList.eachTrack([&project_json, &midiFile](Track &track) {
-        //        MidiMessageSequence messages = track.getMidiMessages();
-        //        midiFile.addTrack(messages);
-        //        MidiRecorder::printEvents(messages);
+    trackList.eachTrack([&project_json](Track &track) {
         json track_json = {{"name", track.getName().toStdString()}, {"gain", track.getLevelGain()},
             {"muted", track.isMuted()}, {"soloed", track.isSoloed()}};
         track.eachNoteRoll([&track_json](NoteRoll &noteRoll) {
-            json notes_json = {{"startPos", noteRoll.getStartPosInTicks()}, {"endPos", noteRoll.getEndPosInTicks()}};
+            json notes_json = {{"startPos", noteRoll.getStartPosInTicks()}, {"endPos", noteRoll.getEndPosInTicks()},
+                {"midi", noteRoll.toMidiFile()}};
             track_json["notes"].push_back(notes_json);
         });
         track.eachSample([&track_json](Sample &sample) {
@@ -79,12 +93,6 @@ string Project::to_json() {
         });
         project_json["tracks"].push_back(track_json);
     });
-    MemoryOutputStream out;
-    midiFile.writeTo(out, 1);
-    auto mb = out.getMemoryBlock();
-    auto encoded = Base64::toBase64(mb.getData(), mb.getSize());
-    project_json["midi"] = encoded.toStdString();
-
     return project_json.dump();
 }
 
@@ -99,12 +107,6 @@ void Project::from_json(AudioFormatManager &formatManager, string filename) {
     horizontalScale = project_json["horizontalScale"];
     mixer.setMasterLevelGain(project_json["mixer"]["gain"]);
     mixer.setMasterMute(project_json["mixer"]["muted"]);
-    string encoded = project_json["midi"];
-    MemoryOutputStream out;
-    Base64::convertFromBase64(out, encoded);
-    MemoryInputStream in(out.getMemoryBlock());
-    MidiFile midiFile;
-    midiFile.readFrom(in, true);
 
     trackList.clear();
     int i = 0;
@@ -114,11 +116,12 @@ void Project::from_json(AudioFormatManager &formatManager, string filename) {
         track->setLevelGain(track_json["gain"]);
         trackList.setMute(*track, track_json["muted"]);
         trackList.setSolo(*track, track_json["soloed"]);
+        for (auto notes_json : track_json["notes"]) {
+            addNoteRoll(*track, notes_json["startPos"], notes_json["endPos"], notes_json["midi"]);
+        }
         for (auto sample_json : track_json["samples"]) {
             addSample(*track, sample_json["file"], sample_json["startPos"], sample_json["endPos"], formatManager);
         }
-        auto midiMessages = midiFile.getTrack(i++);
-        //        track->setMidiMessages(*midiMessages);
         mixer.addSource(track->getSource());
     }
 }

@@ -29,9 +29,6 @@ class Project {
     Track *addTrack();
     void deleteTrack(Track *track);
 
-    Sample *addSample(
-        Track &track, const File &file, double startPos, double endPos, AudioFormatManager &formatManager);
-
     TrackList &getTrackList() { return trackList; }
     Mixer &getMixer() { return mixer; }
     Transport &getTransport() { return transport; }
@@ -39,8 +36,10 @@ class Project {
     Track *getSelectedTrack() const { return trackList.getSelectedTrack(); }
     Sample *getSelectedSample() const { return trackList.getSelectedSample(); }
 
+    Sample *addSample(
+        Track &track, const File &file, double startPos, double endPos, AudioFormatManager &formatManager);
+
     bool isRecording() const;
-    MidiRecorder *getMidiRecorder() { return trackList.getMidiRecorder(); }
     MidiKeyboardState &getKeyboardState() { return keyboardState; }
 
     int secondsToTicks(double seconds) const;
@@ -88,6 +87,8 @@ class Project {
     float tempo = initialTempo;
     double verticalScale = initialVerticalScale;
     double horizontalScale = initialHorizontalScale;
+
+    NoteRoll *addNoteRoll(Track &track, int startPos, int endPos, string encodedMidi);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Project)
 };

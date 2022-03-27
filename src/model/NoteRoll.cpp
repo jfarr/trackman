@@ -2,10 +2,23 @@
 #include "Project.h"
 #include "Track.h"
 #include "common/midiutil.h"
+#include "common/timeutil.h"
 
 namespace trackman {
 
 NoteRoll::NoteRoll(Project &project, Track &track) : project(project), track(track) {}
+
+NoteRoll::NoteRoll(Project &project, Track &track, const int initialStartPosInTicks, const int initialEndPosInTicks,
+    const MidiMessageSequence &initialMidiMessages)
+    : NoteRoll(project, track) {
+    midiMessages = initialMidiMessages;
+    midiMessages.sort();
+    midiMessages.updateMatchedPairs();
+    startPosInTicks = initialStartPosInTicks;
+    endPosInTicks = initialEndPosInTicks;
+    startPosInSeconds = project.ticksToSeconds(startPosInTicks);
+    endPosInSeconds = project.ticksToSeconds(endPosInTicks);
+}
 
 double NoteRoll::getStartPosInSeconds() const {
     auto startTimeInTicks = midiMessages.getStartTime();
@@ -56,6 +69,16 @@ void NoteRoll::processNextMidiBuffer(MidiBuffer &buffer, int startTimeInTicks, i
         auto event = p->message;
         buffer.addEvent(event, event.getTimeStamp());
     }
+}
+
+string NoteRoll::toMidiFile() const {
+    MidiFile midiFile;
+    midiFile.setTicksPerQuarterNote(timeutil::ticksPerQuarterNote);
+    midiFile.addTrack(midiMessages);
+    MemoryOutputStream out;
+    midiFile.writeTo(out, 1);
+    auto mb = out.getMemoryBlock();
+    return Base64::toBase64(mb.getData(), mb.getSize()).toStdString();
 }
 
 void NoteRoll::printEvents() const { project.printEvents(midiMessages); }

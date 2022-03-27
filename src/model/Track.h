@@ -71,12 +71,14 @@ class Track {
     Instrument &getInstrument() { return instrument; }
 
   private:
+    friend Project;
     friend TrackList;
     friend MidiPlayer;
 
     Sample *addSample(
         const File &file, double startPosInSeconds, double endPosInSeconds, AudioFormatManager &formatManager);
     NoteRoll *addNoteRoll();
+    NoteRoll *addNoteRoll(int startPosInTicks, int endPosInTicks, const MidiMessageSequence &midiMessages);
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
     void updateGain(bool anySoloed);
