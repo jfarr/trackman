@@ -69,7 +69,8 @@ string Project::to_json() {
         json track_json = {{"name", track.getName().toStdString()}, {"gain", track.getLevelGain()},
             {"muted", track.isMuted()}, {"soloed", track.isSoloed()}};
         track.eachNoteRoll([&track_json](NoteRoll &noteRoll) {
-            json noteRoll_json = {};
+            json notes_json = {{"startPos", noteRoll.getStartPosInTicks()}, {"endPos", noteRoll.getEndPosInTicks()}};
+            track_json["notes"].push_back(notes_json);
         });
         track.eachSample([&track_json](Sample &sample) {
             json sample_json = {{"file", sample.getFile().getFullPathName().toStdString()},

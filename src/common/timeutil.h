@@ -26,4 +26,5 @@ static String formatSecsAsTime(double secs) {
 }
 
 } // namespace timeutil
+
 } // namespace trackman

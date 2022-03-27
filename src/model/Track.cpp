@@ -143,10 +143,7 @@ void Track::stopRecording() {
     midiRecorder->onMidiMessage = nullptr;
     midiRecorder->stopRecording();
     auto &noteRoll = midiRecorder->getNoteRoll();
-    auto pos = noteRoll.getStartPosInSeconds();
-    DBG("note roll starts at: " << pos << " secs (" << noteRoll.getStartPosInTicks() << " ticks, "
-                                << pos * deviceManager.getAudioDeviceSetup().sampleRate << " samples)");
-    midiRecorder->printEvents();
+//    midiRecorder->printEvents();
     if (noteRoll.empty()) {
         removeNoteRoll(&noteRoll);
     }
