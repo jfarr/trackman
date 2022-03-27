@@ -100,7 +100,10 @@ void DesktopController::masterMuteToggled() {
 void DesktopController::tempoChanged(float newTempo) {
     previousTempo = newTempo;
     project.setTempo(newTempo);
-    MessageManager::callAsync([this]() { desktopComponent.repaint(); });
+    MessageManager::callAsync([this]() {
+        trackListController.update();
+        desktopComponent.repaint();
+    });
 }
 
 void DesktopController::numeratorChanged(int newNumerator) {

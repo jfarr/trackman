@@ -18,7 +18,11 @@ NoteRoll::NoteRoll(Project &project, Track &track, const int initialStartPosInTi
     endPosInTicks = initialEndPosInTicks;
 }
 
-double NoteRoll::getStartPosInSeconds() const { return project.ticksToSeconds(startPosInTicks); }
+double NoteRoll::getStartPosInSeconds() const {
+    auto startTimeInTicks = midiMessages.getStartTime();
+    auto firstNotePosInSeconds = project.ticksToSeconds(startTimeInTicks);
+    return max(project.ticksToSeconds(startPosInTicks), firstNotePosInSeconds);
+}
 
 double NoteRoll::getEndPosInSeconds() const { return project.ticksToSeconds(endPosInTicks); }
 

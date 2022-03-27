@@ -64,7 +64,7 @@ void TrackLaneControl::resized() {
     }
     for (NoteCanvas *canvas : canvases) {
         auto &noteRoll = canvas->getNoteRoll();
-        auto x = noteRoll.getStartPosInSeconds() * scale - border;
+        auto x = (int)(noteRoll.getStartPosInSeconds() * scale) - border;
         auto w = noteRoll.empty() ? 0 : noteRoll.getLengthInSeconds() * scale + 2 * border + 1;
         canvas->setBounds(x, area.getY(), w, area.getHeight());
     }
