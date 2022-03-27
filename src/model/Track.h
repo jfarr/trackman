@@ -62,7 +62,7 @@ class Track {
     MidiRecorder *getMidiRecorder() { return midiRecorder.get(); }
     void startRecording();
     void pauseRecording();
-    void stopRecording();
+    NoteRoll *stopRecording();
 
     Synthesiser &getLiveSynth() { return liveSynth; }
     NoteRoll *getSelectedNoteRoll() const;

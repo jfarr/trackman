@@ -145,9 +145,9 @@ void Track::pauseRecording() {
     }
 }
 
-void Track::stopRecording() {
+NoteRoll *Track::stopRecording() {
     if (midiRecorder == nullptr) {
-        return;
+        return nullptr;
     }
     midiRecorder->onMidiMessage = nullptr;
     midiRecorder->stopRecording();
@@ -155,8 +155,10 @@ void Track::stopRecording() {
 //    midiRecorder->printEvents();
     if (noteRoll.empty()) {
         removeNoteRoll(&noteRoll);
+        return nullptr;
     }
     midiRecorder = nullptr;
+    return &noteRoll;
 }
 
 void Track::removeNoteRoll(const NoteRoll *noteRoll) {
