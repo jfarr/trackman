@@ -1,13 +1,13 @@
 # Roadmap
 
 ## Short-Term
-- Move note rolls
 - Undo change tempo / time signature
 - Stretch / loop note rolls
 - Edit note rolls
 - Undo edit note roll
 - Fix bugs
   - Popping at begin/end of midi tracks
+  - Missing note-offs when moving note rolls while playing
 - Amplitude ASDR envelopes
 - Stretch sample loops instead of resampling
 - Stereo panner

@@ -49,12 +49,13 @@ class Track {
 
     void selectSample(Sample *newSelected);
     Sample *getSelectedSample() const;
-    void moveSampleTo(Sample &sample, Track &toTrack);
+    void moveSampleToTrack(Sample &sample, Track &toTrack);
     void eachSample(function<void(Sample &sample)> f);
     bool hasSamples() const { return !samples.empty(); }
     int getNumSamples() const { return samples.size(); }
 
     void selectNoteRoll(NoteRoll *newSelected);
+    void moveNoteRollToTrack(NoteRoll &noteRoll, Track &toTrack);
 
     bool hasMidi() const { return !noteRolls.empty(); }
     bool canRecord() const { return samplePlayer == nullptr; }

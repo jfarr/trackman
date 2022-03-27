@@ -61,6 +61,12 @@ bool TrackListPanel::canDrop() {
 
 void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
     auto sourceComponent = dragSourceDetails.sourceComponent.get();
+    auto *noteRoll = dynamic_cast<NoteCanvas *>(sourceComponent);
+    if (noteRoll != nullptr) {
+        auto pos = dragSourceDetails.localPosition;
+        notifyNoteRollDropped(noteRoll, pos.getX() - dragSourceOffset, pos.getY());
+        return;
+    }
     auto *thumbnail = dynamic_cast<SampleThumbnail *>(sourceComponent);
     if (thumbnail != nullptr) {
         auto pos = dragSourceDetails.localPosition;
@@ -164,6 +170,12 @@ void TrackListPanel::addListener(SampleListener *listener) {
 }
 
 void TrackListPanel::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
+
+void TrackListPanel::notifyNoteRollDropped(NoteCanvas *canvas, int x, int y) const {
+    if (onMoveNoteRoll != nullptr) {
+        onMoveNoteRoll(canvas->getTrack(), canvas->getNoteRoll(), x, y);
+    }
+}
 
 void TrackListPanel::notifySampleDropped(SampleThumbnail *thumbnail, int x, int y) {
     for (SampleListener *listener : sampleListeners) {

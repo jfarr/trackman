@@ -42,6 +42,8 @@ class TrackListController : public TrackListListener, public SampleListener {
     void deleteNoteRoll(Track &track, NoteRoll *noteRoll);
     void undeleteNoteRoll(Track &track, NoteRoll *noteRoll);
     void noteRollDragged(NoteCanvas &thumbnail, int x, int screenY);
+    void noteRollMoved(Track &track, NoteRoll &noteRoll, int x, int y);
+    void moveNoteRoll(NoteRoll &noteRoll, Track &fromTrack, Track &toTrack, double pos);
 
     //==============================================================================
     // TrackListListener

@@ -63,7 +63,18 @@ void Track::selectNoteRoll(NoteRoll *newSelected) {
     eachNoteRoll([&newSelected](NoteRoll &noteRoll) { noteRoll.setSelected(&noteRoll == newSelected); });
 }
 
-void Track::moveSampleTo(Sample &sample, Track &toTrack) {
+void Track::moveNoteRollToTrack(NoteRoll &noteRoll, Track &toTrack) {
+    for (auto iter = noteRolls.begin(); iter != noteRolls.end();) {
+        if (&noteRoll == iter->get()) {
+            toTrack.noteRolls.push_back(*iter);
+            noteRolls.erase(iter++);
+        } else {
+            ++iter;
+        }
+    }
+}
+
+void Track::moveSampleToTrack(Sample &sample, Track &toTrack) {
     for (auto iter = samples.begin(); iter != samples.end();) {
         if (&sample == iter->get()) {
             toTrack.samples.push_back(*iter);
