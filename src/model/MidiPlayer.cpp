@@ -120,8 +120,12 @@ void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
 void MidiPlayer::processMidiBuffer(
     MidiBuffer &buffer, list<NoteRoll *> noteRollsToPlay, int64 startTimeInSamples, int64 endTimeInSamples) {
 
+    auto startTimeInSeconds = (double)(startTimeInSamples / currentSampleRate);
+    auto endTimeInSeconds = (double)(endTimeInSamples / currentSampleRate);
+    auto startTimeInTicks = track.getProject().secondsToTicks(startTimeInSeconds);
+    auto endTimeInTicks = track.getProject().secondsToTicks(endTimeInSeconds);
     for (auto *noteRoll : noteRollsToPlay) {
-        noteRoll->processNextMidiBuffer(buffer, startTimeInSamples, endTimeInSamples);
+        noteRoll->processNextMidiBuffer(buffer, startTimeInTicks, endTimeInTicks);
     }
 }
 
