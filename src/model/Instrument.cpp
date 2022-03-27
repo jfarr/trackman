@@ -22,19 +22,19 @@ void Instrument::initSynth(Synthesiser &synth) {
     DBG("setCurrentPlaybackSampleRate");
     synth.setCurrentPlaybackSampleRate(track.getDeviceManager().getAudioDeviceSetup().sampleRate);
 }
+//
+//void Instrument::renderNextPlaybackBlock(AudioBuffer<float> &outputAudio, list<NoteRoll *> noteRollsToPlay,
+//    int startSample, int numSamples, const int64 currentPos) {
+//    MidiBuffer buffer;
+//    for (auto *noteRoll : noteRollsToPlay) {
+//        MidiBuffer tempBuffer;
+//        noteRoll->processNextMidiBuffer(tempBuffer, startSample, numSamples, currentPos);
+//        buffer.addEvents(tempBuffer, startSample, numSamples, 0);
+//    }
+//    renderNextBlock(outputAudio, buffer, startSample, numSamples);
+//}
 
-void Instrument::renderNextPlaybackBlock(AudioBuffer<float> &outputAudio, list<NoteRoll *> noteRollsToPlay,
-    int startSample, int numSamples, const int64 currentPos) {
-    MidiBuffer buffer;
-    for (auto *noteRoll : noteRollsToPlay) {
-        MidiBuffer tempBuffer;
-        noteRoll->processNextMidiBuffer(tempBuffer, startSample, numSamples, currentPos);
-        buffer.addEvents(tempBuffer, startSample, numSamples, 0);
-    }
-    renderNextBlock(outputAudio, buffer, startSample, numSamples);
-}
-
-void Instrument::renderNextBlock(
+void Instrument::renderNextPlaybackBlock(
     AudioBuffer<float> &outputAudio, const MidiBuffer &inputMidi, int startSample, int numSamples) {
     playbackSynth.renderNextBlock(outputAudio, inputMidi, startSample, numSamples);
 }

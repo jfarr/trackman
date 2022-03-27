@@ -49,12 +49,14 @@ class MidiPlayer : public PositionableAudioSource {
     AudioBuffer<float> tempBuffer;
 //    bool dumping = false;
 
-    Timeline<double, NoteRoll *> getCurrentTimeline();
+    Timeline<int64, NoteRoll *> getCurrentTimeline();
     double getTimeAtPosition(int64 position) const { return position / currentSampleRate; }
 //    void processNextMidiBuffer(
 //        MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
 
     CriticalSection mutex;
+
+    void processMidiBuffer(MidiBuffer &buffer, list<NoteRoll *> noteRollsToPlay, int64 startTimeInSamples, int64 endTimeInSamples);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiPlayer)
 };

@@ -21,8 +21,11 @@ class Instrument {
 
     void renderNextLiveBlock(
         AudioBuffer<float> &outputAudio, const MidiBuffer &inputMidi, int startSample, int numSamples);
-    void renderNextPlaybackBlock(AudioBuffer<float> &outputAudio, list<NoteRoll *> noteRollsToPlay, int startSample,
-        int numSamples, const int64 currentPos);
+    void renderNextPlaybackBlock(
+        AudioBuffer<float> &outputAudio, const MidiBuffer &inputMidi, int startSample, int numSamples);
+    //    void renderNextPlaybackBlock(AudioBuffer<float> &outputAudio, list<NoteRoll *> noteRollsToPlay, int
+    //    startSample,
+    //        int numSamples, const int64 currentPos);
 
   private:
     const int polyphony = 4;
@@ -32,7 +35,6 @@ class Instrument {
     Synthesiser playbackSynth;
 
     void initSynth(Synthesiser &synth);
-    void renderNextBlock(AudioBuffer<float> &outputAudio, const MidiBuffer &inputMidi, int startSample, int numSamples);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Instrument)
 };

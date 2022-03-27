@@ -14,7 +14,7 @@ namespace trackman {
 class Project;
 class Track;
 
-class NoteRoll : public PositionableAudioSource, public TrackRegion {
+class NoteRoll : public TrackRegion {
   public:
     NoteRoll(Project &project, Track &track, double recordStartPosInSeconds);
     ~NoteRoll() = default;
@@ -22,6 +22,8 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     Project &getProject() { return project; }
     MidiMessageSequence getMidiMessages() const;
     bool empty() { return midiMessages.getNumEvents() == 0; }
+    int64 getStartPosInTicks() const { return startPosInTicks; }
+    int64 getEndPosInTicks() const { return endPosInTicks; }
     double getStartPosInSeconds() const;
     double getEndPosInSeconds() const;
     double getLengthInSeconds() const;
@@ -46,20 +48,20 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     double getEndTime() const { return midiMessages.getEndTime(); }
 
     void printEvents() const;
-
-    //==============================================================================
-    // AudioSource
-    void prepareToPlay(int blockSize, double sampleRate) override;
-    void releaseResources() override;
-    void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
-
-    //==============================================================================
-    // PositionableAudioSource
-    void setNextReadPosition(int64 newPosition) override;
-    int64 getNextReadPosition() const override;
-    int64 getTotalLength() const override;
-    bool isLooping() const override;
-    void setLooping(bool shouldLoop) override;
+//
+//    //==============================================================================
+//    // AudioSource
+//    void prepareToPlay(int blockSize, double sampleRate) override;
+//    void releaseResources() override;
+//    void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
+//
+//    //==============================================================================
+//    // PositionableAudioSource
+//    void setNextReadPosition(int64 newPosition) override;
+//    int64 getNextReadPosition() const override;
+    int64 getTotalLength() const;
+//    bool isLooping() const override;
+//    void setLooping(bool shouldLoop) override;
 
   private:
     Project &project;
@@ -67,6 +69,8 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     MidiMessageSequence midiMessages;
 //    Instrument instrument;
     //    double recordStartPosInSeconds;
+    int64 startPosInTicks = 0;
+    int64 endPosInTicks = 0;
     double startPosInSeconds = 0;
     double endPosInSeconds = 0;
 //    double lengthInSeconds = 0;
@@ -74,11 +78,11 @@ class NoteRoll : public PositionableAudioSource, public TrackRegion {
     bool selected = false;
     bool deleted = false;
     bool recording = false;
-    double currentSampleRate;
-    int64 currentPosition = 0;
-    atomic<bool> looping = false;
+//    double currentSampleRate;
+//    int64 currentPosition = 0;
+//    atomic<bool> looping = false;
 
-    int64 getPositionFromTime(double t) const;
+//    int64 getPositionFromTime(double t) const;
 
     CriticalSection mutex;
 
