@@ -30,6 +30,10 @@ double Project::measuresToSeconds(double measures) const { return timeSignature.
 
 double Project::secondsToMeasures(double seconds) const { return timeSignature.secondsToMeasures(seconds, tempo); }
 
+int Project::measureAt(double seconds) const {
+    return (int)secondsToMeasures(seconds);
+}
+
 Track *Project::addTrack() {
     auto *track = trackList.addTrack();
     mixer.addSource(track->getSource());

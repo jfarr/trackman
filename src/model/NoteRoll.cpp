@@ -19,9 +19,10 @@ NoteRoll::NoteRoll(Project &project, Track &track, const int initialStartPosInTi
 }
 
 double NoteRoll::getStartPosInSeconds() const {
-    auto startTimeInTicks = midiMessages.getStartTime();
-    auto firstNotePosInSeconds = project.ticksToSeconds(startTimeInTicks);
-    return max(project.ticksToSeconds(startPosInTicks), firstNotePosInSeconds);
+//    auto startTimeInTicks = midiMessages.getStartTime();
+//    auto firstNotePosInSeconds = project.ticksToSeconds(startTimeInTicks);
+//    return max(project.ticksToSeconds(startPosInTicks), firstNotePosInSeconds);
+    return project.ticksToSeconds(startPosInTicks);
 }
 
 double NoteRoll::getEndPosInSeconds() const { return project.ticksToSeconds(endPosInTicks); }
@@ -34,7 +35,14 @@ void NoteRoll::stopRecording() { recording = false; }
 
 MidiMessageSequence::MidiEventHolder *NoteRoll::addEvent(const MidiMessage &newMessage) {
     if (midiMessages.getNumEvents() == 0) {
-        startPosInTicks = newMessage.getTimeStamp();
+        auto ticks = newMessage.getTimeStamp();
+        auto secs = project.ticksToSeconds(ticks);
+        auto measure = project.measureAt(secs);
+        auto startSecs = project.measuresToSeconds((double)measure);
+        auto startTicks = project.secondsToTicks(startSecs);
+        DBG("ticks: " << ticks << " secs: " << secs << " measure: " << measure << " startSecs: " << startSecs
+                      << " startTicks: " << startTicks);
+        startPosInTicks = startTicks;
     }
     if (newMessage.isNoteOff()) {
         endPosInTicks = newMessage.getTimeStamp() + 1;

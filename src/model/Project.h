@@ -47,6 +47,7 @@ class Project {
     double ticksToSeconds(int ticks) const;
     double measuresToSeconds(double measures) const;
     double secondsToMeasures(double seconds) const;
+    int measureAt(double seconds) const;
 
     double getVerticalScale() const { return verticalScale; }
     double getHorizontalScale() const { return horizontalScale; }
