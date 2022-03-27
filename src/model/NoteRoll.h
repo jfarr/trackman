@@ -55,8 +55,6 @@ class NoteRoll : public TrackRegion {
     MidiMessageSequence midiMessages;
     int startPosInTicks = 0;
     int endPosInTicks = 0;
-    double startPosInSeconds = 0;
-    double endPosInSeconds = 0;
     bool selected = false;
     bool deleted = false;
     bool recording = false;
