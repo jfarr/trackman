@@ -168,14 +168,18 @@ void TrackListController::sampleMoved(Track &track, Sample &sample, int x, int y
     auto scale = project.getHorizontalScale();
     x = max(x, 0);
     double newPos = (double)x / scale;
-    Track *toTrack = trackListPanel.getTrackAtPos(x, y);
-    desktopController.moveSelectedSample(sample, track, toTrack, curPos, newPos);
+    if (newPos != curPos) {
+        Track *toTrack = trackListPanel.getTrackAtPos(x, y);
+        desktopController.moveSelectedSample(sample, track, toTrack, curPos, newPos);
+    }
 }
 
 void TrackListController::sampleResized(Sample &sample, int width) {
     auto curLen = sample.getLengthInSeconds();
     auto newLen = max(width, 2) / project.getHorizontalScale();
-    desktopController.resizeSample(sample, curLen, newLen);
+    if (newLen != curLen) {
+        desktopController.resizeSample(sample, curLen, newLen);
+    }
 }
 
 void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int screenY) {
