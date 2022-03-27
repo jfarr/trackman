@@ -41,7 +41,7 @@ class NoteRoll : public TrackRegion {
     MidiMessageSequence::MidiEventHolder *addEvent(const MidiMessage &newMessage);
     //    void processNextMidiBuffer(
     //        MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos);
-    void processNextMidiBuffer(MidiBuffer &buffer, double startTimeInTicks, double endTimeInTicks);
+    void processNextMidiBuffer(MidiBuffer &buffer, int startTimeInTicks, int endTimeInTicks);
 
     void eachMidiMessage(function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
     int getLowestNote() const;

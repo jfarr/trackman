@@ -139,9 +139,12 @@ int NoteRoll::getHighestNote() const { return midiutil::getHighestNote(midiMessa
 //    //    }
 //}
 
-void NoteRoll::processNextMidiBuffer(MidiBuffer &buffer, double startTimeInTicks, double endTimeInTicks) {
+void NoteRoll::processNextMidiBuffer(MidiBuffer &buffer, int startTimeInTicks, int endTimeInTicks) {
     DBG("start tick: " << startTimeInTicks << " end tick: " << endTimeInTicks);
-    auto relativeStartTick = startTimeInTicks - startPosInTicks;
+//    if (startTimeInTicks < startPosInTicks) {
+//        return;
+//    }
+    auto relativeStartTick = max(0, startTimeInTicks - startPosInTicks);
     auto relativeEndTick = endTimeInTicks - startPosInTicks;
     DBG("relativeStartTick: " << relativeStartTick << " relativeEndTick: " << relativeEndTick);
     auto startIndex = midiMessages.getNextIndexAtTime(relativeStartTick);

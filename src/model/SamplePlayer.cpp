@@ -45,7 +45,8 @@ void SamplePlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill)
     if (bufferToFill.numSamples > 0) {
         Timeline timeline = getCurrentTimeline();
         auto pos = looping ? currentPos % getTotalLength() : currentPos;
-        list<Sample *> samplesToPlay = timeline.getAt(getTimeAtPosition(pos));
+        auto t = getTimeAtPosition(pos);
+        list<Sample *> samplesToPlay = timeline.getAt(t, t);
         if (!samplesToPlay.empty()) {
             auto firstSample = samplesToPlay.front();
             if (!firstSample->isDeleted()) {

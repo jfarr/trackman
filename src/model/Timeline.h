@@ -18,16 +18,16 @@ template <class T, class P> class Timeline {
     void addRange(T startTime, T endTime, P data) {
         timeRanges.push_back(TimeRange(startTime, endTime, data));
     }
-    list<P> getAt(T t);
+    list<P> getAt(T t1, T t2);
 
   private:
     list<TimeRange<T, P>> timeRanges;
 };
 
-template <class T, class P> list<P> Timeline<T, P>::getAt(T t) {
+template <class T, class P> list<P> Timeline<T, P>::getAt(T t1, T t2) {
     list<P> found;
     for (auto range : timeRanges) {
-        if (range.contains(t)) {
+        if (range.contains(t1) || range.contains(t2)) {
             found.push_back(range.get());
         }
     }
