@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Short-Term
+- Measure position readout
 - Snap while moving note rolls
 - Undo change tempo / time signature
 - Stretch / loop note rolls
