@@ -71,6 +71,8 @@ class Project {
     void writeAudioFile(const File &file);
 
     void printEvents(const MidiMessageSequence &midiMessages) const;
+    void printEvents(const MidiBuffer &buffer) const;
+    void printEvent(const MidiMessage &event, double sampleRate) const;
 
   private:
     const float initialTempo = 120.0;

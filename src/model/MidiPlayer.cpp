@@ -41,10 +41,13 @@ void MidiPlayer::releaseResources() {
 
 void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     const ScopedLock lock(mutex);
+    DBG("MidiPlayer::getNextAudioBlock start: " << bufferToFill.startSample << " num: " << bufferToFill.numSamples);
     if (bufferToFill.numSamples > 0) {
         Timeline timeline = getCurrentTimeline();
-        auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
-        list<NoteRoll *> noteRollsToPlay = timeline.getAt(pos);
+        auto positionInSamples = looping ? currentPosition % getTotalLength() : currentPosition;
+        auto positionInTicks = track.getProject().secondsToTicks(positionInSamples / currentSampleRate);
+        DBG("position: " << positionInSamples << " (" << positionInTicks << " ticks)");
+        list<NoteRoll *> noteRollsToPlay = timeline.getAt(positionInTicks);
         if (track.isRecording()) {
             noteRollsToPlay.remove(&track.getMidiRecorder()->getNoteRoll());
         }
@@ -115,7 +118,12 @@ void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
 }
 
 void MidiPlayer::processMidiBuffer(
-    MidiBuffer &buffer, list<NoteRoll *> noteRollsToPlay, int64 startTimeInSamples, int64 endTimeInSamples) {}
+    MidiBuffer &buffer, list<NoteRoll *> noteRollsToPlay, int64 startTimeInSamples, int64 endTimeInSamples) {
+
+    for (auto *noteRoll : noteRollsToPlay) {
+        noteRoll->processNextMidiBuffer(buffer, startTimeInSamples, endTimeInSamples);
+    }
+}
 
 //==============================================================================
 void MidiPlayer::setNextReadPosition(int64 newPosition) {
@@ -132,7 +140,7 @@ int64 MidiPlayer::getNextReadPosition() const { return looping ? currentPosition
 
 int64 MidiPlayer::getTotalLength() const {
     const ScopedLock lock(mutex);
-    double maxLengthInTicks = 0;
+    int maxLengthInTicks = 0;
     for (auto &noteRoll : noteRolls) {
         if (!noteRoll->isDeleted()) {
             maxLengthInTicks = max(maxLengthInTicks, noteRoll->getEndPosInTicks());
