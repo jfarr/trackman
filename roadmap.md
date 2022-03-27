@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Short-Term
+- Snap while moving note rolls
 - Undo change tempo / time signature
 - Stretch / loop note rolls
 - Edit note rolls
@@ -33,7 +34,6 @@
 - Metronome
 - Export midi
 - Time-shift samples (without pitch-shifting)
-- Snap to nearest quanta
 - Click+drag to select samples
 - Drop multiple files
   - Default one track
