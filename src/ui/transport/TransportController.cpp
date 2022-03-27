@@ -10,4 +10,8 @@ void TransportController::selectionChanged(Track *track) {
     transportPanel.selectionChanged(track);
 }
 
+void TransportController::update() {
+    transportPanel.update();
+}
+
 } // namespace trackman

@@ -356,6 +356,7 @@ void DesktopController::openProject() {
             previousTempo = project.getTempo();
             MessageManager::callAsync([this]() {
                 trackListController.update();
+                transportController.update();
                 mixerController.update();
                 instrumentsController.update();
             });
