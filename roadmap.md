@@ -1,17 +1,13 @@
 # Roadmap
 
 ## Short-Term
-- Use undo manager
-  - Undo record midi
-- Delete note rolls
-- Undo delete note roll
-- Fix bugs
-  - Popping at begin/end of midi tracks
+- Delete/undelete note rolls
 - Undo change tempo / time signature
 - Stretch / loop note rolls
 - Edit note rolls
 - Undo edit note roll
-- Use lambdas / ListenerList
+- Fix bugs
+  - Popping at begin/end of midi tracks
 - Amplitude ASDR envelopes
 - Stretch sample loops instead of resampling
 - Stereo panner
@@ -26,6 +22,8 @@
 
 ## Long Term
 
+- Use lambdas / ListenerList
+- Use undo manager
 - Select MIDI devices
 - CPU meter (AudioDeviceManager::getCpuUsage)
 - Midi CV
