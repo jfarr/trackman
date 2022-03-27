@@ -46,7 +46,6 @@ void NoteCanvas::paint(Graphics &g) {
                 auto noteOn = eventHandle.message;
                 auto noteOff = eventHandle.noteOffObject->message;
                 Rectangle<float> r = getNoteRect(noteOn, noteOff, lowNote, noteHeight, x, h, scale);
-                r.setY(r.getY());
                 g.setColour(Colours::steelblue.brighter(0.2));
                 g.fillRect(r);
             }
