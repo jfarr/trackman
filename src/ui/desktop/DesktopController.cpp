@@ -16,22 +16,9 @@ DesktopController::DesktopController(MainWindow &mainWindow, AudioDeviceManager 
     updateTitleBar();
 }
 
-void DesktopController::playbackStarted() {
-//    auto selectedTrack = project.getTrackList().getSelectedTrack();
-//    if (selectedTrack != nullptr) {
-//        selectedTrack->dumpMidi();
-//    }
-}
+void DesktopController::playbackStarted() {}
 
-void DesktopController::playbackStopped() {
-//    project.getTrackList().eachTrack([](Track &track) {
-//        track.getSynth().allNotesOff(0, true);
-//    });
-//    auto selectedTrack = project.getTrackList().getSelectedTrack();
-//    if (selectedTrack != nullptr) {
-//        selectedTrack->dumpMidi();
-//    }
-}
+void DesktopController::playbackStopped() {}
 
 void DesktopController::loopingChanged(bool shouldLoop) { project.getMixer().setLooping(shouldLoop); }
 
@@ -67,10 +54,7 @@ void DesktopController::recordingPaused() {
 bool DesktopController::canRecord() { return project.getTrackList().canRecord(); }
 
 void DesktopController::midiMessageReceived(const MidiMessage &message, double time) {
-    //    auto selected = project.getTrackList().getSelectedTrack();
-    //    if (selected != nullptr) {
     trackListController.getTrackListPanel().resized();
-    //    }
 }
 
 void DesktopController::createKeyboard() {
