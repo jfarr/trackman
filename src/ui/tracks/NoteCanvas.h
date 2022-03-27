@@ -31,6 +31,10 @@ class NoteCanvas : public Component, public Timer {
     }
 
   private:
+    friend class TrackLaneControl;
+
+    static const int borderSize = 5;
+
     Project &project;
     Track &track;
     NoteRoll &noteRoll;

@@ -3,6 +3,8 @@
 ## Short-Term
 - Select note rolls
 - Delete note rolls
+- Fix bugs
+  - Popping at begin/end of midi tracks
 - Use undo manager
   - Undo record midi
   - Undo change tempo / time signature
