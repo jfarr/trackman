@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Short-Term
-- Delete/undelete note rolls
+- Move note rolls
 - Undo change tempo / time signature
 - Stretch / loop note rolls
 - Edit note rolls

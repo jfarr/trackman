@@ -62,9 +62,13 @@ void DesktopController::recordingPaused() {
 
 bool DesktopController::canRecord() { return project.getTrackList().canRecord(); }
 
-
 void DesktopController::deleteNoteRoll(Track &track, NoteRoll *noteRoll) {
     trackListController.deleteNoteRoll(track, noteRoll);
+    MessageManager::callAsync([this]() { instrumentsController.update(); });
+}
+
+void DesktopController::undeleteNoteRoll(Track &track, NoteRoll *noteRoll) {
+    trackListController.undeleteNoteRoll(track, noteRoll);
     MessageManager::callAsync([this]() { instrumentsController.update(); });
 }
 
@@ -202,23 +206,31 @@ void DesktopController::resizeSample(Sample &sample, double prevLen, double newL
 }
 
 void DesktopController::deleteSelected() {
-    Track *track = project.getTrackList().getSelectedTrack();
-    Sample *sample = project.getTrackList().getSelectedSample();
-    if (track != nullptr && sample != nullptr) {
-        Command *command = new DeleteSampleCommand(*this, *track, *sample);
-        commandList.pushCommand(command);
-        dirty = true;
-        updateTitleBar();
-        desktopComponent.menuItemsChanged();
-        return;
-    }
-    Track *selected = project.getTrackList().getSelectedTrack();
-    if (selected != nullptr) {
+    Track *selectedTrack = project.getTrackList().getSelectedTrack();
+    if (selectedTrack != nullptr) {
+        Sample *sample = project.getTrackList().getSelectedSample();
+        if (sample != nullptr) {
+            Command *command = new DeleteSampleCommand(*this, *selectedTrack, *sample);
+            commandList.pushCommand(command);
+            dirty = true;
+            updateTitleBar();
+            desktopComponent.menuItemsChanged();
+            return;
+        }
+        NoteRoll *noteRoll = project.getTrackList().getSelectedNoteRoll();
+        if (noteRoll != nullptr) {
+            Command *command = new DeleteNoteRollCommand(*this, *selectedTrack, *noteRoll);
+            commandList.pushCommand(command);
+            dirty = true;
+            updateTitleBar();
+            desktopComponent.menuItemsChanged();
+            return;
+        }
         NativeMessageBox::showOkCancelBox(MessageBoxIconType::QuestionIcon, "",
-            "Delete Track " + String(selected->getTrackNumber()) + "?", &desktopComponent,
-            ModalCallbackFunction::create([this, selected](int result) {
+            "Delete Track " + String(selectedTrack->getTrackNumber()) + "?", &desktopComponent,
+            ModalCallbackFunction::create([this, selectedTrack](int result) {
                 if (result > 0) {
-                    Command *command = new DeleteTrackCommand(*this, selected);
+                    Command *command = new DeleteTrackCommand(*this, selectedTrack);
                     commandList.pushCommand(command);
                     dirty = true;
                     updateTitleBar();
@@ -226,14 +238,15 @@ void DesktopController::deleteSelected() {
                 }
             }));
     }
-    desktopComponent.menuItemsChanged();
 }
 
 String DesktopController::getSelectionType() const {
     if (project.getSelectedSample() != nullptr) {
-        return "sample";
+        return "Sample";
+    } else if (project.getSelectedNoteRoll() != nullptr) {
+            return "Note Roll";
     } else if (project.getSelectedTrack() != nullptr) {
-        return "track";
+        return "Track";
     }
     return "";
 }

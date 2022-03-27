@@ -53,9 +53,15 @@ void TrackLaneController::updateMidi() {
 
 void TrackLaneController::repaint() { trackLaneControl.repaint(); }
 
-void TrackLaneController::mouseDown(const MouseEvent &event) { notifySelectionChanged(); }
+void TrackLaneController::mouseDown(const MouseEvent &event) {
+    notifySelectionChanged();
+    repaint();
+}
 
-void TrackLaneController::selectionChanged(Track *track) { notifySelectionChanged(); }
+void TrackLaneController::selectionChanged(Track *track) {
+    notifySelectionChanged();
+    repaint();
+}
 
 void TrackLaneController::addListener(TrackListListener *listener) {
     if (!listContains(trackListListeners, listener)) {

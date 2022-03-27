@@ -31,10 +31,20 @@ void Track::setLevelGain(float newLevel) {
 
 void Track::setSelected(bool newSelected) { selected = newSelected; }
 
-Sample *Track::getSelected() const {
+Sample *Track::getSelectedSample() const {
     for (shared_ptr<Sample> const &sample : samples) {
         if (!sample->isDeleted() && sample->isSelected()) {
             return sample.get();
+        }
+    }
+    return nullptr;
+}
+
+NoteRoll *Track::getSelectedNoteRoll() const {
+    for (const shared_ptr<NoteRoll> &p : noteRolls) {
+        auto &noteRoll = *p;
+        if (!noteRoll.isDeleted() && noteRoll.isSelected()) {
+            return &noteRoll;
         }
     }
     return nullptr;
@@ -45,12 +55,12 @@ void Track::setDeleted(bool newDeleted) {
     selected = false;
 }
 
-void Track::selectNoteRoll(NoteRoll *newSelected) {
-    eachNoteRoll([&newSelected](NoteRoll &noteRoll) { noteRoll.setSelected(&noteRoll == newSelected); });
-}
-
 void Track::selectSample(Sample *newSelected) {
     eachSample([&newSelected](Sample &sample) { sample.setSelected(&sample == newSelected); });
+}
+
+void Track::selectNoteRoll(NoteRoll *newSelected) {
+    eachNoteRoll([&newSelected](NoteRoll &noteRoll) { noteRoll.setSelected(&noteRoll == newSelected); });
 }
 
 void Track::moveSampleTo(Sample &sample, Track &toTrack) {
@@ -169,16 +179,6 @@ void Track::removeNoteRoll(const NoteRoll *noteRoll) {
             break;
         }
     }
-}
-
-NoteRoll *Track::getSelectedNoteRoll() const {
-    for (const shared_ptr<NoteRoll> &p : noteRolls) {
-        auto &noteRoll = *p;
-        if (!noteRoll.isDeleted() && noteRoll.isSelected()) {
-            return &noteRoll;
-        }
-    }
-    return nullptr;
 }
 
 void Track::eachNoteRoll(function<void(NoteRoll &noteRoll)> f) {

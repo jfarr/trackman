@@ -91,7 +91,19 @@ void TrackList::selectSample(Sample *selected) {
 Sample *TrackList::getSelectedSample() const {
     for (unique_ptr<Track> const &track : tracks) {
         if (!track->isDeleted() && track->isSelected()) {
-            Sample *selected = track->getSelected();
+            Sample *selected = track->getSelectedSample();
+            if (selected != nullptr) {
+                return selected;
+            }
+        }
+    }
+    return nullptr;
+}
+
+NoteRoll *TrackList::getSelectedNoteRoll() const {
+    for (unique_ptr<Track> const &track : tracks) {
+        if (!track->isDeleted() && track->isSelected()) {
+            NoteRoll *selected = track->getSelectedNoteRoll();
             if (selected != nullptr) {
                 return selected;
             }

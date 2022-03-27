@@ -25,4 +25,19 @@ class AddNoteRollCommand : public Command {
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AddNoteRollCommand)
 };
 
+class DeleteNoteRollCommand : public Command {
+  public:
+    DeleteNoteRollCommand(DesktopController &controller, Track &track, NoteRoll &noteRoll)
+        : Command("Delete NoteRoll"), controller(controller), track(track), noteRoll(noteRoll) {}
+    ~DeleteNoteRollCommand() override = default;
+
+    void execute() override { controller.deleteNoteRoll(track, &noteRoll); }
+    void undo() override { controller.undeleteNoteRoll(track, &noteRoll); }
+
+  private:
+    DesktopController &controller;
+    Track &track;
+    NoteRoll &noteRoll;
+};
+
 } // namespace trackman

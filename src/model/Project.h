@@ -35,6 +35,7 @@ class Project {
 
     Track *getSelectedTrack() const { return trackList.getSelectedTrack(); }
     Sample *getSelectedSample() const { return trackList.getSelectedSample(); }
+    NoteRoll *getSelectedNoteRoll() const { return trackList.getSelectedNoteRoll(); }
 
     Sample *addSample(
         Track &track, const File &file, double startPos, double endPos, AudioFormatManager &formatManager);

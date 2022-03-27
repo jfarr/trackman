@@ -23,6 +23,7 @@ class TrackList {
     int size() const { return (int)tracks.size(); }
     Track *getSelectedTrack() const;
     Sample *getSelectedSample() const;
+    NoteRoll *getSelectedNoteRoll() const;
     double getTotalLengthInSeconds() const;
     int64 getTotalLengthInSamples() const;
 
@@ -33,10 +34,9 @@ class TrackList {
     void setSolo(Track &track, bool newSoloed);
     void setSelected(Track *selected);
     void selectSample(Sample *selected);
+    void selectNoteRoll(NoteRoll *selected);
 
     bool canRecord() const { return getSelectedTrack() != nullptr && getSelectedTrack()->canRecord(); }
-
-    void selectNoteRoll(NoteRoll *selected);
 
   private:
     friend Project;

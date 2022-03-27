@@ -40,6 +40,7 @@ class TrackListController : public TrackListListener, public SampleListener {
 
     void noteRollSelected(Track &track, NoteRoll &noteRoll);
     void deleteNoteRoll(Track &track, NoteRoll *noteRoll);
+    void undeleteNoteRoll(Track &track, NoteRoll *noteRoll);
 
     //==============================================================================
     // TrackListListener
