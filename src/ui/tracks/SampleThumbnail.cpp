@@ -51,7 +51,7 @@ void SampleThumbnail::createControls() {
 
 void SampleThumbnail::paint(Graphics &g) {
     auto area = getLocalBounds();
-    auto margin = 3;
+    auto margin = 2;
 
     auto bgcolor = track.isSelected() && sample.isSelected() ? Colours::lightgrey : Colours::dimgrey;
     g.fillAll(bgcolor);
