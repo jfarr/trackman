@@ -1,23 +1,20 @@
 # Roadmap
 
 ## Short-Term
-- Draw note roll borders
 - Select note rolls
 - Delete note rolls
-- Stretch / loop note rolls
-- Edit note rolls
 - Use undo manager
   - Undo record midi
   - Undo change tempo / time signature
   - Undo delete note roll
   - Undo edit note roll
+- Stretch / loop note rolls
+- Edit note rolls
 - Use lambdas / ListenerList
-- Instruments
-- Oscillator
+- Amplitude ASDR envelopes
 - Stretch sample loops instead of resampling
 - Stereo panner
-- Hold zoom buttons zooms exponentially faster
-- Play instruments when not recording (preview)
+- Hold zoom buttons zooms exponentially faster (possibly zoom slider instead)
 - Song start / end position
 - Loop start / end position
 - Sample info popup
