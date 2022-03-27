@@ -143,10 +143,8 @@ void TrackListController::selectionChanged(Track *track) {
     }
     selectingSample = false;
     selectingNoteRoll = false;
-    if (track != selected) {
-        selected = track;
-        desktopController.selectionChanged(track);
-    }
+    selected = track;
+    desktopController.selectionChanged(track);
 }
 
 void TrackListController::noteRollSelected(Track &track, NoteRoll &noteRoll) {
@@ -159,6 +157,13 @@ void TrackListController::noteRollSelected(Track &track, NoteRoll &noteRoll) {
 void TrackListController::deleteNoteRoll(Track &track, NoteRoll *noteRoll) {
     if (noteRoll != nullptr) {
         noteRoll->setDeleted(true);
+        updateLane(track);
+    }
+}
+
+void TrackListController::undeleteNoteRoll(Track &track, NoteRoll *noteRoll) {
+    if (noteRoll != nullptr) {
+        noteRoll->setDeleted(false);
         updateLane(track);
     }
 }

@@ -45,10 +45,10 @@ class Track {
     void setName(const String &newName) { name = newName; }
     void setLevelGain(float newLevel);
     void setSelected(bool newSelected);
-    Sample *getSelected() const;
     void setDeleted(bool newDeleted);
 
     void selectSample(Sample *newSelected);
+    Sample *getSelectedSample() const;
     void moveSampleTo(Sample &sample, Track &toTrack);
     void eachSample(function<void(Sample &sample)> f);
     bool hasSamples() const { return !samples.empty(); }

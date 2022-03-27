@@ -62,9 +62,13 @@ void DesktopController::recordingPaused() {
 
 bool DesktopController::canRecord() { return project.getTrackList().canRecord(); }
 
-
 void DesktopController::deleteNoteRoll(Track &track, NoteRoll *noteRoll) {
     trackListController.deleteNoteRoll(track, noteRoll);
+    MessageManager::callAsync([this]() { instrumentsController.update(); });
+}
+
+void DesktopController::undeleteNoteRoll(Track &track, NoteRoll *noteRoll) {
+    trackListController.undeleteNoteRoll(track, noteRoll);
     MessageManager::callAsync([this]() { instrumentsController.update(); });
 }
 
@@ -231,9 +235,11 @@ void DesktopController::deleteSelected() {
 
 String DesktopController::getSelectionType() const {
     if (project.getSelectedSample() != nullptr) {
-        return "sample";
+        return "Sample";
+    } else if (project.getSelectedNoteRoll() != nullptr) {
+            return "Note Roll";
     } else if (project.getSelectedTrack() != nullptr) {
-        return "track";
+        return "Track";
     }
     return "";
 }
