@@ -17,9 +17,7 @@ class Project {
     ~Project() = default;
 
     AudioDeviceManager &getDeviceManager() { return deviceManager; }
-//    MidiHandler &getMidiHandler() { return midiHandler; }
     InstrumentPlayer &getInstrumentPlayer() { return instrumentPlayer; }
-//    Synthesiser *getSynth();
     Synthesiser *getLiveSynth();
 
     const float getTempo() const { return tempo; };

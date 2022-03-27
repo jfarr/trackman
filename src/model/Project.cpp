@@ -11,11 +11,6 @@ namespace trackman {
 Project::Project(AudioDeviceManager &deviceManager)
     : deviceManager(deviceManager), instrumentPlayer(*this), trackList(*this, deviceManager),
       mixer(trackList, deviceManager), transport(mixer) {}
-//
-// Synthesiser *Project::getSynth() {
-//    auto selected = getSelectedTrack();
-//    return selected == nullptr ? nullptr : &selected->getSynth();
-//}
 
 Synthesiser *Project::getLiveSynth() {
     auto selected = getSelectedTrack();
@@ -130,23 +125,13 @@ void Project::printEvents(const MidiMessageSequence &midiMessages) const {
     auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
     for (auto i = midiMessages.begin(); i != midiMessages.end(); i++) {
         printEvent((*i)->message, sampleRate);
-//        auto m = (*i)->message;
-//        auto t = ticksToSeconds(m.getTimeStamp());
-//        DBG(String("note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
-//            << t << " (" << m.getTimeStamp() << " ticks, " << (t * sampleRate)
-//            << " samples): noteNumber=" << m.getNoteNumber() << " velocity=" << m.getVelocity());
     }
 }
 
 void Project::printEvents(const MidiBuffer &buffer) const {
     auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
     for (auto i = buffer.begin(); i != buffer.end(); i++) {
-//        auto m = (*i).getMessage();
         printEvent((*i).getMessage(), sampleRate);
-//        auto t = ticksToSeconds(m.getTimeStamp());
-//        DBG(String("note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
-//            << t << " (" << m.getTimeStamp() << " ticks, " << (t * sampleRate)
-//            << " samples): noteNumber=" << m.getNoteNumber() << " velocity=" << m.getVelocity());
     }
 }
 
