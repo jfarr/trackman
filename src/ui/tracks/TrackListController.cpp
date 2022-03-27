@@ -85,7 +85,6 @@ void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &to
         if (fromTrack.getNumSamples() == 1) {
             project.getMixer().removeSource(fromTrack.getSource());
         }
-        //        auto &deviceManager = desktopController.getMainWindow().getMainAudioComponent().getDeviceManager();
         fromTrack.moveSampleToTrack(sample, toTrack);
         selectionChanged(&toTrack);
         fromTrack.selectSample(nullptr);
