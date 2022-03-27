@@ -18,11 +18,7 @@ NoteRoll::NoteRoll(Project &project, Track &track, const int initialStartPosInTi
     endPosInTicks = initialEndPosInTicks;
 }
 
-double NoteRoll::getStartPosInSeconds() const {
-    auto startTimeInTicks = midiMessages.getStartTime();
-    auto firstNotePosInSeconds = project.ticksToSeconds(startTimeInTicks);
-    return max(project.ticksToSeconds(startPosInTicks), firstNotePosInSeconds);
-}
+double NoteRoll::getStartPosInSeconds() const { return project.ticksToSeconds(startPosInTicks); }
 
 double NoteRoll::getEndPosInSeconds() const { return project.ticksToSeconds(endPosInTicks); }
 
@@ -34,10 +30,10 @@ void NoteRoll::stopRecording() { recording = false; }
 
 MidiMessageSequence::MidiEventHolder *NoteRoll::addEvent(const MidiMessage &newMessage) {
     if (midiMessages.getNumEvents() == 0) {
-        startPosInTicks = newMessage.getTimeStamp();
+        startPosInTicks = project.measureStartTick(newMessage.getTimeStamp());
     }
     if (newMessage.isNoteOff()) {
-        endPosInTicks = newMessage.getTimeStamp() + 1;
+        endPosInTicks = project.measureEndTick(newMessage.getTimeStamp());
     }
     auto event = midiMessages.addEvent(newMessage.withTimeStamp(newMessage.getTimeStamp() - startPosInTicks));
     midiMessages.sort();

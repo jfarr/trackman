@@ -30,6 +30,24 @@ double Project::measuresToSeconds(double measures) const { return timeSignature.
 
 double Project::secondsToMeasures(double seconds) const { return timeSignature.secondsToMeasures(seconds, tempo); }
 
+int Project::measureAt(double seconds) const {
+    return (int)secondsToMeasures(seconds);
+}
+
+int Project::measureStartTick(int currentTick) const {
+    auto secs = ticksToSeconds(currentTick);
+    auto measure = measureAt(secs);
+    auto startSecs = measuresToSeconds((double)measure);
+    return secondsToTicks(startSecs);
+}
+
+int Project::measureEndTick(int currentTick) const {
+    auto secs = ticksToSeconds(currentTick);
+    auto measure = measureAt(secs) + 1;
+    auto endSecs = measuresToSeconds((double)measure);
+    return secondsToTicks(endSecs) + 1;
+}
+
 Track *Project::addTrack() {
     auto *track = trackList.addTrack();
     mixer.addSource(track->getSource());

@@ -13,7 +13,7 @@ void NoteCanvas::resize() {
     auto area = getBounds();
     auto pos = project.getTransport().getTransportSource().getCurrentPosition();
     auto length = project.ticksToSeconds(track.getCurrentMidiEndTimeInTicks(noteRoll, pos));
-    auto w = noteRoll.empty() ? 0 : length * project.getHorizontalScale() + 2 * borderSize + 1;
+    auto w = noteRoll.empty() ? 0 : length * project.getHorizontalScale() + 1;
     setBounds(area.withWidth(w));
     repaint();
 }
@@ -36,8 +36,8 @@ void NoteCanvas::paint(Graphics &g) {
     int lowNote = noteRoll.getLowestNote();
     int highNote = noteRoll.getHighestNote();
     double noteSpan = max(24, highNote - lowNote) + 1;
-    double x = borderSize;
-    double h = getHeight() - 2 * borderSize;
+    double x = 0;
+    double h = getHeight();
     double noteHeight = h / noteSpan;
     auto pos = project.getTransport().getTransportSource().getCurrentPosition();
     track.eachCurrentMidiMessage(noteRoll, pos,
@@ -46,7 +46,6 @@ void NoteCanvas::paint(Graphics &g) {
                 auto noteOn = eventHandle.message;
                 auto noteOff = eventHandle.noteOffObject->message;
                 Rectangle<float> r = getNoteRect(noteOn, noteOff, lowNote, noteHeight, x, h, scale);
-                r.setY(r.getY() + borderSize);
                 g.setColour(Colours::steelblue.brighter(0.2));
                 g.fillRect(r);
             }

@@ -67,9 +67,9 @@ class Track {
     Synthesiser &getLiveSynth() { return liveSynth; }
     NoteRoll *getSelectedNoteRoll() const;
     void eachNoteRoll(function<void(NoteRoll &noteRoll)> f);
-    void eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos,
+    void eachCurrentMidiMessage(const NoteRoll &noteRoll, double pos,
         function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
-    double getCurrentMidiEndTimeInTicks(const NoteRoll &noteRoll, const double pos) const;
+    int getCurrentMidiEndTimeInTicks(const NoteRoll &noteRoll, double pos) const;
     Instrument &getInstrument() { return instrument; }
 
   private:
