@@ -72,13 +72,10 @@ class SampleThumbnail : public Component {
     // TODO: make thumbnailCache a singleton
     AudioThumbnailCache thumbnailCache;
     AudioThumbnail thumbnail;
-    unique_ptr<Image> image;
-    unique_ptr<ScaledImage> scaledImage;
+
     list<SampleListener *> sampleListeners;
 
     void createControls();
-    void paintWithoutOverlay(Graphics &g);
-    void paintOverlay(Graphics &g);
 
     void notifySampleSelected(Track &track, Sample &selected);
     void notifyMouseDragged(SampleThumbnail &thumbnail, int x, int y);

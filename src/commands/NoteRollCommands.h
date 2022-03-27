@@ -28,7 +28,7 @@ class AddNoteRollCommand : public Command {
 class DeleteNoteRollCommand : public Command {
   public:
     DeleteNoteRollCommand(DesktopController &controller, Track &track, NoteRoll &noteRoll)
-        : Command("Delete NoteRoll"), controller(controller), track(track), noteRoll(noteRoll) {}
+        : Command("Delete Note Roll"), controller(controller), track(track), noteRoll(noteRoll) {}
     ~DeleteNoteRollCommand() override = default;
 
     void execute() override { controller.deleteNoteRoll(track, &noteRoll); }
@@ -38,6 +38,39 @@ class DeleteNoteRollCommand : public Command {
     DesktopController &controller;
     Track &track;
     NoteRoll &noteRoll;
+};
+
+class MoveNoteRollCommand : public Command {
+  public:
+    MoveNoteRollCommand(DesktopController &controller, NoteRoll &noteRoll, Track &fromTrack, Track *toTrack,
+        double prevPos, double newPos)
+        : Command("Move Note Roll"), controller(controller), noteRoll(noteRoll), fromTrack(fromTrack), toTrack(toTrack),
+          prevPos(prevPos), newPos(newPos) {}
+    ~MoveNoteRollCommand() override = default;
+
+    void execute() override {
+        if (toTrack == nullptr) {
+            toTrack = controller.addTrack();
+            newTrack = true;
+        }
+        controller.moveNoteRoll(noteRoll, fromTrack, *toTrack, newPos);
+    }
+
+    void undo() override {
+        controller.moveNoteRoll(noteRoll, *toTrack, fromTrack, prevPos);
+        if (newTrack) {
+            controller.deleteTrack(toTrack, true);
+        }
+    }
+
+  private:
+    DesktopController &controller;
+    NoteRoll &noteRoll;
+    Track &fromTrack;
+    Track *toTrack;
+    bool newTrack = false;
+    double prevPos;
+    double newPos;
 };
 
 } // namespace trackman

@@ -32,6 +32,7 @@ class NoteRoll : public TrackRegion {
     bool isDeleted() const { return deleted; }
     bool isRecording() const { return recording; }
 
+    void setPosition(double newPosInSeconds);
     void setSelected(bool newSelected) { selected = newSelected; }
     void setDeleted(bool newDeleted) { deleted = newDeleted; }
 

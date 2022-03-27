@@ -1,13 +1,15 @@
 # Roadmap
 
 ## Short-Term
-- Move note rolls
+- Snap while moving note rolls
 - Undo change tempo / time signature
 - Stretch / loop note rolls
+- Factor out base classes for samples / note rolls
 - Edit note rolls
 - Undo edit note roll
 - Fix bugs
   - Popping at begin/end of midi tracks
+  - Missing note-offs when moving note rolls while playing
 - Amplitude ASDR envelopes
 - Stretch sample loops instead of resampling
 - Stereo panner
@@ -33,7 +35,6 @@
 - Metronome
 - Export midi
 - Time-shift samples (without pitch-shifting)
-- Snap to nearest quanta
 - Click+drag to select samples
 - Drop multiple files
   - Default one track

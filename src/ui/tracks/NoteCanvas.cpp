@@ -4,7 +4,8 @@
 namespace trackman {
 
 NoteCanvas::NoteCanvas(Project &project, Track &track, NoteRoll &noteRoll)
-    : project(project), track(track), noteRoll(noteRoll) {
+    : project(project), track(track), noteRoll(noteRoll), dragImage(Image::ARGB, 1, 1, true),
+      scaledDragImage(dragImage) {
     setSize(200, 81);
     startTimer(20);
 }
@@ -67,15 +68,32 @@ Rectangle<float> NoteCanvas::getNoteRect(const MidiMessage &noteOn, const MidiMe
 void NoteCanvas::mouseDown(const MouseEvent &event) {
     Component::mouseDown(event);
     notifySelected(track, noteRoll);
+    if (!dragging) {
+        dragging = true;
+        xPos = getPosition().getX();
+    }
 }
 
-void NoteCanvas::mouseUp(const MouseEvent &event) {}
+void NoteCanvas::mouseUp(const MouseEvent &event) { dragging = false; }
 
-void NoteCanvas::mouseDrag(const MouseEvent &event) {}
+void NoteCanvas::mouseDrag(const MouseEvent &event) {
+    auto *container = DragAndDropContainer::findParentDragContainerFor(this);
+    if (container != nullptr) {
+        container->startDragging("clip", this, scaledDragImage);
+    }
+    auto d = event.getDistanceFromDragStartX();
+    notifyMouseDragged(*this, xPos + d, event.getScreenY());
+}
 
-void NoteCanvas::notifySelected(Track &track, NoteRoll &selected) {
+void NoteCanvas::notifySelected(Track &track, NoteRoll &selected) const {
     if (onSelected != nullptr) {
         onSelected(track, selected);
+    }
+}
+
+void NoteCanvas::notifyMouseDragged(NoteCanvas &canvas, int x, int screenY) const {
+    if (onMouseDragged != nullptr) {
+        onMouseDragged(canvas, x, screenY);
     }
 }
 

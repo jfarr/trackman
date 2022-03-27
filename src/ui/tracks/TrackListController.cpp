@@ -11,6 +11,9 @@ TrackListController::TrackListController(DesktopController &desktopController)
       trackListPanel(
           desktopController, trackListViewport, desktopController.getProject().getTransport().getTransportSource()) {
 
+    trackListPanel.onMoveNoteRoll = [this](Track &track, NoteRoll &noteRoll, int x, int y) {
+        noteRollMoved(track, noteRoll, x, y);
+    };
     trackListPanel.addListener((SampleListener *)this);
     trackListPanel.addListener((TrackListListener *)this);
     trackListPanel.resized();
@@ -82,8 +85,7 @@ void TrackListController::moveSample(Sample &sample, Track &fromTrack, Track &to
         if (fromTrack.getNumSamples() == 1) {
             project.getMixer().removeSource(fromTrack.getSource());
         }
-        auto &deviceManager = desktopController.getMainWindow().getMainAudioComponent().getDeviceManager();
-        fromTrack.moveSampleTo(sample, toTrack);
+        fromTrack.moveSampleToTrack(sample, toTrack);
         selectionChanged(&toTrack);
         fromTrack.selectSample(nullptr);
         toTrack.selectSample(&sample);
@@ -166,6 +168,63 @@ void TrackListController::undeleteNoteRoll(Track &track, NoteRoll *noteRoll) {
         noteRoll->setDeleted(false);
         updateLane(track);
     }
+}
+
+void TrackListController::noteRollDragged(NoteCanvas &canvas, int x, int screenY) {
+    x = max(x, 0);
+    canvas.setTopLeftPosition(canvas.getPosition().withX(x));
+    auto y = screenY - trackListPanel.getScreenPosition().getY();
+    auto track = trackListPanel.getTrackAtPos(x, y);
+    if (track != currentDragTrack) {
+        currentDragTrack = track;
+        TrackLaneController *lane;
+        if (track == nullptr) {
+            if (newDragLane == nullptr) {
+                track = new Track(project, desktopController.getDeviceManager());
+                newDragLane =
+                    new TrackLaneController(project, *track, *this, project.getTransport().getTransportSource(),
+                        desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
+                trackListPanel.addLane(&newDragLane->getTrackLaneControl());
+                trackListPanel.addAndMakeVisible(&newDragLane->getTrackLaneControl());
+                trackListPanel.resize();
+            }
+            lane = newDragLane;
+        } else {
+            lane = getLane(*track);
+        }
+        if (lane != nullptr) {
+            getLane(canvas.getTrack())->getTrackLaneControl().removeChildComponent(&canvas);
+            lane->getTrackLaneControl().addAndMakeVisible(canvas);
+        }
+    }
+}
+
+void TrackListController::noteRollMoved(Track &track, NoteRoll &noteRoll, int x, int y) {
+    removeDragLane();
+    auto curPos = noteRoll.getStartPosInSeconds();
+    auto scale = project.getHorizontalScale();
+    x = max(x, 0);
+    double newPos = (double)x / scale;
+    if (newPos != curPos) {
+        Track *toTrack = trackListPanel.getTrackAtPos(x, y);
+        desktopController.moveSelectedNoteRoll(noteRoll, track, toTrack, curPos, newPos);
+    }
+}
+
+void TrackListController::moveNoteRoll(NoteRoll &noteRoll, Track &fromTrack, Track &toTrack, double pos) {
+    if (&fromTrack != &toTrack) {
+        project.getMixer().removeSource(toTrack.getSource());
+        if (fromTrack.getNumSamples() == 1) {
+            project.getMixer().removeSource(fromTrack.getSource());
+        }
+        fromTrack.moveNoteRollToTrack(noteRoll, toTrack);
+        selectionChanged(&toTrack);
+        fromTrack.selectSample(nullptr);
+        toTrack.selectNoteRoll(&noteRoll);
+        project.getMixer().addSource(toTrack.getSource());
+    }
+    noteRoll.setPosition(pos);
+    trackListPanel.resize();
 }
 
 void TrackListController::sampleSelected(Track &track, Sample &sample) {

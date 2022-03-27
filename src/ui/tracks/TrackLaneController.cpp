@@ -47,6 +47,9 @@ void TrackLaneController::updateMidi() {
         noteCanvases.back()->onSelected = [this](Track &track, NoteRoll &noteRoll) {
             trackListController.noteRollSelected(track, noteRoll);
         };
+        noteCanvases.back()->onMouseDragged = [this](NoteCanvas &canvas, int x, int screenY) {
+            trackListController.noteRollDragged(canvas, x, screenY);
+        };
         trackLaneControl.addNoteCanvas(noteCanvases.back().get());
     });
 }

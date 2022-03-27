@@ -72,6 +72,23 @@ void DesktopController::undeleteNoteRoll(Track &track, NoteRoll *noteRoll) {
     MessageManager::callAsync([this]() { instrumentsController.update(); });
 }
 
+void DesktopController::moveSelectedNoteRoll(
+    NoteRoll &noteRoll, Track &fromTrack, Track *toTrack, double prevPos, double newPos) {
+    Command *command = new MoveNoteRollCommand(*this, noteRoll, fromTrack, toTrack, prevPos, newPos);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
+    desktopComponent.menuItemsChanged();
+}
+
+void DesktopController::moveNoteRoll(NoteRoll &noteRoll, Track &fromTrack, Track &toTrack, double pos) {
+    trackListController.moveNoteRoll(noteRoll, fromTrack, toTrack, pos);
+    MessageManager::callAsync([this]() {
+        mixerController.update();
+        instrumentsController.update();
+    });
+}
+
 void DesktopController::midiMessageReceived(const MidiMessage &message, double time) {
     trackListController.getTrackListPanel().resized();
 }
@@ -244,7 +261,7 @@ String DesktopController::getSelectionType() const {
     if (project.getSelectedSample() != nullptr) {
         return "Sample";
     } else if (project.getSelectedNoteRoll() != nullptr) {
-            return "Note Roll";
+        return "Note Roll";
     } else if (project.getSelectedTrack() != nullptr) {
         return "Track";
     }

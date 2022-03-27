@@ -35,13 +35,9 @@ class DropBox : public Component {
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DropBox)
 };
 
-class TrackListPanel : public Component,
-                       public DragAndDropContainer,
-                       public DragAndDropTarget,
-                       public Timer {
+class TrackListPanel : public Component, public DragAndDropContainer, public DragAndDropTarget, public Timer {
   public:
-    TrackListPanel(
-        DesktopController &desktopController, Viewport &viewport, AudioTransportSource &transport);
+    TrackListPanel(DesktopController &desktopController, Viewport &viewport, AudioTransportSource &transport);
     ~TrackListPanel() override;
 
     Track *getTrackAtPos(int x, int y);
@@ -66,6 +62,8 @@ class TrackListPanel : public Component,
     void removeListener(SampleListener *listener);
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
+
+    function<void(Track &, NoteRoll &, int, int)> onMoveNoteRoll = nullptr;
 
     //==============================================================================
     // DragAndDropTarget
@@ -104,6 +102,7 @@ class TrackListPanel : public Component,
     int getPanelHeight() const;
     int getTrackLaneHeight() const;
 
+    void notifyNoteRollDropped(NoteCanvas *canvas, int x, int y) const;
     void notifySampleDropped(SampleThumbnail *thumbnail, int x, int y);
     void notifySampleResized(SampleThumbnail *thumbnail, int width);
     void notifyDragEnded();

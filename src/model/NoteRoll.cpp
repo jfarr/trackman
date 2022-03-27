@@ -24,6 +24,13 @@ double NoteRoll::getEndPosInSeconds() const { return project.ticksToSeconds(endP
 
 double NoteRoll::getLengthInSeconds() const { return getEndPosInSeconds() - getStartPosInSeconds(); }
 
+void NoteRoll::setPosition(double newPosInSeconds) {
+    auto newPosInTicks = project.secondsToTicks(newPosInSeconds);
+    auto delta = newPosInTicks - startPosInTicks;
+    startPosInTicks = newPosInTicks;
+    endPosInTicks += delta;
+}
+
 void NoteRoll::startRecording() { recording = true; }
 
 void NoteRoll::stopRecording() { recording = false; }
