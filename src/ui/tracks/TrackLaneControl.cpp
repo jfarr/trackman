@@ -27,8 +27,10 @@ void TrackLaneControl::addNoteCanvas(NoteCanvas *canvas) { canvases.push_back(ca
 
 void TrackLaneControl::update() {
     removeAllChildren();
-    trackLabel.setText("Track " + String(track.getTrackNumber()), dontSendNotification);
-    addAndMakeVisible(trackLabel);
+    if (track.getTrackNumber() > 0) {
+        trackLabel.setText("Track " + String(track.getTrackNumber()), dontSendNotification);
+        addAndMakeVisible(trackLabel);
+    }
     for (SampleThumbnail *thumbnail : thumbnails) {
         addAndMakeVisible(thumbnail);
     }

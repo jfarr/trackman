@@ -168,6 +168,35 @@ void TrackListController::undeleteNoteRoll(Track &track, NoteRoll *noteRoll) {
     }
 }
 
+void TrackListController::noteRollDragged(NoteCanvas &canvas, int x, int screenY) {
+    x = max(x, 0);
+    canvas.setTopLeftPosition(canvas.getPosition().withX(x));
+    auto y = screenY - trackListPanel.getScreenPosition().getY();
+    auto track = trackListPanel.getTrackAtPos(x, y);
+    if (track != currentDragTrack) {
+        currentDragTrack = track;
+        TrackLaneController *lane;
+        if (track == nullptr) {
+            if (newDragLane == nullptr) {
+                track = new Track(project, desktopController.getDeviceManager());
+                newDragLane =
+                    new TrackLaneController(project, *track, *this, project.getTransport().getTransportSource(),
+                        desktopController.getMainWindow().getMainAudioComponent().getFormatManager());
+                trackListPanel.addLane(&newDragLane->getTrackLaneControl());
+                trackListPanel.addAndMakeVisible(&newDragLane->getTrackLaneControl());
+                trackListPanel.resize();
+            }
+            lane = newDragLane;
+        } else {
+            lane = getLane(*track);
+        }
+        if (lane != nullptr) {
+            getLane(canvas.getTrack())->getTrackLaneControl().removeChildComponent(&canvas);
+            lane->getTrackLaneControl().addAndMakeVisible(canvas);
+        }
+    }
+}
+
 void TrackListController::sampleSelected(Track &track, Sample &sample) {
     selectingSample = true;
     project.getTrackList().selectSample(&sample);
