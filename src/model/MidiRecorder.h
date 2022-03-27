@@ -2,6 +2,8 @@
 
 #include <JuceHeader.h>
 
+#include "NoteRoll.h"
+
 using namespace std;
 using namespace juce;
 
@@ -9,22 +11,25 @@ namespace trackman {
 
 class Project;
 
-class MidiRecorder : public MidiKeyboardState::Listener, MidiInputCallback {
+class MidiRecorder : public MidiKeyboardState::Listener, public MidiInputCallback {
   public:
-    MidiRecorder(Project &project, AudioDeviceManager &deviceManager);
+    MidiRecorder(NoteRoll &noteRoll, MidiKeyboardState &keyboardState, AudioDeviceManager &deviceManager);
     ~MidiRecorder() override;
 
     MidiKeyboardState &getKeyboardState() { return keyboardState; }
-    const MidiMessageSequence &getMidiMessages() const { return midiMessages; }
-    bool isRecording() const;
 
-    void setMidiMessages(const MidiMessageSequence &newMessages) { midiMessages = newMessages; }
     void startRecording();
     void stopRecording();
+    bool isRecording() const;
+    NoteRoll &getNoteRoll() { return noteRoll; }
+
+    MidiMessageSequence getMidiMessages(double posInSeconds) const;
 
     void setMidiInput(int index);
 
-    static void printEvents(const MidiMessageSequence &midiMessages);
+    void printEvents() const;
+
+    function<void(const MidiMessage &message, double time)> onMidiMessage = nullptr;
 
     //==============================================================================
     // MidiKeyboardState::Listener
@@ -49,10 +54,9 @@ class MidiRecorder : public MidiKeyboardState::Listener, MidiInputCallback {
     void postMessage(const MidiMessage &message, double time);
     void handleMessage(MidiMessage message, double time);
 
-    Project &project;
+    NoteRoll &noteRoll;
     AudioDeviceManager &deviceManager;
-    MidiKeyboardState keyboardState;
-    MidiMessageSequence midiMessages;
+    MidiKeyboardState &keyboardState;
     bool recording = false;
     bool looping = false;
     bool isAddingFromMidiInput = false;

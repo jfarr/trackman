@@ -3,7 +3,7 @@
 #include "DesktopComponent.h"
 #include "FileDragDropTarget.h"
 #include "TrackScaleListener.h"
-#include "audio/MidiRecorder.h"
+#include "model/MidiRecorder.h"
 #include "commands/CommandList.h"
 #include "model/Project.h"
 #include "model/TrackList.h"
@@ -37,7 +37,7 @@ class DesktopController : public AudioSource,
 
     MixerController &getMixerController() { return mixerController; }
     Mixer &getMixer() { return project.getMixer(); }
-    MidiRecorder &getMidiRecorder() { return midiRecorder; }
+    void midiMessageReceived(const MidiMessage &message, double time);
 
     TransportController &getTransportController() { return transportController; }
     TrackListController &getTrackListController() { return trackListController; }
@@ -51,8 +51,12 @@ class DesktopController : public AudioSource,
 
     void resize();
 
+    void playbackStarted();
+    void playbackStopped();
     void loopingChanged(bool shouldLoop);
-    void recordClicked();
+    void recordingStarted();
+    void recordingStopped();
+    void recordingPaused();
     bool canRecord();
 
     void createKeyboard();
@@ -63,7 +67,6 @@ class DesktopController : public AudioSource,
     void resizeSample(Sample &sample, double prevLen, double newLen);
     void deleteSelected();
 
-    void recordingStopped();
     void selectionChanged(Track *track);
     String getSelectionType() const;
 
@@ -131,8 +134,6 @@ class DesktopController : public AudioSource,
     InstrumentsController instrumentsController;
 
     DesktopComponent desktopComponent;
-
-    MidiRecorder midiRecorder;
 
     unique_ptr<FileChooser> chooser;
     File projectFile;

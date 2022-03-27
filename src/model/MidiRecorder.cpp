@@ -3,8 +3,8 @@
 
 namespace trackman {
 
-MidiRecorder::MidiRecorder(Project &project, AudioDeviceManager &deviceManager)
-    : project(project), deviceManager(deviceManager) {
+MidiRecorder::MidiRecorder(NoteRoll &noteRoll, MidiKeyboardState &keyboardState, AudioDeviceManager &deviceManager)
+    : noteRoll(noteRoll), keyboardState(keyboardState), deviceManager(deviceManager) {
 
     auto midiInputs = MidiInput::getAvailableDevices();
     StringArray midiInputNames;
@@ -32,11 +32,13 @@ void MidiRecorder::startRecording() {
     const ScopedLock lock(mutex);
     keyboardState.reset();
     recording = true;
+    noteRoll.startRecording();
 }
 
 void MidiRecorder::stopRecording() {
     const ScopedLock lock(mutex);
     recording = false;
+    noteRoll.stopRecording();
 }
 
 bool MidiRecorder::isRecording() const {
@@ -70,9 +72,27 @@ void MidiRecorder::postMessage(const MidiMessage &message, double time) {
 void MidiRecorder::handleMessage(MidiMessage message, double time) {
     auto t = Time::getMillisecondCounterHiRes();
     auto offset = (time - t) * .001;
+    auto &project = noteRoll.getProject();
     auto timestamp = project.getTransport().getTransportSource().getCurrentPosition();
     message.setTimeStamp(project.secondsToTicks(timestamp + offset));
-    midiMessages.addEvent(message);
+    noteRoll.addEvent(message);
+    if (onMidiMessage != nullptr) {
+        onMidiMessage(message, time);
+    }
+}
+
+MidiMessageSequence MidiRecorder::getMidiMessages(double posInSeconds) const {
+    MidiMessageSequence messages;
+    noteRoll.eachMidiMessage([this, posInSeconds, &messages](const MidiMessageSequence::MidiEventHolder &eventHandle) {
+        messages.addEvent(eventHandle.message);
+        if (eventHandle.message.isNoteOn() && eventHandle.noteOffObject == nullptr) {
+            auto noteOff = MidiMessage::noteOff(eventHandle.message.getChannel(), eventHandle.message.getNoteNumber());
+            noteOff.setTimeStamp(noteRoll.getProject().secondsToTicks(posInSeconds - noteRoll.getStartPosInSeconds()));
+            messages.addEvent(noteOff);
+        }
+    });
+    messages.updateMatchedPairs();
+    return messages;
 }
 
 void MidiRecorder::setMidiInput(int index) {
@@ -93,12 +113,6 @@ void MidiRecorder::handleIncomingMidiMessage(MidiInput *source, const MidiMessag
     postMessage(message, t);
 }
 
-void MidiRecorder::printEvents(const MidiMessageSequence &midiMessages) {
-    for (auto i = midiMessages.begin(); i != midiMessages.end(); i++) {
-        auto m = (*i)->message;
-        DBG(String("note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
-            << m.getTimeStamp() << ": noteNumber=" << m.getNoteNumber() << " velocity=" << m.getVelocity());
-    }
-}
+void MidiRecorder::printEvents() const { noteRoll.printEvents(); }
 
 } // namespace trackman

@@ -55,6 +55,7 @@ class TrackListPanel : public Component,
         resize();
     }
     void update();
+    void updatePositionOverlay();
 
     void fileDragEnter(const StringArray &files, int x, int y);
     void fileDragMove(const StringArray &files, int x, int y);

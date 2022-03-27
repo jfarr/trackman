@@ -13,8 +13,8 @@ class Project;
 
 class TrackList {
   public:
-    TrackList(Project &project, AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder)
-        : project(project), deviceManager(deviceManager), midiRecorder(midiRecorder) {}
+    TrackList(Project &project, AudioDeviceManager &deviceManager)
+        : project(project), deviceManager(deviceManager) {}
     ~TrackList() = default;
 
     void undeleteTrack(Track *track);
@@ -35,7 +35,9 @@ class TrackList {
     void selectSample(Sample *selected);
 
     bool canRecord() const { return getSelectedTrack() != nullptr && getSelectedTrack()->canRecord(); }
-    void writeAudioFile(const File &file, AudioSource &source, double sampleRate, int bitsPerSample) const;
+    MidiRecorder *getMidiRecorder();
+
+//    void writeAudioFile(const File &file, AudioSource &source, double sampleRate, int bitsPerSample) const;
 
   private:
     friend Project;
@@ -47,7 +49,6 @@ class TrackList {
 
     Project &project;
     AudioDeviceManager &deviceManager;
-    MidiRecorder &midiRecorder;
     list<unique_ptr<Track>> tracks;
 
     void renumber();

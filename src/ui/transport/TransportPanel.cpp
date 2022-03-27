@@ -16,8 +16,12 @@ TransportPanel::~TransportPanel() noexcept { denominatorSelect.setLookAndFeel(nu
 
 void TransportPanel::createControls() {
 
+    transportControl.onPlaybackStarted = [this] { desktopController.playbackStarted(); };
+    transportControl.onPlaybackStopped = [this] { desktopController.playbackStopped(); };
     transportControl.onLoopingChanged = [this](bool shouldLoop) { desktopController.loopingChanged(shouldLoop); };
-    transportControl.onRecordClicked = [this] { desktopController.recordClicked(); };
+    transportControl.onRecordingStarted = [this] { desktopController.recordingStarted(); };
+    transportControl.onRecordingStopped = [this] { desktopController.recordingStopped(); };
+    transportControl.onRecordingPaused = [this] { desktopController.recordingPaused(); };
 
     tempoLabel.setText("Tempo", dontSendNotification);
     tempoLabel.setJustificationType(Justification::centredRight);

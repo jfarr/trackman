@@ -54,6 +54,8 @@ class DesktopComponent : public Component,
     DesktopComponent(DesktopController &desktopController);
     ~DesktopComponent() override;
 
+    TimeMeter & getTimeMeter() { return timeMeter; }
+
     void visibleAreaChanged(const Rectangle<int> &newVisibleArea);
 
     void createChildWindow(const String &name, Component *component);

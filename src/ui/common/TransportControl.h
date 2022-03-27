@@ -1,6 +1,6 @@
 #pragma once
 
-#include "audio/MidiRecorder.h"
+#include "model/MidiRecorder.h"
 #include "model/TrackList.h"
 #include "ui/desktop/TrackListListener.h"
 #include <JuceHeader.h>
@@ -19,8 +19,12 @@ class TransportControl : public Component, public ChangeListener, public Timer, 
 
     void setEnabled(bool enabled);
 
+    function<void()> onPlaybackStarted = nullptr;
+    function<void()> onPlaybackStopped = nullptr;
     function<void(bool)> onLoopingChanged = nullptr;
-    function<void()> onRecordClicked = nullptr;
+    function<void()> onRecordingStarted = nullptr;
+    function<void()> onRecordingStopped = nullptr;
+    function<void()> onRecordingPaused = nullptr;
 
     //==============================================================================
     // Component
@@ -48,9 +52,12 @@ class TransportControl : public Component, public ChangeListener, public Timer, 
     void createControls();
     void changeState(TransportState newState);
     String getStateLabel();
+    bool isRecordEnabled() const { return recordEnabledFn != nullptr; }
 
     void notifyLoopingChanged(bool shouldLoop) const;
-    void notifyRecordClicked() const;
+    void notifyRecordingStarted() const;
+    void notifyRecordingStopped() const;
+    void notifyRecordingPaused() const;
 
     //==============================================================================
 

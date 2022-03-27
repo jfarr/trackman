@@ -3,7 +3,7 @@
 namespace trackman {
 
 Track *TrackList::addTrack() {
-    auto *track = new Track(project, midiRecorder, deviceManager);
+    auto *track = new Track(project, deviceManager);
     tracks.push_back(unique_ptr<Track>(track));
     renumber();
     return track;
@@ -124,17 +124,22 @@ bool TrackList::isAnySoloed() const {
     return false;
 }
 
-void TrackList::writeAudioFile(const File &file, AudioSource &source, double sampleRate, int bitsPerSample) const {
-    file.deleteFile();
-    if (auto fileStream = unique_ptr<FileOutputStream>(file.createOutputStream())) {
-        WavAudioFormat wavFormat;
-        if (auto writer = wavFormat.createWriterFor(fileStream.get(), sampleRate, 2, bitsPerSample, {}, 0)) {
-            fileStream.release();
-            writer->writeFromAudioSource(source, (int)(getTotalLengthInSamples()));
-            writer->flush();
-            delete writer;
-        }
-    }
+MidiRecorder *TrackList::getMidiRecorder() {
+    auto selected = getSelectedTrack();
+    return selected == nullptr ? nullptr : selected->getMidiRecorder();
 }
+
+//void TrackList::writeAudioFile(const File &file, AudioSource &source, double sampleRate, int bitsPerSample) const {
+//    file.deleteFile();
+//    if (auto fileStream = unique_ptr<FileOutputStream>(file.createOutputStream())) {
+//        WavAudioFormat wavFormat;
+//        if (auto writer = wavFormat.createWriterFor(fileStream.get(), sampleRate, 2, bitsPerSample, {}, 0)) {
+//            fileStream.release();
+//            writer->writeFromAudioSource(source, (int)(getTotalLengthInSamples()));
+//            writer->flush();
+//            delete writer;
+//        }
+//    }
+//}
 
 } // namespace trackman

@@ -2,19 +2,22 @@
 
 #include <JuceHeader.h>
 
+#include "audio/SynthAudioSource.h"
+#include "NoteRoll.h"
 #include "TimeRange.h"
 #include "Timeline.h"
-#include "model/Sample.h"
 
-using namespace std;
 using namespace juce;
 
 namespace trackman {
 
-class SamplePlayer : public PositionableAudioSource {
+class Project;
+class Track;
+
+class MidiPlayer : public PositionableAudioSource {
   public:
-    SamplePlayer(list<shared_ptr<Sample>> &samples);
-    ~SamplePlayer() override;
+    MidiPlayer(Track &track);
+    ~MidiPlayer() override = default;
 
     //==============================================================================
     // AudioSource
@@ -31,18 +34,18 @@ class SamplePlayer : public PositionableAudioSource {
     void setLooping(bool shouldLoop) override;
 
   private:
-    list<shared_ptr<Sample>> &samples;
+    Track &track;
+    list<shared_ptr<NoteRoll>> &noteRolls;
     double currentSampleRate = 0;
-    int64 currentPos = 0;
-    bool looping = false;
-    AudioBuffer<float> tempBuffer;
-
-    Timeline<Sample *> getCurrentTimeline();
-    double getTimeAtPosition(int64 position) { return position / currentSampleRate; }
+    int64 currentPosition = 0;
+    atomic<bool> looping = false;
 
     CriticalSection mutex;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplePlayer)
+    Timeline<int, NoteRoll *> getCurrentTimeline();
+    void processMidiBuffer(MidiBuffer &buffer, const list<NoteRoll *> &noteRollsToPlay, int64 startTimeInSamples, int64 endTimeInSamples);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiPlayer)
 };
 
 } // namespace trackman

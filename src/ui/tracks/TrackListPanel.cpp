@@ -34,8 +34,8 @@ Track *TrackListPanel::getTrackAtPos(int x, int y) {
 }
 
 void TrackListPanel::fileDragEnter(const StringArray &files, int x, int y) {
-    auto *reader = desktopController.getMainWindow().getMainAudioComponent().getFormatManager().createReaderFor(
-        File(files[0]));
+    auto *reader =
+        desktopController.getMainWindow().getMainAudioComponent().getFormatManager().createReaderFor(File(files[0]));
     auto newSource = make_unique<AudioFormatReaderSource>(reader, true);
     auto length = (double)newSource->getTotalLength() / reader->sampleRate;
     auto width = (int)(length * desktopController.getProject().getHorizontalScale());
@@ -107,8 +107,8 @@ void TrackListPanel::resize() {
 }
 
 void TrackListPanel::timerCallback() {
-    if (!dragging) {
-        resize();
+    if (!dragging && desktopController.getProject().isRecording()) {
+        updatePositionOverlay();
     }
 }
 
@@ -121,22 +121,19 @@ int TrackListPanel::getPanelWidth() const {
 }
 
 int TrackListPanel::getPanelHeight() const {
-    int trackHeight = !lanes.empty() ? (int)((double)(lanes.size() + 1) * (double)lanes.back()->getPreferredHeight() *
-                                             desktopController.getProject().getVerticalScale())
-                                     : 0;
+    int trackHeight = lanes.empty() ? 0
+                                    : (int)((double)(lanes.size() + 1) * (double)lanes.back()->getPreferredHeight() *
+                                            desktopController.getProject().getVerticalScale());
     return max(trackHeight, viewport.getHeight());
 }
 
 int TrackListPanel::getTrackLaneHeight() const {
-    int trackHeight = !lanes.empty() ? (int)((double)lanes.size() * (double)lanes.back()->getPreferredHeight() *
-                                             desktopController.getProject().getVerticalScale())
-                                     : 0;
-    return trackHeight;
+    return lanes.empty() ? 0
+                         : (int)((double)lanes.size() * (double)lanes.back()->getPreferredHeight() *
+                                 desktopController.getProject().getVerticalScale());
 }
 
-void TrackListPanel::paint(Graphics &g) {
-    g.fillAll(getLookAndFeel().findColour(ResizableWindow::backgroundColourId));
-}
+void TrackListPanel::paint(Graphics &g) { g.fillAll(getLookAndFeel().findColour(ResizableWindow::backgroundColourId)); }
 
 void TrackListPanel::resized() {
     auto area = getLocalBounds();
@@ -145,7 +142,14 @@ void TrackListPanel::resized() {
     overlay.setBounds(area.withWidth(width));
     for (auto &lane : lanes) {
         lane->setBounds(area.removeFromTop(laneHeight));
+        lane->resized();
     }
+}
+
+void TrackListPanel::updatePositionOverlay() {
+    auto area = getLocalBounds();
+    auto width = max(transport.getLengthInSeconds() * desktopController.getProject().getHorizontalScale(), 2.0);
+    overlay.setBounds(area.withWidth(width));
 }
 
 void TrackListPanel::mouseDown(const MouseEvent &event) {

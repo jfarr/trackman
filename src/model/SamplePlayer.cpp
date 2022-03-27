@@ -10,18 +10,20 @@ SamplePlayer::~SamplePlayer() {
     }
 }
 
-Timeline<Sample *> SamplePlayer::getCurrentTimeline() {
-    Timeline<Sample *> timeline;
+Timeline<double, Sample *> SamplePlayer::getCurrentTimeline() {
+    Timeline<double, Sample *> timeline;
     for (shared_ptr<Sample> &sample : samples) {
-        timeline.addRange(sample->getStartPos(), sample->getEndPos(), sample.get());
+        timeline.addRange(sample->getStartPosInSeconds(), sample->getEndPosInSeconds(), sample.get());
     }
     return timeline;
 }
 
 //==============================================================================
 void SamplePlayer::prepareToPlay(int blockSize, double sampleRate) {
-    const ScopedLock lock(mutex);
-    currentSampleRate = sampleRate;
+    {
+        const ScopedLock lock(mutex);
+        currentSampleRate = sampleRate;
+    }
     tempBuffer.setSize(2, sampleRate);
 
     for (auto &sample : samples) {
@@ -43,7 +45,8 @@ void SamplePlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill)
     if (bufferToFill.numSamples > 0) {
         Timeline timeline = getCurrentTimeline();
         auto pos = looping ? currentPos % getTotalLength() : currentPos;
-        list<Sample *> samplesToPlay = timeline.getAt(getTimeAtPosition(pos));
+        auto t = getTimeAtPosition(pos);
+        list<Sample *> samplesToPlay = timeline.getAt(t, t);
         if (!samplesToPlay.empty()) {
             auto firstSample = samplesToPlay.front();
             if (!firstSample->isDeleted()) {
@@ -95,9 +98,9 @@ int64 SamplePlayer::getNextReadPosition() const {
 int64 SamplePlayer::getTotalLength() const {
     const ScopedLock lock(mutex);
     int64 totalLength = 0;
-    for (shared_ptr<Sample> &sample : samples) {
+    for (auto &sample : samples) {
         if (!sample->isDeleted()) {
-            totalLength = max(totalLength, sample->getLengthInSamples());
+            totalLength = max(totalLength, sample->getTotalLengthInSamples());
         }
     }
     return totalLength;

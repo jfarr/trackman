@@ -1,5 +1,6 @@
 #pragma once
 
+#include "InstrumentPlayer.h"
 #include "Mixer.h"
 #include "TimeSignature.h"
 #include "TrackList.h"
@@ -12,8 +13,12 @@ namespace trackman {
 
 class Project {
   public:
-    Project(AudioDeviceManager &deviceManager, MidiRecorder &midiRecorder);
+    Project(AudioDeviceManager &deviceManager);
     ~Project() = default;
+
+    AudioDeviceManager &getDeviceManager() { return deviceManager; }
+    InstrumentPlayer &getInstrumentPlayer() { return instrumentPlayer; }
+    Synthesiser *getLiveSynth();
 
     const float getTempo() const { return tempo; };
     void setTempo(const float newTempo) { tempo = newTempo; }
@@ -24,15 +29,18 @@ class Project {
     Track *addTrack();
     void deleteTrack(Track *track);
 
-    Sample *addSample(
-        Track &track, const File &file, double startPos, double endPos, AudioFormatManager &formatManager);
-
     TrackList &getTrackList() { return trackList; }
     Mixer &getMixer() { return mixer; }
     Transport &getTransport() { return transport; }
 
     Track *getSelectedTrack() const { return trackList.getSelectedTrack(); }
     Sample *getSelectedSample() const { return trackList.getSelectedSample(); }
+
+    Sample *addSample(
+        Track &track, const File &file, double startPos, double endPos, AudioFormatManager &formatManager);
+
+    bool isRecording() const;
+    MidiKeyboardState &getKeyboardState() { return keyboardState; }
 
     int secondsToTicks(double seconds) const;
     double ticksToSeconds(int ticks) const;
@@ -59,6 +67,10 @@ class Project {
 
     void writeAudioFile(const File &file);
 
+    void printEvents(const MidiMessageSequence &midiMessages) const;
+    void printEvents(const MidiBuffer &buffer) const;
+    void printEvent(const MidiMessage &event, double sampleRate) const;
+
   private:
     const float initialTempo = 120.0;
     const double initialVerticalScale = 1;
@@ -66,6 +78,8 @@ class Project {
     const double scaleIncrement = 5;
 
     AudioDeviceManager &deviceManager;
+    MidiKeyboardState keyboardState;
+    InstrumentPlayer instrumentPlayer;
     TrackList trackList;
     Mixer mixer;
     Transport transport;
@@ -73,6 +87,10 @@ class Project {
     float tempo = initialTempo;
     double verticalScale = initialVerticalScale;
     double horizontalScale = initialHorizontalScale;
+
+    NoteRoll *addNoteRoll(Track &track, int startPos, int endPos, string encodedMidi);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Project)
 };
 
 } // namespace trackman

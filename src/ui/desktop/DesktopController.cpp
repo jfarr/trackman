@@ -10,30 +10,55 @@ namespace trackman {
 
 DesktopController::DesktopController(MainWindow &mainWindow, AudioDeviceManager &deviceManager)
     : mainWindow(mainWindow), deviceManager(deviceManager), applicationName(mainWindow.getName()),
-      desktopComponent(*this), project(deviceManager, midiRecorder), transportController(*this), mixerController(*this),
-      trackListController(*this), instrumentsController(*this), midiRecorder(project, deviceManager),
-      previousTempo(project.getTempo()) {
+      desktopComponent(*this), project(deviceManager), transportController(*this), mixerController(*this),
+      trackListController(*this), instrumentsController(*this), previousTempo(project.getTempo()) {
 
     updateTitleBar();
 }
 
+void DesktopController::playbackStarted() {}
+
+void DesktopController::playbackStopped() {}
+
 void DesktopController::loopingChanged(bool shouldLoop) { project.getMixer().setLooping(shouldLoop); }
 
-void DesktopController::recordClicked() {
-    auto selected = project.getTrackList().getSelectedTrack();
-    if (selected != nullptr) {
-        if (selected->isRecording()) {
-            selected->stopRecording();
-        } else {
-            selected->startRecording();
+void DesktopController::recordingStarted() {
+    auto selectedTrack = project.getTrackList().getSelectedTrack();
+    if (selectedTrack != nullptr) {
+        selectedTrack->startRecording();
+        auto *midiRecorder = selectedTrack->getMidiRecorder();
+        if (midiRecorder != nullptr) {
+            midiRecorder->onMidiMessage = [this](const MidiMessage &message, double time) {
+                midiMessageReceived(message, time);
+            };
         }
+        MessageManager::callAsync([this]() { trackListController.update(); });
+    }
+}
+
+void DesktopController::recordingStopped() {
+    auto selectedTrack = project.getTrackList().getSelectedTrack();
+    if (selectedTrack != nullptr) {
+        selectedTrack->stopRecording();
+        MessageManager::callAsync([this]() { trackListController.update(); });
+    }
+}
+
+void DesktopController::recordingPaused() {
+    auto selectedTrack = project.getTrackList().getSelectedTrack();
+    if (selectedTrack != nullptr) {
+        selectedTrack->pauseRecording();
     }
 }
 
 bool DesktopController::canRecord() { return project.getTrackList().canRecord(); }
 
+void DesktopController::midiMessageReceived(const MidiMessage &message, double time) {
+    trackListController.getTrackListPanel().resized();
+}
+
 void DesktopController::createKeyboard() {
-    auto keyboard = new KeyboardControl(midiRecorder.getKeyboardState());
+    auto keyboard = new KeyboardControl(project.getKeyboardState());
     desktopComponent.createChildWindow("MIDI Keyboard", keyboard);
 }
 
@@ -75,7 +100,10 @@ void DesktopController::masterMuteToggled() {
 void DesktopController::tempoChanged(float newTempo) {
     previousTempo = newTempo;
     project.setTempo(newTempo);
-    MessageManager::callAsync([this]() { desktopComponent.repaint(); });
+    MessageManager::callAsync([this]() {
+        trackListController.update();
+        desktopComponent.repaint();
+    });
 }
 
 void DesktopController::numeratorChanged(int newNumerator) {
@@ -328,6 +356,7 @@ void DesktopController::openProject() {
             previousTempo = project.getTempo();
             MessageManager::callAsync([this]() {
                 trackListController.update();
+                transportController.update();
                 mixerController.update();
                 instrumentsController.update();
             });
@@ -353,25 +382,15 @@ void DesktopController::exportProject() {
 }
 
 void DesktopController::updateTitleBar() {
-    mainWindow.setName(
-        (projectFile != File{} ? projectFile.getFileNameWithoutExtension() + (dirty ? " [modified]" : "")
-                                     : "[untitled]") +
-        " - " + applicationName);
-}
-
-void DesktopController::recordingStopped() {
-    auto selected = project.getTrackList().getSelectedTrack();
-    if (selected != nullptr) {
-        selected->stopRecording();
-        MessageManager::callAsync([this]() { trackListController.update(); });
-    }
+    mainWindow.setName((projectFile != File{} ? projectFile.getFileNameWithoutExtension() + (dirty ? " [modified]" : "")
+                                              : "[untitled]") +
+                       " - " + applicationName);
 }
 
 void DesktopController::selectionChanged(Track *track) {
     project.getTrackList().setSelected(track);
     MessageManager::callAsync([this, track]() {
         transportController.selectionChanged(track);
-        //        mixerController.getMixerPanel().getTransportControl().selectionChanged(track);
         trackListController.repaint();
         mixerController.repaint();
         instrumentsController.repaint();
