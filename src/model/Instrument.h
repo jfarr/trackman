@@ -17,15 +17,8 @@ class Instrument {
     Instrument(Track &track);
     ~Instrument() = default;
 
-    //    Synthesiser &getSynth() { return synth; }
-
-    void renderNextLiveBlock(
+    void renderNextBlock(
         AudioBuffer<float> &outputAudio, const MidiBuffer &inputMidi, int startSample, int numSamples);
-    void renderNextPlaybackBlock(
-        AudioBuffer<float> &outputAudio, const MidiBuffer &inputMidi, int startSample, int numSamples);
-    //    void renderNextPlaybackBlock(AudioBuffer<float> &outputAudio, list<NoteRoll *> noteRollsToPlay, int
-    //    startSample,
-    //        int numSamples, const int64 currentPos);
 
   private:
     const int polyphony = 4;

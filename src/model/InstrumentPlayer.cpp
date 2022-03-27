@@ -9,7 +9,6 @@ InstrumentPlayer::InstrumentPlayer(Project &project)
 }
 
 void InstrumentPlayer::midiMessageReceived(const MidiMessage &message, const double time) {
-    DBG("midi " << (message.isNoteOn() ? "on" : "off") << " at " << time << " note: " << message.getNoteNumber());
     MidiMessage newMessage = message;
     newMessage.setTimeStamp (juce::Time::getMillisecondCounterHiRes() * 0.001);
     midiCollector.addMessageToQueue(newMessage);
@@ -26,9 +25,6 @@ void InstrumentPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToF
 
     juce::MidiBuffer incomingMidi;
     midiCollector.removeNextBlockOfMessages(incomingMidi, bufferToFill.numSamples);
-
-//    project.getKeyboardState().processNextMidiBuffer(
-//        incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
 
     auto *synth = project.getLiveSynth();
     if (synth != nullptr) {

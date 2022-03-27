@@ -34,7 +34,7 @@ void Instrument::initSynth(Synthesiser &synth) {
 //    renderNextBlock(outputAudio, buffer, startSample, numSamples);
 //}
 
-void Instrument::renderNextPlaybackBlock(
+void Instrument::renderNextBlock(
     AudioBuffer<float> &outputAudio, const MidiBuffer &inputMidi, int startSample, int numSamples) {
     playbackSynth.renderNextBlock(outputAudio, inputMidi, startSample, numSamples);
 }

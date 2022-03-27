@@ -53,7 +53,6 @@ void MidiHandler::postMessage(const MidiMessage &message, double time) {
 void MidiHandler::handleMessage(MidiMessage message, double time) {
     auto t = Time::getMillisecondCounterHiRes();
     auto offset = (time - t) * .001;
-//    auto &project = noteRoll.getProject();
     auto &transport = project.getTransport().getTransportSource();
     double timestampInTicks = 0;
     if (transport.isPlaying()) {
@@ -61,26 +60,10 @@ void MidiHandler::handleMessage(MidiMessage message, double time) {
         timestampInTicks = project.secondsToTicks(pos + offset);
         message.setTimeStamp(timestampInTicks);
     }
-//    noteRoll.addEvent(message);
     if (onMidiMessage != nullptr) {
         onMidiMessage(message, timestampInTicks);
     }
 }
-
-//
-//MidiMessageSequence MidiHandler::getMidiMessages(double posInSeconds) const {
-//    MidiMessageSequence messages;
-//    noteRoll.eachMidiMessage([this, posInSeconds, &messages](const MidiMessageSequence::MidiEventHolder &eventHandle) {
-//        messages.addEvent(eventHandle.message);
-//        if (eventHandle.message.isNoteOn() && eventHandle.noteOffObject == nullptr) {
-//            auto noteOff = MidiMessage::noteOff(eventHandle.message.getChannel(), eventHandle.message.getNoteNumber());
-//            noteOff.setTimeStamp(noteRoll.getProject().secondsToTicks(posInSeconds - noteRoll.getStartPosInSeconds()));
-//            messages.addEvent(noteOff);
-//        }
-//    });
-//    messages.updateMatchedPairs();
-//    return messages;
-//}
 
 void MidiHandler::setMidiInput(int index) {
     auto list = MidiInput::getAvailableDevices();

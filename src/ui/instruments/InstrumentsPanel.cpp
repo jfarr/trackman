@@ -5,16 +5,9 @@ namespace trackman {
 InstrumentsPanel::InstrumentsPanel(Project &project)
     : project(project), instrumentPlayer(project.getInstrumentPlayer()) {
     setAudioChannels(0, 2);
-    //    project.getMidiHandler().onMidiMessage = [this](const MidiMessage &message, const double time) {
-    //        midiMessageReceived(message, time);
-    //    };
 }
 
 InstrumentsPanel::~InstrumentsPanel() { shutdownAudio(); }
-
-// void InstrumentsPanel::midiMessageReceived(const MidiMessage &message, const double time) {
-//     DBG("midi " << (message.isNoteOn() ? "on" : "off") << " at " << time);
-// }
 
 void InstrumentsPanel::update() {
     removeAllChildren();
@@ -54,9 +47,7 @@ void InstrumentsPanel::prepareToPlay(int blockSize, double sampleRate) {
     instrumentPlayer.prepareToPlay(blockSize, sampleRate);
 }
 
-void InstrumentsPanel::releaseResources() {
-    instrumentPlayer.releaseResources();
-}
+void InstrumentsPanel::releaseResources() { instrumentPlayer.releaseResources(); }
 
 void InstrumentsPanel::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     instrumentPlayer.getNextAudioBlock(bufferToFill);

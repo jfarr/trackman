@@ -14,13 +14,7 @@ class MidiHandler : public MidiKeyboardState::Listener, public MidiInputCallback
     MidiHandler(Project &project);
     ~MidiHandler() override;
 
-//    MidiKeyboardState &getKeyboardState() { return keyboardState; }
-
-//    MidiMessageSequence getMidiMessages(double posInSeconds) const;
-
     void setMidiInput(int index);
-
-//    void printEvents() const;
 
     function<void(const MidiMessage &message, const double timeInTicks)> onMidiMessage = nullptr;
 
@@ -48,9 +42,6 @@ class MidiHandler : public MidiKeyboardState::Listener, public MidiInputCallback
     void handleMessage(MidiMessage message, double time);
 
     Project &project;
-//    AudioDeviceManager &deviceManager;
-//    MidiKeyboardState &keyboardState;
-    MidiMessageCollector midiCollector;
     bool isAddingFromMidiInput = false;
     int lastInputIndex = 0;
 

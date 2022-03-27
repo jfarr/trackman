@@ -18,8 +18,6 @@ class InstrumentsPanel : public AudioAppComponent {
     void clear() { instruments.clear(); }
     void update();
 
-//    void midiMessageReceived(const MidiMessage &message, const double time);
-
     //==============================================================================
     // Component
     void paint(Graphics &g) override;

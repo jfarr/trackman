@@ -19,7 +19,7 @@ struct SineWaveVoice : public SynthesiserVoice {
     bool canPlaySound(SynthesiserSound *sound) override { return dynamic_cast<SineWaveSound *>(sound) != nullptr; }
 
     void startNote(int midiNoteNumber, float velocity, SynthesiserSound *, int /*currentPitchWheelPosition*/) override {
-        DBG("startNote: " << midiNoteNumber);
+//        DBG("startNote: " << midiNoteNumber);
         currentAngle = 0.0;
         level = velocity * 0.15;
         tailOff = 0.0;
@@ -31,7 +31,7 @@ struct SineWaveVoice : public SynthesiserVoice {
     }
 
     void stopNote(float /*velocity*/, bool allowTailOff) override {
-        DBG("stopNote");
+//        DBG("stopNote");
         if (allowTailOff) {
             if (tailOff == 0.0)
                 tailOff = 1.0;
