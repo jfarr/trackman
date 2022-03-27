@@ -2,9 +2,9 @@
 
 #include <JuceHeader.h>
 
+#include "NoteCanvas.h"
 #include "SampleThumbnail.h"
 #include "model/Track.h"
-#include "NoteCanvas.h"
 
 using namespace std;
 using namespace juce;
@@ -21,7 +21,7 @@ class TrackLaneControl : public Component {
 
     void addSampleThumbnail(SampleThumbnail *thumbnail);
     void addNoteCanvas(NoteCanvas *canvas);
-    void clear() { thumbnails.clear(); }
+    void clear();
     void update();
 
     //==============================================================================
@@ -46,4 +46,4 @@ class TrackLaneControl : public Component {
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackLaneControl)
 };
 
-}
+} // namespace trackman

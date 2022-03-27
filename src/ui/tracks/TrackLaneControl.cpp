@@ -38,6 +38,11 @@ void TrackLaneControl::update() {
     resized();
 }
 
+void TrackLaneControl::clear() {
+    thumbnails.clear();
+    canvases.clear();
+}
+
 void TrackLaneControl::paint(Graphics &g) {
     g.fillAll(track.isSelected() ? Colour{0xff3f5f5f} : Colours::darkslategrey);
     g.setColour(Colours::slategrey);
