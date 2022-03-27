@@ -56,28 +56,18 @@ class Track {
 
     bool hasMidi() const { return !noteRolls.empty(); }
     bool canRecord() const { return samplePlayer == nullptr; }
-    bool isRecording() const {
-//        DBG("isRecording: " << (midiRecorder != nullptr ? "true" : "false"));
-        return midiRecorder != nullptr;
-    }
+    bool isRecording() const { return midiRecorder != nullptr; }
     MidiRecorder *getMidiRecorder() { return midiRecorder.get(); }
-    NoteRoll *getSelectedNoteRoll() const;
     void startRecording();
     void pauseRecording();
     void stopRecording();
 
-//    Synthesiser &getSynth() { return midiPlayer.getSynth(); }
     Synthesiser &getLiveSynth() { return liveSynth; }
+    NoteRoll *getSelectedNoteRoll() const;
     void eachNoteRoll(function<void(NoteRoll &noteRoll)> f);
     void eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos,
         function<void(const MidiMessageSequence::MidiEventHolder &eventHandle)> f) const;
     double getCurrentMidiEndTimeInTicks(const NoteRoll &noteRoll, const double pos) const;
-    void processNextMidiBuffer(
-        MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;
-//    double getMidiLengthInSeconds() const;
-//    int64 getMidiLengthInSamples() const;
-
-//    void dumpMidi() { midiPlayer.dump(); }
     Instrument &getInstrument() { return instrument; }
 
   private:

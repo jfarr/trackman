@@ -8,7 +8,6 @@ namespace trackman {
 
 Track::Track(Project &project, AudioDeviceManager &deviceManager)
     : project(project), deviceManager(deviceManager), midiPlayer(*this), instrument(*this) {
-    //    noteRolls.push_back(make_shared<NoteRoll>(MidiMessageSequence(), 0, 0));
     midiPlayer.prepareToPlay(
         deviceManager.getAudioDeviceSetup().bufferSize, deviceManager.getAudioDeviceSetup().sampleRate);
     gainSource = make_unique<GainAudioSource>(&midiPlayer, false);
@@ -117,11 +116,7 @@ void Track::eachSample(function<void(Sample &sample)> f) {
 }
 
 int64 Track::getTotalLengthInSamples() const {
-    //    if (!hasMidi()) {
     return meteredSource == nullptr ? 0 : meteredSource->getTotalLength();
-    //    } else {
-    //        return midiPlayer.getTotalLength();
-    //    }
 }
 
 void Track::startRecording() {
@@ -131,18 +126,13 @@ void Track::startRecording() {
         noteRoll->setSelected(true);
         project.getKeyboardState().reset();
         midiRecorder.reset(new MidiRecorder(*noteRoll, project.getKeyboardState(), deviceManager));
-        //        midiRecorder.setMidiMessages(noteRoll->getMidiMessages());
     }
-    //    noteRoll.startRecording();
     midiRecorder->startRecording();
-    //    midiPlayer.setRecording(true);
-    //    recording = true;
 }
 
 void Track::pauseRecording() {
     if (midiRecorder != nullptr) {
         midiRecorder->stopRecording();
-        //        midiPlayer.setRecording(false);
     }
 }
 
@@ -150,7 +140,6 @@ void Track::stopRecording() {
     if (midiRecorder == nullptr) {
         return;
     }
-    //    midiPlayer.setRecording(false);
     midiRecorder->onMidiMessage = nullptr;
     midiRecorder->stopRecording();
     auto &noteRoll = midiRecorder->getNoteRoll();
@@ -158,11 +147,9 @@ void Track::stopRecording() {
     DBG("note roll starts at: " << pos << " secs (" << noteRoll.getStartPosInTicks() << " ticks, "
                                 << pos * deviceManager.getAudioDeviceSetup().sampleRate << " samples)");
     midiRecorder->printEvents();
-//    auto &noteRoll = midiRecorder->getNoteRoll();
     if (noteRoll.empty()) {
         removeNoteRoll(&noteRoll);
     }
-    //    DBG("set midiRecorder = nullptr");
     midiRecorder = nullptr;
 }
 
@@ -215,45 +202,5 @@ double Track::getCurrentMidiEndTimeInTicks(const NoteRoll &noteRoll, const doubl
         return noteRoll.getEndTime();
     }
 }
-
-void Track::processNextMidiBuffer(
-    MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const {
-    auto sampleRate = deviceManager.getAudioDeviceSetup().sampleRate;
-    const double startTime = currentPos / sampleRate;
-    const double endTime = startTime + numSamples / sampleRate;
-
-    //    auto midiMessages = getMidiMessages();
-    //    auto startIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(startTime));
-    //    auto endIndex = midiMessages.getNextIndexAtTime(project.secondsToTicks(endTime));
-    //    for (int i = startIndex; i < endIndex; i++) {
-    //        auto p = midiMessages.getEventPointer(i);
-    //        auto event = p->message;
-    //        buffer.addEvent(event, event.getTimeStamp());
-    //    }
-    if (midiRecorder != nullptr) {
-        MidiBuffer keyboardBuffer;
-        midiRecorder->getKeyboardState().processNextMidiBuffer(keyboardBuffer, startSample, numSamples, true);
-        buffer.addEvents(keyboardBuffer, startSample, numSamples, 0);
-    }
-}
-//
-// double Track::getMidiLengthInSeconds() const {
-//    double len = 0;
-//    for (const shared_ptr<NoteRoll> &p : noteRolls) {
-//        auto &noteRoll = *p;
-//        if (!noteRoll.isDeleted()) {
-//            len = max(len, noteRoll.getEndPosInSeconds());
-//        }
-//    }
-//    return len;
-//}
-//
-// int64 Track::getMidiLengthInSamples() const {
-//    if (!hasMidi()) {
-//        return 0;
-//    }
-//    return getMidiLengthInSeconds() * deviceManager.getAudioDeviceSetup().sampleRate +
-//           2 * deviceManager.getAudioDeviceSetup().bufferSize; // overshoot to ensure we get all note off events
-//}
 
 } // namespace trackman
