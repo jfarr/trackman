@@ -1,15 +1,16 @@
 # Roadmap
 
 ## Short-Term
-- Select note rolls
-- Delete note rolls
 - Use undo manager
   - Undo record midi
-  - Undo change tempo / time signature
-  - Undo delete note roll
-  - Undo edit note roll
+- Delete note rolls
+- Undo delete note roll
+- Fix bugs
+  - Popping at begin/end of midi tracks
+- Undo change tempo / time signature
 - Stretch / loop note rolls
 - Edit note rolls
+- Undo edit note roll
 - Use lambdas / ListenerList
 - Amplitude ASDR envelopes
 - Stretch sample loops instead of resampling

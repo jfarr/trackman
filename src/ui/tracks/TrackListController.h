@@ -38,6 +38,8 @@ class TrackListController : public TrackListListener, public SampleListener {
     void fileDragExit(const StringArray &files);
     void filesDropped(const StringArray &files, int x, int y);
 
+    void noteRollSelected(Track &track, NoteRoll &noteRoll);
+
     //==============================================================================
     // TrackListListener
     void selectionChanged(Track *track) override;
@@ -61,6 +63,8 @@ class TrackListController : public TrackListListener, public SampleListener {
     bool selectingSample = false;
     Track *currentDragTrack = nullptr;
     TrackLaneController *newDragLane = nullptr;
+
+    bool selectingNoteRoll = false;
 
     void updateLane(Track &track);
     TrackLaneController *getLane(Track &track);

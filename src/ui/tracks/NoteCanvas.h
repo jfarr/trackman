@@ -18,9 +18,14 @@ class NoteCanvas : public Component, public Timer {
 
     void resize();
 
+    function<void(Track &, NoteRoll &)> onSelected = nullptr;
+
     //==============================================================================
     // Component
     void paint(Graphics &g) override;
+    void mouseDown(const MouseEvent &event) override;
+    void mouseUp(const MouseEvent &event) override;
+    void mouseDrag(const MouseEvent &event) override;
 
     //==============================================================================
     // Timer
@@ -31,12 +36,17 @@ class NoteCanvas : public Component, public Timer {
     }
 
   private:
+    friend class TrackLaneControl;
+
+    static const int borderSize = 5;
+
     Project &project;
     Track &track;
     NoteRoll &noteRoll;
 
     Rectangle<float> getNoteRect(const MidiMessage &noteOn, const MidiMessage &noteOff, int lowNote, double noteStep,
         double x, double h, double scale);
+    void notifySelected(Track &track, NoteRoll &selected);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteCanvas)
 };

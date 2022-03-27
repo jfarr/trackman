@@ -54,6 +54,8 @@ class Track {
     bool hasSamples() const { return !samples.empty(); }
     int getNumSamples() const { return samples.size(); }
 
+    void selectNoteRoll(NoteRoll *newSelected);
+
     bool hasMidi() const { return !noteRolls.empty(); }
     bool canRecord() const { return samplePlayer == nullptr; }
     bool isRecording() const { return midiRecorder != nullptr; }
