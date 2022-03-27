@@ -132,17 +132,20 @@ int64 MidiPlayer::getNextReadPosition() const { return looping ? currentPosition
 
 int64 MidiPlayer::getTotalLength() const {
     const ScopedLock lock(mutex);
-    int64 totalLength = 0;
+    double maxLengthInTicks = 0;
     for (auto &noteRoll : noteRolls) {
         if (!noteRoll->isDeleted()) {
-            totalLength = max(totalLength, noteRoll->getTotalLength());
+            maxLengthInTicks = max(maxLengthInTicks, noteRoll->getEndPosInTicks());
         }
     }
+    auto lengthInSeconds = track.getProject().ticksToSeconds(maxLengthInTicks);
+    auto lengthInSamples = (int64)(lengthInSeconds * currentSampleRate);
+
     if (track.isRecording() && !looping) {
-        totalLength = max(totalLength, currentPosition);
+        lengthInSamples = max(lengthInSamples, currentPosition);
     }
     //    return totalLength > 0 ? totalLength + 1024 : 0;
-    return totalLength;
+    return lengthInSamples;
 }
 
 bool MidiPlayer::isLooping() const { return looping; }

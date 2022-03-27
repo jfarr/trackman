@@ -22,8 +22,8 @@ class NoteRoll : public TrackRegion {
     Project &getProject() { return project; }
     MidiMessageSequence getMidiMessages() const;
     bool empty() { return midiMessages.getNumEvents() == 0; }
-    int64 getStartPosInTicks() const { return startPosInTicks; }
-    int64 getEndPosInTicks() const { return endPosInTicks; }
+    double getStartPosInTicks() const { return startPosInTicks; }
+    double getEndPosInTicks() const { return endPosInTicks; }
     double getStartPosInSeconds() const;
     double getEndPosInSeconds() const;
     double getLengthInSeconds() const;
@@ -59,7 +59,7 @@ class NoteRoll : public TrackRegion {
 //    // PositionableAudioSource
 //    void setNextReadPosition(int64 newPosition) override;
 //    int64 getNextReadPosition() const override;
-    int64 getTotalLength() const;
+//    double getTotalLengthInTicks() const;
 //    bool isLooping() const override;
 //    void setLooping(bool shouldLoop) override;
 

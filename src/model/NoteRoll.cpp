@@ -30,11 +30,11 @@ void NoteRoll::stopRecording() { recording = false; }
 MidiMessageSequence::MidiEventHolder *NoteRoll::addEvent(const MidiMessage &newMessage) {
     if (midiMessages.getNumEvents() == 0) {
         startPosInTicks = newMessage.getTimeStamp();
-        startPosInSeconds = project.ticksToSeconds(newMessage.getTimeStamp());
+        startPosInSeconds = project.ticksToSeconds(startPosInTicks);
     }
     if (newMessage.isNoteOff()) {
         endPosInTicks = newMessage.getTimeStamp() + 1;
-        endPosInSeconds = project.ticksToSeconds(newMessage.getTimeStamp() + 1);
+        endPosInSeconds = project.ticksToSeconds(endPosInTicks);
     }
     //    lengthInSeconds = max(0.0, endPosInSeconds - startPosInSeconds);
     //    sourceLengthInSeconds = lengthInSeconds;
@@ -199,15 +199,15 @@ void NoteRoll::processNextMidiBuffer(
 //    return currentPosition;
 //}
 //
- int64 NoteRoll::getTotalLength() const {
-     return endPosInTicks;
-//    auto pos = getEndPosInSeconds();
-//    auto len = getPositionFromTime(pos);
-//    //    len = len == 0 ? 0 : len + 102400;
-//    //    DBG("end pos: " << pos << " len: " << len);
-//    return len;
-//    //    return getPositionFromTime(getEndPosInSeconds()) + 1;
-}
+// int64 NoteRoll::getTotalLength() const {
+//     return endPosInTicks;
+////    auto pos = getEndPosInSeconds();
+////    auto len = getPositionFromTime(pos);
+////    //    len = len == 0 ? 0 : len + 102400;
+////    //    DBG("end pos: " << pos << " len: " << len);
+////    return len;
+////    //    return getPositionFromTime(getEndPosInSeconds()) + 1;
+//}
 //
 // bool NoteRoll::isLooping() const { return looping; }
 //
