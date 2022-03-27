@@ -4,6 +4,7 @@
 
 #include "Command.h"
 #include "model/Track.h"
+#include "ui/desktop/DesktopController.h"
 
 using namespace juce;
 

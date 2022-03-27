@@ -26,8 +26,9 @@ void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
         auto sourceLengthInSamples = getTotalLength();
         auto startPositionInSamples = looping ? currentPosition % sourceLengthInSamples : currentPosition;
         auto endPositionInSamples = looping ? currentEndPosition % sourceLengthInSamples : currentEndPosition;
-        auto startPositionInTicks = track.getProject().secondsToTicks(startPositionInSamples / currentSampleRate);
-        auto endPositionInTicks = track.getProject().secondsToTicks(endPositionInSamples / currentSampleRate);
+        auto startPositionInTicks =
+            track.getProject().secondsToTicks((double)startPositionInSamples / currentSampleRate);
+        auto endPositionInTicks = track.getProject().secondsToTicks((double)endPositionInSamples / currentSampleRate);
         list<NoteRoll *> noteRollsToPlay = timeline.getAt(startPositionInTicks, endPositionInTicks);
         if (track.isRecording()) {
             noteRollsToPlay.remove(&track.getMidiRecorder()->getNoteRoll());
