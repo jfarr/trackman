@@ -5,9 +5,7 @@
 
 namespace trackman {
 
-NoteRoll::NoteRoll(Project &project, Track &track, double recordStartPosInSeconds) : project(project), track(track) {}
-
-MidiMessageSequence NoteRoll::getMidiMessages() const { return midiMessages; }
+NoteRoll::NoteRoll(Project &project, Track &track) : project(project), track(track) {}
 
 double NoteRoll::getStartPosInSeconds() const {
     auto startTimeInTicks = midiMessages.getStartTime();
@@ -49,22 +47,15 @@ int NoteRoll::getLowestNote() const { return midiutil::getLowestNote(midiMessage
 int NoteRoll::getHighestNote() const { return midiutil::getHighestNote(midiMessages); }
 
 void NoteRoll::processNextMidiBuffer(MidiBuffer &buffer, int startTimeInTicks, int endTimeInTicks) {
-    DBG("start tick: " << startTimeInTicks << " end tick: " << endTimeInTicks);
     auto relativeStartTick = max(0, startTimeInTicks - startPosInTicks);
     auto relativeEndTick = endTimeInTicks - startPosInTicks;
-    DBG("relativeStartTick: " << relativeStartTick << " relativeEndTick: " << relativeEndTick);
     auto startIndex = midiMessages.getNextIndexAtTime(relativeStartTick);
     auto endIndex = midiMessages.getNextIndexAtTime(relativeEndTick);
-    DBG("startIndex: " << startIndex << " endIndex:" << endIndex);
     for (int i = startIndex; i < endIndex; i++) {
         auto p = midiMessages.getEventPointer(i);
         auto event = p->message;
-        DBG("NoteRoll::processNextMidiBuffer adding " << (event.isNoteOn() ? "note on" : "note off")
-                                                      << " event at: " << event.getTimeStamp());
         buffer.addEvent(event, event.getTimeStamp());
     }
-    DBG("playing notes:");
-    project.printEvents(buffer);
 }
 
 void NoteRoll::printEvents() const { project.printEvents(midiMessages); }

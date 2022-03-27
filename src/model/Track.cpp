@@ -76,8 +76,8 @@ Sample *Track::addSample(
     return sample;
 }
 
-NoteRoll *Track::addNoteRoll(double startPosInSeconds) {
-    noteRolls.push_back(make_shared<NoteRoll>(project, *this, startPosInSeconds));
+NoteRoll *Track::addNoteRoll() {
+    noteRolls.push_back(make_shared<NoteRoll>(project, *this));
     return &(*noteRolls.back());
 }
 
@@ -122,7 +122,7 @@ int64 Track::getTotalLengthInSamples() const {
 void Track::startRecording() {
     if (midiRecorder == nullptr) {
         recordStartPosInSeconds = project.getTransport().getCurrentPosition();
-        auto *noteRoll = addNoteRoll(recordStartPosInSeconds);
+        auto *noteRoll = addNoteRoll();
         noteRoll->setSelected(true);
         project.getKeyboardState().reset();
         midiRecorder.reset(new MidiRecorder(*noteRoll, project.getKeyboardState(), deviceManager));

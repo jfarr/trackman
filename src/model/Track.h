@@ -76,7 +76,7 @@ class Track {
 
     Sample *addSample(
         const File &file, double startPosInSeconds, double endPosInSeconds, AudioFormatManager &formatManager);
-    NoteRoll *addNoteRoll(double startPosInSeconds);
+    NoteRoll *addNoteRoll();
     void setMute(bool newMuted);
     void setSolo(bool newSoloed);
     void updateGain(bool anySoloed);

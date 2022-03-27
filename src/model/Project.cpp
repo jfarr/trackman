@@ -68,6 +68,9 @@ string Project::to_json() {
         //        MidiRecorder::printEvents(messages);
         json track_json = {{"name", track.getName().toStdString()}, {"gain", track.getLevelGain()},
             {"muted", track.isMuted()}, {"soloed", track.isSoloed()}};
+        track.eachNoteRoll([&track_json](NoteRoll &noteRoll) {
+            json noteRoll_json = {};
+        });
         track.eachSample([&track_json](Sample &sample) {
             json sample_json = {{"file", sample.getFile().getFullPathName().toStdString()},
                 {"startPos", sample.getStartPosInSeconds()}, {"endPos", sample.getEndPosInSeconds()}};

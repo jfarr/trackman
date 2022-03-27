@@ -16,11 +16,10 @@ class Track;
 
 class NoteRoll : public TrackRegion {
   public:
-    NoteRoll(Project &project, Track &track, double recordStartPosInSeconds);
+    NoteRoll(Project &project, Track &track);
     ~NoteRoll() = default;
 
     Project &getProject() { return project; }
-    MidiMessageSequence getMidiMessages() const;
     bool empty() { return midiMessages.getNumEvents() == 0; }
     int getStartPosInTicks() const { return startPosInTicks; }
     int getEndPosInTicks() const { return endPosInTicks; }
