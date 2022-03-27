@@ -3,30 +3,6 @@
 
 namespace trackman {
 
-void StretchHandle::paint(Graphics &g) {
-    Path path;
-    auto w = getWidth();
-    auto h = getHeight();
-    path.addTriangle(Point<float>(0, 0), Point<float>(w, 0), Point<float>(w, h));
-    g.setColour(Colours::grey.withAlpha(0.8f));
-    g.fillPath(path);
-}
-
-void StretchHandle::mouseDrag(const MouseEvent &event) {
-    auto *container = DragAndDropContainer::findParentDragContainerFor(this);
-    if (container != nullptr) {
-        container->startDragging("clip", this, scaledDragImage);
-    }
-    auto bounds = thumbnail.getScreenBounds();
-    auto x = event.getScreenX();
-    auto newWidth = max(x - bounds.getX(), 1);
-    thumbnail.setBounds(thumbnail.getBounds().withWidth(newWidth));
-}
-
-void StretchHandle::mouseDown(const MouseEvent &event) { thumbnail.mouseDown(event); }
-
-void StretchHandle::mouseUp(const MouseEvent &event) {}
-
 SampleThumbnail::SampleThumbnail(Project &project, Track &track, Sample &sample, AudioFormatManager &formatManager)
     : project(project), track(track), sample(sample), thumbnailCache(5), thumbnail(512, formatManager, thumbnailCache),
       stretchHandle(*this), dragImage(Image::ARGB, 1, 1, true), scaledDragImage(dragImage) {
@@ -116,5 +92,29 @@ void SampleThumbnail::notifyMouseDragged(SampleThumbnail &thumbnail, int x, int 
         listener->mouseDragged(thumbnail, x, y);
     }
 }
+
+void StretchHandle::paint(Graphics &g) {
+    Path path;
+    auto w = getWidth();
+    auto h = getHeight();
+    path.addTriangle(Point<float>(0, 0), Point<float>(w, 0), Point<float>(w, h));
+    g.setColour(Colours::grey.withAlpha(0.8f));
+    g.fillPath(path);
+}
+
+void StretchHandle::mouseDrag(const MouseEvent &event) {
+    auto *container = DragAndDropContainer::findParentDragContainerFor(this);
+    if (container != nullptr) {
+        container->startDragging("clip", this, scaledDragImage);
+    }
+    auto bounds = thumbnail.getScreenBounds();
+    auto x = event.getScreenX();
+    auto newWidth = max(x - bounds.getX(), 1);
+    thumbnail.setBounds(thumbnail.getBounds().withWidth(newWidth));
+}
+
+void StretchHandle::mouseDown(const MouseEvent &event) { thumbnail.mouseDown(event); }
+
+void StretchHandle::mouseUp(const MouseEvent &event) {}
 
 } // namespace trackman

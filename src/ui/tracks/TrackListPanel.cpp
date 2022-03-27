@@ -108,7 +108,7 @@ void TrackListPanel::resize() {
 
 void TrackListPanel::timerCallback() {
     if (!dragging && desktopController.getProject().isRecording()) {
-        updatePositionOverlay();
+        resizePositionOverlay();
     }
 }
 
@@ -146,7 +146,7 @@ void TrackListPanel::resized() {
     }
 }
 
-void TrackListPanel::updatePositionOverlay() {
+void TrackListPanel::resizePositionOverlay() {
     auto area = getLocalBounds();
     auto width = max(transport.getLengthInSeconds() * desktopController.getProject().getHorizontalScale(), 2.0);
     overlay.setBounds(area.withWidth(width));

@@ -5,14 +5,13 @@ namespace trackman {
 
 NoteCanvas::NoteCanvas(Project &project, Track &track, NoteRoll &noteRoll)
     : project(project), track(track), noteRoll(noteRoll) {
-    setInterceptsMouseClicks(false, false);
+//    setInterceptsMouseClicks(false, false);
     setSize(200, 81);
     startTimer(20);
 }
 
 void NoteCanvas::resize() {
     auto area = getBounds();
-    //    auto border = 5;
     auto pos = project.getTransport().getTransportSource().getCurrentPosition();
     auto length = project.ticksToSeconds(track.getCurrentMidiEndTimeInTicks(noteRoll, pos));
     auto w = noteRoll.empty() ? 0 : length * project.getHorizontalScale() + 2 * borderSize + 1;
@@ -22,7 +21,7 @@ void NoteCanvas::resize() {
 
 void NoteCanvas::paint(Graphics &g) {
     auto area = getLocalBounds();
-    auto selected = track.isSelected();
+    auto selected = track.isSelected() && noteRoll.isSelected();
     auto selectionBorder = 2;
 
     auto bgcolor = selected ? Colours::lightgrey : Colours::dimgrey;
@@ -65,6 +64,21 @@ Rectangle<float> NoteCanvas::getNoteRect(const MidiMessage &noteOn, const MidiMe
     auto noteDist = noteOn.getNoteNumber() - lowNote;
     double noteY = h - noteHeight * (noteDist + margin);
     return Rectangle<float>(noteX, noteY, noteWidth, noteHeight).expanded(margin);
+}
+
+void NoteCanvas::mouseDown(const MouseEvent &event) {
+    Component::mouseDown(event);
+    notifySelected(track, noteRoll);
+}
+
+void NoteCanvas::mouseUp(const MouseEvent &event) {}
+
+void NoteCanvas::mouseDrag(const MouseEvent &event) {}
+
+void NoteCanvas::notifySelected(Track &track, NoteRoll &selected) {
+    if (onSelected != nullptr) {
+        onSelected(track, selected);
+    }
 }
 
 } // namespace trackman

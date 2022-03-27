@@ -35,7 +35,9 @@ class TrackList {
     void selectSample(Sample *selected);
 
     bool canRecord() const { return getSelectedTrack() != nullptr && getSelectedTrack()->canRecord(); }
-    MidiRecorder *getMidiRecorder();
+//    MidiRecorder *getMidiRecorder();
+
+    void selectNoteRoll(NoteRoll *selected);
 
 //    void writeAudioFile(const File &file, AudioSource &source, double sampleRate, int bitsPerSample) const;
 

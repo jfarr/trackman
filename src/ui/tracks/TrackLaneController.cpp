@@ -38,13 +38,15 @@ void TrackLaneController::updateSamples() {
 
 void TrackLaneController::updateMidi() {
     for (unique_ptr<NoteCanvas> &canvas : noteCanvases) {
-//        canvas->removeListener(&trackListController);
+        canvas->onSelected = nullptr;
     }
     noteCanvases.clear();
     trackLaneControl.clear();
     track.eachNoteRoll([this](NoteRoll &noteRoll) {
         noteCanvases.push_back(make_unique<NoteCanvas>(project, track, noteRoll));
-//        noteCanvases.back()->addListener(&trackListController);
+        noteCanvases.back()->onSelected = [this](Track &track, NoteRoll &noteRoll) {
+            trackListController.noteRollSelected(track, noteRoll);
+        };
         trackLaneControl.addNoteCanvas(noteCanvases.back().get());
     });
 }

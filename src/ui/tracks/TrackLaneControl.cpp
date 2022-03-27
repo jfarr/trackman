@@ -53,7 +53,6 @@ void TrackLaneControl::resized() {
     auto area = getLocalBounds();
     auto labelHeight = 12;
     auto margin = 3;
-//    auto border = 3;
     auto scale = project.getHorizontalScale();
     trackLabel.setBounds(area.removeFromTop(labelHeight).withTrimmedTop(margin));
     area.removeFromTop(margin);

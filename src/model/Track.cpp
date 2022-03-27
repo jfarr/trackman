@@ -45,6 +45,10 @@ void Track::setDeleted(bool newDeleted) {
     selected = false;
 }
 
+void Track::selectNoteRoll(NoteRoll *newSelected) {
+    eachNoteRoll([&newSelected](NoteRoll &noteRoll) { noteRoll.setSelected(&noteRoll == newSelected); });
+}
+
 void Track::selectSample(Sample *newSelected) {
     eachSample([&newSelected](Sample &sample) { sample.setSelected(&sample == newSelected); });
 }
@@ -128,7 +132,8 @@ void Track::startRecording() {
     if (midiRecorder == nullptr) {
         recordStartPosInSeconds = project.getTransport().getCurrentPosition();
         auto *noteRoll = addNoteRoll();
-        noteRoll->setSelected(true);
+        project.getTrackList().selectNoteRoll(noteRoll);
+//        noteRoll->setSelected(true);
         project.getKeyboardState().reset();
         midiRecorder.reset(new MidiRecorder(*noteRoll, project.getKeyboardState(), deviceManager));
     }

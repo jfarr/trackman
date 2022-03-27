@@ -138,11 +138,22 @@ void TrackListController::selectionChanged(Track *track) {
     if (!selectingSample) {
         project.getTrackList().selectSample(nullptr);
     }
+    if (!selectingNoteRoll) {
+        project.getTrackList().selectNoteRoll(nullptr);
+    }
     selectingSample = false;
+    selectingNoteRoll = false;
     if (track != selected) {
         selected = track;
         desktopController.selectionChanged(track);
     }
+}
+
+void TrackListController::noteRollSelected(Track &track, NoteRoll &noteRoll) {
+    selectingNoteRoll = true;
+    project.getTrackList().selectNoteRoll(&noteRoll);
+    selectionChanged(&track);
+    trackListPanel.repaint();
 }
 
 void TrackListController::sampleSelected(Track &track, Sample &sample) {
