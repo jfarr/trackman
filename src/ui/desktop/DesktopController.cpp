@@ -1,5 +1,6 @@
 #include "DesktopController.h"
 #include "commands/MixerCommands.h"
+#include "commands/SampleCommands.h"
 #include "commands/TrackCommands.h"
 #include "commands/TrackListCommands.h"
 #include "common/listutil.h"
