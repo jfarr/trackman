@@ -202,10 +202,10 @@ void Track::eachCurrentMidiMessage(const NoteRoll &noteRoll, const double pos,
     }
 }
 
-double Track::getCurrentMidiEndTimeInTicks(const NoteRoll &noteRoll, const double pos) const {
+int Track::getCurrentMidiEndTimeInTicks(const NoteRoll &noteRoll, const double pos) const {
     if (midiRecorder != nullptr) {
         auto messages = midiRecorder->getMidiMessages(pos);
-        return messages.getEndTime() + 1;
+        return project.measureEndTick(messages.getEndTime());
     } else {
         return noteRoll.getEndTime();
     }

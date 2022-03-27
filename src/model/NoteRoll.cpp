@@ -35,17 +35,10 @@ void NoteRoll::stopRecording() { recording = false; }
 
 MidiMessageSequence::MidiEventHolder *NoteRoll::addEvent(const MidiMessage &newMessage) {
     if (midiMessages.getNumEvents() == 0) {
-        auto ticks = newMessage.getTimeStamp();
-        auto secs = project.ticksToSeconds(ticks);
-        auto measure = project.measureAt(secs);
-        auto startSecs = project.measuresToSeconds((double)measure);
-        auto startTicks = project.secondsToTicks(startSecs);
-        DBG("ticks: " << ticks << " secs: " << secs << " measure: " << measure << " startSecs: " << startSecs
-                      << " startTicks: " << startTicks);
-        startPosInTicks = startTicks;
+        startPosInTicks = project.measureStartTick(newMessage.getTimeStamp());
     }
     if (newMessage.isNoteOff()) {
-        endPosInTicks = newMessage.getTimeStamp() + 1;
+        endPosInTicks = project.measureEndTick(newMessage.getTimeStamp());
     }
     auto event = midiMessages.addEvent(newMessage.withTimeStamp(newMessage.getTimeStamp() - startPosInTicks));
     midiMessages.sort();
