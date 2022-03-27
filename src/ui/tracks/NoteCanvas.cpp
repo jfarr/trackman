@@ -5,7 +5,6 @@ namespace trackman {
 
 NoteCanvas::NoteCanvas(Project &project, Track &track, NoteRoll &noteRoll)
     : project(project), track(track), noteRoll(noteRoll) {
-//    setInterceptsMouseClicks(false, false);
     setSize(200, 81);
     startTimer(20);
 }
