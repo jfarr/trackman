@@ -19,6 +19,7 @@ void Instrument::initSynth(Synthesiser &synth) {
         synth.addVoice(new SineWaveVoice());
     }
     synth.addSound(new SineWaveSound());
+    DBG("setCurrentPlaybackSampleRate");
     synth.setCurrentPlaybackSampleRate(track.getDeviceManager().getAudioDeviceSetup().sampleRate);
 }
 

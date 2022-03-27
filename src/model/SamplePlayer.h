@@ -37,7 +37,7 @@ class SamplePlayer : public PositionableAudioSource {
     bool looping = false;
     AudioBuffer<float> tempBuffer;
 
-    Timeline<Sample *> getCurrentTimeline();
+    Timeline<double, Sample *> getCurrentTimeline();
     double getTimeAtPosition(int64 position) { return position / currentSampleRate; }
 
     CriticalSection mutex;

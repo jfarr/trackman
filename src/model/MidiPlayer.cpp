@@ -11,8 +11,8 @@ MidiPlayer::MidiPlayer(Track &track) : track(track), noteRolls(track.getNoteRoll
     //    synth.addSound(new SineWaveSound());
 }
 
-Timeline<NoteRoll *> MidiPlayer::getCurrentTimeline() {
-    Timeline<NoteRoll *> timeline;
+Timeline<double, NoteRoll *> MidiPlayer::getCurrentTimeline() {
+    Timeline<double, NoteRoll *> timeline;
     for (shared_ptr<NoteRoll> &noteRoll : noteRolls) {
         timeline.addRange(noteRoll->getStartPosInSeconds(), noteRoll->getEndPosInSeconds(), noteRoll.get());
     }
@@ -20,17 +20,14 @@ Timeline<NoteRoll *> MidiPlayer::getCurrentTimeline() {
 }
 
 void MidiPlayer::prepareToPlay(int blockSize, double sampleRate) {
-//    track.getProject().getKeyboardState().reset();
     {
         const ScopedLock lock(mutex);
         currentSampleRate = sampleRate;
     }
-//    tempBuffer.setSize(2, sampleRate);
-    //    synth.setCurrentPlaybackSampleRate(sampleRate);
+    tempBuffer.setSize(2, sampleRate);
     for (auto &noteRoll : noteRolls) {
         noteRoll->prepareToPlay(blockSize, sampleRate);
     }
-    //    dumping = true;
 }
 
 void MidiPlayer::releaseResources() {
@@ -38,89 +35,77 @@ void MidiPlayer::releaseResources() {
     for (auto &noteRoll : noteRolls) {
         noteRoll->releaseResources();
     }
-//    tempBuffer.setSize(2, 0);
+    tempBuffer.setSize(2, 0);
     currentSampleRate = 0;
 }
 
 void MidiPlayer::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     const ScopedLock lock(mutex);
-    //    DBG("MidiPlayer::getNextAudioBlock writing to buffer: " << String::toHexString((long)bufferToFill.buffer));
-    //    DBG("MidiPlayer::getNextAudioBlock pos: " << currentPosition << " to: " << currentPosition +
-    //    bufferToFill.numSamples); DBG("midi player pos: " << currentPosition);
     if (bufferToFill.numSamples > 0) {
-        bufferToFill.clearActiveBufferRegion();
-        Timeline timeline = getCurrentTimeline();
-        auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
-        list<NoteRoll *> noteRollsToPlay = timeline.getAt(getTimeAtPosition(pos));
-        if (track.isRecording()) {
-            //            MidiBuffer incomingMidi;
-            //            processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, pos);
-            //
-            //            for (auto i = incomingMidi.begin(); i != incomingMidi.end(); i++) {
-            //                auto m = (*i).getMessage();
-            //                auto t = track.getProject().ticksToSeconds(m.getTimeStamp());
-            //                DBG(String("got keyboard note ") + (m.isNoteOn() ? "on" : "off") + " event at time "
-            //                    << t << " (" << m.getTimeStamp() << " ticks, " << (t * currentSampleRate)
-            //                    << " samples): noteNumber=" << m.getNoteNumber() << " velocity=" << m.getVelocity());
-            //            }
-            //            track.getSynth().renderNextPlaybackBlock(
-            //                *bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
-            noteRollsToPlay.remove(&track.getMidiRecorder()->getNoteRoll());
-        }
-        if (!noteRollsToPlay.empty()) {
-            track.getInstrument().renderNextPlaybackBlock(
-                *bufferToFill.buffer, noteRollsToPlay, bufferToFill.startSample, bufferToFill.numSamples, pos);
-//            tempBuffer.setSize(jmax(1, bufferToFill.buffer->getNumChannels()), bufferToFill.buffer->getNumSamples());
-//
-//            AudioSourceChannelInfo info2(&tempBuffer, 0, bufferToFill.numSamples);
-//            for (auto *noteRoll : noteRollsToPlay) {
-//                if (!noteRoll->isDeleted()) {
-//                    noteRoll->getNextAudioBlock(info2);
-//                    for (int chan = 0; chan < bufferToFill.buffer->getNumChannels(); ++chan) {
-//                        bufferToFill.buffer->addFrom(
-//                            chan, bufferToFill.startSample, tempBuffer, chan, 0, bufferToFill.numSamples);
-//                    }
-//                }
+//        if (looping) {
+//            auto sourceLengthInSamples = (int64)(getLengthInSeconds() * currentSampleRate);
+//            auto newStartPos = currentPosition % sourceLengthInSamples;
+//            auto newEndPos = (currentPosition + bufferToFill.numSamples) % sourceLengthInSamples;
+//            if (newEndPos < newStartPos) {
+//                DBG("WRAPPED!!!!!!");
+//                MidiBuffer midiEvents1;
+//                processMidiBuffer(midiEvents1, newStartPos, sourceLengthInSamples);
+//                MidiBuffer midiEvents2;
+//                processMidiBuffer(midiEvents2, 0, newEndPos);
+//            } else {
+//                MidiBuffer midiEvents;
+//                processMidiBuffer(midiEvents, newStartPos, newEndPos);
 //            }
-        }
-
-        //        if (dumping) {
-        //            bool nonzero = false;
-        //            auto *p = bufferToFill.buffer->getReadPointer(0);
-        //            String s;
-        //            for (int i = 0; i < bufferToFill.numSamples; i++) {
-        //                s = s << *(p + i) << ",";
-        //                if (*(p + 1) != 0) {
-        //                    nonzero = true;
-        //                }
-        //            }
-        //            if (nonzero) {
-        //                DBG(s);
-        //                dumping = false;
-        //            }
-        //        }
-
+//        } else {
+//            MidiBuffer midiEvents;
+//            processMidiBuffer(midiEvents, currentPosition, currentPosition + bufferToFill.numSamples);
+//            track.getInstrument().renderNextPlaybackBlock(
+//                *bufferToFill.buffer, midiEvents, bufferToFill.startSample, bufferToFill.numSamples);
+//        }
         currentPosition += bufferToFill.numSamples;
     }
-}
+
+//    if (bufferToFill.numSamples > 0) {
+        Timeline timeline = getCurrentTimeline();
+//        auto pos = looping ? currentPosition % getTotalLength() : currentPosition;
+//        list<NoteRoll *> noteRollsToPlay = timeline.getAt(getTimeAtPosition(pos));
+//        if (track.isRecording()) {
+//            noteRollsToPlay.remove(&track.getMidiRecorder()->getNoteRoll());
+//        }
+//        if (!noteRollsToPlay.empty()) {
+//            //            track.getInstrument().renderNextPlaybackBlock(
+//            //                *bufferToFill.buffer, noteRollsToPlay, bufferToFill.startSample, bufferToFill.numSamples,
+//            //                pos);
+//            auto firstNoteRoll = noteRollsToPlay.front();
+//            if (!firstNoteRoll->isDeleted()) {
+//                firstNoteRoll->getNextAudioBlock(bufferToFill);
+//            } else {
+//                bufferToFill.clearActiveBufferRegion();
+//            }
 //
-// void MidiPlayer::processNextMidiBuffer(
-//    MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const {
+//            if (noteRollsToPlay.size() > 1) {
+//                tempBuffer.setSize(
+//                    jmax(1, bufferToFill.buffer->getNumChannels()), bufferToFill.buffer->getNumSamples());
 //
-//    const double startTime = currentPos / currentSampleRate;
-//    const double endTime = startTime + numSamples / currentSampleRate;
-////    DBG("MidiPlayer::processNextMidiBuffer pos: " << currentPos << " (" << startTime << " to " << endTime << ")");
-//
-//    MidiBuffer keyboardBuffer;
-//    auto &keyboardState = track.getProject().getKeyboardState();
-//    keyboardState.processNextMidiBuffer(keyboardBuffer, startSample, numSamples, true);
-//    buffer.addEvents(keyboardBuffer, startSample, numSamples, 0);
-//    for (auto e : keyboardBuffer) {
-//        DBG("MidiPlayer::processNextMidiBuffer adding " << (e.getMessage().isNoteOn() ? "noteOn" : "noteOff") << "
-//        event at "
-//                      << e.getMessage().getTimeStamp());
+//                AudioSourceChannelInfo info2(&tempBuffer, 0, bufferToFill.numSamples);
+//                int i = 0;
+//                for (auto *noteRoll : noteRollsToPlay) {
+//                    if (i > 0 && !noteRoll->isDeleted()) {
+//                        noteRoll->getNextAudioBlock(info2);
+//                        for (int chan = 0; chan < bufferToFill.buffer->getNumChannels(); ++chan) {
+//                            bufferToFill.buffer->addFrom(
+//                                chan, bufferToFill.startSample, tempBuffer, chan, 0, bufferToFill.numSamples);
+//                        }
+//                    }
+//                    i++;
+//                }
+//            }
+//        } else {
+//            bufferToFill.clearActiveBufferRegion();
+//        }
+//        currentPosition += bufferToFill.numSamples;
 //    }
-//}
+}
 
 //==============================================================================
 void MidiPlayer::setNextReadPosition(int64 newPosition) {

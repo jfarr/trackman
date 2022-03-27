@@ -46,10 +46,10 @@ class MidiPlayer : public PositionableAudioSource {
     int64 currentPosition = 0;
     bool looping = false;
 //    bool recording = false;
-//    AudioBuffer<float> tempBuffer;
+    AudioBuffer<float> tempBuffer;
 //    bool dumping = false;
 
-    Timeline<NoteRoll *> getCurrentTimeline();
+    Timeline<double, NoteRoll *> getCurrentTimeline();
     double getTimeAtPosition(int64 position) const { return position / currentSampleRate; }
 //    void processNextMidiBuffer(
 //        MidiBuffer &buffer, const int startSample, const int numSamples, const int64 currentPos) const;

@@ -10,8 +10,8 @@ SamplePlayer::~SamplePlayer() {
     }
 }
 
-Timeline<Sample *> SamplePlayer::getCurrentTimeline() {
-    Timeline<Sample *> timeline;
+Timeline<double, Sample *> SamplePlayer::getCurrentTimeline() {
+    Timeline<double, Sample *> timeline;
     for (shared_ptr<Sample> &sample : samples) {
         timeline.addRange(sample->getStartPosInSeconds(), sample->getEndPosInSeconds(), sample.get());
     }

@@ -66,22 +66,47 @@ void NoteRoll::releaseResources() {}
 
 void NoteRoll::getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) {
     const ScopedLock lock(mutex);
-    MidiBuffer midiEvents;
+//    MidiBuffer midiEvents;
     bufferToFill.clearActiveBufferRegion();
-    int64 sourceLengthInSamples = (int64)getLengthInSeconds() * (int64)currentSampleRate;
-    //    DBG("endPosInSeconds: " << endPosInSeconds);
-    //    DBG("sourceLengthInSamples: " << sourceLengthInSamples);
-    auto pos = looping ? currentPosition % sourceLengthInSamples : currentPosition;
-    //    DBG("note roll pos: " << pos << " to " << pos + bufferToFill.numSamples);
-    processNextMidiBuffer(midiEvents, bufferToFill.startSample, bufferToFill.numSamples, pos);
-    //    DBG("NoteRoll::getNextAudioBlock writing to buffer: " << String::toHexString((long)bufferToFill.buffer));
-    //    track.getSynth().renderNextPlaybackBlock(
-    //        *bufferToFill.buffer, midiEvents, bufferToFill.startSample, bufferToFill.numSamples);
 
-    //    instrument.renderNextPlaybackBlock(
-    //        *bufferToFill.buffer, midiEvents, bufferToFill.startSample, bufferToFill.numSamples);
-
+    if (looping) {
+        auto sourceLengthInSamples = (int64)(getLengthInSeconds() * currentSampleRate);
+        auto newStartPos = currentPosition % sourceLengthInSamples;
+        auto newEndPos = (currentPosition + bufferToFill.numSamples) % sourceLengthInSamples;
+        if (newEndPos < newStartPos) {
+            DBG("WRAPPED!!!!!!");
+            MidiBuffer midiEvents1;
+            processMidiBuffer(midiEvents1, newStartPos, sourceLengthInSamples);
+            MidiBuffer midiEvents2;
+            processMidiBuffer(midiEvents2, 0, newEndPos);
+        } else {
+            MidiBuffer midiEvents;
+            processMidiBuffer(midiEvents, newStartPos, newEndPos);
+        }
+    } else {
+        MidiBuffer midiEvents;
+        processMidiBuffer(midiEvents, currentPosition, currentPosition + bufferToFill.numSamples);
+//        track.getInstrument().renderNextPlaybackBlock(
+//            *bufferToFill.buffer, &midiEvents, bufferToFill.startSample, bufferToFill.numSamples);
+    }
     currentPosition += bufferToFill.numSamples;
+//
+//
+//
+//    int64 sourceLengthInSamples = (int64)getLengthInSeconds() * (int64)currentSampleRate;
+//    //    DBG("endPosInSeconds: " << endPosInSeconds);
+//    //    DBG("sourceLengthInSamples: " << sourceLengthInSamples);
+//    auto pos = looping ? currentPosition % sourceLengthInSamples : currentPosition;
+//    //    DBG("note roll pos: " << pos << " to " << pos + bufferToFill.numSamples);
+//    processNextMidiBuffer(midiEvents, bufferToFill.startSample, bufferToFill.numSamples, pos);
+//    //    DBG("NoteRoll::getNextAudioBlock writing to buffer: " << String::toHexString((long)bufferToFill.buffer));
+//    //    track.getSynth().renderNextPlaybackBlock(
+//    //        *bufferToFill.buffer, midiEvents, bufferToFill.startSample, bufferToFill.numSamples);
+//
+//    //    instrument.renderNextPlaybackBlock(
+//    //        *bufferToFill.buffer, midiEvents, bufferToFill.startSample, bufferToFill.numSamples);
+//
+//    currentPosition += bufferToFill.numSamples;
 }
 
 void NoteRoll::processMidiBuffer(MidiBuffer &buffer, int64 startTimeInSamples, int64 endTimeInSamples) {
@@ -123,6 +148,8 @@ void NoteRoll::processNextMidiBuffer(
         } else {
             processMidiBuffer(buffer, newStartPos, newEndPos);
         }
+    } else {
+        processMidiBuffer(buffer, currentPosition, currentPosition + numSamples);
     }
     currentPosition += numSamples;
 
