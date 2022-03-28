@@ -14,13 +14,19 @@ TrackListController::TrackListController(DesktopController &desktopController)
     trackListPanel.onMoveNoteRoll = [this](Track &track, NoteRoll &noteRoll, int x, int y) {
         noteRollMoved(track, noteRoll, x, y);
     };
-    trackListPanel.addListener((SampleListener *)this);
+    trackListPanel.onMoveSample = [this](
+                                      Track &track, Sample &sample, int x, int y) { sampleMoved(track, sample, x, y); };
+    trackListPanel.onResizeSample = [this](Track &, Sample &sample, int width) { sampleResized(sample, width); };
+    trackListPanel.onDragEnded = [this]() { dragEnded(); };
     trackListPanel.addListener((TrackListListener *)this);
     trackListPanel.resized();
 }
 
 TrackListController::~TrackListController() {
-    trackListPanel.removeListener((SampleListener *)this);
+    trackListPanel.onMoveSample = nullptr;
+    trackListPanel.onResizeSample = nullptr;
+    trackListPanel.onMoveNoteRoll = nullptr;
+    trackListPanel.onDragEnded = nullptr;
     trackListPanel.removeListener((TrackListListener *)this);
 }
 
@@ -260,7 +266,7 @@ void TrackListController::sampleResized(Sample &sample, int width) {
     }
 }
 
-void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int screenY) {
+void TrackListController::sampleDragged(SampleThumbnail &thumbnail, int x, int screenY) {
     x = max(x, 0);
     thumbnail.setTopLeftPosition(thumbnail.getPosition().withX(x));
     auto y = screenY - trackListPanel.getScreenPosition().getY();

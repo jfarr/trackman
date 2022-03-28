@@ -2,7 +2,6 @@
 
 #include <JuceHeader.h>
 
-#include "SampleListener.h"
 #include "model/Project.h"
 #include "model/Sample.h"
 #include "ui/common/ThumbnailComponent.h"
@@ -45,8 +44,8 @@ class SampleThumbnail : public Component {
     Track &getTrack() { return track; }
     Sample &getSample() { return sample; }
 
-    void addListener(SampleListener *listener);
-    void removeListener(SampleListener *listener);
+    function<void(Track &, Sample &)> onSelected = nullptr;
+    function<void(SampleThumbnail &, int, int)> onMouseDragged = nullptr;
 
     //==============================================================================
     // Component
@@ -73,12 +72,10 @@ class SampleThumbnail : public Component {
     AudioThumbnailCache thumbnailCache;
     AudioThumbnail thumbnail;
 
-    list<SampleListener *> sampleListeners;
-
     void createControls();
 
-    void notifySampleSelected(Track &track, Sample &selected);
-    void notifyMouseDragged(SampleThumbnail &thumbnail, int x, int y);
+    void notifySelected(Track &track, Sample &selected) const;
+    void notifyMouseDragged(SampleThumbnail &thumbnail, int x, int screenY) const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SampleThumbnail)
 };

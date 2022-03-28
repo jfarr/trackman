@@ -7,7 +7,6 @@
 #include "TrackListViewport.h"
 #include "model/Project.h"
 #include "ui/desktop/TrackListListener.h"
-#include "ui/tracks/SampleListener.h"
 
 using namespace std;
 using namespace juce;
@@ -16,7 +15,7 @@ namespace trackman {
 
 class DesktopController;
 
-class TrackListController : public TrackListListener, public SampleListener {
+class TrackListController : public TrackListListener {
   public:
     TrackListController(DesktopController &desktopController);
     ~TrackListController();
@@ -28,15 +27,20 @@ class TrackListController : public TrackListListener, public SampleListener {
     void repaint();
 
     Sample *addSample(Track &track, File file, int pos);
+    void sampleMoved(Track &track, Sample &sample, int x, int y);
+    void sampleResized(Sample &sample, int width);
     void moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos);
     void resizeSample(Sample &sample, double length);
+    void sampleSelected(Track &track, Sample &sample);
     void deleteSample(Track &track, Sample *sample);
     void undeleteSample(Track &track, Sample *sample);
+    void sampleDragged(SampleThumbnail &thumbnail, int x, int screenY);
 
     void fileDragEnter(const StringArray &files, int x, int y);
     void fileDragMove(const StringArray &files, int x, int y);
     void fileDragExit(const StringArray &files);
     void filesDropped(const StringArray &files, int x, int y);
+    void dragEnded();
 
     void noteRollSelected(Track &track, NoteRoll &noteRoll);
     void deleteNoteRoll(Track &track, NoteRoll *noteRoll);
@@ -48,14 +52,6 @@ class TrackListController : public TrackListListener, public SampleListener {
     //==============================================================================
     // TrackListListener
     void selectionChanged(Track *track) override;
-
-    //==============================================================================
-    // SampleListener
-    void sampleSelected(Track &track, Sample &sample) override;
-    void sampleMoved(Track &track, Sample &sample, int x, int y) override;
-    void sampleResized(Sample &sample, int width) override;
-    void mouseDragged(SampleThumbnail &thumbnail, int x, int screenY) override;
-    void dragEnded() override;
 
   private:
     DesktopController &desktopController;

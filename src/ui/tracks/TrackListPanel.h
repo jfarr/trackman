@@ -2,7 +2,6 @@
 
 #include <JuceHeader.h>
 
-#include "SampleListener.h"
 #include "TrackLaneControl.h"
 #include "model/Track.h"
 #include "model/TrackList.h"
@@ -58,12 +57,13 @@ class TrackListPanel : public Component, public DragAndDropContainer, public Dra
     void fileDragExit(const StringArray &files);
     void filesDropped(const StringArray &files, int x, int y);
 
-    void addListener(SampleListener *listener);
-    void removeListener(SampleListener *listener);
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
 
+    function<void()> onDragEnded = nullptr;
     function<void(Track &, NoteRoll &, int, int)> onMoveNoteRoll = nullptr;
+    function<void(Track &, Sample &, int, int)> onMoveSample = nullptr;
+    function<void(Track &, Sample &, int)> onResizeSample = nullptr;
 
     //==============================================================================
     // DragAndDropTarget
@@ -95,7 +95,6 @@ class TrackListPanel : public Component, public DragAndDropContainer, public Dra
     bool dragging = false;
     bool canDrop();
 
-    list<SampleListener *> sampleListeners;
     list<TrackListListener *> trackListListeners;
 
     int getPanelWidth() const;
@@ -103,9 +102,9 @@ class TrackListPanel : public Component, public DragAndDropContainer, public Dra
     int getTrackLaneHeight() const;
 
     void notifyNoteRollDropped(NoteCanvas *canvas, int x, int y) const;
-    void notifySampleDropped(SampleThumbnail *thumbnail, int x, int y);
-    void notifySampleResized(SampleThumbnail *thumbnail, int width);
-    void notifyDragEnded();
+    void notifySampleMoved(SampleThumbnail *thumbnail, int x, int y) const;
+    void notifySampleResized(SampleThumbnail *thumbnail, int width) const;
+    void notifyDragEnded() const;
     void notifySelectionChanged();
 
     void timerCallback() override;

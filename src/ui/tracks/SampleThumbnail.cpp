@@ -55,7 +55,7 @@ void SampleThumbnail::resized() {
 
 void SampleThumbnail::mouseDown(const MouseEvent &event) {
     Component::mouseDown(event);
-    notifySampleSelected(track, sample);
+    notifySelected(track, sample);
     if (!dragging) {
         dragging = true;
         xPos = getPosition().getX();
@@ -73,23 +73,15 @@ void SampleThumbnail::mouseDrag(const MouseEvent &event) {
     notifyMouseDragged(*this, xPos + d, event.getScreenY());
 }
 
-void SampleThumbnail::addListener(SampleListener *listener) {
-    if (!listContains(sampleListeners, listener)) {
-        sampleListeners.push_front(listener);
+void SampleThumbnail::notifySelected(Track &track, Sample &selected) const {
+    if (onSelected != nullptr) {
+        onSelected(track, selected);
     }
 }
 
-void SampleThumbnail::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
-
-void SampleThumbnail::notifySampleSelected(Track &track, Sample &selected) {
-    for (SampleListener *listener : sampleListeners) {
-        listener->sampleSelected(track, selected);
-    }
-}
-
-void SampleThumbnail::notifyMouseDragged(SampleThumbnail &thumbnail, int x, int y) {
-    for (SampleListener *listener : sampleListeners) {
-        listener->mouseDragged(thumbnail, x, y);
+void SampleThumbnail::notifyMouseDragged(SampleThumbnail &thumbnail, int x, int screenY) const {
+    if (onMouseDragged != nullptr) {
+        onMouseDragged(thumbnail, x, screenY);
     }
 }
 

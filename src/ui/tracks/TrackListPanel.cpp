@@ -70,7 +70,7 @@ void TrackListPanel::itemDropped(const SourceDetails &dragSourceDetails) {
     auto *thumbnail = dynamic_cast<SampleThumbnail *>(sourceComponent);
     if (thumbnail != nullptr) {
         auto pos = dragSourceDetails.localPosition;
-        notifySampleDropped(thumbnail, pos.getX() - dragSourceOffset, pos.getY());
+        notifySampleMoved(thumbnail, pos.getX() - dragSourceOffset, pos.getY());
         return;
     }
     auto stretchHandle = dynamic_cast<StretchHandle *>(sourceComponent);
@@ -163,35 +163,27 @@ void TrackListPanel::mouseDown(const MouseEvent &event) {
     notifySelectionChanged();
 }
 
-void TrackListPanel::addListener(SampleListener *listener) {
-    if (!listContains(sampleListeners, listener)) {
-        sampleListeners.push_front(listener);
-    }
-}
-
-void TrackListPanel::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
-
 void TrackListPanel::notifyNoteRollDropped(NoteCanvas *canvas, int x, int y) const {
     if (onMoveNoteRoll != nullptr) {
         onMoveNoteRoll(canvas->getTrack(), canvas->getNoteRoll(), x, y);
     }
 }
 
-void TrackListPanel::notifySampleDropped(SampleThumbnail *thumbnail, int x, int y) {
-    for (SampleListener *listener : sampleListeners) {
-        listener->sampleMoved(thumbnail->getTrack(), thumbnail->getSample(), x, y);
+void TrackListPanel::notifySampleMoved(SampleThumbnail *thumbnail, int x, int y) const {
+    if (onMoveSample != nullptr) {
+        onMoveSample(thumbnail->getTrack(), thumbnail->getSample(), x, y);
     }
 }
 
-void TrackListPanel::notifySampleResized(SampleThumbnail *thumbnail, int width) {
-    for (SampleListener *listener : sampleListeners) {
-        listener->sampleResized(thumbnail->getSample(), width);
+void TrackListPanel::notifySampleResized(SampleThumbnail *thumbnail, int width) const {
+    if (onResizeSample != nullptr) {
+        onResizeSample(thumbnail->getTrack(), thumbnail->getSample(), width);
     }
 }
 
-void TrackListPanel::notifyDragEnded() {
-    for (SampleListener *listener : sampleListeners) {
-        listener->dragEnded();
+void TrackListPanel::notifyDragEnded() const {
+    if (onDragEnded != nullptr) {
+        onDragEnded();
     }
 }
 
