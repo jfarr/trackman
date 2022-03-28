@@ -1,6 +1,7 @@
 #pragma once
 
 #include "model/MidiRecorder.h"
+#include "model/Position.h"
 #include "model/TrackList.h"
 #include "ui/desktop/TrackListListener.h"
 #include <JuceHeader.h>
@@ -13,8 +14,8 @@ namespace trackman {
 class TransportControl : public Component, public ChangeListener, public Timer, public TrackListListener {
   public:
     //==============================================================================
-    TransportControl(
-        AudioTransportSource &transportSource, bool enabled = true, function<bool()> recordEnabledFn = nullptr);
+    TransportControl(AudioTransportSource &transportSource, bool enabled = true,
+        function<bool()> recordEnabledFn = nullptr, function<Position()> positionFn = nullptr);
     ~TransportControl() override;
 
     void setEnabled(bool enabled);
@@ -53,6 +54,7 @@ class TransportControl : public Component, public ChangeListener, public Timer, 
     void changeState(TransportState newState);
     String getStateLabel();
     bool isRecordEnabled() const { return recordEnabledFn != nullptr; }
+    bool hasPosition() const { return positionFn != nullptr; }
 
     void notifyLoopingChanged(bool shouldLoop) const;
     void notifyRecordingStarted() const;
@@ -65,6 +67,7 @@ class TransportControl : public Component, public ChangeListener, public Timer, 
     const float buttonImageHeight = 210;
 
     function<bool()> recordEnabledFn;
+    function<Position()> positionFn;
     bool recording = false;
 
     ImageButton startButton;
@@ -74,6 +77,7 @@ class TransportControl : public Component, public ChangeListener, public Timer, 
     ImageButton pauseButton;
     ToggleButton loopingToggle;
     Label currentPositionLabel;
+    Label currentTimeLabel;
 
     Image startButtonImage;
     Image recordButtonOffImage;

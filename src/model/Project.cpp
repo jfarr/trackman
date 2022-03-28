@@ -12,6 +12,17 @@ Project::Project(AudioDeviceManager &deviceManager)
     : deviceManager(deviceManager), instrumentPlayer(*this), trackList(*this, deviceManager),
       mixer(trackList, deviceManager), transport(mixer) {}
 
+Position Project::getCurrentPosition() const {
+    double positionInSeconds = transport.getCurrentPosition();
+    double positionInMeasures = secondsToMeasures(positionInSeconds);
+    double measure;
+    double fraction = modf(positionInMeasures, &measure);
+    double beat = (fraction * timeSignature.getNumerator()) + 1;
+    double unused;
+    double beatFraction = modf(beat, &unused);
+    return Position((int)measure, (int)beat, (int)(beatFraction * 1000));
+}
+
 Synthesiser *Project::getLiveSynth() {
     auto selected = getSelectedTrack();
     return selected == nullptr ? nullptr : &selected->getLiveSynth();

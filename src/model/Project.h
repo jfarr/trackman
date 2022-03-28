@@ -2,6 +2,7 @@
 
 #include "InstrumentPlayer.h"
 #include "Mixer.h"
+#include "Position.h"
 #include "TimeSignature.h"
 #include "TrackList.h"
 #include "Transport.h"
@@ -25,6 +26,8 @@ class Project {
 
     const TimeSignature &getTimeSignature() const { return timeSignature; }
     void setTimeSignature(const TimeSignature &newTimeSignature) { timeSignature = newTimeSignature; }
+
+    Position getCurrentPosition() const;
 
     Track *addTrack();
     void deleteTrack(Track *track);

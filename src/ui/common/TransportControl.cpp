@@ -4,8 +4,8 @@
 namespace trackman {
 
 //==============================================================================
-TransportControl::TransportControl(
-    AudioTransportSource &transportSource, bool enabled, function<bool()> recordEnabledFn)
+TransportControl::TransportControl(AudioTransportSource &transportSource, bool enabled,
+    function<bool()> recordEnabledFn, function<Position()> positionFn)
     : startButtonImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       recordButtonOffImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       recordButtonOnImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true),
@@ -14,7 +14,7 @@ TransportControl::TransportControl(
       stopButtonImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       pauseButtonOffImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true),
       pauseButtonOnImage(Image::ARGB, buttonImageWidth, buttonImageHeight, true), transportSource(transportSource),
-      enabled(enabled), recordEnabledFn(recordEnabledFn) {
+      enabled(enabled), recordEnabledFn(recordEnabledFn), positionFn(positionFn) {
     transportSource.addChangeListener(this);
     createControls();
     startTimer(20);
@@ -75,8 +75,12 @@ void TransportControl::createControls() {
     loopingToggle.setEnabled(enabled);
     addAndMakeVisible(&loopingToggle);
 
-    currentPositionLabel.setEnabled(enabled);
-    addAndMakeVisible(&currentPositionLabel);
+    if (hasPosition()) {
+        currentPositionLabel.setJustificationType(Justification::centredRight);
+        addAndMakeVisible(&currentPositionLabel);
+    }
+    currentTimeLabel.setJustificationType(Justification::centredLeft);
+    addAndMakeVisible(&currentTimeLabel);
 }
 
 void TransportControl::setButtonImage(ImageButton &button, Image &image) {
@@ -183,7 +187,7 @@ void TransportControl::setEnabled(bool isEnabled) {
     stopButton.setEnabled(isEnabled);
     pauseButton.setEnabled(isEnabled);
     loopingToggle.setEnabled(isEnabled);
-    currentPositionLabel.setEnabled(isEnabled);
+    currentTimeLabel.setEnabled(isEnabled);
 }
 
 void TransportControl::paint(Graphics &g) {
@@ -194,7 +198,8 @@ void TransportControl::resized() {
     auto area = getLocalBounds();
 
     auto buttonWidth = 50;
-    auto loopButtonWidth = 65;
+    auto loopButtonWidth = 55;
+    auto positionWidth = 75;
     auto buttonMargin = 2;
     startButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin).withTrimmedLeft(buttonMargin));
     if (isRecordEnabled()) {
@@ -204,7 +209,10 @@ void TransportControl::resized() {
     stopButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
     pauseButton.setBounds(area.removeFromLeft(buttonWidth).reduced(0, buttonMargin));
     loopingToggle.setBounds(area.removeFromLeft(loopButtonWidth).reduced(buttonMargin));
-    currentPositionLabel.setBounds(area.reduced(buttonMargin));
+    if (hasPosition()) {
+        currentPositionLabel.setBounds(area.removeFromLeft(positionWidth).reduced(buttonMargin));
+    }
+    currentTimeLabel.setBounds(area.reduced(buttonMargin).withTrimmedLeft(-5));
 }
 
 void TransportControl::changeState(TransportState newState) {
@@ -315,7 +323,13 @@ void TransportControl::timerCallback() {
     auto positionString = String::formatted("%02d:%02d:%03d", minutes, seconds, millis);
     auto lengthString = String::formatted("%02d:%02d:%03d", lmins, lsecs, lmillis);
 
-    currentPositionLabel.setText(positionString + String(" / ") + lengthString + stateText, dontSendNotification);
+    if (hasPosition()) {
+        auto position = positionFn();
+        auto measureString =
+            String::formatted("%d.%d.%03d", position.getMeasure(), position.getBeat(), position.getFraction());
+        currentPositionLabel.setText(measureString, dontSendNotification);
+    }
+    currentTimeLabel.setText(positionString + String(" / ") + lengthString + stateText, dontSendNotification);
 }
 
 void TransportControl::startButtonClicked() { transportSource.setPosition(0.0); }
