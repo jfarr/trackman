@@ -14,7 +14,7 @@ namespace trackman {
 class Project;
 class Track;
 
-class NoteRoll /*: public TrackRegion*/ {
+class NoteRoll : public TrackRegion {
   public:
     NoteRoll(Project &project, Track &track);
     NoteRoll(Project &project, Track &track, int startPosInTicks, int endPosInTicks,
@@ -25,16 +25,12 @@ class NoteRoll /*: public TrackRegion*/ {
     bool empty() { return midiMessages.getNumEvents() == 0; }
     int getStartPosInTicks() const { return startPosInTicks; }
     int getEndPosInTicks() const { return endPosInTicks; }
-    double getStartPosInSeconds() const;
-    double getEndPosInSeconds() const;
+    double getStartPosInSeconds() const override;
+    double getEndPosInSeconds() const override;
     double getLengthInSeconds() const;
-    bool isSelected() const { return selected; }
-    bool isDeleted() const { return deleted; }
     bool isRecording() const { return recording; }
 
     void setPosition(double newPosInSeconds);
-    void setSelected(bool newSelected) { selected = newSelected; }
-    void setDeleted(bool newDeleted) { deleted = newDeleted; }
 
     void startRecording();
     void stopRecording();
@@ -56,8 +52,6 @@ class NoteRoll /*: public TrackRegion*/ {
     MidiMessageSequence midiMessages;
     int startPosInTicks = 0;
     int endPosInTicks = 0;
-    bool selected = false;
-    bool deleted = false;
     bool recording = false;
 
     CriticalSection mutex;

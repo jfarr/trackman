@@ -13,26 +13,22 @@ namespace trackman {
 
 class Track;
 
-class Sample : public PositionableAudioSource/*, public TrackRegion*/ {
+class Sample : public TrackRegion, public PositionableAudioSource {
   public:
     Sample(File file, double startPosInSeconds, double endPosInSeconds);
     ~Sample() override;
 
     File getFile() const { return file; }
-    double getStartPosInSeconds() const { return startPosInSeconds; }
-    double getEndPosInSeconds() const { return endPosInSeconds; }
+    double getStartPosInSeconds() const override { return startPosInSeconds; }
+    double getEndPosInSeconds() const override { return endPosInSeconds; }
     double getLengthInSeconds() const { return lengthInSeconds; }
     int64 getTotalLengthInSamples() const;
     bool isLoaded() const { return loaded; }
-    bool isSelected() const { return selected; }
-    bool isDeleted() const { return deleted; }
 
     void loadFile(AudioDeviceManager &deviceManager, AudioFormatManager &formatManager);
 
     void setPosition(double newPosInSeconds);
     void setLength(double newLengthInSeconds);
-    void setSelected(bool newSelected) { selected = newSelected; }
-    void setDeleted(bool newDeleted) { deleted = newDeleted; }
 
     //==============================================================================
     // AudioSource
@@ -57,8 +53,6 @@ class Sample : public PositionableAudioSource/*, public TrackRegion*/ {
     unique_ptr<AudioFormatReaderSource> fileSource;
     unique_ptr<PositionableResamplingAudioSource> resamplingSource;
     bool loaded = false;
-    bool selected = false;
-    bool deleted = false;
 
     int64 getPositionFromTime(double t) const;
     double getSampleRate() const;
