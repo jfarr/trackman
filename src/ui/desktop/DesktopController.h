@@ -147,8 +147,6 @@ class DesktopController : public AudioSource,
     bool dirty = false;
     Command *saveCommand = nullptr;
 
-    float previousTempo;
-
     void saveProjectFile(const File &file);
     void updateTitleBar();
 
