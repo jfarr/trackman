@@ -79,7 +79,7 @@ void NoteCanvas::mouseUp(const MouseEvent &event) { dragging = false; }
 void NoteCanvas::mouseDrag(const MouseEvent &event) {
     auto *container = DragAndDropContainer::findParentDragContainerFor(this);
     if (container != nullptr) {
-        container->startDragging("clip", this, scaledDragImage);
+        container->startDragging("notes", this, scaledDragImage);
     }
     auto d = event.getDistanceFromDragStartX();
     notifyMouseDragged(*this, xPos + d, event.getScreenY());

@@ -105,7 +105,7 @@ void StretchHandle::paint(Graphics &g) {
 void StretchHandle::mouseDrag(const MouseEvent &event) {
     auto *container = DragAndDropContainer::findParentDragContainerFor(this);
     if (container != nullptr) {
-        container->startDragging("clip", this, scaledDragImage);
+        container->startDragging("sample", this, scaledDragImage);
     }
     auto bounds = thumbnail.getScreenBounds();
     auto x = event.getScreenX();

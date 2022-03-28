@@ -1,7 +1,6 @@
 # Roadmap
 
 ## Short-Term
-- Snap while moving note rolls
 - Undo change tempo / time signature
 - Stretch / loop note rolls
 - Factor out base classes for samples / note rolls

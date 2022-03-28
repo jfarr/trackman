@@ -12,10 +12,12 @@ class Position {
     int getBeat() const { return beat; }
     int getFraction() const { return fraction; }
 
+    Position rounded() const { return {measure, beat, 0}; }
+
   private:
-    int measure;
-    int beat;
-    int fraction;
+    const int measure;
+    const int beat;
+    const int fraction;
 };
 
 } // namespace trackman

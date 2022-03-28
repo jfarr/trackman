@@ -28,6 +28,8 @@ class Project {
     void setTimeSignature(const TimeSignature &newTimeSignature) { timeSignature = newTimeSignature; }
 
     Position getCurrentPosition() const;
+    Position positionAtTime(double t) const;
+    double timeAtPosition(Position pos) const;
 
     Track *addTrack();
     void deleteTrack(Track *track);
