@@ -93,6 +93,9 @@ class DesktopController : public AudioSource,
     void numeratorChanged(int newNumerator);
     void denominatorChanged(int newDenominator);
 
+    void changeTempo(float newTempo);
+    void changeTimeSignature(const TimeSignature & newTimeSignature);
+
     //==============================================================================
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;
@@ -143,8 +146,6 @@ class DesktopController : public AudioSource,
     File projectFile;
     bool dirty = false;
     Command *saveCommand = nullptr;
-
-    float previousTempo;
 
     void saveProjectFile(const File &file);
     void updateTitleBar();

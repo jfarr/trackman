@@ -4,6 +4,7 @@
 #include "commands/SampleCommands.h"
 #include "commands/TrackCommands.h"
 #include "commands/TrackListCommands.h"
+#include "commands/TransportCommands.h"
 #include "common/listutil.h"
 #include "ui/KeyboardControl.h"
 #include "ui/MainWindow.h"
@@ -13,7 +14,7 @@ namespace trackman {
 DesktopController::DesktopController(MainWindow &mainWindow, AudioDeviceManager &deviceManager)
     : mainWindow(mainWindow), deviceManager(deviceManager), applicationName(mainWindow.getName()),
       desktopComponent(*this), project(deviceManager), transportController(*this), mixerController(*this),
-      trackListController(*this), instrumentsController(*this), previousTempo(project.getTempo()) {
+      trackListController(*this), instrumentsController(*this) {
 
     updateTitleBar();
 }
@@ -134,22 +135,54 @@ void DesktopController::masterMuteToggled() {
 }
 
 void DesktopController::tempoChanged(float newTempo) {
-    previousTempo = newTempo;
+    if (newTempo != project.getTempo()) {
+        Command *command = new ChangeTempoCommand(*this, project.getTempo(), newTempo);
+        commandList.pushCommand(command);
+        dirty = true;
+        updateTitleBar();
+        desktopComponent.menuItemsChanged();
+    }
+}
+
+void DesktopController::changeTempo(float newTempo) {
     project.setTempo(newTempo);
     MessageManager::callAsync([this]() {
         trackListController.update();
+        transportController.update();
         desktopComponent.repaint();
     });
 }
 
 void DesktopController::numeratorChanged(int newNumerator) {
-    project.setTimeSignature(TimeSignature(newNumerator, project.getTimeSignature().getDenominator()));
-    MessageManager::callAsync([this]() { desktopComponent.repaint(); });
+    auto prevTimeSignature = project.getTimeSignature();
+    if (newNumerator != prevTimeSignature.getNumerator()) {
+        auto newTimeSignature = TimeSignature(newNumerator, prevTimeSignature.getDenominator());
+        Command *command = new ChangeTimeSignatureCommand(*this, prevTimeSignature, newTimeSignature);
+        commandList.pushCommand(command);
+        dirty = true;
+        updateTitleBar();
+        desktopComponent.menuItemsChanged();
+    }
 }
 
 void DesktopController::denominatorChanged(int newDenominator) {
-    project.setTimeSignature(TimeSignature(project.getTimeSignature().getNumerator(), newDenominator));
-    MessageManager::callAsync([this]() { desktopComponent.repaint(); });
+    auto prevTimeSignature = project.getTimeSignature();
+    if (newDenominator != prevTimeSignature.getDenominator()) {
+        auto newTimeSignature = TimeSignature(prevTimeSignature.getNumerator(), newDenominator);
+        Command *command = new ChangeTimeSignatureCommand(*this, prevTimeSignature, newTimeSignature);
+        commandList.pushCommand(command);
+        dirty = true;
+        updateTitleBar();
+        desktopComponent.menuItemsChanged();
+    }
+}
+
+void DesktopController::changeTimeSignature(const TimeSignature &newTimeSignature) {
+    project.setTimeSignature(newTimeSignature);
+    MessageManager::callAsync([this]() {
+        desktopComponent.repaint();
+        transportController.update();
+    });
 }
 
 void DesktopController::trackNameChanged(Track &track, String newName) {
@@ -398,7 +431,6 @@ void DesktopController::openProject() {
             projectFile = file;
             project.from_json(
                 mainWindow.getMainAudioComponent().getFormatManager(), file.getFullPathName().toStdString());
-            previousTempo = project.getTempo();
             MessageManager::callAsync([this]() {
                 trackListController.update();
                 transportController.update();
