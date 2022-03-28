@@ -7,7 +7,6 @@
 #include "TrackListViewport.h"
 #include "model/Project.h"
 #include "ui/desktop/TrackListListener.h"
-#include "ui/tracks/SampleListener.h"
 
 using namespace std;
 using namespace juce;
@@ -16,7 +15,7 @@ namespace trackman {
 
 class DesktopController;
 
-class TrackListController : public TrackListListener, public SampleListener {
+class TrackListController : public TrackListListener {
   public:
     TrackListController(DesktopController &desktopController);
     ~TrackListController();
@@ -28,6 +27,8 @@ class TrackListController : public TrackListListener, public SampleListener {
     void repaint();
 
     Sample *addSample(Track &track, File file, int pos);
+    void sampleMoved(Track &track, Sample &sample, int x, int y);
+    void sampleResized(Sample &sample, int width);
     void moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos);
     void resizeSample(Sample &sample, double length);
     void sampleSelected(Track &track, Sample &sample);
@@ -51,11 +52,6 @@ class TrackListController : public TrackListListener, public SampleListener {
     //==============================================================================
     // TrackListListener
     void selectionChanged(Track *track) override;
-
-    //==============================================================================
-    // SampleListener
-    void sampleMoved(Track &track, Sample &sample, int x, int y) override;
-    void sampleResized(Sample &sample, int width) override;
 
   private:
     DesktopController &desktopController;

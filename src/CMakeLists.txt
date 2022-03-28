@@ -123,7 +123,6 @@ target_sources(Trackman PRIVATE
         ui/mixer/TrackPanel.h
         ui/tracks/NoteCanvas.cpp
         ui/tracks/NoteCanvas.h
-        ui/tracks/SampleListener.h
         ui/tracks/SampleThumbnail.cpp
         ui/tracks/SampleThumbnail.h
         ui/tracks/TrackLaneControl.cpp

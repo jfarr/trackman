@@ -2,7 +2,6 @@
 
 #include <JuceHeader.h>
 
-#include "SampleListener.h"
 #include "model/Project.h"
 #include "model/Sample.h"
 #include "ui/common/ThumbnailComponent.h"
