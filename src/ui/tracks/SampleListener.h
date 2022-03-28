@@ -13,7 +13,6 @@ class SampleListener {
   public:
     virtual void sampleMoved(Track &track, Sample &sample, int x, int y) {}
     virtual void sampleResized(Sample &sample, int width) {}
-    virtual void dragEnded() {}
 };
 
 }

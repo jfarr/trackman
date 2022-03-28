@@ -63,6 +63,7 @@ class TrackListPanel : public Component, public DragAndDropContainer, public Dra
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
 
+    function<void()> onDragEnded = nullptr;
     function<void(Track &, NoteRoll &, int, int)> onMoveNoteRoll = nullptr;
 
     //==============================================================================
@@ -105,7 +106,7 @@ class TrackListPanel : public Component, public DragAndDropContainer, public Dra
     void notifyNoteRollDropped(NoteCanvas *canvas, int x, int y) const;
     void notifySampleDropped(SampleThumbnail *thumbnail, int x, int y);
     void notifySampleResized(SampleThumbnail *thumbnail, int width);
-    void notifyDragEnded();
+    void notifyDragEnded() const;
     void notifySelectionChanged();
 
     void timerCallback() override;

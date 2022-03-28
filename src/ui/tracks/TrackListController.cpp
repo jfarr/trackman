@@ -14,7 +14,7 @@ TrackListController::TrackListController(DesktopController &desktopController)
     trackListPanel.onMoveNoteRoll = [this](Track &track, NoteRoll &noteRoll, int x, int y) {
         noteRollMoved(track, noteRoll, x, y);
     };
-    trackListPanel.addListener((SampleListener *)this);
+    trackListPanel.onDragEnded = [this]() { dragEnded(); };
     trackListPanel.addListener((TrackListListener *)this);
     trackListPanel.resized();
 }

@@ -189,9 +189,9 @@ void TrackListPanel::notifySampleResized(SampleThumbnail *thumbnail, int width) 
     }
 }
 
-void TrackListPanel::notifyDragEnded() {
-    for (SampleListener *listener : sampleListeners) {
-        listener->dragEnded();
+void TrackListPanel::notifyDragEnded() const {
+    if (onDragEnded != nullptr) {
+        onDragEnded();
     }
 }
 

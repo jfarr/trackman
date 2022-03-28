@@ -39,6 +39,7 @@ class TrackListController : public TrackListListener, public SampleListener {
     void fileDragMove(const StringArray &files, int x, int y);
     void fileDragExit(const StringArray &files);
     void filesDropped(const StringArray &files, int x, int y);
+    void dragEnded();
 
     void noteRollSelected(Track &track, NoteRoll &noteRoll);
     void deleteNoteRoll(Track &track, NoteRoll *noteRoll);
@@ -55,7 +56,6 @@ class TrackListController : public TrackListListener, public SampleListener {
     // SampleListener
     void sampleMoved(Track &track, Sample &sample, int x, int y) override;
     void sampleResized(Sample &sample, int width) override;
-    void dragEnded() override;
 
   private:
     DesktopController &desktopController;
