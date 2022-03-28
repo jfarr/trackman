@@ -93,6 +93,8 @@ class DesktopController : public AudioSource,
     void numeratorChanged(int newNumerator);
     void denominatorChanged(int newDenominator);
 
+    void changeTempo(float newTempo);
+
     //==============================================================================
     // AudioSource
     void prepareToPlay(int blockSize, double sampleRate) override;

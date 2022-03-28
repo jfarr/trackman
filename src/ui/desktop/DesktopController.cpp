@@ -4,6 +4,7 @@
 #include "commands/SampleCommands.h"
 #include "commands/TrackCommands.h"
 #include "commands/TrackListCommands.h"
+#include "commands/TransportCommands.h"
 #include "common/listutil.h"
 #include "ui/KeyboardControl.h"
 #include "ui/MainWindow.h"
@@ -134,10 +135,19 @@ void DesktopController::masterMuteToggled() {
 }
 
 void DesktopController::tempoChanged(float newTempo) {
+    Command *command = new ChangeTempoCommand(*this, previousTempo, newTempo);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
+    desktopComponent.menuItemsChanged();
+}
+
+void DesktopController::changeTempo(float newTempo) {
     previousTempo = newTempo;
     project.setTempo(newTempo);
     MessageManager::callAsync([this]() {
         trackListController.update();
+        transportController.update();
         desktopComponent.repaint();
     });
 }
