@@ -73,13 +73,13 @@ void SampleThumbnail::mouseDrag(const MouseEvent &event) {
     notifyMouseDragged(*this, xPos + d, event.getScreenY());
 }
 
-void SampleThumbnail::notifySelected(Track &track, Sample &selected) {
+void SampleThumbnail::notifySelected(Track &track, Sample &selected) const {
     if (onSelected != nullptr) {
         onSelected(track, selected);
     }
 }
 
-void SampleThumbnail::notifyMouseDragged(SampleThumbnail &thumbnail, int x, int screenY) {
+void SampleThumbnail::notifyMouseDragged(SampleThumbnail &thumbnail, int x, int screenY) const {
     if (onMouseDragged != nullptr) {
         onMouseDragged(thumbnail, x, screenY);
     }

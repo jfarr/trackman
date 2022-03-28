@@ -74,8 +74,8 @@ class SampleThumbnail : public Component {
 
     void createControls();
 
-    void notifySelected(Track &track, Sample &selected);
-    void notifyMouseDragged(SampleThumbnail &thumbnail, int x, int screenY);
+    void notifySelected(Track &track, Sample &selected) const;
+    void notifyMouseDragged(SampleThumbnail &thumbnail, int x, int screenY) const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SampleThumbnail)
 };
