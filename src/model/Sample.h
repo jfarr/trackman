@@ -13,7 +13,7 @@ namespace trackman {
 
 class Track;
 
-class Sample : public PositionableAudioSource, public TrackRegion {
+class Sample : public PositionableAudioSource/*, public TrackRegion*/ {
   public:
     Sample(File file, double startPosInSeconds, double endPosInSeconds);
     ~Sample() override;

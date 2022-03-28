@@ -14,7 +14,7 @@ namespace trackman {
 class Project;
 class Track;
 
-class NoteRoll : public TrackRegion {
+class NoteRoll /*: public TrackRegion*/ {
   public:
     NoteRoll(Project &project, Track &track);
     NoteRoll(Project &project, Track &track, int startPosInTicks, int endPosInTicks,

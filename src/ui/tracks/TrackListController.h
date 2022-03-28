@@ -30,6 +30,7 @@ class TrackListController : public TrackListListener, public SampleListener {
     Sample *addSample(Track &track, File file, int pos);
     void moveSample(Sample &sample, Track &fromTrack, Track &toTrack, double pos);
     void resizeSample(Sample &sample, double length);
+    void sampleSelected(Track &track, Sample &sample);
     void deleteSample(Track &track, Sample *sample);
     void undeleteSample(Track &track, Sample *sample);
     void sampleDragged(SampleThumbnail &thumbnail, int x, int screenY);
@@ -52,10 +53,8 @@ class TrackListController : public TrackListListener, public SampleListener {
 
     //==============================================================================
     // SampleListener
-    void sampleSelected(Track &track, Sample &sample) override;
     void sampleMoved(Track &track, Sample &sample, int x, int y) override;
     void sampleResized(Sample &sample, int width) override;
-//    void mouseDragged(SampleThumbnail &thumbnail, int x, int screenY) override;
     void dragEnded() override;
 
   private:
