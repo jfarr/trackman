@@ -40,6 +40,7 @@ class MidiHandler : public MidiKeyboardState::Listener, public MidiInputCallback
     };
     void postMessage(const MidiMessage &message, double time);
     void handleMessage(MidiMessage message, double time);
+    virtual void dispatchMessage(MidiMessage message, double timestampInTicks);
 
     Project &project;
     bool isAddingFromMidiInput = false;
