@@ -84,7 +84,7 @@ class TransportPanel : public Component {
   private:
     const int preferredWidth = 800;
     const int preferredHeight = 35;
-    const int transportWidth = 550;
+    const int transportWidth = 600;
     const int transportMargin = 5;
 
     DesktopController &desktopController;

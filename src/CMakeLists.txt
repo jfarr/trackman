@@ -47,6 +47,8 @@ target_sources(Trackman PRIVATE
         model/Mixer.h
         model/NoteRoll.cpp
         model/NoteRoll.h
+        model/Position.cpp
+        model/Position.h
         model/Project.cpp
         model/Project.h
         model/Sample.cpp

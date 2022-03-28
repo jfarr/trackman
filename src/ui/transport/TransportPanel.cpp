@@ -5,8 +5,10 @@ namespace trackman {
 
 TransportPanel::TransportPanel(DesktopController &desktopController)
     : desktopController(desktopController),
-      transportControl(desktopController.getProject().getTransport().getTransportSource(), true,
-          [&desktopController]() { return desktopController.canRecord(); }) {
+      transportControl(
+          desktopController.getProject().getTransport().getTransportSource(), true,
+          [&desktopController]() { return desktopController.canRecord(); },
+          [&desktopController]() { return desktopController.getProject().getCurrentPosition(); }) {
 
     createControls();
     update();
