@@ -162,14 +162,6 @@ void TrackListPanel::mouseDown(const MouseEvent &event) {
     Component::mouseDown(event);
     notifySelectionChanged();
 }
-//
-//void TrackListPanel::addListener(SampleListener *listener) {
-//    if (!listContains(sampleListeners, listener)) {
-//        sampleListeners.push_front(listener);
-//    }
-//}
-//
-//void TrackListPanel::removeListener(SampleListener *listener) { sampleListeners.remove(listener); }
 
 void TrackListPanel::notifyNoteRollDropped(NoteCanvas *canvas, int x, int y) const {
     if (onMoveNoteRoll != nullptr) {
@@ -181,18 +173,12 @@ void TrackListPanel::notifySampleMoved(SampleThumbnail *thumbnail, int x, int y)
     if (onMoveSample != nullptr) {
         onMoveSample(thumbnail->getTrack(), thumbnail->getSample(), x, y);
     }
-//    for (SampleListener *listener : sampleListeners) {
-//        listener->sampleMoved(thumbnail->getTrack(), thumbnail->getSample(), x, y);
-//    }
 }
 
 void TrackListPanel::notifySampleResized(SampleThumbnail *thumbnail, int width) {
     if (onResizeSample != nullptr) {
         onResizeSample(thumbnail->getTrack(), thumbnail->getSample(), width);
     }
-//    for (SampleListener *listener : sampleListeners) {
-//        listener->sampleResized(thumbnail->getSample(), width);
-//    }
 }
 
 void TrackListPanel::notifyDragEnded() const {
