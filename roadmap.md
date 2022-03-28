@@ -1,15 +1,16 @@
 # Roadmap
 
 ## Short-Term
+- Stretch sample loops instead of resampling
 - Stretch / loop note rolls
 - Factor out base classes for samples / note rolls
 - Edit note rolls
 - Undo edit note roll
 - Fix bugs
+  - Instrument panel viewport wrong size 
   - Popping at begin/end of midi tracks
   - Missing note-offs when moving note rolls while playing
 - Amplitude ASDR envelopes
-- Stretch sample loops instead of resampling
 - Stereo panner
 - Hold zoom buttons zooms exponentially faster (possibly zoom slider instead)
 - Song start / end position

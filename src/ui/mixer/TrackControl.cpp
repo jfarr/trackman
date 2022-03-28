@@ -1,13 +1,14 @@
 #include "TrackControl.h"
 
 #include "common/listutil.h"
+#include "MixerPanel.h"
 
 namespace trackman {
 
 TrackControl::TrackControl(Track &track) : track(track), levelMeter(LevelMeter::MeterFlags::Minimal) {
     createControls();
     update();
-    setSize(getPreferredWidth(), 244);
+    setSize(getPreferredWidth(), MixerPanel::preferredHeight);
 }
 
 TrackControl::~TrackControl() { levelMeter.setLookAndFeel(nullptr); }

@@ -1,4 +1,5 @@
 #include "TrackPanel.h"
+#include "MixerPanel.h"
 
 namespace trackman {
 
@@ -15,7 +16,8 @@ void TrackPanel::update() {
 
 void TrackPanel::resize() {
     auto w = getTrackWidth();
-    auto h = 244 - (w > viewport.getMaximumVisibleWidth() ? viewport.getScrollBarThickness() : 0);
+    auto h =
+        MixerPanel::preferredHeight - (w > viewport.getMaximumVisibleWidth() ? viewport.getScrollBarThickness() : 0);
     setSize(getTrackWidth(), h);
     for (TrackControl *track : tracks) {
         track->resized();

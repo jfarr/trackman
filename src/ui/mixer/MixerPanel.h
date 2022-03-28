@@ -21,7 +21,7 @@ class MixerPanel : public Component {
     MixerPanel(DesktopController &desktopController, LevelMeterSource &meterSource);
     ~MixerPanel() override;
 
-    int getPreferredHeight() const { return max(getHeight(), 280); }
+    int getPreferredHeight() const { return max(getHeight(), preferredHeight); }
 
     MasterTrackControl &getMasterTrackControl() { return masterTrackControl; }
 
@@ -33,8 +33,11 @@ class MixerPanel : public Component {
     void resized() override;
 
   private:
+    friend class TrackControl;
+    friend class TrackPanel;
+
     const int preferredWidth = 800;
-    const int preferredHeight = 280;
+    static constexpr int preferredHeight = 280;
 
     DesktopController &desktopController;
     Viewport &mixerViewport;
