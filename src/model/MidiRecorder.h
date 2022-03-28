@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 
+#include "MidiHandler.h"
 #include "NoteRoll.h"
 
 using namespace std;
@@ -11,58 +12,30 @@ namespace trackman {
 
 class Project;
 
-class MidiRecorder : public MidiKeyboardState::Listener, public MidiInputCallback {
+class MidiRecorder : public MidiHandler {
   public:
-    MidiRecorder(NoteRoll &noteRoll, MidiKeyboardState &keyboardState, AudioDeviceManager &deviceManager);
+    MidiRecorder(NoteRoll &noteRoll, AudioDeviceManager &deviceManager);
     ~MidiRecorder() override;
-
-    MidiKeyboardState &getKeyboardState() { return keyboardState; }
 
     void startRecording();
     void stopRecording();
     bool isRecording() const;
     NoteRoll &getNoteRoll() { return noteRoll; }
 
+    void handleMessage(MidiMessage message, double time);
     MidiMessageSequence getMidiMessages(double posInSeconds) const;
-
-    void setMidiInput(int index);
 
     void printEvents() const;
 
-    function<void(const MidiMessage &message, double time)> onMidiMessage = nullptr;
-
-    //==============================================================================
-    // MidiKeyboardState::Listener
-    void handleNoteOn(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
-    void handleNoteOff(MidiKeyboardState *source, int midiChannel, int midiNoteNumber, float velocity) override;
-
-    //==============================================================================
-    // MidiInputCallback
-    void handleIncomingMidiMessage(MidiInput *source, const MidiMessage &message) override;
-
   private:
-    class MidiMessageCallback : public CallbackMessage {
-      public:
-        MidiMessageCallback(MidiRecorder *o, const MidiMessage &m, double t) : owner(o), message(m), time(t) {}
-
-        void messageCallback() override { owner->handleMessage(message, time); }
-
-        MidiRecorder *owner;
-        MidiMessage message;
-        double time;
-    };
-    void postMessage(const MidiMessage &message, double time);
-    void handleMessage(MidiMessage message, double time);
-
     NoteRoll &noteRoll;
     AudioDeviceManager &deviceManager;
-    MidiKeyboardState &keyboardState;
     bool recording = false;
     bool looping = false;
-    bool isAddingFromMidiInput = false;
-    int lastInputIndex = 0;
 
     CriticalSection mutex;
+
+    void dispatchMessage(MidiMessage message, double timestampInTicks) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiRecorder)
 };

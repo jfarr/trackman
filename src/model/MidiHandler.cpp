@@ -60,6 +60,10 @@ void MidiHandler::handleMessage(MidiMessage message, double time) {
         timestampInTicks = project.secondsToTicks(pos + offset);
         message.setTimeStamp(timestampInTicks);
     }
+    dispatchMessage(message, time);
+}
+
+void MidiHandler::dispatchMessage(MidiMessage message, double timestampInTicks) {
     if (onMidiMessage != nullptr) {
         onMidiMessage(message, timestampInTicks);
     }

@@ -155,7 +155,7 @@ void Track::startRecording() {
         auto *noteRoll = addNoteRoll();
         project.getTrackList().selectNoteRoll(noteRoll);
         project.getKeyboardState().reset();
-        midiRecorder.reset(new MidiRecorder(*noteRoll, project.getKeyboardState(), deviceManager));
+        midiRecorder.reset(new MidiRecorder(*noteRoll, deviceManager));
     }
     midiRecorder->startRecording();
 }
