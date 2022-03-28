@@ -25,13 +25,19 @@ void TrackLaneController::update() {
 
 void TrackLaneController::updateSamples() {
     for (unique_ptr<SampleThumbnail> &thumbnail : sampleThumbnails) {
-        thumbnail->removeListener(&trackListController);
+        thumbnail->onSelected = nullptr;
+        thumbnail->onMouseDragged = nullptr;
     }
     sampleThumbnails.clear();
     trackLaneControl.clear();
     track.eachSample([this](Sample &sample) {
         sampleThumbnails.push_back(make_unique<SampleThumbnail>(project, track, sample, formatManager));
-        sampleThumbnails.back()->addListener(&trackListController);
+        sampleThumbnails.back()->onSelected = [this](Track &track, Sample &sample) {
+            trackListController.sampleSelected(track, sample);
+        };
+        sampleThumbnails.back()->onMouseDragged = [this](SampleThumbnail &thumbnail, int x, int screenY) {
+            trackListController.sampleDragged(thumbnail, x, screenY);
+        };
         trackLaneControl.addSampleThumbnail(sampleThumbnails.back().get());
     });
 }

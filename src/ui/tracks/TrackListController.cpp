@@ -260,7 +260,7 @@ void TrackListController::sampleResized(Sample &sample, int width) {
     }
 }
 
-void TrackListController::mouseDragged(SampleThumbnail &thumbnail, int x, int screenY) {
+void TrackListController::sampleDragged(SampleThumbnail &thumbnail, int x, int screenY) {
     x = max(x, 0);
     thumbnail.setTopLeftPosition(thumbnail.getPosition().withX(x));
     auto y = screenY - trackListPanel.getScreenPosition().getY();
