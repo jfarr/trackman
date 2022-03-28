@@ -169,13 +169,13 @@ void TrackListPanel::notifyNoteRollDropped(NoteCanvas *canvas, int x, int y) con
     }
 }
 
-void TrackListPanel::notifySampleMoved(SampleThumbnail *thumbnail, int x, int y) {
+void TrackListPanel::notifySampleMoved(SampleThumbnail *thumbnail, int x, int y) const {
     if (onMoveSample != nullptr) {
         onMoveSample(thumbnail->getTrack(), thumbnail->getSample(), x, y);
     }
 }
 
-void TrackListPanel::notifySampleResized(SampleThumbnail *thumbnail, int width) {
+void TrackListPanel::notifySampleResized(SampleThumbnail *thumbnail, int width) const {
     if (onResizeSample != nullptr) {
         onResizeSample(thumbnail->getTrack(), thumbnail->getSample(), width);
     }

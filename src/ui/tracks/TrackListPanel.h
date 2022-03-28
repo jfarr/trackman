@@ -104,8 +104,8 @@ class TrackListPanel : public Component, public DragAndDropContainer, public Dra
     int getTrackLaneHeight() const;
 
     void notifyNoteRollDropped(NoteCanvas *canvas, int x, int y) const;
-    void notifySampleMoved(SampleThumbnail *thumbnail, int x, int y);
-    void notifySampleResized(SampleThumbnail *thumbnail, int width);
+    void notifySampleMoved(SampleThumbnail *thumbnail, int x, int y) const;
+    void notifySampleResized(SampleThumbnail *thumbnail, int width) const;
     void notifyDragEnded() const;
     void notifySelectionChanged();
 
