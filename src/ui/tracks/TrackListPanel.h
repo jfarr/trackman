@@ -57,8 +57,6 @@ class TrackListPanel : public Component, public DragAndDropContainer, public Dra
     void fileDragExit(const StringArray &files);
     void filesDropped(const StringArray &files, int x, int y);
 
-//    void addListener(SampleListener *listener);
-//    void removeListener(SampleListener *listener);
     void addListener(TrackListListener *listener);
     void removeListener(TrackListListener *listener);
 
