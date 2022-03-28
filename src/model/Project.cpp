@@ -13,14 +13,23 @@ Project::Project(AudioDeviceManager &deviceManager)
       mixer(trackList, deviceManager), transport(mixer) {}
 
 Position Project::getCurrentPosition() const {
-    double positionInSeconds = transport.getCurrentPosition();
-    double positionInMeasures = secondsToMeasures(positionInSeconds);
+    return positionAtTime(transport.getCurrentPosition());
+}
+
+Position Project::positionAtTime(double t) const {
+    double positionInMeasures = secondsToMeasures(t);
     double measure;
     double fraction = modf(positionInMeasures, &measure);
     double beat = (fraction * timeSignature.getNumerator()) + 1;
     double unused;
     double beatFraction = modf(beat, &unused);
     return Position((int)measure, (int)beat, (int)(beatFraction * 1000));
+}
+
+double Project::timeAtPosition(Position pos) const {
+    auto beat = ((double)(pos.getBeat() - 1)) / timeSignature.getNumerator();
+    auto fraction = ((double)(pos.getFraction() / 1000)) / timeSignature.getNumerator();
+    return measuresToSeconds(pos.getMeasure()) + measuresToSeconds(1 + beat) + measuresToSeconds(1 + fraction);
 }
 
 Synthesiser *Project::getLiveSynth() {

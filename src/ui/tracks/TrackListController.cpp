@@ -172,7 +172,12 @@ void TrackListController::undeleteNoteRoll(Track &track, NoteRoll *noteRoll) {
 
 void TrackListController::noteRollDragged(NoteCanvas &canvas, int x, int screenY) {
     x = max(x, 0);
-    canvas.setTopLeftPosition(canvas.getPosition().withX(x));
+    auto positionInSeconds = x / project.getHorizontalScale();
+    auto position = project.positionAtTime(positionInSeconds);
+    auto newX = project.timeAtPosition(position.rounded()) * project.getHorizontalScale();
+    DBG("time: " << positionInSeconds << " time2: " << project.timeAtPosition(position));
+    canvas.setTopLeftPosition(canvas.getPosition().withX(newX));
+
     auto y = screenY - trackListPanel.getScreenPosition().getY();
     auto track = trackListPanel.getTrackAtPos(x, y);
     if (track != currentDragTrack) {
