@@ -94,6 +94,7 @@ class DesktopController : public AudioSource,
     void denominatorChanged(int newDenominator);
 
     void changeTempo(float newTempo);
+    void changeTimeSignature(const TimeSignature & newTimeSignature);
 
     //==============================================================================
     // AudioSource

@@ -153,13 +153,31 @@ void DesktopController::changeTempo(float newTempo) {
 }
 
 void DesktopController::numeratorChanged(int newNumerator) {
-    project.setTimeSignature(TimeSignature(newNumerator, project.getTimeSignature().getDenominator()));
-    MessageManager::callAsync([this]() { desktopComponent.repaint(); });
+    auto prevTimeSignature = project.getTimeSignature();
+    auto newTimeSignature = TimeSignature(newNumerator, prevTimeSignature.getDenominator());
+    Command *command = new ChangeTimeSignatureCommand(*this, prevTimeSignature, newTimeSignature);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
+    desktopComponent.menuItemsChanged();
 }
 
 void DesktopController::denominatorChanged(int newDenominator) {
-    project.setTimeSignature(TimeSignature(project.getTimeSignature().getNumerator(), newDenominator));
-    MessageManager::callAsync([this]() { desktopComponent.repaint(); });
+    auto prevTimeSignature = project.getTimeSignature();
+    auto newTimeSignature = TimeSignature(prevTimeSignature.getNumerator(), newDenominator);
+    Command *command = new ChangeTimeSignatureCommand(*this, prevTimeSignature, newTimeSignature);
+    commandList.pushCommand(command);
+    dirty = true;
+    updateTitleBar();
+    desktopComponent.menuItemsChanged();
+}
+
+void DesktopController::changeTimeSignature(const TimeSignature &newTimeSignature) {
+    project.setTimeSignature(newTimeSignature);
+    MessageManager::callAsync([this]() {
+        desktopComponent.repaint();
+        transportController.update();
+    });
 }
 
 void DesktopController::trackNameChanged(Track &track, String newName) {
